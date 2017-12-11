@@ -1,0 +1,14 @@
+version: '3'
+services:
+#  redis:
+#    image: "redis:alpine"
+#    ports:
+#      - 6379:6379
+
+
+  mongodb:
+    image: "mvertes/alpine-mongo"
+#    volumes:
+#      - /c/Users/db:/data/db
+    ports:
+      - 27017:27017

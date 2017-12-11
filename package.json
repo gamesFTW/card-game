@@ -1,0 +1,19 @@
+{
+  "name": "eventsourcing-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@types/koa": "^2.0.42",
+    "@types/koa-router": "^7.0.27",
+    "koa": "2.4.1",
+    "koa-router": "^7.3.0",
+    "mongodb": "^3.0.0-rc0",
+    "typescript": "^2.6.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
