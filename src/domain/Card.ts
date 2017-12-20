@@ -1,11 +1,28 @@
 
 class Card {
-  // get name(): string {return this.name};
+  get name(): string {return this.state.name};
 
-  public name: string;
+  private state: CardState;
 
   constructor(name: string) {
-    this.name = name;
+    this.state = new CardState();
+
+    this.dispatchEvent(CardCreatedEvent(name));
+  }
+
+  //ловим ивент:
+  //this.name = event.name
+}
+
+class CardState {
+  public name: string;
+
+  public constructor() {
+
+  }
+
+  onCardCreated(event: CardCreatedEvent) {
+    this.name = event.name;
   }
 }
 

@@ -4,9 +4,11 @@ import {Game} from "../domain/Game";
 
 const router = new Router();
 
-router.get('/a', async (ctx) => {
-  ctx.body = 'a';
-  let game: Game = new Game();
+let game: Game = new Game();
+
+router.get('/showAllCards', async (ctx) => {
+  ctx.body = 'ok';
+
   game.showAllCards();
 });
 
