@@ -6,9 +6,11 @@
   "dependencies": {
     "@types/koa": "^2.0.42",
     "@types/koa-router": "^7.0.27",
+    "@types/nanoid": "^1.0.0",
     "koa": "2.4.1",
     "koa-router": "^7.3.0",
     "mongodb": "^3.0.0-rc0",
+    "nanoid": "^1.0.1",
     "typescript": "^2.6.2"
   },
   "scripts": {

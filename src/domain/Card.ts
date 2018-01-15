@@ -1,13 +1,23 @@
+const nanoid = require('nanoid');
 
 class Card {
   get name(): string {return this.state.name};
 
-  private state: CardState;
+  public changes: Array<Event> = [];
+  public state: CardState;
 
-  constructor(name: string) {
-    this.state = new CardState();
+  constructor(events: Array<Event>) {
+    this.state = new CardState(events);
+  }
 
-    this.dispatchEvent(CardCreatedEvent(name));
+  public init(name: string) {
+    // тут может быть бизнес логика
+    this.apply(new CardCreatedEvent(nanoid(), name));
+  }
+
+  private apply(event: Event) {
+    this.state.mutate(event);
+    this.changes.push(event);
   }
 
   //ловим ивент:
@@ -16,14 +26,39 @@ class Card {
 
 class CardState {
   public name: string;
+  public id: string;
 
-  public constructor() {
-
+  public constructor(events: Array<Event>) {
+    events.forEach(event => this.mutate(event));
   }
 
-  onCardCreated(event: CardCreatedEvent) {
-    this.name = event.name;
+  public mutate(event: Event) {
+    if (event instanceof CardCreatedEvent) {
+      this.whenCardCreated(event as CardCreatedEvent);
+    }
+  }
+
+  whenCardCreated(event: CardCreatedEvent) {
+    this.name = event.cardName;
+    this.id = event.id;
   }
 }
 
-export {Card};
+
+class Event {}
+
+class CardCreatedEvent extends Event {
+  public cardName: string;
+  public id: string;
+  public name: string = 'CardCreatedEvent';
+
+  public constructor(id: string, cardName: string) {
+    super();
+
+    this.id = id;
+    this.cardName = cardName;
+  }
+}
+
+
+export {Card, Event};
