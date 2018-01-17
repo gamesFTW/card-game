@@ -9,28 +9,70 @@ const router = new Router();
 
 // let game: Game = new Game();
 
-let cardDB: Array<Event> = [];
+class DataBase {
+  public cards: {[s: string]: Array<Event>} = {};
+}
+
+let db: DataBase = new DataBase();
+
+
+let cardRepository = {
+  save: (card: Card) => {
+    card.changes.forEach((event: Event) => {
+      let cardId = event.data.id;
+      db.cards[cardId] = db.cards[cardId] ? db.cards[cardId] : [];
+
+      let cardEvents = db.cards[cardId];
+      cardEvents.push(event);
+    });
+
+    card.changes = [];
+  },
+  get: (id: string) => {
+    let cardEvents = db.cards[id];
+    return new Card(cardEvents);
+  },
+  getAll: () => {
+    let cards = [];
+    for (let cardId in db.cards) {
+      let cardEvents = db.cards[cardId];
+      let card: Card = new Card(cardEvents);
+
+      cards.push(card);
+    }
+
+    return cards;
+  }
+};
 
 router.get('/createCard', async (ctx) => {
   let name = ctx.query.name;
+  let hp = Number(ctx.query.hp);
 
   let card: Card = new Card([]);
-  card.init(name);
+  card.init(name, hp);
 
-  cardDB = cardDB.concat(card.changes);
+  cardRepository.save(card);
 
-  console.log(cardDB);
-
-  ctx.body = cardDB;
+  ctx.body = db;
 });
 
 router.get('/getCards', async (ctx) => {
-  cardDB.forEach(event => {
-    let card: Card = new Card([event]);
-    console.log(card.state.name);
-  });
+  let cards: Card[] = cardRepository.getAll();
 
-  ctx.body = 'ok';
+  ctx.body = cards;
+});
+
+router.get('/cardTookDamage', async (ctx) => {
+  let cardId = ctx.query.id;
+  let damage = Number(ctx.query.damage);
+
+  let card: Card = cardRepository.get(cardId);
+  card.takeDamage(damage);
+
+  cardRepository.save(card);
+
+  ctx.body = card;
 });
 
 

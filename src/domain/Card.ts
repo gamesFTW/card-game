@@ -1,8 +1,6 @@
 const nanoid = require('nanoid');
 
 class Card {
-  get name(): string {return this.state.name};
-
   public changes: Array<Event> = [];
   public state: CardState;
 
@@ -10,9 +8,18 @@ class Card {
     this.state = new CardState(events);
   }
 
-  public init(name: string) {
+  public init(name: string, hp: number) {
     // тут может быть бизнес логика
-    this.apply(new CardCreatedEvent(nanoid(), name));
+    let id = nanoid();
+    this.apply(new CardCreated(id, name, hp));
+  }
+
+  public takeDamage(damage: number) {
+    let newHp = this.state.hp - damage;
+
+    //проверка на дай
+
+    this.apply(new CardTookDamage(this.state.id, newHp));
   }
 
   private apply(event: Event) {
@@ -27,37 +34,78 @@ class Card {
 class CardState {
   public name: string;
   public id: string;
+  public hp: number;
 
   public constructor(events: Array<Event>) {
     events.forEach(event => this.mutate(event));
   }
 
   public mutate(event: Event) {
-    if (event instanceof CardCreatedEvent) {
-      this.whenCardCreated(event as CardCreatedEvent);
+    if (event instanceof CardCreated) {
+      this.whenCardCreated(event as CardCreated);
+    }
+    if (event instanceof CardTookDamage) {
+      this.whenCardTookDamage(event as CardTookDamage);
     }
   }
 
-  whenCardCreated(event: CardCreatedEvent) {
-    this.name = event.cardName;
-    this.id = event.id;
+  whenCardCreated(event: CardCreated) {
+    this.id = event.data.id;
+    this.name = event.data.name;
+    this.hp = event.data.hp;
+  }
+
+  whenCardTookDamage(event: CardTookDamage) {
+    this.hp = event.data.hp;
   }
 }
 
 
-class Event {}
+class Event {
+  public type: string;
+  public data: EventData;
 
-class CardCreatedEvent extends Event {
-  public cardName: string;
-  public id: string;
-  public name: string = 'CardCreatedEvent';
+  public constructor() {
+  }
+}
 
-  public constructor(id: string, cardName: string) {
+interface EventData {
+  id: string;
+}
+
+
+class CardCreated extends Event {
+  public type: string = 'CardCreatedEvent';
+
+  public data: CardCreatedData;
+
+  public constructor(id: string, name: string, hp: number) {
     super();
 
-    this.id = id;
-    this.cardName = cardName;
+    this.data = {id: id, name: name, hp: hp};
   }
+}
+
+interface CardCreatedData extends EventData {
+  name: string;
+  hp: number;
+}
+
+
+class CardTookDamage extends Event {
+  public type: string = 'CardTookDamage';
+
+  public data: CardTookDamageData;
+
+  public constructor(id: string, hp: number) {
+    super();
+
+    this.data = {id: id, hp: hp};
+  }
+}
+
+interface CardTookDamageData extends EventData {
+  hp: number;
 }
 
 
