@@ -1,3 +1,5 @@
+import {Event, CardCreated, CardTookDamage} from "./CardEvents";
+
 const nanoid = require('nanoid');
 
 class Card {
@@ -11,7 +13,7 @@ class Card {
   public init(name: string, hp: number) {
     // тут может быть бизнес логика
     let id = nanoid();
-    this.apply(new CardCreated(id, name, hp));
+    this.apply(new CardCreated({id, name, hp}));
   }
 
   public takeDamage(damage: number) {
@@ -19,7 +21,7 @@ class Card {
 
     //проверка на дай
 
-    this.apply(new CardTookDamage(this.state.id, newHp));
+    this.apply(new CardTookDamage({id: this.state.id, hp: newHp}));
   }
 
   private apply(event: Event) {
@@ -47,6 +49,7 @@ class CardState {
     if (event instanceof CardTookDamage) {
       this.whenCardTookDamage(event as CardTookDamage);
     }
+    // console.log(event);
   }
 
   whenCardCreated(event: CardCreated) {
@@ -60,53 +63,4 @@ class CardState {
   }
 }
 
-
-class Event {
-  public type: string;
-  public data: EventData;
-
-  public constructor() {
-  }
-}
-
-interface EventData {
-  id: string;
-}
-
-
-class CardCreated extends Event {
-  public type: string = 'CardCreatedEvent';
-
-  public data: CardCreatedData;
-
-  public constructor(id: string, name: string, hp: number) {
-    super();
-
-    this.data = {id: id, name: name, hp: hp};
-  }
-}
-
-interface CardCreatedData extends EventData {
-  name: string;
-  hp: number;
-}
-
-
-class CardTookDamage extends Event {
-  public type: string = 'CardTookDamage';
-
-  public data: CardTookDamageData;
-
-  public constructor(id: string, hp: number) {
-    super();
-
-    this.data = {id: id, hp: hp};
-  }
-}
-
-interface CardTookDamageData extends EventData {
-  hp: number;
-}
-
-
-export {Card, Event};
+export {Card};

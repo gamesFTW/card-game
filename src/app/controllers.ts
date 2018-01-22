@@ -1,9 +1,10 @@
+import * as fs from 'fs';
+
 import * as Router from 'koa-router';
-import {Game} from "../domain/Game";
-import {Point} from "../domain/Point";
-import {Card} from "../domain/Card";
-import {Field} from "../domain/Field";
-import {Event} from "../domain/Card";
+
+import {Card} from '../domain/Card';
+import {Event} from '../domain/CardEvents';
+import * as cardEvents from '../domain/CardEvents';
 
 const router = new Router();
 
@@ -11,10 +12,46 @@ const router = new Router();
 
 class DataBase {
   public cards: {[s: string]: Array<Event>} = {};
+
+  public save() {
+    let data = JSON.stringify({cards: this.cards});
+    fs.writeFileSync('./db.json', data);
+  }
+
+  public load() {
+    let dataBuffer;
+    try {
+      dataBuffer = fs.readFileSync('./db.json');
+    } catch (error) {}
+
+    let data: any = JSON.parse(String(dataBuffer));
+
+    for (let aggregateKey in data) {
+      (this as any)[aggregateKey] = this.loadAggregate(data[aggregateKey]);
+    }
+  }
+
+  private loadAggregate(aggregate: any) {
+    let aggregateToReturn = [];
+    for (let cardId in aggregate) {
+      let cardEventsData = aggregate[cardId];
+
+      let events = cardEventsData.map((cardEventData: any) => {
+        let data = cardEventData.data;
+
+        let cardEventClass: any = (cardEvents as any)[cardEventData.type];
+        return new cardEventClass(data);
+      });
+
+      aggregateToReturn.push(events);
+    }
+
+    return aggregateToReturn;
+  }
 }
 
 let db: DataBase = new DataBase();
-
+db.load();
 
 let cardRepository = {
   save: (card: Card) => {
@@ -27,6 +64,8 @@ let cardRepository = {
     });
 
     card.changes = [];
+
+    db.save();
   },
   get: (id: string) => {
     let cardEvents = db.cards[id];
