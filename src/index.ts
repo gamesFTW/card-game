@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 
-import appRouters from './app/controllers';
+import appRouters from './app/card/controllers';
 
 const app = new Koa();
 

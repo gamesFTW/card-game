@@ -1,17 +1,4 @@
-class Event {
-  public type: string;
-  public data: EventData;
-
-  public constructor(type: string, data: EventData) {
-    this.type = type;
-
-    this.data = {...data};
-  }
-}
-
-interface EventData {
-  id: string;
-}
+import {EventData, Event} from "../../infr/Event";
 
 
 class CardCreated extends Event {
@@ -44,4 +31,4 @@ interface CardTookDamageData extends EventData {
   hp: number;
 }
 
-export {Event, CardCreated, CardTookDamage};
+export {CardCreated, CardTookDamage};
