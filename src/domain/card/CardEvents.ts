@@ -14,6 +14,7 @@ class CardCreated extends Event {
 interface CardCreatedData extends EventData {
   name: string;
   hp: number;
+  alive: boolean
 }
 
 
@@ -31,4 +32,20 @@ interface CardTookDamageData extends EventData {
   hp: number;
 }
 
-export {CardCreated, CardTookDamage};
+
+class CardDied extends Event {
+  static TYPE: string = 'CardDied';
+
+  public data: CardDiedData;
+
+  public constructor(data: CardDiedData) {
+    super(CardDied.TYPE, data);
+  }
+}
+
+interface CardDiedData extends EventData {
+  alive: boolean
+}
+
+
+export {CardCreated, CardTookDamage, CardDied};

@@ -1,14 +1,12 @@
 import {Event} from "../../infr/Event";
-import {CardCreated, CardTookDamage} from "./CardEvents";
+import {CardCreated, CardDied, CardTookDamage} from "./CardEvents";
+import {EntityId, EntityState} from "../../infr/Entity";
 
-class CardState {
+class CardState extends EntityState {
+  public id: EntityId;
   public name: string;
-  public id: string;
   public hp: number;
-
-  public constructor(events: Array<Event>) {
-    events.forEach(event => this.mutate(event));
-  }
+  public alive: boolean;
 
   public mutate(event: Event) {
     if (event instanceof CardCreated) {
@@ -17,17 +15,24 @@ class CardState {
     if (event instanceof CardTookDamage) {
       this.whenCardTookDamage(event as CardTookDamage);
     }
-    // console.log(event);
+    if (event instanceof CardDied) {
+      this.whenCardDied(event as CardDied);
+    }
   }
 
   whenCardCreated(event: CardCreated) {
     this.id = event.data.id;
     this.name = event.data.name;
     this.hp = event.data.hp;
+    this.alive = event.data.alive;
   }
 
   whenCardTookDamage(event: CardTookDamage) {
     this.hp = event.data.hp;
+  }
+
+  whenCardDied(event: CardDied) {
+    this.alive = event.data.alive;
   }
 }
 

@@ -1,5 +1,5 @@
 import {Tile} from "./Tile";
-import {Card} from "./card/Card";
+import {Card} from "../domain/card/Card";
 import {Point} from "./Point";
 
 

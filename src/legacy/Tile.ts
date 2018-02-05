@@ -1,4 +1,4 @@
-import {Card} from "./card/Card";
+import {Card} from "../domain/card/Card";
 
 class Tile {
   private cards: Array<Card> = [];

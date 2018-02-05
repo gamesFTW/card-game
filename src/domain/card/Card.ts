@@ -1,21 +1,23 @@
+import {Entity} from "../../infr/Entity";
+
 const nanoid = require('nanoid');
 
 import {Event} from '../../infr/Event';
-import {CardCreated, CardTookDamage} from "./CardEvents";
+import {CardCreated, CardDied, CardTookDamage} from "./CardEvents";
 import {CardState} from "./CardState";
 
-class Card {
-  public changes: Array<Event> = [];
+class Card extends Entity {
   public state: CardState;
 
-  constructor(events: Array<Event>) {
+  constructor(events: Array<Event> = []) {
+    super();
     this.state = new CardState(events);
   }
 
   public init(name: string, hp: number) {
     // тут может быть бизнес логика
     let id = nanoid();
-    this.apply(new CardCreated({id, name, hp}));
+    this.apply(new CardCreated({id, name, hp, alive: true}));
   }
 
   public takeDamage(damage: number) {
@@ -23,14 +25,13 @@ class Card {
 
     this.apply(new CardTookDamage({id: this.state.id, hp: newHp}));
 
-    // if (newHp <= 0) {
-    //     this.apply(new CardDied());
-    // }
-  }
+    if (newHp <= 0) {
+      if (this.state.alive == false) {
+        throw new Error('What Is Dead May Never Die.');
+      }
 
-  private apply(event: Event) {
-    this.state.mutate(event);
-    this.changes.push(event);
+      this.apply(new CardDied({id: this.state.id, alive: false}));
+    }
   }
 
   //ловим ивент:

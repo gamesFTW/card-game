@@ -1,6 +1,7 @@
 import {Card} from "../../domain/card/Card";
 import {Event} from "../Event";
 import {db} from "../DataBase";
+import {EntityId} from "../Entity";
 
 let CardRepository = {
   save(card: Card): void {
@@ -16,7 +17,7 @@ let CardRepository = {
 
     db.save();
   },
-  get(id: string): Card {
+  get(id: EntityId): Card {
     let cardEvents = db.cards[id];
     return new Card(cardEvents);
   },

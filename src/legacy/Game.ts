@@ -1,5 +1,5 @@
 import {Field} from "./Field";
-import {Card} from "./card/Card";
+import {Card} from "../domain/card/Card";
 import {Point} from "./Point";
 
 class Game {

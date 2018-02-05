@@ -1,3 +1,5 @@
+import {EntityId} from "./Entity";
+
 class Event {
   public type: string;
   public data: EventData;
@@ -10,7 +12,7 @@ class Event {
 }
 
 interface EventData {
-  id: string;
+  id: EntityId;
 }
 
 export {Event, EventData};

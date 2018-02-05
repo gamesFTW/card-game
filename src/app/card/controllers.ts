@@ -6,6 +6,16 @@ import {CardUseCases} from "./CardUseCases";
 const router = new Router();
 
 
+// router.get('/createNewGame', async (ctx) => {
+//   CardUseCases.createCard('orc', 10);
+//   CardUseCases.createCard('elf', 8);
+//
+//   // TableUseCases.createCard(name, hp);
+//
+//   ctx.body = db;
+// });
+
+
 router.get('/createCard', async (ctx) => {
   let name = ctx.query.name;
   let hp = Number(ctx.query.hp);

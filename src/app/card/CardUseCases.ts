@@ -1,23 +1,26 @@
 import {Card} from "../../domain/card/Card";
 import {CardRepository} from "../../infr/card/CardRepository";
+import {EntityId} from "../../infr/Entity";
 
 let CardUseCases = {
+  getCard(cardId: EntityId): Card {
+    return CardRepository.get(cardId);
+  },
+
   getCards(): Card[] {
     return CardRepository.getAll();
   },
 
-  getCard(cardId: string): Card {
-    return CardRepository.get(cardId);
-  },
-
-  createCard(name: string, hp: number) {
-    let card: Card = new Card([]);
+  createCard(name: string, hp: number): EntityId {
+    let card: Card = new Card();
     card.init(name, hp);
 
     CardRepository.save(card);
+
+    return card.state.id;
   },
 
-  cardTookDamage(cardId: string, damage: number) {
+  cardTookDamage(cardId: EntityId, damage: number) {
     let card: Card = CardRepository.get(cardId);
     card.takeDamage(damage);
 
