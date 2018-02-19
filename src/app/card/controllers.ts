@@ -2,6 +2,7 @@ import * as Router from 'koa-router';
 
 import {db} from "../../infr/DataBase";
 import {CardUseCases} from "./CardUseCases";
+import { Point } from '../../infr/Point';
 
 const router = new Router();
 
@@ -19,8 +20,11 @@ const router = new Router();
 router.get('/createCard', async (ctx) => {
   let name = ctx.query.name;
   let hp = Number(ctx.query.hp);
+  let x = Number(ctx.query.x);
+  let y = Number(ctx.query.y);
+  let point = new Point(x, y);
 
-  CardUseCases.createCard(name, hp);
+  CardUseCases.createCard(name, hp, point);
 
   ctx.body = db;
 });
@@ -38,6 +42,16 @@ router.get('/cardTookDamage', async (ctx) => {
   ctx.body = CardUseCases.getCard(cardId);
 });
 
+router.get('/cardMove', async (ctx) => {
+  let cardId = ctx.query.id;
+  let x = Number(ctx.query.x);
+  let y = Number(ctx.query.y);
+  let point = new Point(x, y);
+
+  CardUseCases.moveCard(cardId, point);
+
+  ctx.body = CardUseCases.getCard(cardId);
+});
 
 // router.get('/moveCard', async (ctx) => {
 //   ctx.body = 'ok';

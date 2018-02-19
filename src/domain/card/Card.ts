@@ -31,7 +31,7 @@ class Card extends Entity {
       }
 
       this.apply(new CardDied({id: this.state.id, alive: false}));
-      CardsOnTableUseCases.cardDied(this.state.id);
+      // CardsOnTableUseCases.cardDied(this.state.id);
     }
   }
 }

@@ -1,20 +1,14 @@
-import {Tile} from "./Tile";
-import {Card} from "../domain/card/Card";
-import {Point} from "./Point";
+import {Tile} from './Tile';
+import {Card} from "../card/Card";
+import {Point} from '../../infr/Point';
+import {Entity} from "../../infr/Entity";
+import { CardAdeedToField } from './FieldEvents';
+import {FieldState} from './FieldState';
 
-
-interface Tiles {
-  [x: number]: {
-    [y: number]: Tile
-  };
-}
-
-
-class Field {
-  private tiles: Tiles = {};
-
-  constructor(width: number, height: number) {
-    this.createTiles(width, height);
+class Field extends Entity {
+  constructor (width: number, height: number) {
+    super();
+    this.state = new FieldState([]);
   }
 
   // public getTileByPoint(point: Point): Tile {
@@ -33,25 +27,13 @@ class Field {
   //
   //   return null;
   // }
-
-  private createTiles(width: number, height: number) {
-    for (let x = 1; x <= width; x++) {
-      this.tiles[x] = {};
-      let tilesX = this.tiles[x];
-
-      for (let y = 1; y <= height; y++) {
-        tilesX[y] = this.createTile();
-      }
-    }
-  }
-
-  private createTile(): Tile {
-    return new Tile();
+  public addCardToField (card: Card, toPoint: Point) {
+    // TODO проверить нет ли на данной клетке карты
+    this.apply(new CardAdeedToField({ id: card.state.id, x: toPoint.x, y: toPoint.y }));
   }
 }
 
 export {Field};
-
 
   // public getTileByCard(card: Card): Tile {
   //   //TODO
