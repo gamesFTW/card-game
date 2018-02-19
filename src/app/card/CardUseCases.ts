@@ -1,6 +1,7 @@
 import {Card} from "../../domain/card/Card";
 import {CardRepository} from "../../infr/card/CardRepository";
 import {EntityId} from "../../infr/Entity";
+import {CardDied} from "../../domain/card/CardEvents";
 
 let CardUseCases = {
   getCard(cardId: EntityId): Card {
