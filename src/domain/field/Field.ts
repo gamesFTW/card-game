@@ -51,6 +51,20 @@ class Field extends Entity {
       fromY: fromPoint.y
     }));
   }
+
+  public checkCardsAdjacency (firstCard: Card, secondCard: Card): Boolean {
+    let firstCardPoint = this.getPointByCard(firstCard);
+    let secondCardPoint = this.getPointByCard(secondCard);
+
+    let xDistance = Math.abs(firstCardPoint.x - secondCardPoint.x);
+    let yDistance = Math.abs(firstCardPoint.y - secondCardPoint.y);
+
+    if (xDistance + yDistance < 2) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 export {Field};

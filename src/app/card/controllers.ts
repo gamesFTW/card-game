@@ -50,7 +50,16 @@ router.get('/cardMove', async (ctx) => {
 
   CardUseCases.moveCard(cardId, point);
 
-  ctx.body = CardUseCases.getCard(cardId);
+  ctx.body = 'ok';
+});
+
+router.get('/cardAttack', async (ctx) => {
+  let attackingCardId = ctx.query.attackingCardId;
+  let defendingCardId = ctx.query.defendingCardId;
+
+  CardUseCases.cardAttack(attackingCardId, defendingCardId);
+
+  ctx.body = 'ok';
 });
 
 // router.get('/moveCard', async (ctx) => {

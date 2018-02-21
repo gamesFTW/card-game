@@ -62,6 +62,17 @@ let CardUseCases = {
     FieldRepository.save(field);
 
     return card;
+  },
+
+  cardAttack (attackingCardId: EntityId, defendingCardId: EntityId) {
+    let attackingCard = CardRepository.get(attackingCardId);
+    let defendingCard = CardRepository.get(defendingCardId);
+
+    let field = FieldRepository.get();
+
+    let isCardsAdjacent = field.checkCardsAdjacency(attackingCard, defendingCard);
+    console.log(isCardsAdjacent);
+
   }
 };
 
