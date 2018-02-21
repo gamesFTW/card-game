@@ -2,7 +2,7 @@ import { Event } from '../../infr/Event';
 // import {CardCreated, CardDied, CardTookDamage} from "./CardEvents";
 import { EntityId, EntityState } from '../../infr/Entity';
 import { Tile } from './Tile';
-import { CardAdeedToField } from './FieldEvents';
+import {CardAddedToField, CardMoved} from './FieldEvents';
 
 interface Tiles {
   [x: number]: {
@@ -12,17 +12,21 @@ interface Tiles {
 
 class FieldState extends EntityState {
   public id: EntityId;
-  public tiles: Tiles;
+  public tiles: Tiles = {};
 
   public constructor (events: Array<Event>) {
-    super(events);
-
+    super();
     this.createTiles(5, 5);
+
+    this.applyEvents(events);
   }
 
   public mutate (event: Event) {
-    if (event instanceof CardAdeedToField) {
-      this.whenCardAdeedToField(event as CardAdeedToField);
+    if (event instanceof CardAddedToField) {
+      this.whenCardAddedToField(event as CardAddedToField);
+    }
+    if (event instanceof CardMoved) {
+      this.whenCardMoved(event as CardMoved);
     }
   }
 
@@ -41,13 +45,27 @@ class FieldState extends EntityState {
     return new Tile();
   }
 
-  private whenCardAdeedToField (event: CardAdeedToField) {
+  private whenCardAddedToField (event: CardAddedToField) {
     let cardId = event.data.id;
     let x = event.data.x;
     let y = event.data.y;
 
     let tile = this.tiles[x][y];
     tile.addCard(cardId);
+  }
+
+  private whenCardMoved (event: CardMoved) {
+    let cardId = event.data.id;
+    let toX = event.data.toX;
+    let toY = event.data.toY;
+    let fromX = event.data.fromX;
+    let fromY = event.data.fromY;
+
+    let fromTile = this.tiles[fromX][fromY];
+    fromTile.removeCard(cardId);
+
+    let toTile = this.tiles[toX][toY];
+    toTile.addCard(cardId);
   }
 
 }

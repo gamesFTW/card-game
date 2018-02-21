@@ -8,7 +8,12 @@ class CardState extends EntityState {
   public hp: number;
   public alive: boolean;
 
-  public mutate(event: Event) {
+  public constructor (events: Array<Event>) {
+    super();
+    this.applyEvents(events);
+  }
+
+  public mutate (event: Event) {
     if (event instanceof CardCreated) {
       this.whenCardCreated(event as CardCreated);
     }
@@ -20,18 +25,18 @@ class CardState extends EntityState {
     }
   }
 
-  whenCardCreated(event: CardCreated) {
+  whenCardCreated (event: CardCreated) {
     this.id = event.data.id;
     this.name = event.data.name;
     this.hp = event.data.hp;
     this.alive = event.data.alive;
   }
 
-  whenCardTookDamage(event: CardTookDamage) {
+  whenCardTookDamage (event: CardTookDamage) {
     this.hp = event.data.hp;
   }
 
-  whenCardDied(event: CardDied) {
+  whenCardDied (event: CardDied) {
     this.alive = event.data.alive;
   }
 }

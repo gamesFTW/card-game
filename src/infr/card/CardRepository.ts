@@ -4,7 +4,7 @@ import {db} from "../DataBase";
 import {EntityId} from "../Entity";
 
 let CardRepository = {
-  save(card: Card): void {
+  save (card: Card): void {
     card.changes.forEach((event: Event) => {
       let cardId = event.data.id;
       db.cards[cardId] = db.cards[cardId] ? db.cards[cardId] : [];
@@ -17,11 +17,11 @@ let CardRepository = {
 
     db.save();
   },
-  get(id: EntityId): Card {
+  get (id: EntityId): Card {
     let cardEvents = db.cards[id];
     return new Card(cardEvents);
   },
-  getAll(): Array<Card> {
+  getAll (): Array<Card> {
     let cards = [];
 
     for (let cardId in db.cards) {

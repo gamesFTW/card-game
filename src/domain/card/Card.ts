@@ -1,20 +1,25 @@
-import {Entity} from "../../infr/Entity";
+import { Entity } from '../../infr/Entity';
 
 const nanoid = require('nanoid');
 
-import {Event} from '../../infr/Event';
-import {CardCreated, CardDied, CardTookDamage} from "./CardEvents";
-import {CardState} from "./CardState";
+import { Event } from '../../infr/Event';
+import { CardCreated, CardDied, CardTookDamage} from "./CardEvents";
+import { CardState } from "./CardState";
 
 class Card extends Entity {
-  public state: CardState;
+  protected state: CardState;
 
-  constructor(events: Array<Event> = []) {
+  constructor (events: Array<Event> = []) {
     super();
     this.state = new CardState(events);
   }
 
-  public init(name: string, hp: number) {
+  get id () { return this.state.id; }
+  get name () { return this.state.name; }
+  get hp () { return this.state.hp; }
+  get alive () { return this.state.alive; }
+
+  public init (name: string, hp: number) {
     // тут может быть бизнес логика
     let id = nanoid();
     this.apply(new CardCreated({id, name, hp, alive: true}));

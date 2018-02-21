@@ -23,8 +23,13 @@ class DataBase {
 
     let data: any = JSON.parse(String(dataBuffer));
 
-    this.cards = this.loadAggregates(data['cards'], cardEvents);
-    this.field = this.loadAggregate(data['field'], fieldEvents);
+    if (data['cards']) {
+      this.cards = this.loadAggregates(data['cards'], cardEvents);
+    }
+
+    if (data['field']) {
+      this.field = this.loadAggregate(data['field'], fieldEvents);
+    }
   }
 
   private loadAggregate (aggregateEventsData: any, aggregateEvents: any): Array<Event> {

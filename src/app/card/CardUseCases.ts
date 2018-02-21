@@ -10,8 +10,25 @@ let CardUseCases = {
     return CardRepository.get(cardId);
   },
 
-  getCards (): Card[] {
-    return CardRepository.getAll();
+  getCards (): Array<any> {
+    let cards = CardRepository.getAll();
+    let field = FieldRepository.get();
+    let response: Array<any> = [];
+
+    cards.forEach((card) => {
+      let point = field.getPointByCard(card);
+
+      response.push({
+        id: card.id,
+        name: card.name,
+        hp: card.hp,
+        alive: card.alive,
+        x: point.x,
+        y: point.y
+      });
+    });
+
+    return response;
   },
 
   createCard (name: string, hp: number, point: Point): EntityId {
@@ -25,7 +42,7 @@ let CardUseCases = {
     FieldRepository.save(field);
     CardRepository.save(card);
 
-    return card.state.id;
+    return card.id;
   },
 
   cardTookDamage (cardId: EntityId, damage: number) {
@@ -38,7 +55,11 @@ let CardUseCases = {
   },
 
   moveCard (cardId: EntityId, point: Point) {
-    let card: Card = CardRepository.get(cardId);
+    let card = CardRepository.get(cardId);
+    let field = FieldRepository.get();
+    field.moveCardToPoint(card, point);
+
+    FieldRepository.save(field);
 
     return card;
   }
