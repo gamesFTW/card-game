@@ -1,6 +1,6 @@
 import {EntityId} from "../../infr/Entity";
-import {CardDied} from "../card/CardEvents";
-import {Card} from "../card/Card";
+import {CardDied} from "../../domain/card/CardEvents";
+import {Card} from "../../domain/card/Card";
 
 class CardsOnTable {
   //or Game, PlayersCards

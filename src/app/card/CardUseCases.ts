@@ -4,6 +4,7 @@ import { FieldRepository } from "../../infr/FieldRepository";
 import {EntityId, Entity} from "../../infr/Entity";
 import { CardDied } from "../../domain/card/CardEvents";
 import { Point } from '../../infr/Point';
+import {DamageService} from "../../domain/DamageService";
 
 let CardUseCases = {
   getCard (cardId: EntityId): Card {
@@ -22,7 +23,10 @@ let CardUseCases = {
         id: card.id,
         name: card.name,
         hp: card.hp,
+        damage: card.damage,
+        armor: card.armor,
         alive: card.alive,
+        tapped: card.tapped,
         x: point.x,
         y: point.y
       });
@@ -31,9 +35,9 @@ let CardUseCases = {
     return response;
   },
 
-  createCard (name: string, hp: number, point: Point): EntityId {
+  createCard (name: string, hp: number, damage: number, armor: number, point: Point): EntityId {
     let card: Card = new Card();
-    card.init(name, hp);
+    card.init(name, hp, damage, armor);
 
     let field = FieldRepository.get();
 
@@ -67,12 +71,12 @@ let CardUseCases = {
   cardAttack (attackingCardId: EntityId, defendingCardId: EntityId) {
     let attackingCard = CardRepository.get(attackingCardId);
     let defendingCard = CardRepository.get(defendingCardId);
-
     let field = FieldRepository.get();
 
-    let isCardsAdjacent = field.checkCardsAdjacency(attackingCard, defendingCard);
-    console.log(isCardsAdjacent);
+    DamageService.cardAttackCard(attackingCard, defendingCard, field);
 
+    CardRepository.save(attackingCard);
+    CardRepository.save(defendingCard);
   }
 };
 

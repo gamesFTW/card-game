@@ -1,7 +1,7 @@
 import * as Router from 'koa-router';
 
-import {db} from "../../infr/DataBase";
-import {CardUseCases} from "./CardUseCases";
+import { db } from '../../infr/DataBase';
+import { CardUseCases } from './CardUseCases';
 import { Point } from '../../infr/Point';
 
 const router = new Router();
@@ -20,11 +20,13 @@ const router = new Router();
 router.get('/createCard', async (ctx) => {
   let name = ctx.query.name;
   let hp = Number(ctx.query.hp);
+  let damage = Number(ctx.query.damage);
+  let armor = Number(ctx.query.armor);
   let x = Number(ctx.query.x);
   let y = Number(ctx.query.y);
   let point = new Point(x, y);
 
-  CardUseCases.createCard(name, hp, point);
+  CardUseCases.createCard(name, hp, damage, armor, point);
 
   ctx.body = db;
 });
