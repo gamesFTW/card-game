@@ -2,7 +2,7 @@ import { Event } from '../../infr/Event';
 // import {CardCreated, CardDied, CardTookDamage} from "./CardEvents";
 import { EntityId, EntityState } from '../../infr/Entity';
 import { Tile } from './Tile';
-import {CardAddedToField, CardMoved} from './FieldEvents';
+import { CardAddedToField, CardMoved } from './FieldEvents';
 
 interface Tiles {
   [x: number]: {
