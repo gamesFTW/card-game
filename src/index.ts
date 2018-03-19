@@ -1,7 +1,9 @@
 import * as Koa from 'koa';
 
 import appRouters from './app/card/controllers';
+import { start } from './es';
 
+start();
 const app = new Koa();
 
 app.use(async (ctx: any, next: any) => {
