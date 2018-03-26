@@ -25,22 +25,28 @@ router.get('/createCard', async (ctx) => {
   let y = Number(ctx.query.y);
   let point = new Point(x, y);
 
-  CardUseCases.createCard(name, hp, damage, armor, point);
+  let cardId = await CardUseCases.createCard(name, hp, damage, armor, point);
 
-  ctx.body = db;
+  ctx.body = cardId;
+});
+
+router.get('/getCard', async (ctx) => {
+  let cardId = ctx.query.id;
+  let card = await CardUseCases.getCard(cardId);
+  ctx.body = card;
 });
 
 router.get('/getCards', async (ctx) => {
-  ctx.body = CardUseCases.getCards();
+  ctx.body = await CardUseCases.getCards();
 });
 
 router.get('/cardTookDamage', async (ctx) => {
   let cardId = ctx.query.id;
   let damage = Number(ctx.query.damage);
 
-  CardUseCases.cardTookDamage(cardId, damage);
+  await CardUseCases.cardTookDamage(cardId, damage);
 
-  ctx.body = CardUseCases.getCard(cardId);
+  ctx.body = await CardUseCases.getCard(cardId);
 });
 
 router.get('/cardMove', async (ctx) => {

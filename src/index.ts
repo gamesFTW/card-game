@@ -1,19 +1,24 @@
 import * as Koa from 'koa';
 
 import appRouters from './app/card/controllers';
-import { start } from './es';
+import { eventStore } from './infr/eventStore';
 
-start();
-const app = new Koa();
+async function main () {
+  await eventStore.on('connect');
 
-app.use(async (ctx: any, next: any) => {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-});
+  const app = new Koa();
 
-app.use(appRouters.routes());
-app.use(appRouters.allowedMethods());
+  app.use(async (ctx: any, next: any) => {
+    const start = Date.now();
+    await next();
+    const ms = Date.now() - start;
+    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+  });
 
-app.listen(3000);
+  app.use(appRouters.routes());
+  app.use(appRouters.allowedMethods());
+
+  app.listen(3000);
+}
+
+main();
