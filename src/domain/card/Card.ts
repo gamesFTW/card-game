@@ -1,4 +1,4 @@
-import { Entity } from '../../infr/Entity';
+import { Entity, EntityId } from '../../infr/Entity';
 
 const nanoid = require('nanoid');
 
@@ -17,10 +17,10 @@ class Card extends Entity {
     this.state = new CardState(events);
   }
 
-  get id () { return this.state.id; }
-  get name () { return this.state.name; }
-  get hp () { return this.state.hp; }
-  get damage () { return this.state.damage; }
+  get id (): EntityId { return this.state.id; }
+  get name (): String { return this.state.name; }
+  get hp (): Number { return this.state.hp; }
+  get damage (): Number { return this.state.damage; }
   get armor () { return this.state.armor; }
   get alive () { return this.state.alive; }
   get tapped () { return this.state.tapped; }
