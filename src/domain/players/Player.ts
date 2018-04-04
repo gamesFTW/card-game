@@ -12,8 +12,6 @@ class Player extends Entity {
     this.state = new PlayerState(events);
   }
 
-  get id (): EntityId { return this.state.id; }
-
   public create (): void {
     let id = this.generateId();
 

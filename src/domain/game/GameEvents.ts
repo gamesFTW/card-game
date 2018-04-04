@@ -17,21 +17,4 @@ interface GameCreatedData extends EventData {
   playerId2: EntityId;
 }
 
-// class CardMoved extends Event {
-//   static TYPE: string = 'CardMoved';
-
-//   public data: CardMovedData;
-
-//   public constructor (data: CardMovedData) {
-//     super(CardMoved.TYPE, data);
-//   }
-// }
-
-// interface CardMovedData extends EventData {
-//   toX: number;
-//   toY: number;
-//   fromX: number;
-//   fromY: number;
-// }
-
 export {GameCreated, GameCreatedData};

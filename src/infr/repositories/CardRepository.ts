@@ -6,8 +6,8 @@ import * as eventstore from 'eventstore';
 import * as cardEvents from '../../domain/card/CardEvents';
 import * as lodash from 'lodash';
 
-let CardRepository = {
-  async save (card: Card): Promise<void> {
+class CardRepository {
+  static async save (card: Card): Promise<void> {
     let stream = await eventStore.getEventStream({
       aggregateId: card.id,
       aggregate: Card.name
@@ -18,16 +18,18 @@ let CardRepository = {
     });
 
     await stream.commit();
-  },
-  async get (id: EntityId): Promise<Card> {
+  }
+
+  static async get (id: EntityId): Promise<Card> {
     let stream = await eventStore.getEventStream({
       aggregateId: id,
       aggregate: Card.name
     });
 
     return CardRepository._createCardByEvents(stream.events);
-  },
-  async getAll (): Promise<Array<Card>> {
+  }
+
+  static async getAll (): Promise<Array<Card>> {
     let events = await eventStore.getEvents({
       aggregate: Card.name
     });
@@ -42,8 +44,9 @@ let CardRepository = {
       result.push(CardRepository._createCardByEvents(events));
       return result;
     }, []);
-  },
-  _createCardByEvents (streamEvents: Array <eventstore.Event>) {
+  }
+
+  private static _createCardByEvents (streamEvents: Array <eventstore.Event>) {
     let events: Array<Event> = streamEvents.map((event: eventstore.Event) => {
       let payload = event.payload;
 
@@ -53,6 +56,6 @@ let CardRepository = {
 
     return new Card(events);
   }
-};
+}
 
 export {CardRepository};

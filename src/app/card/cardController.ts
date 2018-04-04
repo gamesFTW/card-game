@@ -1,13 +1,11 @@
 import * as Router from 'koa-router';
 
-import { db } from '../../infr/DataBase';
 import { CardUseCases } from './CardUseCases';
 import { Point } from '../../infr/Point';
 
-const router = new Router();
+const cardController = new Router();
 
-
-// router.get('/createNewGame', async (ctx) => {
+// cardController.get('/createNewGame', async (ctx) => {
 //   CardUseCases.createCard('orc', 10);
 //   CardUseCases.createCard('elf', 8);
 //
@@ -16,7 +14,7 @@ const router = new Router();
 //   ctx.body = db;
 // });
 
-router.get('/createCard', async (ctx) => {
+cardController.get('/createCard', async (ctx) => {
   let name = ctx.query.name;
   let hp = Number(ctx.query.hp);
   let damage = Number(ctx.query.damage);
@@ -30,26 +28,26 @@ router.get('/createCard', async (ctx) => {
   ctx.body = cardId;
 });
 
-router.get('/getCard', async (ctx) => {
+cardController.get('/getCard', async (ctx) => {
   let cardId = ctx.query.id;
   let card = await CardUseCases.getCard(cardId);
   ctx.body = card;
 });
 
-router.get('/getCards', async (ctx) => {
+cardController.get('/getCards', async (ctx) => {
   ctx.body = await CardUseCases.getCards();
 });
 
-router.get('/cardTookDamage', async (ctx) => {
-  let cardId = ctx.query.id;
-  let damage = Number(ctx.query.damage);
+// cardController.get('/cardTookDamage', async (ctx) => {
+//   let cardId = ctx.query.id;
+//   let damage = Number(ctx.query.damage);
+//
+//   await CardUseCases.cardTookDamage(cardId, damage);
+//
+//   ctx.body = await CardUseCases.getCard(cardId);
+// });
 
-  await CardUseCases.cardTookDamage(cardId, damage);
-
-  ctx.body = await CardUseCases.getCard(cardId);
-});
-
-router.get('/cardMove', async (ctx) => {
+cardController.get('/cardMove', async (ctx) => {
   let cardId = ctx.query.id;
   let x = Number(ctx.query.x);
   let y = Number(ctx.query.y);
@@ -60,7 +58,7 @@ router.get('/cardMove', async (ctx) => {
   ctx.body = 'ok';
 });
 
-router.get('/cardAttack', async (ctx) => {
+cardController.get('/cardAttack', async (ctx) => {
   let attackingCardId = ctx.query.attackingCardId;
   let defendingCardId = ctx.query.defendingCardId;
 
@@ -69,7 +67,7 @@ router.get('/cardAttack', async (ctx) => {
   ctx.body = 'ok';
 });
 
-// router.get('/moveCard', async (ctx) => {
+// cardController.get('/moveCard', async (ctx) => {
 //   ctx.body = 'ok';
 //
 //   let cardId = ctx.cardId;
@@ -87,7 +85,7 @@ router.get('/cardAttack', async (ctx) => {
 // });
 //
 //
-// router.get('/attackCard', async (ctx) => {
+// cardController.get('/attackCard', async (ctx) => {
 //   ctx.body = 'ok';
 //
 //   let attackingCardId = ctx.attackingCardId;
@@ -107,7 +105,7 @@ router.get('/cardAttack', async (ctx) => {
 //   CardRepo.update(attackedCard); // берём все changes и кладём в базу
 // });
 //
-// router.get('/getPlayerHand', async (ctx) => {
+// cardController.get('/getPlayerHand', async (ctx) => {
 //   ctx.body = 'ok';
 //
 //   let playerId = ctx.playerId;
@@ -119,4 +117,4 @@ router.get('/cardAttack', async (ctx) => {
 //
 // });
 
-export default router;
+export {cardController};

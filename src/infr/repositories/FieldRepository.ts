@@ -1,13 +1,13 @@
-import { Field } from '../domain/field/Field';
-import { Event } from './Event';
-import {db} from "./DataBase";
+import { Field } from '../../domain/field/Field';
+import { Event } from '../Event';
+import {db} from "../DataBase";
 
-let FieldRepository = {
-  get (): Field {
+class FieldRepository {
+  static get (): Field {
     return new Field(db.field, 5, 5);
-  },
+  }
 
-  save (field: Field): void {
+  static save (field: Field): void {
     field.changes.forEach((event: Event) => {
       db.field = db.field ? db.field : [];
 
@@ -18,6 +18,6 @@ let FieldRepository = {
 
     db.save();
   }
-};
+}
 
 export { FieldRepository };

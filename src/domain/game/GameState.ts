@@ -1,8 +1,10 @@
 import { Event } from '../../infr/Event';
 import { EntityId, EntityState } from '../../infr/Entity';
+import { GameCreated } from './GameEvents';
 
 class GameState extends EntityState {
-  public id: EntityId;
+  public playerId1: EntityId;
+  public playerId2: EntityId;
 
   public constructor (events: Array<Event>) {
     super();
@@ -10,23 +12,16 @@ class GameState extends EntityState {
   }
 
   public mutate (event: Event): void {
-    // if (event instanceof CardAddedToField) {
-    //   this.whenCardAddedToField(event as CardAddedToField);
-    // }
-    // if (event instanceof CardMoved) {
-    //   this.whenCardMoved(event as CardMoved);
-    // }
+    if (event instanceof GameCreated) {
+      this.whenGameCreated(event as GameCreated);
+    }
   }
 
-  // private whenCardAddedToField (event: CardAddedToField) {
-  //   let cardId = event.data.id;
-  //   let x = event.data.x;
-  //   let y = event.data.y;
-
-  //   let tile = this.tiles[x][y];
-  //   tile.addCard(cardId);
-  // }
-
+  private whenGameCreated (event: GameCreated) {
+    this.id = event.data.id;
+    this.playerId1 = event.data.playerId1;
+    this.playerId2 = event.data.playerId2;
+  }
 }
 
 export {GameState};

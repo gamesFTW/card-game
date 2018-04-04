@@ -1,5 +1,5 @@
-import { Card } from './card/Card';
-import { Field } from './field/Field';
+import { Card } from '../domain/card/Card';
+import { Field } from '../domain/field/Field';
 
 class DamageService {
   static cardAttackCard (attackingCard: Card, defendingCard: Card, field: Field) {

@@ -1,7 +1,8 @@
 import * as Koa from 'koa';
 
-import appRouters from './app/card/controllers';
 import { eventStore } from './infr/eventStore';
+import { cardController } from './app/card/cardController';
+import { gameController } from './app/game/gameController';
 
 async function main () {
   await eventStore.on('connect');
@@ -15,8 +16,11 @@ async function main () {
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
   });
 
-  app.use(appRouters.routes());
-  app.use(appRouters.allowedMethods());
+  app.use(cardController.routes());
+  app.use(gameController.routes());
+
+  app.use(cardController.allowedMethods());
+  app.use(gameController.allowedMethods());
 
   app.listen(3000);
 }

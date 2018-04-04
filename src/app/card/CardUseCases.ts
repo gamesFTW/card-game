@@ -1,10 +1,10 @@
-import {Card} from "../../domain/card/Card";
-import {CardRepository} from "../../infr/card/CardRepository";
-import { FieldRepository } from "../../infr/FieldRepository";
-import {EntityId, Entity} from "../../infr/Entity";
-import { CardDied } from "../../domain/card/CardEvents";
+import { Card } from '../../domain/card/Card';
+import { CardRepository } from '../../infr/repositories/CardRepository';
+import { FieldRepository } from '../../infr/repositories/FieldRepository';
+import { EntityId, Entity} from '../../infr/Entity';
+import { CardDied } from '../../domain/card/CardEvents';
 import { Point } from '../../infr/Point';
-import {DamageService} from "../../domain/DamageService";
+// import { DamageService } from '../../legacy/DamageService';
 
 let CardUseCases = {
   async getCard (cardId: EntityId): Promise<Card> {
@@ -67,18 +67,18 @@ let CardUseCases = {
     FieldRepository.save(field);
 
     return card;
-  },
+  }//,
 
-  async cardAttack (attackingCardId: EntityId, defendingCardId: EntityId) {
-    let attackingCard = await CardRepository.get(attackingCardId);
-    let defendingCard = await CardRepository.get(defendingCardId);
-    let field = FieldRepository.get();
-
-    DamageService.cardAttackCard(attackingCard, defendingCard, field);
-
-    CardRepository.save(attackingCard);
-    CardRepository.save(defendingCard);
-  }
+  // async cardAttack (attackingCardId: EntityId, defendingCardId: EntityId) {
+  //   let attackingCard = await CardRepository.get(attackingCardId);
+  //   let defendingCard = await CardRepository.get(defendingCardId);
+  //   let field = FieldRepository.get();
+  //
+  //   DamageService.cardAttackCard(attackingCard, defendingCard, field);
+  //
+  //   CardRepository.save(attackingCard);
+  //   CardRepository.save(defendingCard);
+  // }
 };
 
 export {CardUseCases};
