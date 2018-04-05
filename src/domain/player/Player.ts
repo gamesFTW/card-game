@@ -3,6 +3,7 @@ import { Entity, EntityId } from '../../infr/Entity';
 
 import { PlayerState } from './PlayerState';
 import { PlayerCreated } from './PlayerEvents';
+import { Card } from '../card/Card';
 
 class Player extends Entity {
   protected state: PlayerState;
@@ -12,7 +13,8 @@ class Player extends Entity {
     this.state = new PlayerState(events);
   }
 
-  public create (): void {
+  public create (cards: Array<Card>): void {
+    // TODO: save card ids
     let id = this.generateId();
 
     this.apply(new PlayerCreated(

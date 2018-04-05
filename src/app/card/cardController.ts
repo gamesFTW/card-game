@@ -14,29 +14,29 @@ const cardController = new Router();
 //   ctx.body = db;
 // });
 
-cardController.get('/createCard', async (ctx) => {
-  let name = ctx.query.name;
-  let hp = Number(ctx.query.hp);
-  let damage = Number(ctx.query.damage);
-  let armor = Number(ctx.query.armor);
-  let x = Number(ctx.query.x);
-  let y = Number(ctx.query.y);
-  let point = new Point(x, y);
-
-  let cardId = await CardUseCases.createCard(name, hp, damage, armor, point);
-
-  ctx.body = cardId;
-});
-
-cardController.get('/getCard', async (ctx) => {
-  let cardId = ctx.query.id;
-  let card = await CardUseCases.getCard(cardId);
-  ctx.body = card;
-});
-
-cardController.get('/getCards', async (ctx) => {
-  ctx.body = await CardUseCases.getCards();
-});
+// cardController.get('/createCard', async (ctx) => {
+//   let name = ctx.query.name;
+//   let hp = Number(ctx.query.hp);
+//   let damage = Number(ctx.query.damage);
+//   let armor = Number(ctx.query.armor);
+//   let x = Number(ctx.query.x);
+//   let y = Number(ctx.query.y);
+//   let point = new Point(x, y);
+//
+//   let cardId = await CardUseCases.createCard(name, hp, damage, armor, point);
+//
+//   ctx.body = cardId;
+// });
+//
+// cardController.get('/getCard', async (ctx) => {
+//   let cardId = ctx.query.id;
+//   let card = await CardUseCases.getCard(cardId);
+//   ctx.body = card;
+// });
+//
+// cardController.get('/getCards', async (ctx) => {
+//   ctx.body = await CardUseCases.getCards();
+// });
 
 // cardController.get('/cardTookDamage', async (ctx) => {
 //   let cardId = ctx.query.id;
@@ -47,25 +47,25 @@ cardController.get('/getCards', async (ctx) => {
 //   ctx.body = await CardUseCases.getCard(cardId);
 // });
 
-cardController.get('/cardMove', async (ctx) => {
-  let cardId = ctx.query.id;
-  let x = Number(ctx.query.x);
-  let y = Number(ctx.query.y);
-  let point = new Point(x, y);
+// cardController.get('/cardMove', async (ctx) => {
+//   let cardId = ctx.query.id;
+//   let x = Number(ctx.query.x);
+//   let y = Number(ctx.query.y);
+//   let point = new Point(x, y);
+//
+//   CardUseCases.moveCard(cardId, point);
+//
+//   ctx.body = 'ok';
+// });
 
-  CardUseCases.moveCard(cardId, point);
-
-  ctx.body = 'ok';
-});
-
-cardController.get('/cardAttack', async (ctx) => {
-  let attackingCardId = ctx.query.attackingCardId;
-  let defendingCardId = ctx.query.defendingCardId;
-
-  CardUseCases.cardAttack(attackingCardId, defendingCardId);
-
-  ctx.body = 'ok';
-});
+// cardController.get('/cardAttack', async (ctx) => {
+//   let attackingCardId = ctx.query.attackingCardId;
+//   let defendingCardId = ctx.query.defendingCardId;
+//
+//   CardUseCases.cardAttack(attackingCardId, defendingCardId);
+//
+//   ctx.body = 'ok';
+// });
 
 // cardController.get('/moveCard', async (ctx) => {
 //   ctx.body = 'ok';

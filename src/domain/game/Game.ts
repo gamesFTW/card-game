@@ -3,7 +3,7 @@ import { Entity, EntityId } from '../../infr/Entity';
 
 import { GameState } from './GameState';
 import { GameCreated } from './GameEvents';
-import { Player } from '../players/Player';
+import { Player } from '../player/Player';
 
 class Game extends Entity {
   protected state: GameState;
