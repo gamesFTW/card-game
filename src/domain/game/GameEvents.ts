@@ -13,8 +13,8 @@ class GameCreated extends Event {
 
 interface GameCreatedData extends EventData {
   id: EntityId;
-  playerId1: EntityId;
-  playerId2: EntityId;
+  player1Id: EntityId;
+  player2Id: EntityId;
 }
 
 export {GameCreated, GameCreatedData};

@@ -3,8 +3,8 @@ import { EntityId, EntityState } from '../../infr/Entity';
 import { GameCreated } from './GameEvents';
 
 class GameState extends EntityState {
-  public playerId1: EntityId;
-  public playerId2: EntityId;
+  public player1Id: EntityId;
+  public player2Id: EntityId;
 
   public constructor (events: Array<Event>) {
     super();
@@ -19,8 +19,8 @@ class GameState extends EntityState {
 
   private whenGameCreated (event: GameCreated) {
     this.id = event.data.id;
-    this.playerId1 = event.data.playerId1;
-    this.playerId2 = event.data.playerId2;
+    this.player1Id = event.data.player1Id;
+    this.player2Id = event.data.player2Id;
   }
 }
 

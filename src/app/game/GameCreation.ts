@@ -9,9 +9,13 @@ class GameCreation {
       player1CardsData: Array<CardCreationData>,
       player2CardsData: Array<CardCreationData>
   ): Promise<EntityId> {
-    let player1 = await GameCreation.createPlayer(player1CardsData);
+    // Кажется, что знание к какому из изроков нужно применять handicap, это бизнес логика.
+    // Но тогда game должен создавать игроков.
 
-    let player2 = await GameCreation.createPlayer(player2CardsData);
+    // Нужно ли сохранять handicap внутри Player?
+    let player1 = await GameCreation.createPlayer(player1CardsData, true);
+
+    let player2 = await GameCreation.createPlayer(player2CardsData, false);
 
     let game = await GameCreation.createGame(player1, player2);
 
@@ -26,11 +30,19 @@ class GameCreation {
     return game;
   }
 
-  private static async createPlayer (cardsCreationData: Array<CardCreationData>): Promise<Player> {
+  private static async createPlayer (
+      cardsCreationData: Array<CardCreationData>,
+      handicap: boolean
+  ): Promise<Player> {
     let cards = await Promise.all(cardsCreationData.map(GameCreation.createCard));
 
     let player = new Player();
     player.create(cards);
+
+    // Я думаю это упакуется в другое место.
+    player.shuffleDeck();
+    player.drawStartingHand(handicap);
+
     await Repository.save(player);
 
     return player;

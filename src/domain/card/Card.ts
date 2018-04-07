@@ -15,17 +15,16 @@ interface CardCreationData {
 class Card extends Entity {
   protected state: CardState;
 
-  constructor (events: Array<Event> = []) {
-    super();
-    this.state = new CardState(events);
-  }
-
-  get id (): EntityId { return this.state.id; }
   get name (): String { return this.state.name; }
   get maxHp (): Number { return this.state.maxHp; }
   get damage (): Number { return this.state.damage; }
   get alive () { return this.state.alive; }
   get tapped () { return this.state.tapped; }
+
+  constructor (events: Array<Event> = []) {
+    super();
+    this.state = new CardState(events);
+  }
 
   public create (cardCreationData: CardCreationData) {
     let id = this.generateId();

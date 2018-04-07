@@ -8,6 +8,9 @@ import { Player } from '../player/Player';
 class Game extends Entity {
   protected state: GameState;
 
+  get player1Id (): EntityId { return this.state.player1Id; }
+  get player2Id (): EntityId { return this.state.player2Id; }
+
   constructor (events: Array<Event> = []) {
     super();
     this.state = new GameState(events);
@@ -17,7 +20,7 @@ class Game extends Entity {
     let id = this.generateId();
 
     this.apply(new GameCreated(
-      {id, playerId1: player1.id, playerId2: player2.id}
+      {id, player1Id: player1.id, player2Id: player2.id}
     ));
   }
 }
