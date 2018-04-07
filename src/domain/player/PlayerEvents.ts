@@ -13,6 +13,7 @@ class PlayerCreated extends Event {
 
 interface PlayerCreatedData extends EventData {
   id: EntityId;
+  cardIds: Array<EntityId>;
 }
 
 export {PlayerCreated, PlayerCreatedData};

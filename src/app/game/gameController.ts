@@ -25,7 +25,7 @@ gameController.get('/createGame', async (ctx) => {
 
 gameController.get('/getGame', async (ctx) => {
   let id = ctx.query.id as EntityId;
-  let game = await Repository.get(id, Game, gameEvents);
+  let game = await Repository.get<Game>(id, Game, gameEvents);
 
   ctx.body = `Game id: ${game.id}.`;
 });

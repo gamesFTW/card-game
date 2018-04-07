@@ -18,13 +18,13 @@ class Repository {
     await stream.commit();
   }
 
-  static async get (id: EntityId, ClassConstructor: any, eventsClasses: any): Promise<Entity> {
+  static async get<T> (id: EntityId, ClassConstructor: any, eventsClasses: any): Promise<T> {
     let stream = await eventStore.getEventStream({
       aggregateId: id,
       aggregate: ClassConstructor.name
     });
 
-    return Repository._createCardByEvents(stream.events, ClassConstructor, eventsClasses);
+    return Repository._createEntityByEvents(stream.events, ClassConstructor, eventsClasses);
   }
 
   // static async getAll (): Promise<Array<Card>> {
@@ -39,16 +39,16 @@ class Repository {
   //   });
   //
   //   return lodash.reduce(sortedGroupedEvents, (result, events: Array<eventstore.Event>) => {
-  //     result.push(PlayerRepository._createCardByEvents(events));
+  //     result.push(PlayerRepository._createEntityByEvents(events));
   //     return result;
   //   }, []);
   // }
 
-  private static _createCardByEvents (
+  private static _createEntityByEvents (
       streamEvents: Array <eventstore.Event>, ClassConstructor: any, eventsClasses: any
   ) {
-    let events: Array<Event> = streamEvents.map((event: eventstore.Event) => {
-      let payload = event.payload;
+    let events: Array<Event> = streamEvents.map((eventstoreEvent: eventstore.Event) => {
+      let payload = eventstoreEvent.payload;
 
       let AggregateEventClass: any = (eventsClasses as any)[payload.type];
       return new AggregateEventClass(payload.data);

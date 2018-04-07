@@ -14,11 +14,11 @@ class Player extends Entity {
   }
 
   public create (cards: Array<Card>): void {
-    // TODO: save card ids
     let id = this.generateId();
+    let cardIds = cards.map((card: Card) => card.id);
 
     this.apply(new PlayerCreated(
-      {id}
+      {id, cardIds}
     ));
   }
 }
