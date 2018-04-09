@@ -3,15 +3,15 @@ import * as lodash from 'lodash';
 import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
 
-import { PlayerState } from './PlayerState';
-import { CardDrawn, DeckShuffled, PlayerCreated } from './PlayerEvents';
+import { PlayerData, PlayerState } from './PlayerState';
 import { Card, CardCreationData } from '../card/Card';
 import { GameConstants } from '../game/GameConstants';
+import { PlayerEventType } from '../events';
 
 class Player extends Entity {
   protected state: PlayerState;
 
-  constructor (events: Array<Event> = []) {
+  constructor (events: Array<Event<PlayerData>> = []) {
     super();
     this.state = new PlayerState(events);
   }
@@ -23,8 +23,8 @@ class Player extends Entity {
 
     let cardIds = cards.map((card: Card) => card.id);
 
-    this.applyEvent(new PlayerCreated(
-      {id, deck: cardIds}
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.PLAYER_CREATED, {id, deck: cardIds}
     ));
 
     this.shuffleDeck();
@@ -36,8 +36,8 @@ class Player extends Entity {
   public shuffleDeck (): void {
     let shuffledDeck = lodash.shuffle(this.state.deck);
 
-    this.applyEvent(new DeckShuffled(
-      {id: this.id, deck: shuffledDeck}
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.DECK_SHUFFLED, {id: this.id, deck: shuffledDeck}
     ));
   }
 
@@ -58,8 +58,8 @@ class Player extends Entity {
     let drawnCard = newDeck.shift();
     newHand.push(drawnCard);
 
-    this.applyEvent(new CardDrawn(
-      {id: this.id, deck: newDeck, hand: newHand}
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.CARD_DRAWN, {id: this.id, deck: newDeck, hand: newHand}
     ));
   }
 

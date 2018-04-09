@@ -15,6 +15,7 @@ interface GameCreatedData extends EventData {
   id: EntityId;
   player1Id: EntityId;
   player2Id: EntityId;
+  currentPlayersTurn: EntityId;
 }
 
 export {GameCreated, GameCreatedData};

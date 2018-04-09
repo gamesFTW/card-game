@@ -10,19 +10,15 @@ import { EntityId } from './Entity';
 // Улучшение стейта.
 // Можно автоматизировать накатываение данных из event в state.
 
-class Event {
+class Event<T> {
   public type: string;
-  public data: EventData;
+  public data: T;
 
-  public constructor (type: string, data: EventData) {
+  public constructor (type: string, data: T) {
     this.type = type;
 
-    this.data = {...data};
+    this.data = data;
   }
 }
 
-interface EventData {
-  id: EntityId;
-}
-
-export {Event, EventData};
+export {Event};

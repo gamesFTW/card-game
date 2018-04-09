@@ -30,7 +30,7 @@ class Game extends Entity {
     let {player: player2, cards: player2Cards} = this.createPlayer(playersCardsData[1], false);
 
     this.applyEvent(new GameCreated(
-      {id, player1Id: player1.id, player2Id: player2.id}
+      {id, player1Id: player1.id, player2Id: player2.id, currentPlayersTurn: player1.id}
     ));
 
     return {player1, player2, player1Cards, player2Cards};

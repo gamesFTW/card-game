@@ -14,7 +14,7 @@ class Repository {
         aggregate: entity.constructor.name
       });
 
-      entity.changes.forEach((event: Event) => {
+      entity.changes.forEach((event: Event<any>) => {
         stream.addEvent(event);
       });
 
