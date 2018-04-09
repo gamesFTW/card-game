@@ -5,17 +5,21 @@ import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
 
 class Repository {
-  static async save (entity: Entity): Promise<void> {
-    let stream = await eventStore.getEventStream({
-      aggregateId: entity.id,
-      aggregate: entity.constructor.name
-    });
+  static async save (param: Entity | Array<Entity>): Promise<void> {
+    let entities = lodash.isArray(param) ? param : [param];
 
-    entity.changes.forEach((event: Event) => {
-      stream.addEvent(event);
-    });
+    await Promise.all(entities.map(async (entity: Entity) => {
+      let stream = await eventStore.getEventStream({
+        aggregateId: entity.id,
+        aggregate: entity.constructor.name
+      });
 
-    await stream.commit();
+      entity.changes.forEach((event: Event) => {
+        stream.addEvent(event);
+      });
+
+      await stream.commit();
+    }));
   }
 
   static async get<T> (id: EntityId, ClassConstructor: any, eventsClasses: any): Promise<T> {

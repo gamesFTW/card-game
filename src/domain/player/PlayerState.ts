@@ -27,16 +27,16 @@ class PlayerState extends EntityState {
     }
   }
 
-  private whenPlayerCreated (event: PlayerCreated) {
+  private whenPlayerCreated (event: PlayerCreated): void {
     this.id = event.data.id;
     this.deck = event.data.deck;
   }
 
-  private whenDeckShuffled (event: DeckShuffled) {
+  private whenDeckShuffled (event: DeckShuffled): void {
     this.deck = event.data.deck;
   }
 
-  private whenCardDrawn (event: CardDrawn) {
+  private whenCardDrawn (event: CardDrawn): void {
     this.deck = event.data.deck;
     this.hand = event.data.hand;
   }

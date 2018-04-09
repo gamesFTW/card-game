@@ -48,6 +48,15 @@ interface CardDrawnData extends EventData {
   id: EntityId;
   deck: Array<EntityId>;
   hand: Array<EntityId>;
+  // Хранение данных в ивенте:
+  // 1. Посчитанные данные
+  // 2. Не посчитанные данные
+  // Надо ли делать так или передавать drawnCard?
+
+  // Итого: используем не посчитанные данные
+  // + доп параметры для UI
+  // А так же пока не авто накатываем стейт.
+  // По поводу сокращения ивентов можно подумать.
 }
 
 export {PlayerCreated, DeckShuffled, CardDrawn};

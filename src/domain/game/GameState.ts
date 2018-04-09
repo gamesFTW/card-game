@@ -17,7 +17,7 @@ class GameState extends EntityState {
     }
   }
 
-  private whenGameCreated (event: GameCreated) {
+  private whenGameCreated (event: GameCreated): void {
     this.id = event.data.id;
     this.player1Id = event.data.player1Id;
     this.player2Id = event.data.player2Id;

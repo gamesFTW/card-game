@@ -5,7 +5,7 @@ import { Entity, EntityId } from '../../infr/Entity';
 
 import { PlayerState } from './PlayerState';
 import { CardDrawn, DeckShuffled, PlayerCreated } from './PlayerEvents';
-import { Card } from '../card/Card';
+import { Card, CardCreationData } from '../card/Card';
 import { GameConstants } from '../game/GameConstants';
 
 class Player extends Entity {
@@ -16,19 +16,27 @@ class Player extends Entity {
     this.state = new PlayerState(events);
   }
 
-  public create (cards: Array<Card>): void {
+  public create (cardsCreationData: Array<CardCreationData>, handicap: boolean): {cards: Array<Card>} {
     let id = this.generateId();
+
+    let cards = this.createCards(cardsCreationData);
+
     let cardIds = cards.map((card: Card) => card.id);
 
-    this.apply(new PlayerCreated(
+    this.applyEvent(new PlayerCreated(
       {id, deck: cardIds}
     ));
+
+    this.shuffleDeck();
+    this.drawStartingHand(handicap);
+
+    return {cards};
   }
 
   public shuffleDeck (): void {
     let shuffledDeck = lodash.shuffle(this.state.deck);
 
-    this.apply(new DeckShuffled(
+    this.applyEvent(new DeckShuffled(
       {id: this.id, deck: shuffledDeck}
     ));
   }
@@ -50,9 +58,18 @@ class Player extends Entity {
     let drawnCard = newDeck.shift();
     newHand.push(drawnCard);
 
-    this.apply(new CardDrawn(
+    this.applyEvent(new CardDrawn(
       {id: this.id, deck: newDeck, hand: newHand}
     ));
+  }
+
+  private createCards (cardsCreationData: Array<CardCreationData>): Array<Card> {
+    return cardsCreationData.map((cardCreationData) => {
+      let card = new Card();
+      card.create(cardCreationData);
+
+      return card;
+    });
   }
 }
 

@@ -1,11 +1,11 @@
-import {Tile} from './Tile';
-import {Card} from "../card/Card";
-import {Point} from '../../infr/Point';
-import {Entity} from "../../infr/Entity";
-import {CardAddedToField, CardMoved} from './FieldEvents';
-import {FieldState} from './FieldState';
-import {CardState} from "../card/CardState";
-import {Event} from "../../infr/Event";
+import { Tile } from './Tile';
+import { Card } from '../card/Card';
+import { Point } from '../../infr/Point';
+import { Entity } from '../../infr/Entity';
+import { CardAddedToField, CardMoved } from './FieldEvents';
+import { FieldState } from './FieldState';
+import { CardState } from '../card/CardState';
+import { Event } from '../../infr/Event';
 
 class Field extends Entity {
   protected state: FieldState;
@@ -33,17 +33,17 @@ class Field extends Entity {
     return null;
   }
 
-  public addCardToField (card: Card, toPoint: Point) {
+  public addCardToField (card: Card, toPoint: Point): void {
     // TODO проверить нет ли на данной клетке карты
-    this.apply(new CardAddedToField(
+    this.applyEvent(new CardAddedToField(
       { id: card.id, x: toPoint.x, y: toPoint.y }
     ));
   }
 
-  public moveCardToPoint (card: Card, toPoint: Point) {
+  public moveCardToPoint (card: Card, toPoint: Point): void {
     // TODO проверить нет ли на данной клетке карты
     let fromPoint = this.getPointByCard(card);
-    this.apply(new CardMoved({
+    this.applyEvent(new CardMoved({
       id: card.id,
       toX: toPoint.x,
       toY: toPoint.y,

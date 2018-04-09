@@ -4,14 +4,13 @@ import * as gameEvents from '../../domain/game/GameEvents';
 import * as playerEvents from '../../domain/player/PlayerEvents';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
-import { GameCreation } from './GameCreation';
 import { Player } from '../../domain/player/Player';
 
 const gameController = new Router();
 
 gameController.get('/createGame', async (ctx) => {
   // Temporary data
-  ctx.query.player1Cards = [
+  ctx.query.playerACards = [
     {name: 'Orc1', maxHp: 10, damage: 2},
     {name: 'Orc2', maxHp: 10, damage: 2},
     {name: 'Orc3', maxHp: 10, damage: 2},
@@ -27,7 +26,7 @@ gameController.get('/createGame', async (ctx) => {
     {name: 'Orc13', maxHp: 10, damage: 2},
     {name: 'Orc Warlord', maxHp: 14, damage: 3}
   ];
-  ctx.query.player2Cards = [
+  ctx.query.playerBCards = [
     {name: 'Elf1', maxHp: 6, damage: 1},
     {name: 'Elf2', maxHp: 6, damage: 1},
     {name: 'Elf3', maxHp: 6, damage: 1},
@@ -44,12 +43,19 @@ gameController.get('/createGame', async (ctx) => {
     {name: 'Elf14', maxHp: 6, damage: 1}
   ];
 
-  let player1CardsData = ctx.query.player1Cards;
-  let player2CardsData = ctx.query.player2Cards;
+  let playerACardsData = ctx.query.playerACards;
+  let playerBCardsData = ctx.query.playerBCards;
 
-  let gameId = await GameCreation.execute(player1CardsData, player2CardsData);
+  let game = new Game();
+  let {player1, player2, player1Cards, player2Cards} = game.create(playerACardsData, playerBCardsData);
 
-  ctx.body = `Game created. id: ${gameId}.`;
+  await Repository.save(player1Cards);
+  await Repository.save(player1);
+  await Repository.save(player2Cards);
+  await Repository.save(player2);
+  await Repository.save(game);
+
+  ctx.body = `Game created. id: ${game.id}.`;
 });
 
 gameController.get('/getGame', async (ctx) => {

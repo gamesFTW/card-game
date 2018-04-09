@@ -3,11 +3,11 @@ import { EntityId, EntityState } from '../../infr/Entity';
 class Tile {
   private cards: Array<EntityId> = [];
 
-  public addCard (cardId: EntityId) {
+  public addCard (cardId: EntityId): void {
     this.cards.push(cardId);
   }
 
-  public removeCard (cardId: EntityId) {
+  public removeCard (cardId: EntityId): void {
     let cardIndex = this.cards.indexOf(cardId);
     if (cardIndex < 0) {
       throw new Error(`Not found card ${cardId} in tile.`);

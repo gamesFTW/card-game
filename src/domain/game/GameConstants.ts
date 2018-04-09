@@ -1,5 +1,5 @@
 let GameConstants = {
-  STARTING_HAND: 7,
+  STARTING_HAND: 9,
   HANDICAP: 1
 };
 

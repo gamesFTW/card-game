@@ -10,7 +10,7 @@ class Entity {
 
   public get id (): EntityId { return this.state.id; }
 
-  protected apply (event: Event): void {
+  protected applyEvent (event: Event): void {
     this.state.mutate(event);
     this.changes.push(event);
   }
