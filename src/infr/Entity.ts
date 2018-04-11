@@ -21,12 +21,36 @@ class Entity {
 }
 
 abstract class EntityState {
+  [key: string]: any;
   public id: EntityId;
 
-  public abstract mutate (event: Event<any>): void;
+  protected constructor (events: Array<Event<any>>) {
+    this.applyEvents(events);
+  }
+
+  public mutate (event: Event<any>): void {
+    let methodName = 'when' + event.type;
+
+    if (this[methodName]) {
+      this[methodName](event);
+    } else {
+      this.autoApplyEvent(event);
+    }
+  }
 
   protected applyEvents (events: Array<Event<any>>): void {
     events.forEach(event => this.mutate(event));
+  }
+
+  protected autoApplyEvent (event: Event<any>): void {
+    let data = event.data;
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        // Странно, что мы передаём id каждый раз, и каждый раз
+        // он будет накатываться. Хотя пока не вижу какие проблемы это может создать.
+        this[key] = data[key];
+      }
+    }
   }
 }
 

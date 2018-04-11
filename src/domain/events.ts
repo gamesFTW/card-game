@@ -1,15 +1,15 @@
 enum PlayerEventType {
-  PLAYER_CREATED = 'PLAYER_CREATED',
-  DECK_SHUFFLED = 'DECK_SHUFFLED',
-  CARD_DRAWN = 'CARD_DRAWN'
+  PLAYER_CREATED = 'PlayerCreated',
+  DECK_SHUFFLED = 'DeckShuffled',
+  CARD_DRAWN = 'CardDrawn'
 }
 
 enum GameEventType {
-  GAME_CREATED = 'GAME_CREATED'
+  GAME_CREATED = 'GameCreated'
 }
 
 enum CardEventType {
-  CARD_CREATED = 'CARD_CREATED'
+  CARD_CREATED = 'CardCreated'
 }
 
 export {PlayerEventType, GameEventType, CardEventType};

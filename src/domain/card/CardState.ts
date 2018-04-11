@@ -22,43 +22,8 @@ class CardState extends EntityState {
   public tapped: boolean;
 
   public constructor (events: Array<Event<CardData>>) {
-    super();
-    this.applyEvents(events);
+    super(events);
   }
-
-  public mutate (event: Event<CardData>): void {
-    if (event.type === CardEventType.CARD_CREATED) {
-      this.whenCardCreated(event);
-    }
-    // if (event instanceof CardTookDamage) {
-    //   this.whenCardTookDamage(event as CardTookDamage);
-    // }
-    // if (event instanceof CardDied) {
-    //   this.whenCardDied(event as CardDied);
-    // }
-    // if (event instanceof CardTapped) {
-    //   this.whenCardTapped(event as CardTapped);
-    // }
-  }
-
-  whenCardCreated (event: Event<CardData>): void {
-    this.id = event.data.id;
-    this.name = event.data.name;
-    this.damage = event.data.damage;
-    this.maxHp = event.data.maxHp;
-  }
-
-  // whenCardTookDamage (event: CardTookDamage) {
-  //   this.hp = event.data.hp;
-  // }
-  //
-  // whenCardDied (event: CardDied) {
-  //   this.alive = event.data.alive;
-  // }
-  //
-  // whenCardTapped (event: CardTapped) {
-  //   this.tapped = event.data.tapped;
-  // }
 }
 
 export {CardState, CardData};
