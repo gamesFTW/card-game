@@ -22,13 +22,25 @@ class Repository {
     }));
   }
 
-  static async get<T> (id: EntityId, ClassConstructor: any, eventsClasses: any): Promise<T> {
+  static async get<EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
     let stream = await eventStore.getEventStream({
       aggregateId: id,
       aggregate: ClassConstructor.name
     });
 
-    return Repository._createEntityByEvents(stream.events, ClassConstructor, eventsClasses);
+    return Repository._createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
+  }
+
+  private static _createEntityByEvents<EntityClass> (
+      streamEvents: Array <eventstore.Event>, ClassConstructor: any
+  ): EntityClass {
+    let events = streamEvents.map((eventstoreEvent: eventstore.Event) => {
+      let payload = eventstoreEvent.payload;
+
+      return new Event<any>(payload.type, payload.data);
+    });
+
+    return new ClassConstructor(events);
   }
 
   // static async getAll (): Promise<Array<Card>> {
@@ -47,19 +59,6 @@ class Repository {
   //     return result;
   //   }, []);
   // }
-
-  private static _createEntityByEvents (
-      streamEvents: Array <eventstore.Event>, ClassConstructor: any, eventsClasses: any
-  ) {
-    let events: Array<Event> = streamEvents.map((eventstoreEvent: eventstore.Event) => {
-      let payload = eventstoreEvent.payload;
-
-      let AggregateEventClass: any = (eventsClasses as any)[payload.type];
-      return new AggregateEventClass(payload.data);
-    });
-
-    return new ClassConstructor(events);
-  }
 }
 
 export {Repository};

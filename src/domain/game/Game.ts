@@ -1,11 +1,11 @@
 import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
 
-import { GameState } from './GameState';
-import { GameCreated } from './GameEvents';
+import { GameData, GameState } from './GameState';
 import { Player } from '../player/Player';
 import { Card, CardCreationData } from '../card/Card';
 import * as lodash from 'lodash';
+import { GameEventType } from '../events';
 
 class Game extends Entity {
   protected state: GameState;
@@ -13,7 +13,7 @@ class Game extends Entity {
   get player1Id (): EntityId { return this.state.player1Id; }
   get player2Id (): EntityId { return this.state.player2Id; }
 
-  constructor (events: Array<Event> = []) {
+  constructor (events: Array<Event<GameData>> = []) {
     super();
     this.state = new GameState(events);
   }
@@ -29,7 +29,8 @@ class Game extends Entity {
     let {player: player1, cards: player1Cards} = this.createPlayer(playersCardsData[0], true);
     let {player: player2, cards: player2Cards} = this.createPlayer(playersCardsData[1], false);
 
-    this.applyEvent(new GameCreated(
+    this.applyEvent(new Event<GameData>(
+      GameEventType.GAME_CREATED,
       {id, player1Id: player1.id, player2Id: player2.id, currentPlayersTurn: player1.id}
     ));
 

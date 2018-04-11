@@ -1,10 +1,9 @@
 import * as Router from 'koa-router';
 import { Game } from '../../domain/game/Game';
-import * as gameEvents from '../../domain/game/GameEvents';
-import * as playerEvents from '../../domain/player/PlayerEvents';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { Player } from '../../domain/player/Player';
+import { GameEventType, PlayerEventType } from '../../domain/events';
 
 const gameController = new Router();
 
@@ -60,10 +59,10 @@ gameController.get('/createGame', async (ctx) => {
 
 gameController.get('/getGame', async (ctx) => {
   let id = ctx.query.id as EntityId;
-  let game = await Repository.get<Game>(id, Game, gameEvents);
+  let game = await Repository.get<Game>(id, Game);
 
-  let player1 = await Repository.get<Player>(game.player1Id, Player, playerEvents);
-  let player2 = await Repository.get<Player>(game.player2Id, Player, playerEvents);
+  let player1 = await Repository.get<Player>(game.player1Id, Player);
+  let player2 = await Repository.get<Player>(game.player2Id, Player);
 
   console.log('Game:', game);
   console.log('Player1:', player1);

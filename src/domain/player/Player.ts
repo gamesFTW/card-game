@@ -58,6 +58,8 @@ class Player extends Entity {
     let drawnCard = newDeck.shift();
     newHand.push(drawnCard);
 
+    // TODO добавить инфу о том какая карта передана.
+
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.CARD_DRAWN, {id: this.id, deck: newDeck, hand: newHand}
     ));

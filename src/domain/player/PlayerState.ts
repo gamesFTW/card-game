@@ -1,7 +1,6 @@
 import { Event } from '../../infr/Event';
 import { EntityId, EntityState } from '../../infr/Entity';
-import { GameCreated } from '../game/GameEvents';
-import { CardDrawn, DeckShuffled, PlayerCreated } from './PlayerEvents';
+import { PlayerEventType } from '../events';
 
 interface PlayerData {
   id?: EntityId;
@@ -19,33 +18,33 @@ class PlayerState extends EntityState implements PlayerData {
   public table: Array<EntityId>;
   public graveyard: Array<EntityId>;
 
-  public constructor (events: Array<Event>) {
+  public constructor (events: Array<Event<PlayerData>>) {
     super();
     this.applyEvents(events);
   }
 
-  public mutate (event: Event): void {
-    if (event instanceof PlayerCreated) {
-      this.whenPlayerCreated(event as PlayerCreated);
+  public mutate (event: Event<PlayerData>): void {
+    if (event.type === PlayerEventType.PLAYER_CREATED) {
+      this.whenPlayerCreated(event);
     }
-    if (event instanceof DeckShuffled) {
-      this.whenDeckShuffled(event as DeckShuffled);
+    if (event.type === PlayerEventType.DECK_SHUFFLED) {
+      this.whenDeckShuffled(event);
     }
-    if (event instanceof CardDrawn) {
-      this.whenCardDrawn(event as CardDrawn);
+    if (event.type === PlayerEventType.CARD_DRAWN) {
+      this.whenCardDrawn(event);
     }
   }
 
-  private whenPlayerCreated (event: PlayerCreated): void {
+  private whenPlayerCreated (event: Event<PlayerData>): void {
     this.id = event.data.id;
     this.deck = event.data.deck;
   }
 
-  private whenDeckShuffled (event: DeckShuffled): void {
+  private whenDeckShuffled (event: Event<PlayerData>): void {
     this.deck = event.data.deck;
   }
 
-  private whenCardDrawn (event: CardDrawn): void {
+  private whenCardDrawn (event: Event<PlayerData>): void {
     this.deck = event.data.deck;
     this.hand = event.data.hand;
   }

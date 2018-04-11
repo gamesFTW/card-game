@@ -1,10 +1,8 @@
 import { Entity, EntityId } from '../../infr/Entity';
 
-const nanoid = require('nanoid');
-
 import { Event } from '../../infr/Event';
-import { CardCreated } from './CardEvents';
-import { CardState } from './CardState';
+import { CardData, CardState } from './CardState';
+import { CardEventType } from '../events';
 
 interface CardCreationData {
   name: string;
@@ -21,7 +19,7 @@ class Card extends Entity {
   get alive (): boolean { return this.state.alive; }
   get tapped (): boolean { return this.state.tapped; }
 
-  constructor (events: Array<Event> = []) {
+  constructor (events: Array<Event<CardData>> = []) {
     super();
     this.state = new CardState(events);
   }
@@ -29,8 +27,8 @@ class Card extends Entity {
   public create (cardCreationData: CardCreationData): void {
     let id = this.generateId();
 
-    this.applyEvent(new CardCreated(
-      {id, ...cardCreationData}
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_CREATED, {id, ...cardCreationData}
     ));
   }
 

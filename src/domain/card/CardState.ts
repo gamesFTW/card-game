@@ -1,6 +1,16 @@
 import { Event } from '../../infr/Event';
-import { CardCreated } from './CardEvents';
 import { EntityId, EntityState } from '../../infr/Entity';
+import { CardEventType } from '../events';
+
+interface CardData {
+  id?: EntityId;
+  name?: string;
+  maxHp?: number;
+  currentHp?: number;
+  damage?: number;
+  alive?: boolean;
+  tapped?: boolean;
+}
 
 class CardState extends EntityState {
   public id: EntityId;
@@ -11,14 +21,14 @@ class CardState extends EntityState {
   public alive: boolean;
   public tapped: boolean;
 
-  public constructor (events: Array<Event>) {
+  public constructor (events: Array<Event<CardData>>) {
     super();
     this.applyEvents(events);
   }
 
-  public mutate (event: Event) {
-    if (event instanceof CardCreated) {
-      this.whenCardCreated(event as CardCreated);
+  public mutate (event: Event<CardData>): void {
+    if (event.type === CardEventType.CARD_CREATED) {
+      this.whenCardCreated(event);
     }
     // if (event instanceof CardTookDamage) {
     //   this.whenCardTookDamage(event as CardTookDamage);
@@ -31,7 +41,7 @@ class CardState extends EntityState {
     // }
   }
 
-  whenCardCreated (event: CardCreated) {
+  whenCardCreated (event: Event<CardData>): void {
     this.id = event.data.id;
     this.name = event.data.name;
     this.damage = event.data.damage;
@@ -51,4 +61,4 @@ class CardState extends EntityState {
   // }
 }
 
-export {CardState};
+export {CardState, CardData};

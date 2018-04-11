@@ -4,4 +4,12 @@ enum PlayerEventType {
   CARD_DRAWN = 'CARD_DRAWN'
 }
 
-export {PlayerEventType};
+enum GameEventType {
+  GAME_CREATED = 'GAME_CREATED'
+}
+
+enum CardEventType {
+  CARD_CREATED = 'CARD_CREATED'
+}
+
+export {PlayerEventType, GameEventType, CardEventType};

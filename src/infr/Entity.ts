@@ -5,12 +5,12 @@ import { Event } from './Event';
 type EntityId = string;
 
 class Entity {
-  public changes: Array<Event> = [];
+  public changes: Array<Event<any>> = [];
   protected state: EntityState;
 
   public get id (): EntityId { return this.state.id; }
 
-  protected applyEvent (event: Event): void {
+  protected applyEvent (event: Event<any>): void {
     this.state.mutate(event);
     this.changes.push(event);
   }
@@ -23,9 +23,9 @@ class Entity {
 abstract class EntityState {
   public id: EntityId;
 
-  public abstract mutate (event: Event): void;
+  public abstract mutate (event: Event<any>): void;
 
-  protected applyEvents (events: Array<Event>): void {
+  protected applyEvents (events: Array<Event<any>>): void {
     events.forEach(event => this.mutate(event));
   }
 }
