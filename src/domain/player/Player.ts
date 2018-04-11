@@ -3,7 +3,7 @@ import * as lodash from 'lodash';
 import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
 
-import { PlayerData, PlayerState } from './PlayerState';
+import { PlayerData, PlayerDrawnCardData, PlayerState } from './PlayerState';
 import { Card, CardCreationData } from '../card/Card';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerEventType } from '../events';
@@ -58,10 +58,10 @@ class Player extends Entity {
     let drawnCard = newDeck.shift();
     newHand.push(drawnCard);
 
-    // TODO добавить инфу о том какая карта передана.
-
-    this.applyEvent(new Event<PlayerData>(
-      PlayerEventType.CARD_DRAWN, {id: this.id, deck: newDeck, hand: newHand}
+    this.applyEvent(new Event<PlayerData, PlayerDrawnCardData>(
+      PlayerEventType.CARD_DRAWN,
+      {id: this.id, deck: newDeck, hand: newHand},
+      {drawnCard: drawnCard}
     ));
   }
 

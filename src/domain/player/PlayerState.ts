@@ -11,6 +11,10 @@ interface PlayerData {
   graveyard?: Array<EntityId>;
 }
 
+interface PlayerDrawnCardData {
+  drawnCard?: EntityId;
+}
+
 class PlayerState extends EntityState implements PlayerData {
   public deck: Array<EntityId>;
   public hand: Array<EntityId>;
@@ -21,6 +25,13 @@ class PlayerState extends EntityState implements PlayerData {
   public constructor (events: Array<Event<PlayerData>>) {
     super(events);
   }
+
+  // Это пример того как можно вручную управлять накатыванием событий.
+  protected whenCardDrawn (event: Event<PlayerData, PlayerDrawnCardData>): void {
+    this.autoApplyEvent(event);
+
+    // console.log(event.extra.drawnCard);
+  }
 }
 
-export {PlayerState, PlayerData};
+export {PlayerState, PlayerData, PlayerDrawnCardData};

@@ -37,7 +37,13 @@ class Repository {
     let events = streamEvents.map((eventstoreEvent: eventstore.Event) => {
       let payload = eventstoreEvent.payload;
 
-      return new Event<any>(payload.type, payload.data);
+      if (payload.data === undefined) {
+        return new Event<any>(payload.type);
+      } else if (payload.extra === undefined) {
+        return new Event<any>(payload.type, payload.data);
+      } else {
+        return new Event<any>(payload.type, payload.data, payload.extra);
+      }
     });
 
     return new ClassConstructor(events);
