@@ -68,8 +68,17 @@ class Player extends Entity {
     ));
   }
 
-  public untapAllCards (cardsToUntap: Array<Card>): void {
-    cardsToUntap.forEach((card) => card.untap());
+  public endTurn (manaPool: Array<Card>, table: Array<Card>): void {
+    this.untapCardsAtEndOfTurn(manaPool, table);
+    this.drawCard();
+  }
+
+  private untapCardsAtEndOfTurn (manaPool: Array<Card>, table: Array<Card>): void {
+    let tappedManaPoolCards = manaPool.filter(card => card.tapped);
+    let manaPoolCardsToUntap = tappedManaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
+
+    table.forEach((card) => card.untap());
+    manaPoolCardsToUntap.forEach((card) => card.untap());
   }
 
   private createCards (cardsCreationData: Array<CardCreationData>): Array<Card> {

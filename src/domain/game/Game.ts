@@ -38,9 +38,10 @@ class Game extends Entity {
     return {player1, player2, player1Cards, player2Cards};
   }
 
-  public endTurn (currentPlayer: Player, cardsToUntap: Array<Card>): void {
-    currentPlayer.untapAllCards(cardsToUntap);
-    currentPlayer.drawCard();
+  public endTurn (
+      currentPlayer: Player, currentPlayerManaPoolCards: Array<Card>, currentPlayerTableCards: Array<Card>
+  ): void {
+    currentPlayer.endTurn(currentPlayerManaPoolCards, currentPlayerTableCards);
 
     let newPlayersTurn =
       this.state.currentPlayersTurn === this.state.player1Id ?

@@ -81,14 +81,15 @@ gameController.post('/endTurn', async (ctx) => {
   let currentPlayer = await Repository.get<Player>(game.currentPlayersTurn, Player);
 
   // TODISCUSS: На сколько омерзительно это делать тут.
-  let cardIdsToUntap = currentPlayer.manaPool.concat(currentPlayer.table);
-  let cardsToUntap = await Repository.getMany <Card>(cardIdsToUntap, Card);
+  let currentPlayerManaPoolCards = await Repository.getMany <Card>(currentPlayer.manaPool, Card);
+  let currentPlayerTableCards = await Repository.getMany <Card>(currentPlayer.table, Card);
 
-  game.endTurn(currentPlayer, cardsToUntap);
+  game.endTurn(currentPlayer, currentPlayerManaPoolCards, currentPlayerTableCards);
 
   await Repository.save(game);
   await Repository.save(currentPlayer);
-  await Repository.save(cardsToUntap);
+  await Repository.save(currentPlayerManaPoolCards);
+  await Repository.save(currentPlayerTableCards);
 
   ctx.body = `Ok`;
 });
