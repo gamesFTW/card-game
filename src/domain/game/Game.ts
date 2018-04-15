@@ -39,8 +39,12 @@ class Game extends Entity {
   }
 
   public endTurn (
-      currentPlayer: Player, currentPlayerManaPoolCards: Array<Card>, currentPlayerTableCards: Array<Card>
+      currentPlayer: Player,
+      playerWhoWantFinishTurn: Player,
+      currentPlayerManaPoolCards: Array<Card>,
+      currentPlayerTableCards: Array<Card>
   ): void {
+    this.checkIfPlayerCanEndTurn(currentPlayer, playerWhoWantFinishTurn);
     currentPlayer.endTurn(currentPlayerManaPoolCards, currentPlayerTableCards);
 
     let newPlayersTurn =
@@ -51,6 +55,12 @@ class Game extends Entity {
       GameEventType.TURN_ENDED,
       {id: this.id, currentPlayersTurn: newPlayersTurn, currentTurn: this.state.currentTurn + 1}
     ));
+  }
+
+  private checkIfPlayerCanEndTurn (currentPlayer: Player, playerWhoWantFinishTurn: Player,): void {
+    if (currentPlayer.id !== playerWhoWantFinishTurn.id) {
+      throw new Error('Other players cant end player turn.');
+    }
   }
 
   private createPlayer (cardsCreationData: Array<CardCreationData>, handicap: boolean):

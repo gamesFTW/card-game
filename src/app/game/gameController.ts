@@ -70,21 +70,22 @@ gameController.get('/getGame', async (ctx) => {
   console.log('Player1:', player1);
   console.log('Player2:', player2);
 
-  ctx.body = `Game id: ${game.id}.`;
+  ctx.body = `Game id: ${game.id}.\nPlayer1 id: ${player1.id}.\nPlayer2 id: ${player2.id}.`;
 });
 
 gameController.post('/endTurn', async (ctx) => {
-  // TODO: Кто угодно может дернуть ручку и закончить ход.
   let gameId = ctx.query.gameId as EntityId;
+  let playerIdWhoWantFinishTurn = ctx.query.playerId as EntityId; // TODO: его нужно доставать из сессии
 
   let game = await Repository.get<Game>(gameId, Game);
   let currentPlayer = await Repository.get<Player>(game.currentPlayersTurn, Player);
+  let playerWhoWantFinishTurn = await Repository.get<Player>(playerIdWhoWantFinishTurn, Player);
 
   // TODISCUSS: На сколько омерзительно это делать тут.
   let currentPlayerManaPoolCards = await Repository.getMany <Card>(currentPlayer.manaPool, Card);
   let currentPlayerTableCards = await Repository.getMany <Card>(currentPlayer.table, Card);
 
-  game.endTurn(currentPlayer, currentPlayerManaPoolCards, currentPlayerTableCards);
+  game.endTurn(currentPlayer, playerWhoWantFinishTurn, currentPlayerManaPoolCards, currentPlayerTableCards);
 
   await Repository.save(game);
   await Repository.save(currentPlayer);
