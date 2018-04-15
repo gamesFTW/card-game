@@ -5,33 +5,45 @@ import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
 
 class Repository {
+  // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
+  // Поэтому есть метод getMany.
+
   static async save (param: Entity | Array<Entity>): Promise<void> {
     let entities = lodash.isArray(param) ? param : [param];
 
-    await Promise.all(entities.map(async (entity: Entity) => {
-      let stream = await eventStore.getEventStream({
-        aggregateId: entity.id,
-        aggregate: entity.constructor.name
-      });
-
-      entity.changes.forEach((event: Event<any>) => {
-        stream.addEvent(event);
-      });
-
-      await stream.commit();
-    }));
+    await Promise.all(entities.map(Repository.saveOne));
   }
 
-  static async get<EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
+  static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
     let stream = await eventStore.getEventStream({
       aggregateId: id,
       aggregate: ClassConstructor.name
     });
 
-    return Repository._createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
+    return Repository.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
   }
 
-  private static _createEntityByEvents<EntityClass> (
+  static async getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any):
+    Promise<Array<EntityClass>> {
+    return await Promise.all(entityIds.map(entityId => {
+      return Repository.get(entityId, ClassConstructor);
+    })) as Array<EntityClass>;
+  }
+
+  private static async saveOne (entity: Entity): Promise<void> {
+    let stream = await eventStore.getEventStream({
+      aggregateId: entity.id,
+      aggregate: entity.constructor.name
+    });
+
+    entity.changes.forEach((event: Event<any>) => {
+      stream.addEvent(event);
+    });
+
+    await stream.commit();
+  }
+
+  private static createEntityByEvents<EntityClass> (
       streamEvents: Array <eventstore.Event>, ClassConstructor: any
   ): EntityClass {
     let events = streamEvents.map((eventstoreEvent: eventstore.Event) => {

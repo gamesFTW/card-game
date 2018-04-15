@@ -40,8 +40,6 @@ promisedEventstore.init();
 // stream = await stream.commit();
 // console.log(stream.eventsToDispatch);
 
-
-
 //   console.log('connected');
 //   eventstore.getEventStream('streamId', (err, stream) => {
 //     if (err) {

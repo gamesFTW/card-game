@@ -32,6 +32,16 @@ class Card extends Entity {
     ));
   }
 
+  public untap (): void {
+    if (this.tapped) {
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_UNTAPPED, {id: this.id, tapped: false}
+      ));
+    } else {
+      // TODISCUSS: Наверное не стоит бросать ошибку в таком случае?
+    }
+  }
+
   // public setAttackTarget (defendingCard: Card) {
   //   if (this.tapped) {
   //     throw new Error('Tapped card cant attack.');

@@ -11,6 +11,9 @@ import { PlayerEventType } from '../events';
 class Player extends Entity {
   protected state: PlayerState;
 
+  get manaPool (): Array<EntityId> { return this.state.manaPool; }
+  get table (): Array<EntityId> { return this.state.table; }
+
   constructor (events: Array<Event<PlayerData>> = []) {
     super();
     this.state = new PlayerState(events);
@@ -63,6 +66,10 @@ class Player extends Entity {
       {id: this.id, deck: newDeck, hand: newHand},
       {drawnCard: drawnCard}
     ));
+  }
+
+  public untapAllCards (cardsToUntap: Array<Card>): void {
+    cardsToUntap.forEach((card) => card.untap());
   }
 
   private createCards (cardsCreationData: Array<CardCreationData>): Array<Card> {

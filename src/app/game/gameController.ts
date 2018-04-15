@@ -4,10 +4,11 @@ import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { Player } from '../../domain/player/Player';
 import { GameEventType, PlayerEventType } from '../../domain/events';
+import { Card } from '../../domain/card/Card';
 
 const gameController = new Router();
 
-gameController.get('/createGame', async (ctx) => {
+gameController.post('/createGame', async (ctx) => {
   // Temporary data
   ctx.query.playerACards = [
     {name: 'Orc1', maxHp: 10, damage: 2},
@@ -58,8 +59,9 @@ gameController.get('/createGame', async (ctx) => {
 });
 
 gameController.get('/getGame', async (ctx) => {
-  let id = ctx.query.id as EntityId;
-  let game = await Repository.get<Game>(id, Game);
+  let gameId = ctx.query.gameId as EntityId;
+
+  let game = await Repository.get<Game>(gameId, Game);
 
   let player1 = await Repository.get<Player>(game.player1Id, Player);
   let player2 = await Repository.get<Player>(game.player2Id, Player);
@@ -69,6 +71,26 @@ gameController.get('/getGame', async (ctx) => {
   console.log('Player2:', player2);
 
   ctx.body = `Game id: ${game.id}.`;
+});
+
+gameController.post('/endTurn', async (ctx) => {
+  // TODO: Кто угодно может дернуть ручку и закончить ход.
+  let gameId = ctx.query.gameId as EntityId;
+
+  let game = await Repository.get<Game>(gameId, Game);
+  let currentPlayer = await Repository.get<Player>(game.currentPlayersTurn, Player);
+
+  // TODISCUSS: На сколько омерзительно это делать тут.
+  let cardIdsToUntap = currentPlayer.manaPool.concat(currentPlayer.table);
+  let cardsToUntap = await Repository.getMany <Card>(cardIdsToUntap, Card);
+
+  game.endTurn(currentPlayer, cardsToUntap);
+
+  await Repository.save(game);
+  await Repository.save(currentPlayer);
+  await Repository.save(cardsToUntap);
+
+  ctx.body = `Ok`;
 });
 
 export {gameController};

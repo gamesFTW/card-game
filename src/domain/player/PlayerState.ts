@@ -16,16 +16,20 @@ interface PlayerDrawnCardData {
 }
 
 class PlayerState extends EntityState implements PlayerData {
-  public deck: Array<EntityId>;
-  public hand: Array<EntityId>;
-  public manaPool: Array<EntityId>;
-  public table: Array<EntityId>;
-  public graveyard: Array<EntityId>;
+  // TODISCUSS: задавать ли в стейте параметры по умолчанию?
+  // Я не вижу особых минусов, кроме незначительного расходования ресурсов.
+  public deck: Array<EntityId> = [];
+  public hand: Array<EntityId> = [];
+  public manaPool: Array<EntityId> = [];
+  public table: Array<EntityId> = [];
+  public graveyard: Array<EntityId> = [];
 
   public constructor (events: Array<Event<PlayerData>>) {
-    super(events);
+    super();
+    this.applyEvents(events);
   }
 
+  // TODISCUSS:
   // Это пример того как можно вручную управлять накатыванием событий.
   protected whenCardDrawn (event: Event<PlayerData, PlayerDrawnCardData>): void {
     this.autoApplyEvent(event);

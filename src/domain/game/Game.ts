@@ -12,6 +12,7 @@ class Game extends Entity {
 
   get player1Id (): EntityId { return this.state.player1Id; }
   get player2Id (): EntityId { return this.state.player2Id; }
+  get currentPlayersTurn (): EntityId { return this.state.currentPlayersTurn; }
 
   constructor (events: Array<Event<GameData>> = []) {
     super();
@@ -35,6 +36,20 @@ class Game extends Entity {
     ));
 
     return {player1, player2, player1Cards, player2Cards};
+  }
+
+  public endTurn (currentPlayer: Player, cardsToUntap: Array<Card>): void {
+    currentPlayer.untapAllCards(cardsToUntap);
+    currentPlayer.drawCard();
+
+    let newPlayersTurn =
+      this.state.currentPlayersTurn === this.state.player1Id ?
+      this.state.player2Id : this.state.player1Id;
+
+    this.applyEvent(new Event<GameData>(
+      GameEventType.TURN_ENDED,
+      {id: this.id, currentPlayersTurn: newPlayersTurn, currentTurn: this.state.currentTurn + 1}
+    ));
   }
 
   private createPlayer (cardsCreationData: Array<CardCreationData>, handicap: boolean):

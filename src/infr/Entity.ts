@@ -24,9 +24,10 @@ abstract class EntityState {
   [key: string]: any;
   public id: EntityId;
 
-  protected constructor (events: Array<Event<any>>) {
-    this.applyEvents(events);
-  }
+  // TODISCUSS:
+  // Не нужно делать конструктор с вызовом applyEvents.
+  // Тогда дефолтные параметры стейта будут перетирать параметры
+  // полученные в результате работы autoApplyEvent.
 
   public mutate (event: Event<any>): void {
     let methodName = 'when' + event.type;
@@ -46,6 +47,7 @@ abstract class EntityState {
     let data = event.data;
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
+        // TODISCUSS:
         // Странно, что мы передаём id каждый раз, и каждый раз
         // он будет накатываться. Хотя пока не вижу какие проблемы это может создать.
         this[key] = data[key];

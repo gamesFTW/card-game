@@ -22,7 +22,8 @@ class CardState extends EntityState {
   public tapped: boolean;
 
   public constructor (events: Array<Event<CardData>>) {
-    super(events);
+    super();
+    this.applyEvents(events);
   }
 }
 
