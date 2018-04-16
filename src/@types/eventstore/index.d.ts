@@ -4,9 +4,9 @@ declare function eventstore(options: eventstore.EventStoreOptions): eventstore.E
 
 declare namespace eventstore {
   class EventStore {
-    init (): void;
+    init (cb?: initCallback): void;
 
-    on (eventType: 'connect' | 'disconnect', cb: callback): void;
+    on (eventType: 'connect' | 'disconnect' | 'error', cb: callback): void;
 
     getEvents (id: {aggregateId?: string, aggregate?: string}): void;
 
@@ -53,6 +53,7 @@ declare namespace eventstore {
   };
 
   type callback = () => void;
+  type initCallback = (err: Error) => void;
   type streamCallback = (err: Error, stream: Stream) => void;
   type snapshotCallback = (err: Error, snapshot: Snapshot, stream: Stream) => void;
   type Error = Object;

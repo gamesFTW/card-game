@@ -3,10 +3,10 @@ import * as eventstoreConstructor from 'eventstore';
 import { promisify } from 'util';
 
 let eventstore = eventstoreConstructor({
-  // type: 'mongodb',
-  // host: process.env['MONGO_IP'] || '192.168.99.100',
-  // port: 27017,
-  // timeout: 1000
+  type: 'mongodb',
+  host: process.env['MONGO_IP'] || '192.168.99.100',
+  port: 27017,
+  timeout: 1000
 });
 
 let promisedGetEvents = promisify(eventstore.getEvents.bind(eventstore));
@@ -28,7 +28,13 @@ let promisedEventstore = {
   getEvents: promisedGetEvents
 };
 
-promisedEventstore.init();
+promisedEventstore.init((err: Error) => {
+  if (err !== null) {
+    console.log(err);
+  } else {
+    console.log('Connected to database');
+  }
+});
 
 // let stream = await eventstore.getEventStream('streamId');
 // // console.log('history, history', stream.events);

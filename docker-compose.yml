@@ -7,8 +7,6 @@ services:
 
 
   mongodb:
-    image: "mvertes/alpine-mongo"
-    # volumes:
-    #   - /c/Users/db:/data/db
+    image: "mongo"
     ports:
       - 27017:27017
