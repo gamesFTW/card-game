@@ -3,7 +3,6 @@ import { Game } from '../../domain/game/Game';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { Player } from '../../domain/player/Player';
-import { GameEventType, PlayerEventType } from '../../domain/events';
 import { Card } from '../../domain/card/Card';
 
 const gameController = new Router();
@@ -75,22 +74,25 @@ gameController.get('/getGame', async (ctx) => {
 
 gameController.post('/endTurn', async (ctx) => {
   let gameId = ctx.query.gameId as EntityId;
-  let playerIdWhoWantFinishTurn = ctx.query.playerId as EntityId; // TODO: его нужно доставать из сессии
+  let endingTurnPlayerId = ctx.query.playerId as EntityId; // TODO: его нужно доставать из сессии
 
   let game = await Repository.get<Game>(gameId, Game);
-  let currentPlayer = await Repository.get<Player>(game.currentPlayersTurn, Player);
-  let playerWhoWantFinishTurn = await Repository.get<Player>(playerIdWhoWantFinishTurn, Player);
 
-  // TODISCUSS: На сколько омерзительно это делать тут.
-  let currentPlayerManaPoolCards = await Repository.getMany <Card>(currentPlayer.manaPool, Card);
-  let currentPlayerTableCards = await Repository.getMany <Card>(currentPlayer.table, Card);
+  let endingTurnPlayerOpponentId = game.getPlayerIdWhichIsOpponentFor(endingTurnPlayerId);
 
-  game.endTurn(currentPlayer, playerWhoWantFinishTurn, currentPlayerManaPoolCards, currentPlayerTableCards);
+  let endingTurnPlayer = await Repository.get<Player>(endingTurnPlayerId, Player);
+  let endingTurnPlayerOpponent = await Repository.get<Player>(endingTurnPlayerOpponentId, Player);
+
+  let endingTurnPlayerMannaPoolCards = await Repository.getMany <Card>(endingTurnPlayer.mannaPool, Card);
+  let endingTurnPlayerTableCards = await Repository.getMany <Card>(endingTurnPlayer.table, Card);
+
+  game.endTurn(endingTurnPlayer, endingTurnPlayerOpponent, endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
 
   await Repository.save(game);
-  await Repository.save(currentPlayer);
-  await Repository.save(currentPlayerManaPoolCards);
-  await Repository.save(currentPlayerTableCards);
+  await Repository.save(endingTurnPlayer);
+  await Repository.save(endingTurnPlayerOpponent);
+  await Repository.save(endingTurnPlayerMannaPoolCards);
+  await Repository.save(endingTurnPlayerTableCards);
 
   ctx.body = `Ok`;
 });

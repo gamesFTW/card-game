@@ -38,7 +38,7 @@ class Card extends Entity {
         CardEventType.CARD_UNTAPPED, {id: this.id, tapped: false}
       ));
     } else {
-      // TODISCUSS: Наверное не стоит бросать ошибку в таком случае?
+      throw new Error(`Card ${this.id} already tapped`);
     }
   }
 

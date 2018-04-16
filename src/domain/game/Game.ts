@@ -35,17 +35,18 @@ class Game extends Entity {
       {id, player1Id: player1.id, player2Id: player2.id, currentPlayersTurn: player1.id}
     ));
 
+    player1.startTurn();
+
     return {player1, player2, player1Cards, player2Cards};
   }
 
   public endTurn (
-      currentPlayer: Player,
-      playerWhoWantFinishTurn: Player,
-      currentPlayerManaPoolCards: Array<Card>,
-      currentPlayerTableCards: Array<Card>
+    endingTurnPlayer: Player,
+    endingTurnPlayerOpponent: Player,
+    endingTurnPlayerMannaPoolCards: Array<Card>,
+    endingTurnPlayerTableCards: Array<Card>
   ): void {
-    this.checkIfPlayerCanEndTurn(currentPlayer, playerWhoWantFinishTurn);
-    currentPlayer.endTurn(currentPlayerManaPoolCards, currentPlayerTableCards);
+    endingTurnPlayer.endTurn(endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
 
     let newPlayersTurn =
       this.state.currentPlayersTurn === this.state.player1Id ?
@@ -55,12 +56,12 @@ class Game extends Entity {
       GameEventType.TURN_ENDED,
       {id: this.id, currentPlayersTurn: newPlayersTurn, currentTurn: this.state.currentTurn + 1}
     ));
+
+    endingTurnPlayerOpponent.startTurn();
   }
 
-  private checkIfPlayerCanEndTurn (currentPlayer: Player, playerWhoWantFinishTurn: Player,): void {
-    if (currentPlayer.id !== playerWhoWantFinishTurn.id) {
-      throw new Error('Other players cant end player turn.');
-    }
+  public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {
+    return playerId === this.player1Id ? this.player2Id : this.player2Id;
   }
 
   private createPlayer (cardsCreationData: Array<CardCreationData>, handicap: boolean):

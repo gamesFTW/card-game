@@ -8,10 +8,15 @@ import { Card, CardCreationData } from '../card/Card';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerEventType } from '../events';
 
+enum PlayerStatus {
+  MAKES_MOVE = 'MakesMove',
+  WAITING_FOR_TURN = 'WaitingForTurn'
+}
+
 class Player extends Entity {
   protected state: PlayerState;
 
-  get manaPool (): Array<EntityId> { return this.state.manaPool; }
+  get mannaPool (): Array<EntityId> { return this.state.mannaPool; }
   get table (): Array<EntityId> { return this.state.table; }
 
   constructor (events: Array<Event<PlayerData>> = []) {
@@ -36,22 +41,33 @@ class Player extends Entity {
     return {cards};
   }
 
+  public endTurn (mannaPool: Array<Card>, table: Array<Card>): void {
+    if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
+      throw new Error('Other players cant end player turn.');
+    }
+
+    this.untapCardsAtEndOfTurn(mannaPool, table);
+    this.drawCard();
+
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.TURN_ENDED,
+      {id: this.id, status: PlayerStatus.WAITING_FOR_TURN}
+    ));
+  }
+
+  public startTurn (): void {
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.TURN_STARTED,
+      {id: this.id, status: PlayerStatus.MAKES_MOVE}
+    ));
+  }
+
   public shuffleDeck (): void {
     let shuffledDeck = lodash.shuffle(this.state.deck);
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.DECK_SHUFFLED, {id: this.id, deck: shuffledDeck}
     ));
-  }
-
-  public drawStartingHand (handicap: boolean): void {
-    let drawCardNumber = handicap ?
-      GameConstants.STARTING_HAND - GameConstants.HANDICAP :
-      GameConstants.STARTING_HAND;
-
-    for (let i = 1; i <= drawCardNumber; i++) {
-      this.drawCard();
-    }
   }
 
   public drawCard (): void {
@@ -68,17 +84,22 @@ class Player extends Entity {
     ));
   }
 
-  public endTurn (manaPool: Array<Card>, table: Array<Card>): void {
-    this.untapCardsAtEndOfTurn(manaPool, table);
-    this.drawCard();
+  private drawStartingHand (handicap: boolean): void {
+    let drawCardNumber = handicap ?
+      GameConstants.STARTING_HAND - GameConstants.HANDICAP :
+      GameConstants.STARTING_HAND;
+
+    for (let i = 1; i <= drawCardNumber; i++) {
+      this.drawCard();
+    }
   }
 
-  private untapCardsAtEndOfTurn (manaPool: Array<Card>, table: Array<Card>): void {
-    let tappedManaPoolCards = manaPool.filter(card => card.tapped);
-    let manaPoolCardsToUntap = tappedManaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
+  private untapCardsAtEndOfTurn (mannaPool: Array<Card>, table: Array<Card>): void {
+    let tappedMannaPoolCards = mannaPool.filter(card => card.tapped);
+    let mannaPoolCardsToUntap = tappedMannaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
 
     table.forEach((card) => card.untap());
-    manaPoolCardsToUntap.forEach((card) => card.untap());
+    mannaPoolCardsToUntap.forEach((card) => card.untap());
   }
 
   private createCards (cardsCreationData: Array<CardCreationData>): Array<Card> {
@@ -91,4 +112,4 @@ class Player extends Entity {
   }
 }
 
-export {Player};
+export {Player, PlayerStatus};

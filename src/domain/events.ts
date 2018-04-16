@@ -1,7 +1,9 @@
 enum PlayerEventType {
   PLAYER_CREATED = 'PlayerCreated',
   DECK_SHUFFLED = 'DeckShuffled',
-  CARD_DRAWN = 'CardDrawn'
+  CARD_DRAWN = 'CardDrawn',
+  TURN_ENDED = 'TurnEnded',
+  TURN_STARTED = 'TurnStarted'
 }
 
 enum GameEventType {

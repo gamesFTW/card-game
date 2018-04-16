@@ -5,6 +5,7 @@ class Event<DataType = any, ExtraType = any> {
   public data?: DataType;
   public extra?: ExtraType;
 
+  // TODO: отрефакторить, добавить aggregateID, и перестать всегда передавать id в data
   public constructor (type: string, data?: DataType, extra?: ExtraType) {
     this.type = type;
 

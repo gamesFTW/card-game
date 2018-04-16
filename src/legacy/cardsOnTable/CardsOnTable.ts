@@ -29,11 +29,11 @@ class PlayerCards {
     // важно проработать
   }
 
-  playAsMana(card: Card) {
+  playAsManna(card: Card) {
     if (card.tapped) {
       // бросаем ошибку
     } else {
-      this.apply(new CardPlayedAsMana());
+      this.apply(new CardPlayedAsManna());
       card.tap();
     }
   }
@@ -57,5 +57,5 @@ class PlayerCards {
 // Table
 //   moveToGraveyard
 // Graveyard
-// Manapool
+// Mannapool
 
