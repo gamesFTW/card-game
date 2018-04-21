@@ -32,13 +32,23 @@ class Card extends Entity {
     ));
   }
 
+  public tap (): void {
+    if (this.tapped) {
+      throw new Error(`Card ${this.id} already tapped`);
+    } else {
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_TAPPED, {id: this.id, tapped: true}
+      ));
+    }
+  }
+
   public untap (): void {
     if (this.tapped) {
       this.applyEvent(new Event<CardData>(
         CardEventType.CARD_UNTAPPED, {id: this.id, tapped: false}
       ));
     } else {
-      throw new Error(`Card ${this.id} already tapped`);
+      throw new Error(`Card ${this.id} already untapped`);
     }
   }
 

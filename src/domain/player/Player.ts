@@ -3,7 +3,7 @@ import * as lodash from 'lodash';
 import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
 
-import { PlayerData, PlayerDrawnCardData, PlayerState } from './PlayerState';
+import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState } from './PlayerState';
 import { Card, CardCreationData } from '../card/Card';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerEventType } from '../events';
@@ -42,9 +42,7 @@ class Player extends Entity {
   }
 
   public endTurn (mannaPool: Array<Card>, table: Array<Card>): void {
-    if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
-      throw new Error('Other players cant end player turn.');
-    }
+    this.checkForIsAbleToMove();
 
     this.untapCardsAtEndOfTurn(mannaPool, table);
     this.drawCard();
@@ -74,14 +72,36 @@ class Player extends Entity {
     let newDeck = lodash.clone(this.state.deck);
     let newHand = this.state.hand ? lodash.clone(this.state.hand) : [];
 
-    let drawnCard = newDeck.shift();
-    newHand.push(drawnCard);
+    let drawnCardId = newDeck.shift();
+    newHand.push(drawnCardId);
 
     this.applyEvent(new Event<PlayerData, PlayerDrawnCardData>(
       PlayerEventType.CARD_DRAWN,
       {id: this.id, deck: newDeck, hand: newHand},
-      {drawnCard: drawnCard}
+      {drawnCard: drawnCardId}
     ));
+  }
+
+  public playCardAsManna (card: Card): void {
+    this.checkForIsAbleToMove();
+
+    if (!this.checkCardIn(card, this.state.hand)) {
+      throw new Error(`Card ${card.id} isn't in hand`);
+    }
+
+    let newHand = lodash.clone(this.state.hand);
+    newHand.splice(newHand.indexOf(card.id), 1);
+
+    let newMannaPool = lodash.clone(this.state.mannaPool);
+    newMannaPool.push(card.id);
+
+    this.applyEvent(new Event<PlayerData, PlayerPlayCardAsMannaData>(
+      PlayerEventType.CARD_PLAYED_AS_MANNA,
+      {id: this.id, mannaPool: newMannaPool, hand: newHand},
+      {playedAsMannaCard: card.id}
+    ));
+
+    card.tap();
   }
 
   private drawStartingHand (handicap: boolean): void {
@@ -109,6 +129,16 @@ class Player extends Entity {
 
       return card;
     });
+  }
+
+  private checkForIsAbleToMove (): void {
+    if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
+      throw new Error(`Its not a turn of player: ${this.id}.`);
+    }
+  }
+
+  private checkCardIn (card: Card, stack: Array<EntityId>): boolean {
+    return stack.indexOf(card.id) >= 0 ? true : false;
   }
 }
 

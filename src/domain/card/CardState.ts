@@ -19,7 +19,7 @@ class CardState extends EntityState {
   public currentHp: number;
   public damage: number;
   public alive: boolean;
-  public tapped: boolean;
+  public tapped: boolean = false;
 
   public constructor (events: Array<Event<CardData>>) {
     super();

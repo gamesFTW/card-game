@@ -4,6 +4,8 @@ import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { Player } from '../../domain/player/Player';
 import { Card } from '../../domain/card/Card';
+import * as lodash from 'lodash';
+import { mapPlayer } from './mapPlayer';
 
 const gameController = new Router();
 
@@ -65,16 +67,18 @@ gameController.get('/getGame', async (ctx) => {
   let player1 = await Repository.get<Player>(game.player1Id, Player);
   let player2 = await Repository.get<Player>(game.player2Id, Player);
 
-  console.log('Game:', game);
-  console.log('Player1:', player1);
-  console.log('Player2:', player2);
+  let player1Response = await mapPlayer(player1);
+  let player2Response = await mapPlayer(player2);
 
-  ctx.body = `Game id: ${game.id}.\nPlayer1 id: ${player1.id}.\nPlayer2 id: ${player2.id}.`;
+  ctx.body = `Game: ${JSON.stringify(game, undefined, 2)}
+Player1: ${player1Response}
+Player2: ${player2Response}`;
 });
 
 gameController.post('/endTurn', async (ctx) => {
   let gameId = ctx.query.gameId as EntityId;
-  let endingTurnPlayerId = ctx.query.playerId as EntityId; // TODO: его нужно доставать из сессии
+  // TODO: playerId нужно доставать из сессии
+  let endingTurnPlayerId = ctx.query.playerId as EntityId;
 
   let game = await Repository.get<Game>(gameId, Game);
 

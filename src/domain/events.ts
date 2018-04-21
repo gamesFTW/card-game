@@ -3,7 +3,8 @@ enum PlayerEventType {
   DECK_SHUFFLED = 'DeckShuffled',
   CARD_DRAWN = 'CardDrawn',
   TURN_ENDED = 'TurnEnded',
-  TURN_STARTED = 'TurnStarted'
+  TURN_STARTED = 'TurnStarted',
+  CARD_PLAYED_AS_MANNA = 'CardPlayerAsManna'
 }
 
 enum GameEventType {
@@ -13,6 +14,7 @@ enum GameEventType {
 
 enum CardEventType {
   CARD_CREATED = 'CardCreated',
+  CARD_TAPPED = 'CardTapped',
   CARD_UNTAPPED = 'CardUntapped'
 }
 
