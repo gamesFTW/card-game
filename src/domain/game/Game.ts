@@ -48,20 +48,16 @@ class Game extends Entity {
   ): void {
     endingTurnPlayer.endTurn(endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
 
-    let newPlayersTurn =
-      this.state.currentPlayersTurn === this.state.player1Id ?
-      this.state.player2Id : this.state.player1Id;
-
     this.applyEvent(new Event<GameData>(
       GameEventType.TURN_ENDED,
-      {id: this.id, currentPlayersTurn: newPlayersTurn, currentTurn: this.state.currentTurn + 1}
+      {id: this.id, currentPlayersTurn: endingTurnPlayerOpponent.id, currentTurn: this.state.currentTurn + 1}
     ));
 
     endingTurnPlayerOpponent.startTurn();
   }
 
   public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {
-    return playerId === this.player1Id ? this.player2Id : this.player2Id;
+    return playerId === this.player1Id ? this.player2Id : this.player1Id;
   }
 
   private createPlayer (cardsCreationData: Array<CardCreationData>, handicap: boolean):

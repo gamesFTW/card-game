@@ -9,6 +9,9 @@ class Repository {
   // Поэтому есть метод getMany.
 
   static async save (param: Entity | Array<Entity>): Promise<void> {
+    // TODO: попробовать сделать так, чтобы в конце контроллера надо было вызывать всегда
+    // только одино сохранение репозитория, которое сохраняет все события в порядке их возникновения.
+
     let entities = lodash.isArray(param) ? param : [param];
 
     await Promise.all(entities.map(Repository.saveOne));
