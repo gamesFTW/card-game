@@ -4,7 +4,8 @@ enum PlayerEventType {
   CARD_DRAWN = 'CardDrawn',
   TURN_ENDED = 'TurnEnded',
   TURN_STARTED = 'TurnStarted',
-  CARD_PLAYED_AS_MANNA = 'CardPlayerAsManna'
+  CARD_PLAYED_AS_MANNA = 'CardPlayedAsManna',
+  CARD_PLAYED = 'CardPlayed'
 }
 
 enum GameEventType {
@@ -18,4 +19,9 @@ enum CardEventType {
   CARD_UNTAPPED = 'CardUntapped'
 }
 
-export {PlayerEventType, GameEventType, CardEventType};
+enum FieldEventType {
+  FIELD_CREATED = 'FieldCreated',
+  CARD_ADDED_TO_FIELD = 'CardAddedToField'
+}
+
+export {PlayerEventType, GameEventType, CardEventType, FieldEventType};

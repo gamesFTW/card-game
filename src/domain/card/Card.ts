@@ -8,6 +8,7 @@ interface CardCreationData {
   name: string;
   maxHp: number;
   damage: number;
+  mannaCost: number;
 }
 
 class Card extends Entity {
@@ -18,6 +19,7 @@ class Card extends Entity {
   get damage (): number { return this.state.damage; }
   get alive (): boolean { return this.state.alive; }
   get tapped (): boolean { return this.state.tapped; }
+  get mannaCost (): number { return this.state.mannaCost; }
 
   constructor (events: Array<Event<CardData>> = []) {
     super();
@@ -33,7 +35,7 @@ class Card extends Entity {
   }
 
   public tap (): void {
-    if (this.tapped) {
+    if (this.state.tapped) {
       throw new Error(`Card ${this.id} already tapped`);
     } else {
       this.applyEvent(new Event<CardData>(
@@ -43,7 +45,7 @@ class Card extends Entity {
   }
 
   public untap (): void {
-    if (this.tapped) {
+    if (this.state.tapped) {
       this.applyEvent(new Event<CardData>(
         CardEventType.CARD_UNTAPPED, {id: this.id, tapped: false}
       ));

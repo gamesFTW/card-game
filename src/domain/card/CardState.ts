@@ -10,9 +10,10 @@ interface CardData {
   damage?: number;
   alive?: boolean;
   tapped?: boolean;
+  mannaCost?: number;
 }
 
-class CardState extends EntityState {
+class CardState extends EntityState implements CardData {
   public id: EntityId;
   public name: string;
   public maxHp: number;
@@ -20,6 +21,7 @@ class CardState extends EntityState {
   public damage: number;
   public alive: boolean;
   public tapped: boolean = false;
+  public mannaCost: number;
 
   public constructor (events: Array<Event<CardData>>) {
     super();

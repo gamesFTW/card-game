@@ -6,6 +6,8 @@ import { Player } from '../player/Player';
 import { Card, CardCreationData } from '../card/Card';
 import * as lodash from 'lodash';
 import { GameEventType } from '../events';
+import { Field } from '../field/Field';
+import { GameConstants } from './GameConstants';
 
 class Game extends Entity {
   protected state: GameState;
@@ -13,6 +15,7 @@ class Game extends Entity {
   get player1Id (): EntityId { return this.state.player1Id; }
   get player2Id (): EntityId { return this.state.player2Id; }
   get currentPlayersTurn (): EntityId { return this.state.currentPlayersTurn; }
+  get fieldId (): EntityId { return this.state.fieldId; }
 
   constructor (events: Array<Event<GameData>> = []) {
     super();
@@ -20,9 +23,12 @@ class Game extends Entity {
   }
 
   public create (playerACardsData: Array<CardCreationData>, playerBCardsData: Array<CardCreationData>): {
-    player1: Player, player2: Player, player1Cards: Array<Card>, player2Cards: Array<Card>
+    player1: Player, player2: Player, player1Cards: Array<Card>, player2Cards: Array<Card>, field: Field
   } {
     let id = this.generateId();
+
+    let field = new Field();
+    field.create(GameConstants.FIELD_WIDTH, GameConstants.FIELD_HEIGHT);
 
     // Более красивее было бы сначала создать игроков и потом их зашафлить.
     let playersCardsData = lodash.shuffle([playerACardsData, playerBCardsData]);
@@ -32,12 +38,18 @@ class Game extends Entity {
 
     this.applyEvent(new Event<GameData>(
       GameEventType.GAME_CREATED,
-      {id, player1Id: player1.id, player2Id: player2.id, currentPlayersTurn: player1.id}
+      {
+        id,
+        player1Id: player1.id,
+        player2Id: player2.id,
+        currentPlayersTurn: player1.id,
+        fieldId: field.id
+      }
     ));
 
     player1.startTurn();
 
-    return {player1, player2, player1Cards, player2Cards};
+    return {player1, player2, player1Cards, player2Cards, field};
   }
 
   public endTurn (
@@ -57,7 +69,7 @@ class Game extends Entity {
   }
 
   public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {
-    return playerId === this.player1Id ? this.player2Id : this.player1Id;
+    return playerId === this.state.player1Id ? this.state.player2Id : this.state.player1Id;
   }
 
   private createPlayer (cardsCreationData: Array<CardCreationData>, handicap: boolean):

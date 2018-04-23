@@ -7,6 +7,7 @@ interface GameData {
   player1Id?: EntityId;
   player2Id?: EntityId;
   currentPlayersTurn?: EntityId;
+  fieldId?: EntityId;
   currentTurn?: number;
 }
 
@@ -14,6 +15,7 @@ class GameState extends EntityState implements GameData {
   public player1Id: EntityId;
   public player2Id: EntityId;
   public currentPlayersTurn: EntityId;
+  public fieldId: EntityId;
   public currentTurn: number = 1;
 
   public constructor (events: Array<Event<GameData>>) {

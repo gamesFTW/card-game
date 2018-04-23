@@ -7,6 +7,8 @@ import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState
 import { Card, CardCreationData } from '../card/Card';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerEventType } from '../events';
+import { Point } from '../../infr/Point';
+import { Field } from '../field/Field';
 
 enum PlayerStatus {
   MAKES_MOVE = 'MakesMove',
@@ -42,7 +44,7 @@ class Player extends Entity {
   }
 
   public endTurn (mannaPool: Array<Card>, table: Array<Card>): void {
-    this.checkForIsAbleToMove();
+    this.checkIfItHisTurn();
 
     this.untapCardsAtEndOfTurn(mannaPool, table);
     this.drawCard();
@@ -83,22 +85,41 @@ class Player extends Entity {
   }
 
   public playCardAsManna (card: Card): void {
-    this.checkForIsAbleToMove();
+    this.checkIfItHisTurn();
 
     if (!this.checkCardIn(card, this.state.hand)) {
       throw new Error(`Card ${card.id} isn't in hand`);
     }
 
-    let newHand = lodash.clone(this.state.hand);
-    newHand.splice(newHand.indexOf(card.id), 1);
-
-    let newMannaPool = lodash.clone(this.state.mannaPool);
-    newMannaPool.push(card.id);
+    let {fromStack: hand, toStack: mannaPool} = this.changeStack(this.state.hand, this.state.mannaPool, card.id);
 
     this.applyEvent(new Event<PlayerData, PlayerPlayCardAsMannaData>(
       PlayerEventType.CARD_PLAYED_AS_MANNA,
-      {id: this.id, mannaPool: newMannaPool, hand: newHand},
+      {id: this.id, mannaPool, hand},
       {playedAsMannaCard: card.id}
+    ));
+
+    card.tap();
+  }
+
+  public playCard (card: Card, mannaPoolCards: Array<Card>, position: Point, field: Field): void {
+    this.checkIfItHisTurn();
+
+    if (!this.checkCardIn(card, this.state.hand)) {
+      throw new Error(`Card ${card.id} isn't in hand`);
+    }
+
+    this.tapManna(card.mannaCost, mannaPoolCards);
+
+    // TODO: проверить на наличие рядом героя и на отсутствие врагов
+
+    field.addCardToField(card, position);
+
+    let {fromStack: hand, toStack: table} = this.changeStack(this.state.hand, this.state.table, card.id);
+
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.CARD_PLAYED,
+      {id: this.id, table, hand}
     ));
 
     card.tap();
@@ -131,7 +152,7 @@ class Player extends Entity {
     });
   }
 
-  private checkForIsAbleToMove (): void {
+  private checkIfItHisTurn (): void {
     if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
       throw new Error(`Its not a turn of player: ${this.id}.`);
     }
@@ -139,6 +160,29 @@ class Player extends Entity {
 
   private checkCardIn (card: Card, stack: Array<EntityId>): boolean {
     return stack.indexOf(card.id) >= 0 ? true : false;
+  }
+
+  private tapManna (mannaNumber: number, mannaPoolCards: Array<Card>): void {
+    let untappedMannaPoolCards = mannaPoolCards.filter(card => !card.tapped);
+
+    if (mannaNumber > untappedMannaPoolCards.length ) {
+      throw new Error('We need more manna!');
+    }
+
+    let mannaPoolCardsToTap = untappedMannaPoolCards.slice(0, mannaNumber);
+
+    mannaPoolCardsToTap.forEach((card) => card.tap());
+  }
+
+  private changeStack (fromStack: Array<EntityId>, toStack: Array<EntityId>, cardId: EntityId)
+      : {fromStack: Array<EntityId>, toStack: Array<EntityId>} {
+    let newFromStack = lodash.clone(fromStack);
+    newFromStack.splice(newFromStack.indexOf(cardId), 1);
+
+    let newToStack = lodash.clone(toStack);
+    newToStack.push(cardId);
+
+    return {fromStack: newFromStack, toStack: newToStack};
   }
 }
 

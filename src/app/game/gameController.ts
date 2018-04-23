@@ -6,54 +6,56 @@ import { Player } from '../../domain/player/Player';
 import { Card } from '../../domain/card/Card';
 import * as lodash from 'lodash';
 import { mapPlayer } from './mapPlayer';
+import { Field } from '../../domain/field/Field';
 
 const gameController = new Router();
 
 gameController.post('/createGame', async (ctx) => {
   // Temporary data
   ctx.query.playerACards = [
-    {name: 'Orc1', maxHp: 10, damage: 2},
-    {name: 'Orc2', maxHp: 10, damage: 2},
-    {name: 'Orc3', maxHp: 10, damage: 2},
-    {name: 'Orc4', maxHp: 10, damage: 2},
-    {name: 'Orc5', maxHp: 10, damage: 2},
-    {name: 'Orc6', maxHp: 10, damage: 2},
-    {name: 'Orc7', maxHp: 10, damage: 2},
-    {name: 'Orc8', maxHp: 10, damage: 2},
-    {name: 'Orc9', maxHp: 10, damage: 2},
-    {name: 'Orc10', maxHp: 10, damage: 2},
-    {name: 'Orc11', maxHp: 10, damage: 2},
-    {name: 'Orc12', maxHp: 10, damage: 2},
-    {name: 'Orc13', maxHp: 10, damage: 2},
-    {name: 'Orc Warlord', maxHp: 14, damage: 3}
+    {name: 'Orc1', maxHp: 10, damage: 2, mannaCost: 1},
+    {name: 'Orc2', maxHp: 10, damage: 2, mannaCost: 1},
+    {name: 'Orc3', maxHp: 10, damage: 2, mannaCost: 1},
+    {name: 'Orc4', maxHp: 10, damage: 2, mannaCost: 1},
+    {name: 'Orc5', maxHp: 10, damage: 2, mannaCost: 1},
+    {name: 'Orc6', maxHp: 10, damage: 2, mannaCost: 1},
+    {name: 'Orc7', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc8', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc9', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc10', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc11', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc12', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc13', maxHp: 10, damage: 2, mannaCost: 2},
+    {name: 'Orc Warlord', maxHp: 14, damage: 3, mannaCost: 2}
   ];
   ctx.query.playerBCards = [
-    {name: 'Elf1', maxHp: 6, damage: 1},
-    {name: 'Elf2', maxHp: 6, damage: 1},
-    {name: 'Elf3', maxHp: 6, damage: 1},
-    {name: 'Elf4', maxHp: 6, damage: 1},
-    {name: 'Elf5', maxHp: 6, damage: 1},
-    {name: 'Elf6', maxHp: 6, damage: 1},
-    {name: 'Elf7', maxHp: 6, damage: 1},
-    {name: 'Elf8', maxHp: 6, damage: 1},
-    {name: 'Elf9', maxHp: 6, damage: 1},
-    {name: 'Elf10', maxHp: 6, damage: 1},
-    {name: 'Elf11', maxHp: 6, damage: 1},
-    {name: 'Elf12', maxHp: 6, damage: 1},
-    {name: 'Elf13', maxHp: 6, damage: 1},
-    {name: 'Elf14', maxHp: 6, damage: 1}
+    {name: 'Elf1', maxHp: 6, damage: 1, mannaCost: 1},
+    {name: 'Elf2', maxHp: 6, damage: 1, mannaCost: 1},
+    {name: 'Elf3', maxHp: 6, damage: 1, mannaCost: 1},
+    {name: 'Elf4', maxHp: 6, damage: 1, mannaCost: 1},
+    {name: 'Elf5', maxHp: 6, damage: 1, mannaCost: 1},
+    {name: 'Elf6', maxHp: 6, damage: 1, mannaCost: 1},
+    {name: 'Elf7', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf8', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf9', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf10', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf11', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf12', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf13', maxHp: 6, damage: 1, mannaCost: 2},
+    {name: 'Elf14', maxHp: 6, damage: 1, mannaCost: 2}
   ];
 
   let playerACardsData = ctx.query.playerACards;
   let playerBCardsData = ctx.query.playerBCards;
 
   let game = new Game();
-  let {player1, player2, player1Cards, player2Cards} = game.create(playerACardsData, playerBCardsData);
+  let {player1, player2, player1Cards, player2Cards, field} = game.create(playerACardsData, playerBCardsData);
 
   await Repository.save(player1Cards);
   await Repository.save(player1);
   await Repository.save(player2Cards);
   await Repository.save(player2);
+  await Repository.save(field);
   await Repository.save(game);
 
   ctx.body = `Game created. id: ${game.id}.`;
@@ -64,11 +66,13 @@ gameController.get('/getGame', async (ctx) => {
 
   let game = await Repository.get<Game>(gameId, Game);
 
+  let field = await Repository.get<Field>(game.fieldId, Field);
+
   let player1 = await Repository.get<Player>(game.player1Id, Player);
   let player2 = await Repository.get<Player>(game.player2Id, Player);
 
-  let player1Response = await mapPlayer(player1);
-  let player2Response = await mapPlayer(player2);
+  let player1Response = await mapPlayer(player1, field);
+  let player2Response = await mapPlayer(player2, field);
 
   ctx.body = `Game: ${JSON.stringify(game, undefined, 2)}
 Player1: ${player1Response}

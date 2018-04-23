@@ -21,6 +21,7 @@ class Entity {
 }
 
 abstract class EntityState {
+  // TODO очень желательно выпилить [key: string]: any;
   [key: string]: any;
   public id: EntityId;
 

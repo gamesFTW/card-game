@@ -18,10 +18,16 @@ class Repository {
   }
 
   static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
-    let stream = await eventStore.getEventStream({
-      aggregateId: id,
-      aggregate: ClassConstructor.name
-    });
+    let stream = null;
+
+    try {
+      stream = await eventStore.getEventStream({
+        aggregateId: id,
+        aggregate: ClassConstructor.name
+      });
+    } catch (error) {
+      throw new Error(`Cant find id: ${id} while creating ${ClassConstructor.name}`);
+    }
 
     return Repository.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
   }
