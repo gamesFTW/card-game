@@ -9,6 +9,7 @@ interface CardCreationData {
   maxHp: number;
   damage: number;
   mannaCost: number;
+  movingPoints: number;
 }
 
 class Card extends Entity {
@@ -52,6 +53,42 @@ class Card extends Entity {
     } else {
       throw new Error(`Card ${this.id} already untapped`);
     }
+  }
+
+  public untapOnEndOfTurn (): void {
+    if (this.state.alive) {
+
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
+        {id: this.id, currentMovingPoints: this.state.movingPoints}
+      ));
+    }
+
+    this.untap();
+  }
+
+  public play (): void {
+    this.makeAlive();
+    this.tap();
+  }
+
+  public move (movingPoints: number): void {
+    if (movingPoints > this.state.currentMovingPoints) {
+      throw new Error(`Card ${this.state.id} dont have moving points`);
+    }
+
+    let newCurrentMovingPoints = this.state.currentMovingPoints - movingPoints;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_MOVED,
+      {id: this.id, currentMovingPoints: newCurrentMovingPoints}
+    ));
+  }
+
+  private makeAlive (): void {
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_PLAYED, {id: this.id, alive: true, currentMovingPoints: 0}
+    ));
   }
 
   // public setAttackTarget (defendingCard: Card) {

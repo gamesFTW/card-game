@@ -3,7 +3,7 @@ import { Game } from '../../domain/game/Game';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { Player } from '../../domain/player/Player';
-import { Card } from '../../domain/card/Card';
+import { Card, CardCreationData } from '../../domain/card/Card';
 import * as lodash from 'lodash';
 import { mapPlayer } from './mapPlayer';
 import { Field } from '../../domain/field/Field';
@@ -13,40 +13,40 @@ const gameController = new Router();
 gameController.post('/createGame', async (ctx) => {
   // Temporary data
   ctx.query.playerACards = [
-    {name: 'Orc1', maxHp: 10, damage: 2, mannaCost: 1},
-    {name: 'Orc2', maxHp: 10, damage: 2, mannaCost: 1},
-    {name: 'Orc3', maxHp: 10, damage: 2, mannaCost: 1},
-    {name: 'Orc4', maxHp: 10, damage: 2, mannaCost: 1},
-    {name: 'Orc5', maxHp: 10, damage: 2, mannaCost: 1},
-    {name: 'Orc6', maxHp: 10, damage: 2, mannaCost: 1},
-    {name: 'Orc7', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc8', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc9', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc10', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc11', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc12', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc13', maxHp: 10, damage: 2, mannaCost: 2},
-    {name: 'Orc Warlord', maxHp: 14, damage: 3, mannaCost: 2}
+    {name: 'Orc1', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
+    {name: 'Orc2', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
+    {name: 'Orc3', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
+    {name: 'Orc4', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
+    {name: 'Orc5', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
+    {name: 'Orc6', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
+    {name: 'Orc7', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc8', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc9', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc10', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc11', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc12', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc13', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
+    {name: 'Orc Warlord', maxHp: 14, damage: 3, mannaCost: 2, movingPoints: 2}
   ];
   ctx.query.playerBCards = [
-    {name: 'Elf1', maxHp: 6, damage: 1, mannaCost: 1},
-    {name: 'Elf2', maxHp: 6, damage: 1, mannaCost: 1},
-    {name: 'Elf3', maxHp: 6, damage: 1, mannaCost: 1},
-    {name: 'Elf4', maxHp: 6, damage: 1, mannaCost: 1},
-    {name: 'Elf5', maxHp: 6, damage: 1, mannaCost: 1},
-    {name: 'Elf6', maxHp: 6, damage: 1, mannaCost: 1},
-    {name: 'Elf7', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf8', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf9', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf10', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf11', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf12', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf13', maxHp: 6, damage: 1, mannaCost: 2},
-    {name: 'Elf14', maxHp: 6, damage: 1, mannaCost: 2}
+    {name: 'Elf1', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
+    {name: 'Elf2', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
+    {name: 'Elf3', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
+    {name: 'Elf4', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
+    {name: 'Elf5', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
+    {name: 'Elf6', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
+    {name: 'Elf7', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf8', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf9', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf10', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf11', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf12', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf13', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
+    {name: 'Elf14', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4}
   ];
 
-  let playerACardsData = ctx.query.playerACards;
-  let playerBCardsData = ctx.query.playerBCards;
+  let playerACardsData = ctx.query.playerACards as Array<CardCreationData>;
+  let playerBCardsData = ctx.query.playerBCards as Array<CardCreationData>;
 
   let game = new Game();
   let {player1, player2, player1Cards, player2Cards, field} = game.create(playerACardsData, playerBCardsData);

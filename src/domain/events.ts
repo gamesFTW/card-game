@@ -16,12 +16,16 @@ enum GameEventType {
 enum CardEventType {
   CARD_CREATED = 'CardCreated',
   CARD_TAPPED = 'CardTapped',
-  CARD_UNTAPPED = 'CardUntapped'
+  CARD_UNTAPPED = 'CardUntapped',
+  CARD_PLAYED = 'CardPlayed',
+  CARD_ADDED_CURRENT_MOVING_POINTS = 'CardAddedCurrentMovingPoints',
+  CARD_MOVED = 'CardMoved'
 }
 
 enum FieldEventType {
   FIELD_CREATED = 'FieldCreated',
-  CARD_ADDED_TO_FIELD = 'CardAddedToField'
+  CARD_ADDED_TO_FIELD = 'CardAddedToField',
+  CARD_MOVED = 'CardMoved'
 }
 
 export {PlayerEventType, GameEventType, CardEventType, FieldEventType};

@@ -122,7 +122,15 @@ class Player extends Entity {
       {id: this.id, table, hand}
     ));
 
-    card.tap();
+    card.play();
+  }
+
+  public moveCreature (card: Card, position: Point, field: Field): void {
+    this.checkIfItHisTurn();
+
+    field.moveCreature(card, position);
+
+    card.move(1);
   }
 
   private drawStartingHand (handicap: boolean): void {
@@ -139,7 +147,7 @@ class Player extends Entity {
     let tappedMannaPoolCards = mannaPool.filter(card => card.tapped);
     let mannaPoolCardsToUntap = tappedMannaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
 
-    table.forEach((card) => card.untap());
+    table.forEach((card) => card.untapOnEndOfTurn());
     mannaPoolCardsToUntap.forEach((card) => card.untap());
   }
 

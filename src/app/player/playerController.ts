@@ -51,4 +51,28 @@ playerController.post('/playCard', async (ctx) => {
   ctx.body = `Ok`;
 });
 
+playerController.post('/moveCreature', async (ctx) => {
+  let gameId = ctx.query.gameId as EntityId;
+  // TODO: его нужно доставать из сессии
+  let playerId = ctx.query.playerId as EntityId;
+  let cardId = ctx.query.cardId as EntityId;
+  let x = ctx.query.x;
+  let y = ctx.query.y;
+
+  let position = new Point(x, y);
+
+  let game = await Repository.get<Game>(gameId, Game);
+  let field = await Repository.get<Field>(game.fieldId, Field);
+  let player = await Repository.get<Player>(playerId, Player);
+  let card = await Repository.get<Card>(cardId, Card);
+
+  player.moveCreature(card, position, field);
+
+  await Repository.save(player);
+  await Repository.save(card);
+  await Repository.save(field);
+
+  ctx.body = `Ok`;
+});
+
 export {playerController};
