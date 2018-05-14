@@ -50,6 +50,31 @@ class Field extends Entity {
     return null;
   }
 
+  public checkCreaturesAdjacency (firstCard: Card, secondCard: Card): Boolean {
+    let firstCardPoint = this.getPositionByCreature(firstCard);
+    let secondCardPoint = this.getPositionByCreature(secondCard);
+
+    let xDistance = Math.abs(firstCardPoint.x - secondCardPoint.x);
+    let yDistance = Math.abs(firstCardPoint.y - secondCardPoint.y);
+
+    if (xDistance + yDistance < 2) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public checkPositionsAdjacency (firstPosition: Point, secondPosition: Point): Boolean {
+    let xDistance = Math.abs(firstPosition.x - secondPosition.x);
+    let yDistance = Math.abs(firstPosition.y - secondPosition.y);
+
+    if (xDistance + yDistance < 2) {
+      return true;
+    }
+
+    return false;
+  }
+
   public addCardToField (card: Card, toPosition: Point): void {
     let {x, y} = toPosition;
 
@@ -96,30 +121,6 @@ class Field extends Entity {
     }
   }
 
-  private checkCreaturesAdjacency (firstCard: Card, secondCard: Card): Boolean {
-    let firstCardPoint = this.getPositionByCreature(firstCard);
-    let secondCardPoint = this.getPositionByCreature(secondCard);
-
-    let xDistance = Math.abs(firstCardPoint.x - secondCardPoint.x);
-    let yDistance = Math.abs(firstCardPoint.y - secondCardPoint.y);
-
-    if (xDistance + yDistance < 2) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private checkPositionsAdjacency (firstPosition: Point, secondPosition: Point): Boolean {
-    let xDistance = Math.abs(firstPosition.x - secondPosition.x);
-    let yDistance = Math.abs(firstPosition.y - secondPosition.y);
-
-    if (xDistance + yDistance < 2) {
-      return true;
-    }
-
-    return false;
-  }
 }
 
 export {Field};

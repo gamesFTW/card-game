@@ -1,14 +1,20 @@
 import * as lodash from 'lodash';
-
-import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
-
-import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState } from './PlayerState';
-import { Card, CardCreationData } from '../card/Card';
-import { GameConstants } from '../game/GameConstants';
-import { PlayerEventType } from '../events';
+import { Event } from '../../infr/Event';
 import { Point } from '../../infr/Point';
+import { Card, CardCreationData } from '../card/Card';
+import { PlayerEventType } from '../events';
 import { Field } from '../field/Field';
+import { GameConstants } from '../game/GameConstants';
+import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState } from './PlayerState';
+
+enum CardStack {
+  DECK = 'deck',
+  HAND = 'hand',
+  TABLE = 'table',
+  MANA_POOL = 'manaPool',
+  GRAVEYARD = 'graveyard'
+}
 
 enum PlayerStatus {
   MAKES_MOVE = 'MakesMove',
@@ -87,7 +93,7 @@ class Player extends Entity {
   public playCardAsManna (card: Card): void {
     this.checkIfItHisTurn();
 
-    if (!this.checkCardIn(card, this.state.hand)) {
+    if (!this.checkCardInStack(card, this.state.hand)) {
       throw new Error(`Card ${card.id} isn't in hand`);
     }
 
@@ -105,7 +111,7 @@ class Player extends Entity {
   public playCard (card: Card, mannaPoolCards: Array<Card>, position: Point, field: Field): void {
     this.checkIfItHisTurn();
 
-    if (!this.checkCardIn(card, this.state.hand)) {
+    if (!this.checkCardInStack(card, this.state.hand)) {
       throw new Error(`Card ${card.id} isn't in hand`);
     }
 
@@ -125,12 +131,50 @@ class Player extends Entity {
     card.play();
   }
 
+  // WARNING: это очень не правильно, данный метод находится не на своем уровне абстракции
+  // Нужно создать глобальную шину и делать такое через эвенты и этот метод должен быть приватным
+  public endOfCardDeath (card: Card): void {
+    let {fromStack: table, toStack: graveyard} = this.changeStack(this.state.table, this.state.graveyard, card.id);
+
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.CARD_DIED,
+      {id: this.id, table, graveyard}
+    ));
+  }
+
   public moveCreature (card: Card, position: Point, field: Field): void {
     this.checkIfItHisTurn();
 
     field.moveCreature(card, position);
 
     card.move(1);
+  }
+
+  public checkCardIn (card: Card, stackName: CardStack): boolean {
+    let stack;
+    if (stackName === CardStack.DECK) {
+      stack = this.state.deck;
+    }
+    if (stackName === CardStack.HAND) {
+      stack = this.state.hand;
+    }
+    if (stackName === CardStack.TABLE) {
+      stack = this.state.table;
+    }
+    if (stackName === CardStack.MANA_POOL) {
+      stack = this.state.mannaPool;
+    }
+    if (stackName === CardStack.GRAVEYARD) {
+      stack = this.state.graveyard;
+    }
+
+    return this.checkCardInStack(card, stack);
+  }
+
+  public checkIfItHisTurn (): void {
+    if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
+      throw new Error(`Its not a turn of player: ${this.id}.`);
+    }
   }
 
   private drawStartingHand (handicap: boolean): void {
@@ -147,7 +191,7 @@ class Player extends Entity {
     let tappedMannaPoolCards = mannaPool.filter(card => card.tapped);
     let mannaPoolCardsToUntap = tappedMannaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
 
-    table.forEach((card) => card.untapOnEndOfTurn());
+    table.forEach((card) => card.onEndOfTurn());
     mannaPoolCardsToUntap.forEach((card) => card.untap());
   }
 
@@ -160,13 +204,7 @@ class Player extends Entity {
     });
   }
 
-  private checkIfItHisTurn (): void {
-    if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
-      throw new Error(`Its not a turn of player: ${this.id}.`);
-    }
-  }
-
-  private checkCardIn (card: Card, stack: Array<EntityId>): boolean {
+  private checkCardInStack (card: Card, stack: Array<EntityId>): boolean {
     return stack.indexOf(card.id) >= 0 ? true : false;
   }
 
@@ -194,4 +232,4 @@ class Player extends Entity {
   }
 }
 
-export {Player, PlayerStatus};
+export {Player, PlayerStatus, CardStack};

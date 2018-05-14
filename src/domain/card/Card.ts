@@ -55,7 +55,7 @@ class Card extends Entity {
     }
   }
 
-  public untapOnEndOfTurn (): void {
+  public onEndOfTurn (): void {
     if (this.state.alive) {
 
       this.applyEvent(new Event<CardData>(
@@ -64,7 +64,9 @@ class Card extends Entity {
       ));
     }
 
-    this.untap();
+    if (this.tapped) {
+      this.untap();
+    }
   }
 
   public play (): void {
@@ -85,12 +87,6 @@ class Card extends Entity {
     ));
   }
 
-  private makeAlive (): void {
-    this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_PLAYED, {id: this.id, alive: true, currentMovingPoints: 0}
-    ));
-  }
-
   // public setAttackTarget (defendingCard: Card) {
   //   if (this.tapped) {
   //     throw new Error('Tapped card cant attack.');
@@ -102,20 +98,29 @@ class Card extends Entity {
   //   this.apply(new CardTapped({id: this.state.id, tapped: true}));
   // }
 
-  // public takeDamage (damage: number) {
-  //   let newHp = this.state.hp - damage;
-  //
-  //   this.apply(new CardTookDamage({id: this.state.id, hp: newHp}));
-  //
-  //   if (newHp <= 0) {
-  //     if (this.state.alive === false) {
-  //       throw new Error('What Is Dead May Never Die.');
-  //     }
-  //
-  //     this.apply(new CardDied({id: this.state.id, alive: false}));
-  //     // CardsOnTableUseCases.cardDied(this.state.id);
-  //   }
-  // }
+  public takeDamage (damage: number): void {
+    let newHp = this.state.currentHp - damage;
+
+    this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_TOOK_DAMAGE, {id: this.id, currentHp: newHp}
+      ));
+
+    if (newHp <= 0) {
+      if (this.state.alive === false) {
+        throw new Error('What Is Dead May Never Die.');
+      }
+
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_DIED, {id: this.id, alive: false})
+      );
+    }
+  }
+
+  private makeAlive (): void {
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_PLAYED, {id: this.id, alive: true, currentMovingPoints: 0, currentHp: this.maxHp}
+    ));
+  }
 }
 
 export {Card, CardCreationData};

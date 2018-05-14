@@ -5,6 +5,7 @@ enum PlayerEventType {
   TURN_ENDED = 'TurnEnded',
   TURN_STARTED = 'TurnStarted',
   CARD_PLAYED_AS_MANNA = 'CardPlayedAsManna',
+  CARD_DIED = 'CardDied',
   CARD_PLAYED = 'CardPlayed'
 }
 
@@ -19,6 +20,8 @@ enum CardEventType {
   CARD_UNTAPPED = 'CardUntapped',
   CARD_PLAYED = 'CardPlayed',
   CARD_ADDED_CURRENT_MOVING_POINTS = 'CardAddedCurrentMovingPoints',
+  CARD_TOOK_DAMAGE = 'CardTookDamage',
+  CARD_DIED = 'CardDied',
   CARD_MOVED = 'CardMoved'
 }
 
