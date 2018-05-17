@@ -52,7 +52,7 @@ playerController.post('/playCard', async (ctx) => {
   ctx.body = `Ok`;
 });
 
-playerController.post('/moveCreature', async (ctx) => {
+playerController.post('/moveCard', async (ctx) => {
   let gameId = ctx.query.gameId as EntityId;
   // TODO: его нужно доставать из сессии
   let playerId = ctx.query.playerId as EntityId;
@@ -67,7 +67,7 @@ playerController.post('/moveCreature', async (ctx) => {
   let player = await Repository.get<Player>(playerId, Player);
   let card = await Repository.get<Card>(cardId, Card);
 
-  player.moveCreature(card, position, field);
+  player.moveCard(card, position, field);
 
   await Repository.save(player);
   await Repository.save(card);

@@ -142,10 +142,10 @@ class Player extends Entity {
     ));
   }
 
-  public moveCreature (card: Card, position: Point, field: Field): void {
+  public moveCard (card: Card, position: Point, field: Field): void {
     this.checkIfItHisTurn();
 
-    field.moveCreature(card, position);
+    field.moveUnit(card, position);
 
     card.move(1);
   }

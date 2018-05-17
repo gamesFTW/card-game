@@ -17,19 +17,19 @@ class Field extends Entity {
   public create (width: number, height: number): void {
     let id = this.generateId();
 
-    let creatures: EntityPositions = {};
+    let units: EntityPositions = {};
 
     for (let x = 1; x <= width; x++) {
-      creatures[x] = {};
-      let creaturesX = creatures[x];
+      units[x] = {};
+      let unitsX = units[x];
 
       for (let y = 1; y <= height; y++) {
-        creaturesX[y] = null;
+        unitsX[y] = null;
       }
     }
 
     this.applyEvent(new Event<FieldData>(
-      FieldEventType.FIELD_CREATED, {id, width, height, creatures}
+      FieldEventType.FIELD_CREATED, {id, width, height, units}
     ));
   }
 
@@ -37,10 +37,10 @@ class Field extends Entity {
   //   return this.tiles[point.x][point.y];
   // }
 
-  public getPositionByCreature (card: Card): Point|null {
-    for (let x in this.state.creatures) {
-      for (let y in this.state.creatures[x]) {
-        let cardId = this.state.creatures[x][y];
+  public getPositionByUnit (card: Card): Point|null {
+    for (let x in this.state.units) {
+      for (let y in this.state.units[x]) {
+        let cardId = this.state.units[x][y];
         if (cardId === card.id) {
           return new Point(Number(x), Number(y));
         }
@@ -50,9 +50,9 @@ class Field extends Entity {
     return null;
   }
 
-  public checkCreaturesAdjacency (firstCard: Card, secondCard: Card): Boolean {
-    let firstCardPoint = this.getPositionByCreature(firstCard);
-    let secondCardPoint = this.getPositionByCreature(secondCard);
+  public checkUnitsAdjacency (firstCard: Card, secondCard: Card): Boolean {
+    let firstCardPoint = this.getPositionByUnit(firstCard);
+    let secondCardPoint = this.getPositionByUnit(secondCard);
 
     let xDistance = Math.abs(firstCardPoint.x - secondCardPoint.x);
     let yDistance = Math.abs(firstCardPoint.y - secondCardPoint.y);
@@ -84,39 +84,39 @@ class Field extends Entity {
 
     this.checkPositionForVacancy(toPosition);
 
-    let newCreatures = lodash.cloneDeep(this.state.creatures);
-    newCreatures[x][y] = card.id;
+    let newUnits = lodash.cloneDeep(this.state.units);
+    newUnits[x][y] = card.id;
 
     this.applyEvent(new Event<FieldData>(
       FieldEventType.CARD_MOVED,
-      { creatures: newCreatures }
+      { units: newUnits }
     ));
   }
 
-  public moveCreature (card: Card, toPosition: Point): void {
+  public moveUnit (card: Card, toPosition: Point): void {
     this.checkPositionForVacancy(toPosition);
 
-    let fromPosition = this.getPositionByCreature(card);
+    let fromPosition = this.getPositionByUnit(card);
 
     if (!this.checkPositionsAdjacency(fromPosition, toPosition)) {
       throw new Error(`Card ${card.id} is not adjacent to ${toPosition}`);
     }
 
-    let newCreatures = lodash.cloneDeep(this.state.creatures);
+    let newUnits = lodash.cloneDeep(this.state.units);
 
-    newCreatures[fromPosition.x][fromPosition.y] = null;
-    newCreatures[toPosition.x][toPosition.y] = card.id;
+    newUnits[fromPosition.x][fromPosition.y] = null;
+    newUnits[toPosition.x][toPosition.y] = card.id;
 
     this.applyEvent(new Event<FieldData>(
       FieldEventType.CARD_MOVED,
-      { creatures: newCreatures }
+      { units: newUnits }
     ));
   }
 
   private checkPositionForVacancy (toPosition: Point): void {
     let {x, y} = toPosition;
 
-    if (this.state.creatures[x][y]) {
+    if (this.state.units[x][y]) {
       throw new Error(`Tile x: ${x}, y: ${y} is occupied`);
     }
   }

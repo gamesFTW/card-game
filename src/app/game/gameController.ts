@@ -4,7 +4,6 @@ import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { Player } from '../../domain/player/Player';
 import { Card, CardCreationData } from '../../domain/card/Card';
-import * as lodash from 'lodash';
 import { mapPlayer } from './mapPlayer';
 import { Field } from '../../domain/field/Field';
 

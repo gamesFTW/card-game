@@ -7,14 +7,14 @@ interface FieldData {
   id?: EntityId;
   width?: number;
   height?: number;
-  creatures?: EntityPositions;
+  units?: EntityPositions;
 }
 
 class FieldState extends EntityState implements FieldData {
   public id: EntityId;
   public width: number;
   public height: number;
-  public creatures: EntityPositions;
+  public units: EntityPositions;
   // public areas: {[key: number]: {[key: number]: EntityId}};
 
   public constructor (events: Array<Event>) {

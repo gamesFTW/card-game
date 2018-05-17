@@ -9,7 +9,7 @@ class AttackService {
       field: Field): void {
     attackerPlayer.checkIfItHisTurn();
 
-    if (!field.checkCreaturesAdjacency(attackerCard, attackedCard)) {
+    if (!field.checkUnitsAdjacency(attackerCard, attackedCard)) {
       throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
     }
 
