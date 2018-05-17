@@ -21,8 +21,6 @@ class Entity {
 }
 
 abstract class EntityState {
-  // TODO очень желательно выпилить [key: string]: any;
-  [key: string]: any;
   public id: EntityId;
 
   // Не нужно делать конструктор с вызовом applyEvents.
@@ -32,8 +30,8 @@ abstract class EntityState {
   public mutate (event: Event<any>): void {
     let methodName = 'when' + event.type;
 
-    if (this[methodName]) {
-      this[methodName](event);
+    if ((this as any)[methodName]) {
+      (this as any)[methodName](event);
     } else {
       this.autoApplyEvent(event);
     }
@@ -47,7 +45,7 @@ abstract class EntityState {
     let data = event.data;
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
-        this[key] = data[key];
+        (this as any)[key] = data[key];
       }
     }
   }

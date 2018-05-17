@@ -1,18 +1,12 @@
-import * as lodash from 'lodash';
-
-import { Event } from '../../infr/Event';
-import { Entity, EntityId } from '../../infr/Entity';
-
 import { Player, CardStack } from '../Player/Player';
-import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState } from '../Player/PlayerState';
-import { Card, CardCreationData } from '../card/Card';
-import { GameConstants } from '../game/GameConstants';
-import { PlayerEventType } from '../events';
-import { Point } from '../../infr/Point';
+import { Card } from '../card/Card';
 import { Field } from '../field/Field';
 
 class AttackService {
-  static attackUnit (attackerCard: Card, attackedCard: Card, attackerPlayer: Player, attackedPlayer: Player, field: Field): void {
+  static attackUnit (
+      attackerCard: Card, attackedCard: Card,
+      attackerPlayer: Player, attackedPlayer: Player,
+      field: Field): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!field.checkCreaturesAdjacency(attackerCard, attackedCard)) {

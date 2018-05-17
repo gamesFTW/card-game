@@ -1,6 +1,5 @@
 import { Event } from '../../infr/Event';
 import { EntityId, EntityState } from '../../infr/Entity';
-import { CardEventType } from '../events';
 
 interface CardData {
   id?: EntityId;
@@ -25,6 +24,7 @@ class CardState extends EntityState implements CardData {
   public tapped: boolean = false;
   public movingPoints: number;
   public currentMovingPoints: number;
+  public mannaCost: number;
 
   public constructor (events: Array<Event<CardData>>) {
     super();
