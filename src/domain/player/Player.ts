@@ -57,14 +57,14 @@ class Player extends Entity {
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.TURN_ENDED,
-      {id: this.id, status: PlayerStatus.WAITING_FOR_TURN}
+      {status: PlayerStatus.WAITING_FOR_TURN}
     ));
   }
 
   public startTurn (): void {
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.TURN_STARTED,
-      {id: this.id, status: PlayerStatus.MAKES_MOVE}
+      {status: PlayerStatus.MAKES_MOVE}
     ));
   }
 
@@ -72,7 +72,7 @@ class Player extends Entity {
     let shuffledDeck = lodash.shuffle(this.state.deck);
 
     this.applyEvent(new Event<PlayerData>(
-      PlayerEventType.DECK_SHUFFLED, {id: this.id, deck: shuffledDeck}
+      PlayerEventType.DECK_SHUFFLED, {deck: shuffledDeck}
     ));
   }
 
@@ -85,7 +85,7 @@ class Player extends Entity {
 
     this.applyEvent(new Event<PlayerData, PlayerDrawnCardData>(
       PlayerEventType.CARD_DRAWN,
-      {id: this.id, deck: newDeck, hand: newHand},
+      {deck: newDeck, hand: newHand},
       {drawnCard: drawnCardId}
     ));
   }
@@ -101,7 +101,7 @@ class Player extends Entity {
 
     this.applyEvent(new Event<PlayerData, PlayerPlayCardAsMannaData>(
       PlayerEventType.CARD_PLAYED_AS_MANNA,
-      {id: this.id, mannaPool, hand},
+      {mannaPool, hand},
       {playedAsMannaCard: card.id}
     ));
 
@@ -125,7 +125,7 @@ class Player extends Entity {
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.CARD_PLAYED,
-      {id: this.id, table, hand}
+      {table, hand}
     ));
 
     card.play();
@@ -138,7 +138,7 @@ class Player extends Entity {
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.CARD_DIED,
-      {id: this.id, table, graveyard}
+      {table, graveyard}
     ));
   }
 

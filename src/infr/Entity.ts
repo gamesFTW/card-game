@@ -11,6 +11,9 @@ class Entity {
   public get id (): EntityId { return this.state.id; }
 
   protected applyEvent (event: Event<any>): void {
+    // Не понятно зачем это нужно?
+    event.aggregateId = this.state.id;
+
     this.state.mutate(event);
     this.changes.push(event);
   }

@@ -40,7 +40,7 @@ class Card extends Entity {
       throw new Error(`Card ${this.id} already tapped`);
     } else {
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_TAPPED, {id: this.id, tapped: true}
+        CardEventType.CARD_TAPPED, {tapped: true}
       ));
     }
   }
@@ -48,7 +48,7 @@ class Card extends Entity {
   public untap (): void {
     if (this.state.tapped) {
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_UNTAPPED, {id: this.id, tapped: false}
+        CardEventType.CARD_UNTAPPED, {tapped: false}
       ));
     } else {
       throw new Error(`Card ${this.id} already untapped`);
@@ -60,7 +60,7 @@ class Card extends Entity {
 
       this.applyEvent(new Event<CardData>(
         CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
-        {id: this.id, currentMovingPoints: this.state.movingPoints}
+        {currentMovingPoints: this.state.movingPoints}
       ));
     }
 
@@ -83,7 +83,7 @@ class Card extends Entity {
 
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_MOVED,
-      {id: this.id, currentMovingPoints: newCurrentMovingPoints}
+      {currentMovingPoints: newCurrentMovingPoints}
     ));
   }
 
@@ -102,7 +102,7 @@ class Card extends Entity {
     let newHp = this.state.currentHp - damage;
 
     this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_TOOK_DAMAGE, {id: this.id, currentHp: newHp}
+        CardEventType.CARD_TOOK_DAMAGE, {currentHp: newHp}
       ));
 
     if (newHp <= 0) {
@@ -111,14 +111,14 @@ class Card extends Entity {
       }
 
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_DIED, {id: this.id, alive: false})
+        CardEventType.CARD_DIED, {alive: false})
       );
     }
   }
 
   private makeAlive (): void {
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_PLAYED, {id: this.id, alive: true, currentMovingPoints: 0, currentHp: this.maxHp}
+      CardEventType.CARD_PLAYED, {alive: true, currentMovingPoints: 0, currentHp: this.maxHp}
     ));
   }
 }

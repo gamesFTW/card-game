@@ -4,7 +4,7 @@ import { PlayerEventType } from '../events';
 import { PlayerStatus } from './Player';
 
 interface PlayerData {
-  id: EntityId;
+  id?: EntityId;
   deck?: Array<EntityId>;
   hand?: Array<EntityId>;
   mannaPool?: Array<EntityId>;

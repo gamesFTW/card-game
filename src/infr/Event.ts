@@ -4,8 +4,9 @@ class Event<DataType = any, ExtraType = any> {
   public type: string;
   public data?: DataType;
   public extra?: ExtraType;
+  public date: Date;
+  public aggregateId: EntityId;
 
-  // TODO: отрефакторить, добавить aggregateID, и перестать всегда передавать id в data
   public constructor (type: string, data?: DataType, extra?: ExtraType) {
     this.type = type;
 
@@ -16,6 +17,8 @@ class Event<DataType = any, ExtraType = any> {
     if (extra) {
       this.extra = extra;
     }
+
+    this.date = new Date();
   }
 }
 

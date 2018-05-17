@@ -62,7 +62,7 @@ class Game extends Entity {
 
     this.applyEvent(new Event<GameData>(
       GameEventType.TURN_ENDED,
-      {id: this.id, currentPlayersTurn: endingTurnPlayerOpponent.id, currentTurn: this.state.currentTurn + 1}
+      {currentPlayersTurn: endingTurnPlayerOpponent.id, currentTurn: this.state.currentTurn + 1}
     ));
 
     endingTurnPlayerOpponent.startTurn();
