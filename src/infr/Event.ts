@@ -1,11 +1,12 @@
-import { EntityId } from './Entity';
+import { Config } from './Config';
 
 class Event<DataType = any, ExtraType = any> {
+  public static currentOrderIndex = 0;
+
   public type: string;
   public data?: DataType;
   public extra?: ExtraType;
-  public date: Date;
-  public aggregateId: EntityId;
+  public orderIndex: number;
 
   public constructor (type: string, data?: DataType, extra?: ExtraType) {
     this.type = type;
@@ -18,7 +19,10 @@ class Event<DataType = any, ExtraType = any> {
       this.extra = extra;
     }
 
-    this.date = new Date();
+    if (Config.isDev) {
+      this.orderIndex = Event.currentOrderIndex;
+      Event.currentOrderIndex ++;
+    }
   }
 }
 

@@ -3,18 +3,26 @@ import { Entity, EntityId } from '../Entity';
 import { eventStore } from '../eventStore';
 import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
+import { DevRepository } from './DevRepository';
+import { Config } from '../Config';
 
 class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
-  static async save (param: Entity | Array<Entity>): Promise<void> {
-    // TODO: попробовать сделать так, чтобы в конце контроллера надо было вызывать всегда
-    // только одино сохранение репозитория, которое сохраняет все события в порядке их возникновения.
+  static async save (param: Entity | Array<Entity | Array<Entity>>): Promise<void> {
+    let params = lodash.isArray(param) ? param : [param];
 
-    let entities = lodash.isArray(param) ? param : [param];
+    let entities: Array<Entity> = [];
+    params.forEach((param: Entity | Array<Entity>) => {
+      lodash.isArray(param) ? entities = entities.concat(param) : entities.push(param);
+    });
 
-    await Promise.all(entities.map(Repository.saveOne));
+    if (Config.isDev) {
+      await DevRepository.save(entities);
+    } else {
+      await Promise.all(entities.map(Repository.saveOne));
+    }
   }
 
   static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {

@@ -50,12 +50,7 @@ gameController.post('/createGame', async (ctx) => {
   let game = new Game();
   let {player1, player2, player1Cards, player2Cards, field} = game.create(playerACardsData, playerBCardsData);
 
-  await Repository.save(player1Cards);
-  await Repository.save(player1);
-  await Repository.save(player2Cards);
-  await Repository.save(player2);
-  await Repository.save(field);
-  await Repository.save(game);
+  await Repository.save([player1Cards, player1, player2Cards, player2, field, game]);
 
   ctx.body = `Game created. id: ${game.id}.`;
 });
@@ -95,11 +90,10 @@ gameController.post('/endTurn', async (ctx) => {
 
   game.endTurn(endingTurnPlayer, endingTurnPlayerOpponent, endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
 
-  await Repository.save(game);
-  await Repository.save(endingTurnPlayer);
-  await Repository.save(endingTurnPlayerOpponent);
-  await Repository.save(endingTurnPlayerMannaPoolCards);
-  await Repository.save(endingTurnPlayerTableCards);
+  await Repository.save([
+    game, endingTurnPlayer, endingTurnPlayerOpponent,
+    endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards
+  ]);
 
   ctx.body = `Ok`;
 });

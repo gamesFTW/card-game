@@ -20,8 +20,7 @@ playerController.post('/playCardAsManna', async (ctx) => {
 
   player.playCardAsManna(card);
 
-  await Repository.save(player);
-  await Repository.save(card);
+  await Repository.save([player, card]);
 
   ctx.body = `Ok`;
 });
@@ -44,10 +43,7 @@ playerController.post('/playCard', async (ctx) => {
 
   player.playCard(card, playerMannaPoolCards, position, field);
 
-  await Repository.save(player);
-  await Repository.save(card);
-  await Repository.save(field);
-  await Repository.save(playerMannaPoolCards);
+  await Repository.save([player, card, field, playerMannaPoolCards]);
 
   ctx.body = `Ok`;
 });
@@ -69,9 +65,7 @@ playerController.post('/moveCard', async (ctx) => {
 
   player.moveCard(card, position, field);
 
-  await Repository.save(player);
-  await Repository.save(card);
-  await Repository.save(field);
+  await Repository.save([player, card, field]);
 
   ctx.body = `Ok`;
 });
@@ -94,10 +88,7 @@ playerController.post('/attackCard', async (ctx) => {
 
   AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, field);
 
-  await Repository.save(attackedPlayer);
-  await Repository.save(attackerPlayer);
-  await Repository.save(attackedCard);
-  await Repository.save(attackerCard);
+  await Repository.save([attackedPlayer, attackerPlayer, attackedCard, attackerCard]);
 
   ctx.body = `Ok`;
 });
