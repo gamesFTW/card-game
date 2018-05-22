@@ -25,7 +25,7 @@ let getCards = async (array: Array<EntityId>, field: Field) => {
 };
 
 let mapPlayer = async (player: Player, field: Field): Promise<any> => {
-  let playerResponse = Object(player).state;
+  let playerResponse = Object.assign({}, Object(player).state);
   playerResponse.deck = await getCards(playerResponse.deck, field);
   playerResponse.hand = await getCards(playerResponse.hand, field);
   playerResponse.mannaPool = await getCards(playerResponse.mannaPool, field);

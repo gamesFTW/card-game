@@ -11,7 +11,7 @@ const gameController = new Router();
 
 gameController.post('/createGame', async (ctx) => {
   // Temporary data
-  ctx.query.playerACards = [
+  ctx.request.body.playerACards = [
     {name: 'Orc1', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
     {name: 'Orc2', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
     {name: 'Orc3', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
@@ -27,7 +27,7 @@ gameController.post('/createGame', async (ctx) => {
     {name: 'Orc13', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
     {name: 'Orc Warlord', maxHp: 14, damage: 3, mannaCost: 2, movingPoints: 2}
   ];
-  ctx.query.playerBCards = [
+  ctx.request.body.playerBCards = [
     {name: 'Elf1', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
     {name: 'Elf2', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
     {name: 'Elf3', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
@@ -44,19 +44,20 @@ gameController.post('/createGame', async (ctx) => {
     {name: 'Elf14', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4}
   ];
 
-  let playerACardsData = ctx.query.playerACards as Array<CardCreationData>;
-  let playerBCardsData = ctx.query.playerBCards as Array<CardCreationData>;
+  let playerACardsData = ctx.request.body.playerACards as Array<CardCreationData>;
+  let playerBCardsData = ctx.request.body.playerBCards as Array<CardCreationData>;
 
   let game = new Game();
   let {player1, player2, player1Cards, player2Cards, field} = game.create(playerACardsData, playerBCardsData);
 
   await Repository.save([player1Cards, player1, player2Cards, player2, field, game]);
 
-  ctx.body = `Game created. id: ${game.id}.`;
+  ctx.body = {gameId: game.id};
 });
 
 gameController.get('/getGame', async (ctx) => {
   let gameId = ctx.query.gameId as EntityId;
+  let isPretty = ctx.query.isPretty as boolean;
 
   let game = await Repository.get<Game>(gameId, Game);
 
@@ -68,15 +69,23 @@ gameController.get('/getGame', async (ctx) => {
   let player1Response = await mapPlayer(player1, field);
   let player2Response = await mapPlayer(player2, field);
 
-  ctx.body = `Game: ${JSON.stringify(game, undefined, 2)}
+  if (isPretty) {
+    ctx.body = `Game: ${JSON.stringify(game, undefined, 2)}
 Player1: ${player1Response}
 Player2: ${player2Response}`;
+  } else {
+    ctx.body = {
+      game: Object(game).state,
+      player1: Object(player1).state,
+      player2: Object(player2).state
+    };
+  }
 });
 
 gameController.post('/endTurn', async (ctx) => {
-  let gameId = ctx.query.gameId as EntityId;
+  let gameId = ctx.request.body.gameId as EntityId;
   // TODO: playerId нужно доставать из сессии
-  let endingTurnPlayerId = ctx.query.playerId as EntityId;
+  let endingTurnPlayerId = ctx.request.body.playerId as EntityId;
 
   let game = await Repository.get<Game>(gameId, Game);
 

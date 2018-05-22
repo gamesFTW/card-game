@@ -12,8 +12,8 @@ const playerController = new Router();
 
 playerController.post('/playCardAsManna', async (ctx) => {
   // TODO: его нужно доставать из сессии
-  let playerId = ctx.query.playerId as EntityId;
-  let cardId = ctx.query.cardId as EntityId;
+  let playerId = ctx.request.body.playerId as EntityId;
+  let cardId = ctx.request.body.cardId as EntityId;
 
   let player = await Repository.get<Player>(playerId, Player);
   let card = await Repository.get<Card>(cardId, Card);
@@ -26,12 +26,12 @@ playerController.post('/playCardAsManna', async (ctx) => {
 });
 
 playerController.post('/playCard', async (ctx) => {
-  let gameId = ctx.query.gameId as EntityId;
+  let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
-  let playerId = ctx.query.playerId as EntityId;
-  let cardId = ctx.query.cardId as EntityId;
-  let x = ctx.query.x;
-  let y = ctx.query.y;
+  let playerId = ctx.request.body.playerId as EntityId;
+  let cardId = ctx.request.body.cardId as EntityId;
+  let x = ctx.request.body.x;
+  let y = ctx.request.body.y;
 
   let position = new Point(x, y);
 
@@ -49,12 +49,12 @@ playerController.post('/playCard', async (ctx) => {
 });
 
 playerController.post('/moveCard', async (ctx) => {
-  let gameId = ctx.query.gameId as EntityId;
+  let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
-  let playerId = ctx.query.playerId as EntityId;
-  let cardId = ctx.query.cardId as EntityId;
-  let x = ctx.query.x;
-  let y = ctx.query.y;
+  let playerId = ctx.request.body.playerId as EntityId;
+  let cardId = ctx.request.body.cardId as EntityId;
+  let x = ctx.request.body.x;
+  let y = ctx.request.body.y;
 
   let position = new Point(x, y);
 
@@ -71,12 +71,12 @@ playerController.post('/moveCard', async (ctx) => {
 });
 
 playerController.post('/attackCard', async (ctx) => {
-  let gameId = ctx.query.gameId as EntityId;
+  let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
-  let attackerPlayerId = ctx.query.playerId as EntityId;
+  let attackerPlayerId = ctx.request.body.playerId as EntityId;
 
-  let attackerCardId = ctx.query.attackerCardId as EntityId;
-  let attackedCardId = ctx.query.attackedCardId as EntityId;
+  let attackerCardId = ctx.request.body.attackerCardId as EntityId;
+  let attackedCardId = ctx.request.body.attackedCardId as EntityId;
 
   let game = await Repository.get<Game>(gameId, Game);
   let field = await Repository.get<Field>(game.fieldId, Field);
