@@ -107,14 +107,15 @@ gameController.post('/endTurn', async (ctx) => {
 
   game.endTurn(endingTurnPlayer, endingTurnPlayerOpponent, endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
 
-  let entitys = [
+  let entities = [
     game, endingTurnPlayer, endingTurnPlayerOpponent,
     endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards
   ];
-  await Repository.save(entitys);
+  await Repository.save(entities);
 
-  wsUserRegistry.sendEvents(endingTurnPlayer.id, formatEventsForClient(entitys));
-  wsUserRegistry.sendEvents(endingTurnPlayerOpponent.id, formatEventsForClient(entitys));
+  // Send data to client
+  wsUserRegistry.sendEvents(endingTurnPlayer.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEvents(endingTurnPlayerOpponent.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });

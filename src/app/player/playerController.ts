@@ -8,19 +8,30 @@ import { Point } from '../../infr/Point';
 import { Field } from '../../domain/field/Field';
 import { AttackService } from '../../domain/AttackService/AttackService';
 
+import { wsUserRegistry } from '../../infr/WSUserRegistry';
+import { formatEventsForClient } from '../../infr/client';
+
 const playerController = new Router();
 
 playerController.post('/playCardAsManna', async (ctx) => {
+  let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
   let playerId = ctx.request.body.playerId as EntityId;
   let cardId = ctx.request.body.cardId as EntityId;
 
+  let game = await Repository.get<Game>(gameId, Game);
   let player = await Repository.get<Player>(playerId, Player);
+  let playerOpponentId = game.getPlayerIdWhichIsOpponentFor(playerId);
   let card = await Repository.get<Card>(cardId, Card);
 
   player.playCardAsManna(card);
 
-  await Repository.save([player, card]);
+  let entities = [player, card];
+  await Repository.save(entities);
+
+  // Send data to client
+  wsUserRegistry.sendEvents(player.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEvents(playerOpponentId, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });
@@ -38,12 +49,18 @@ playerController.post('/playCard', async (ctx) => {
   let game = await Repository.get<Game>(gameId, Game);
   let field = await Repository.get<Field>(game.fieldId, Field);
   let player = await Repository.get<Player>(playerId, Player);
+  let playerOpponentId = game.getPlayerIdWhichIsOpponentFor(playerId);
   let card = await Repository.get<Card>(cardId, Card);
   let playerMannaPoolCards = await Repository.getMany <Card>(player.mannaPool, Card);
 
   player.playCard(card, playerMannaPoolCards, position, field);
 
-  await Repository.save([player, card, field, playerMannaPoolCards]);
+  let entities = [player, card, field, playerMannaPoolCards];
+  await Repository.save(entities);
+
+  // Send data to client
+  wsUserRegistry.sendEvents(player.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEvents(playerOpponentId, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });
@@ -61,12 +78,17 @@ playerController.post('/moveCard', async (ctx) => {
   let game = await Repository.get<Game>(gameId, Game);
   let field = await Repository.get<Field>(game.fieldId, Field);
   let player = await Repository.get<Player>(playerId, Player);
+  let playerOpponentId = game.getPlayerIdWhichIsOpponentFor(playerId);
   let card = await Repository.get<Card>(cardId, Card);
 
   player.moveCard(card, position, field);
 
-  await Repository.save([player, card, field]);
+  let entities = [player, card, field];
+  await Repository.save(entities);
 
+  // Send data to client
+  wsUserRegistry.sendEvents(player.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEvents(playerOpponentId, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 
@@ -88,8 +110,12 @@ playerController.post('/attackCard', async (ctx) => {
 
   AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, field);
 
-  await Repository.save([attackedPlayer, attackerPlayer, attackedCard, attackerCard]);
+  let entities = [attackedPlayer, attackerPlayer, attackedCard, attackerCard];
+  await Repository.save(entities);
 
+  // Send data to client
+  wsUserRegistry.sendEvents(attackedPlayer.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEvents(attackerPlayer.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 

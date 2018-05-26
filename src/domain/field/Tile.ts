@@ -1,4 +1,4 @@
-import { EntityId, EntityState } from '../../infr/Entity';
+import { EntityId, entityState } from '../../infr/Entity';
 
 class Tile {
   private cards: Array<EntityId> = [];

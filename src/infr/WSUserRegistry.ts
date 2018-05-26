@@ -45,9 +45,7 @@ class WSUserRegistry {
         if (!socket) {
           console.log(chalk.yellow(`Player ${playerId} is not connected`));
         } else {
-          events.forEach((event) => {
-            socket.emit('event', event);
-          });
+            socket.emit('event', events);
         }
   }
   
