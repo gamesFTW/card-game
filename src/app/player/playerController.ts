@@ -2,6 +2,7 @@ import * as Router from 'koa-router';
 import { Game } from '../../domain/game/Game';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
+import { formatEventsForClient } from '../../infr/Event';
 import { Player } from '../../domain/player/Player';
 import { Card } from '../../domain/card/Card';
 import { Point } from '../../infr/Point';
@@ -9,7 +10,6 @@ import { Field } from '../../domain/field/Field';
 import { AttackService } from '../../domain/AttackService/AttackService';
 
 import { wsUserRegistry } from '../../infr/WSUserRegistry';
-import { formatEventsForClient } from '../../infr/client';
 
 const playerController = new Router();
 

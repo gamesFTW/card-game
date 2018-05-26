@@ -1,3 +1,5 @@
+import * as lodash from 'lodash';
+
 import { Config } from './Config';
 import { Entity } from './Entity';
 import { connect } from 'tls';
@@ -28,15 +30,17 @@ class Event<DataType = any, ExtraType = any> {
   }
 }
 
-class ClientEvent extends Event {
-  static convertFromEvent(event: Event, entity: Entity) : ClientEvent{
-    return new ClientEvent(event.type, event.data, entity);
-  }
+let formatEventsForClient = (param:Array<Entity | Array<Entity>>): Array<Event> => {
+  let params = lodash.isArray(param) ? param : [param];
 
-  public constructor(type: string, data: any, entity: Entity) {
-    super(type, data, { id: entity.id });
-  }
+  let entities: Array<Entity> = lodash.flatten(param);
 
+  let events =  entities.map((entity) => {
+    return entity.changes;
+  });
+
+  return lodash.flatten(events);
 }
 
-export {Event, ClientEvent};
+
+export {Event, formatEventsForClient};

@@ -4,7 +4,7 @@ import * as socketIO from 'socket.io';
 import * as koaIO from 'koa-socket-2';
 
 import { Player } from '../domain/player/Player';
-import { Event, ClientEvent } from './Event';
+import { Event } from './Event';
 import { EntityId } from './Entity';
 
 class WSUserRegistry {
@@ -40,7 +40,7 @@ class WSUserRegistry {
       });
   }
 
-  public sendEvents(playerId: EntityId, events: Array<ClientEvent>) {
+  public sendEvents(playerId: EntityId, events: Array<Event>) {
     let socket = this.userToSocket.get(playerId);
         if (!socket) {
           console.log(chalk.yellow(`Player ${playerId} is not connected`));
