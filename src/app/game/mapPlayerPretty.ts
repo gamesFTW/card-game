@@ -20,11 +20,11 @@ let getCards = async (array: Array<EntityId>, field: Field) => {
       card.y = position.y;
     }
 
-    return card;
+    return JSON.stringify(card).replace(/"/g, '\'');
   }));
 };
 
-let mapPlayer = async (player: Player, field: Field): Promise<any> => {
+let mapPlayerPretty = async (player: Player, field: Field): Promise<any> => {
   let playerResponse = Object.assign({}, Object(player).state);
   playerResponse.deck = await getCards(playerResponse.deck, field);
   playerResponse.hand = await getCards(playerResponse.hand, field);
@@ -32,7 +32,7 @@ let mapPlayer = async (player: Player, field: Field): Promise<any> => {
   playerResponse.table = await getCards(playerResponse.table, field);
   playerResponse.graveyard = await getCards(playerResponse.graveyard, field);
 
-  return playerResponse;
+  return JSON.stringify(playerResponse, undefined, 2);
 };
 
-export {mapPlayer};
+export {mapPlayerPretty};

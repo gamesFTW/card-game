@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux';
 import { getType, getReturnOfExpression } from 'typesafe-actions';
 
 import * as cardsActions from './actions';
@@ -7,15 +6,52 @@ export type Action = typeof returnsOfActions[number];
 
 // Не правильно хранить тут такие типы.
 export type Card = {
-  name: string;
+  id?: string;
+  name?: string;
+  maxHp?: number;
+  currentHp?: number;
+  damage?: number;
+  alive?: boolean;
+  tapped?: boolean;
+  mannaCost?: number;
+  movingPoints?: number;
+  currentMovingPoints?: number;
 };
 
-export type CardsState = Card[];
+export type PlayerCards = {
+  deck: Card[];
+  hand: Card[];
+  mannaPool: Card[];
+  table: Card[];
+  graveyard: Card[];
+};
 
-export const cardsReducer = (state: any = [], action: Action) => {
+export type CardsState = {
+  player: PlayerCards;
+  opponent: PlayerCards;
+};
+
+const initState: CardsState = {
+  player: {
+    deck: [],
+    hand: [],
+    mannaPool: [],
+    table: [],
+    graveyard: []
+  },
+  opponent: {
+    deck: [],
+    hand: [],
+    mannaPool: [],
+    table: [],
+    graveyard: []
+  }
+};
+
+export const cardsReducer = (state: CardsState = initState, action: Action) => {
   switch (action.type) {
-    case getType(cardsActions.addCard):
-      return state.concat(action.payload);
+    case getType(cardsActions.initCards):
+      return action.payload;
 
     default:
       return state;

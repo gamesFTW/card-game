@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as IO from 'koa-socket-2';
+import * as cors from 'koa2-cors';
 
 import { eventStore } from './infr/eventStore';
 import { cardController } from './app/card/cardController';
@@ -16,7 +17,9 @@ import { wsUserRegistry } from './infr/WSUserRegistry';
 async function main (): Promise<void> {
   await eventStore.on('connect');
 
-  const app = new Koa()
+  const app = new Koa();
+  app.use(cors());
+
   const wsIO = new IO();
   wsIO.attach(app, false);
 

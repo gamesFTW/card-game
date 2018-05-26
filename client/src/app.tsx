@@ -20,7 +20,7 @@ export class App extends React.Component<Props, {}> {
         <ConnectedRouter history={history}>
           <Route
             exact={true}
-            path="/"
+            path='/'
             render={() => (
               <Main />
             )}

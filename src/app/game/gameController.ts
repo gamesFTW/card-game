@@ -7,6 +7,7 @@ import { Player } from '../../domain/player/Player';
 import { Card, CardCreationData } from '../../domain/card/Card';
 import { mapPlayer } from './mapPlayer';
 import { Field } from '../../domain/field/Field';
+import {mapPlayerPretty} from './mapPlayerPretty';
 
 import { wsUserRegistry } from '../../infr/WSUserRegistry';
 import { formatEventsForClient } from '../../infr/client';
@@ -70,18 +71,21 @@ gameController.get('/getGame', async (ctx) => {
   let player1 = await Repository.get<Player>(game.player1Id, Player);
   let player2 = await Repository.get<Player>(game.player2Id, Player);
 
-  let player1Response = await mapPlayer(player1, field);
-  let player2Response = await mapPlayer(player2, field);
-
   if (isPretty) {
+    let player1Response = await mapPlayerPretty(player1, field);
+    let player2Response = await mapPlayerPretty(player2, field);
+
     ctx.body = `Game: ${JSON.stringify(game, undefined, 2)}
 Player1: ${player1Response}
 Player2: ${player2Response}`;
   } else {
+    let player1Response = await mapPlayer(player1, field);
+    let player2Response = await mapPlayer(player2, field);
+
     ctx.body = {
       game: Object(game).state,
-      player1: Object(player1).state,
-      player2: Object(player2).state
+      player1: player1Response,
+      player2: player2Response
     };
   }
 });

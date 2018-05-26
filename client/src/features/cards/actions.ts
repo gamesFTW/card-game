@@ -1,7 +1,7 @@
 import { createAction } from 'typesafe-actions';
 
-const ADD_CARD = 'ADD_CARD';
+const INIT_CARDS = 'INIT_CARDS';
 
-export const addCard = createAction(ADD_CARD, (cards: any) => ({
-  type: ADD_CARD, payload: cards,
+export const initCards = createAction(INIT_CARDS, (params: any) => ({
+  type: INIT_CARDS, payload: params
 }));
