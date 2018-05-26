@@ -3,8 +3,8 @@ import { createEpicMiddleware } from 'redux-observable';
 import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 
-import { rootReducer, RootState } from 'Features/root-reducer';
-import { rootEpic } from 'Features/root-epic';
+import { rootReducer, RootState } from './root-reducer';
+import { rootEpic } from './root-epic';
 
 const composeEnhancers = (
   process.env.NODE_ENV === 'development' &&
