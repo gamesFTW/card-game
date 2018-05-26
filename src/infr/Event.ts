@@ -1,4 +1,6 @@
 import { Config } from './Config';
+import { Entity } from './Entity';
+import { connect } from 'tls';
 
 class Event<DataType = any, ExtraType = any> {
   public static currentOrderIndex = 0;
@@ -26,4 +28,15 @@ class Event<DataType = any, ExtraType = any> {
   }
 }
 
-export {Event};
+class ClientEvent extends Event {
+  static convertFromEvent(event: Event, entity: Entity) : ClientEvent{
+    return new ClientEvent(event.type, event.data, entity);
+  }
+
+  public constructor(type: string, data: any, entity: Entity) {
+    super(type, data, { id: entity.id });
+  }
+
+}
+
+export {Event, ClientEvent};

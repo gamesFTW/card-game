@@ -9,7 +9,7 @@ type SocketOptions = {
   }
 };
 
-type eventName = 'event' | 'message' | 'open' | 'close';
+type eventName = 'connect' | 'event' | 'message' | 'open' | 'close' | 'register' | 'disconnect';
 type room = String;
 
 
@@ -20,7 +20,8 @@ type eventCtx = {
   acknowledge: Function 
 };
 
-interface eventCb { (ctx: eventCtx, data: Object) : void } 
+interface eventCb { (ctx: eventCtx, data: any) : void } 
+interface useCb { (ctx: eventCtx, next: () => Promise<void>) : void } 
 
 declare class IO {
   constructor(opts?: String|SocketOptions);
@@ -28,8 +29,8 @@ declare class IO {
   off (event: eventName, handler: eventCb) : this ;
   to (room: room) : SocketIO.Socket;
   broadcast (event: eventName, data: any) : void ;
-  use (fn: Function): this ;
   attach (app: Koa, https: Boolean) : void ;
+  use (cb: useCb) : void;
 }
 
 declare module IO {}

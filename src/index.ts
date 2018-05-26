@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as IO from 'koa-socket-2';
@@ -8,6 +10,8 @@ import { gameController } from './app/game/gameController';
 import { playerController } from './app/player/playerController';
 import { staticContorller } from './app/static/StaticController';
 import { debugController } from './app/_debug/debugController';
+
+import { wsUserRegistry } from './infr/WSUserRegistry';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -22,25 +26,29 @@ async function main (): Promise<void> {
     const start = Date.now();
     await next();
     const ms = Date.now() - start;
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+    console.log(chalk.green(`${ctx.method} ${ctx.url} - ${ms}ms`));
   });
 
   app.use(async (ctx, next) => {
     try {
       await next();
     } catch (error) {
-      console.error(error.stack);
+      console.error(chalk.red(error.stack));
 
       ctx.status = 500;
       ctx.body = `${error.stack}`;
     }
   });
 
-  wsIO.on('message', (ctx, data) => {
-    console.log('context', ctx);
-    console.log('client sent data to message endpoint', data);
-    ctx.socket.emit('message', 'hi');
+  wsIO.use(async (ctx, next ) => {
+    const start = Date.now();
+    await next();
+    const ms = Date.now() - start;
+    console.log(chalk.yellow(`WS: ${ctx.event} - ${ms}ms`));
   });
+
+  wsUserRegistry.autoRegistrateUsers(wsIO);
+  
 
   app.use(cardController.routes());
   app.use(gameController.routes());

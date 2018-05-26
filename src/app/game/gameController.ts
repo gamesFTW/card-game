@@ -1,4 +1,5 @@
 import * as Router from 'koa-router';
+
 import { Game } from '../../domain/game/Game';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
@@ -6,6 +7,9 @@ import { Player } from '../../domain/player/Player';
 import { Card, CardCreationData } from '../../domain/card/Card';
 import { mapPlayer } from './mapPlayer';
 import { Field } from '../../domain/field/Field';
+
+import { wsUserRegistry } from '../../infr/WSUserRegistry';
+import { formatEventsForClient } from '../../infr/client';
 
 const gameController = new Router();
 
@@ -99,10 +103,14 @@ gameController.post('/endTurn', async (ctx) => {
 
   game.endTurn(endingTurnPlayer, endingTurnPlayerOpponent, endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
 
-  await Repository.save([
+  let entitys = [
     game, endingTurnPlayer, endingTurnPlayerOpponent,
     endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards
-  ]);
+  ];
+  await Repository.save(entitys);
+
+  wsUserRegistry.sendEvents(endingTurnPlayer.id, formatEventsForClient(entitys));
+  wsUserRegistry.sendEvents(endingTurnPlayerOpponent.id, formatEventsForClient(entitys));
 
   ctx.body = `Ok`;
 });

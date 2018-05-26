@@ -13,10 +13,7 @@ class Repository {
   static async save (param: Entity | Array<Entity | Array<Entity>>): Promise<void> {
     let params = lodash.isArray(param) ? param : [param];
 
-    let entities: Array<Entity> = [];
-    params.forEach((param: Entity | Array<Entity>) => {
-      lodash.isArray(param) ? entities = entities.concat(param) : entities.push(param);
-    });
+    let entities: Array<Entity> = lodash.flatten(params); 
 
     if (Config.isDev) {
       await DevRepository.save(entities);
