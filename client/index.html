@@ -4,28 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script>
-      var params = new URLSearchParams(window.location.search);
 
-      var playerId = params.get('playerId');
-
-      var socket = io('http://localhost:3000');
-      socket.on('connect', function(){
-        console.log('connect');
-        socket.emit('register', { playerId: playerId });
-      });
-      socket.on('message', function(data){
-        console.log('server said', data);
-      });
-      
-      socket.on('event', function(data){
-        console.log('server send event', data);
-      });
-
-      socket.on('disconnect', function(){});
-
-
-    </script>
     <title>React / Redux / Typescript / Webpack - Starter</title>
   </head>
   <body>

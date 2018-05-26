@@ -19,15 +19,46 @@ interface State {
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 export class Main extends React.Component<Props, State> {
 
+  constructor (props: Props) {
+    super(props);
+
+    let self = this;
+    let params = new URLSearchParams(window.location.search);
+    let playerId = params.get('playerId');
+
+    let socket = io('http://localhost:3000');
+    socket.on('connect', function () {
+      console.log('connect');
+      socket.emit('register', { playerId: playerId });
+    });
+
+    socket.on('event', function (data: any): void {
+      console.log('server send event', data);
+      self.loadGame();
+    });
+
+    socket.on('disconnect', function(){});
+  }
+
   async componentDidMount (): Promise<void> {
-    const gameId = '49yqm5m1nrn136ab11c9lydei41nfu';
+    await this.loadGame();
+  }
+
+  async loadGame (): Promise<void> {
+    let params = new URLSearchParams(window.location.search);
+    let gameId = params.get('gameId');
+    let playerId = params.get('playerId');
+
     const serverPath = 'http://localhost:3000/';
 
     let response = await axios.get(`${serverPath}getGame?gameId=${gameId}`);
 
+    let player = playerId === response.data.player1.id ? response.data.player1 : response.data.player2;
+    let opponent = playerId === response.data.player2.id ? response.data.player1 : response.data.player2;
+
     this.props.initCards({
-      player: response.data.player1,
-      opponent: response.data.player2
+      player: player,
+      opponent: opponent
     });
   }
 
