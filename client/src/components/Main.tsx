@@ -25,11 +25,12 @@ export class Main extends React.Component<Props, State> {
     let self = this;
     let params = new URLSearchParams(window.location.search);
     let playerId = params.get('playerId');
+    let gameId = params.get('gameId');
 
     let socket = io('http://localhost:3000');
     socket.on('connect', function () {
       console.log('connect');
-      socket.emit('register', { playerId: playerId });
+      socket.emit('register', { playerId, gameId });
     });
 
     socket.on('event', function (data: any): void {

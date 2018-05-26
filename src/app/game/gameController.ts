@@ -114,8 +114,7 @@ gameController.post('/endTurn', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEvents(endingTurnPlayer.id, formatEventsForClient(entities));
-  wsUserRegistry.sendEvents(endingTurnPlayerOpponent.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEventsInGame(game.id, endingTurnPlayer.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });

@@ -19,12 +19,16 @@ class WSUserRegistry {
   public autoRegistrateUsers(wsIO: koaIO): void {
       wsIO.on('register', (ctx, data) => {
         let playerId = data.playerId as EntityId;
-        if (!playerId) {
-          console.error(chalk.red('playerId must be set'));
+        let gameId = data.playerId as EntityId;
+        if (!playerId || !gameId) {
+          console.error(chalk.red('playerId|gameId must be set'));
           // throw new Error('PlayerId must be set');
         } else {
+
           this.socketToUser.set(ctx.socket, playerId);
           this.userToSocket.set(playerId, ctx.socket); 
+          ctx.socket.join(gameId);
+
           console.log(chalk.yellow(`player ${playerId} is registred`));
         }
       });
@@ -49,6 +53,11 @@ class WSUserRegistry {
         }
   }
   
+  public sendEventsInGame(gameId: EntityId, playerId: EntityId, events: Array<Event>) {
+    this.sendEvents(playerId, events);
+    let socket = this.userToSocket.get(playerId);
+    socket.broadcast.to(gameId).emit('event', events);
+  }
   
 }
 const wsUserRegistry = new WSUserRegistry();

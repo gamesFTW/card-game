@@ -21,7 +21,6 @@ playerController.post('/playCardAsManna', async (ctx) => {
 
   let game = await Repository.get<Game>(gameId, Game);
   let player = await Repository.get<Player>(playerId, Player);
-  let playerOpponentId = game.getPlayerIdWhichIsOpponentFor(playerId);
   let card = await Repository.get<Card>(cardId, Card);
 
   player.playCardAsManna(card);
@@ -30,8 +29,7 @@ playerController.post('/playCardAsManna', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEvents(player.id, formatEventsForClient(entities));
-  wsUserRegistry.sendEvents(playerOpponentId, formatEventsForClient(entities));
+  wsUserRegistry.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });
@@ -49,7 +47,6 @@ playerController.post('/playCard', async (ctx) => {
   let game = await Repository.get<Game>(gameId, Game);
   let field = await Repository.get<Field>(game.fieldId, Field);
   let player = await Repository.get<Player>(playerId, Player);
-  let playerOpponentId = game.getPlayerIdWhichIsOpponentFor(playerId);
   let card = await Repository.get<Card>(cardId, Card);
   let playerMannaPoolCards = await Repository.getMany <Card>(player.mannaPool, Card);
 
@@ -59,8 +56,7 @@ playerController.post('/playCard', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEvents(player.id, formatEventsForClient(entities));
-  wsUserRegistry.sendEvents(playerOpponentId, formatEventsForClient(entities));
+  wsUserRegistry.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });
@@ -78,7 +74,6 @@ playerController.post('/moveCard', async (ctx) => {
   let game = await Repository.get<Game>(gameId, Game);
   let field = await Repository.get<Field>(game.fieldId, Field);
   let player = await Repository.get<Player>(playerId, Player);
-  let playerOpponentId = game.getPlayerIdWhichIsOpponentFor(playerId);
   let card = await Repository.get<Card>(cardId, Card);
 
   player.moveCard(card, position, field);
@@ -87,8 +82,7 @@ playerController.post('/moveCard', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEvents(player.id, formatEventsForClient(entities));
-  wsUserRegistry.sendEvents(playerOpponentId, formatEventsForClient(entities));
+  wsUserRegistry.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 
@@ -114,8 +108,7 @@ playerController.post('/attackCard', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEvents(attackedPlayer.id, formatEventsForClient(entities));
-  wsUserRegistry.sendEvents(attackerPlayer.id, formatEventsForClient(entities));
+  wsUserRegistry.sendEventsInGame(game.id, attackedPlayer.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 
