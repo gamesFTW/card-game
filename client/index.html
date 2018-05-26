@@ -3,9 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io('http://localhost:3000');
+      socket.on('connect', function(){
+        console.log('connect');
+        socket.emit('message', 'hello');
+      });
+      socket.on('message', function(data){
+        console.log('server said', data);
+      });
+      socket.on('disconnect', function(){});
+
+    
+    </script> 
     <title>React / Redux / Typescript / Webpack - Starter</title>
   </head>
   <body>
+    hi
     <div id="root"></div>
   </body>
 </html>
