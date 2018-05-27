@@ -6,6 +6,13 @@ const CardContainer = styled.div`
   display: inline-block;
   border: solid 1px;
   font-size: 12px;
+  position: absolute;
+  transition: all 1s ease-out;
+  left: 0;
+  top: 0;
+  border-radius: 2px;
+  box-shadow: 0px 0px 1px 1px grey;
+  font-family: sans-serif;
 `;
 
 const UntappedCardBorder = styled.div`
@@ -21,8 +28,13 @@ const TappedCardBorder = styled.div`
 export const Card = (props: CardData): JSX.Element => {
   const CardBorder = props.tapped ? TappedCardBorder : UntappedCardBorder;
 
+  let style = {
+    'left': props.screenX,
+    'top': props.screenY
+  };
+
   return (
-    <CardContainer>
+    <CardContainer style={style}>
       <CardBorder>
         <div>{props.name}</div>
         <div>hp {props.alive ? props.currentHp + '/' : ''} {props.maxHp}</div>
