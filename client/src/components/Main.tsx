@@ -13,6 +13,7 @@ interface Props {
   player: PlayerCards;
   opponent: PlayerCards;
   initCards: (params: any) => any;
+  cardPlaceChangePosition: (params: any) => any;
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
@@ -24,8 +25,8 @@ export class Main extends React.Component<Props> {
     let params = new URLSearchParams(window.location.search);
     let playerId = params.get('playerId');
 
-    let socket = io('http://localhost:3000');
-    socket.on('connect', function () {
+    let socket = (window as any).io('http://localhost:3000');
+    socket.on('connect', function (): void {
       console.log('connect');
       socket.emit('register', { playerId: playerId });
     });
@@ -35,7 +36,7 @@ export class Main extends React.Component<Props> {
       self.loadGame();
     });
 
-    socket.on('disconnect', function(){});
+    // socket.on('disconnect', function (): void {});
   }
 
   async componentDidMount (): Promise<void> {
@@ -62,7 +63,11 @@ export class Main extends React.Component<Props> {
 
   render (): JSX.Element {
     let CardPlaceContainer = (cardData: CardData) => {
-      return (<CardPlace {...cardData}/>);
+      let params = {
+        id: cardData.id,
+        cardPlaceChangePosition: this.props.cardPlaceChangePosition
+      };
+      return (<CardPlace {...params}/>);
     };
 
     let style = {
@@ -123,7 +128,8 @@ function mapStateToProps (state: any): any {
 
 function mapDispatchToProps (dispatch: Dispatch<any>): any {
   return {
-    initCards: (params: any) => dispatch(cardsActions.initCards(params))
+    initCards: (params: any) => dispatch(cardsActions.initCards(params)),
+    cardPlaceChangePosition: (params: any) => dispatch(cardsActions.cardPlaceChangePosition(params))
   };
 }
 

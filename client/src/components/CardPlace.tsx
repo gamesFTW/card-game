@@ -6,11 +6,14 @@ import styled from 'styled-components';
 import { Card as CardData } from '../features/cards/reducer';
 import { cardsActions } from '../features/cards';
 
+const {whyDidYouUpdate} = require('why-did-you-update');
+whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: true });
+
 const CardPlaceContainer = styled.div`
   display: inline-block;
   width: 60px;
   height: 100px;
-  // background: gray;
+  background: gray;
   margin: 0 4px;
 `;
 
@@ -18,7 +21,6 @@ interface CardPlaceData extends CardData {
   cardPlaceChangePosition: (params: any) => any;
 }
 
-@(connect(mapStateToProps, mapDispatchToProps) as any)
 export class CardPlace extends React.Component<CardPlaceData> {
   componentDidMount (): void {
     this.refreshPosition();
@@ -39,21 +41,9 @@ export class CardPlace extends React.Component<CardPlaceData> {
 
   render (): JSX.Element {
     return (
-      <CardPlaceContainer>
-      </CardPlaceContainer>
+      <CardPlaceContainer key={'card-place-' + this.props.id}/>
     );
   }
-}
-
-function mapStateToProps (state: any): any {
-  return {
-  };
-}
-
-function mapDispatchToProps (dispatch: Dispatch<any>): any {
-  return {
-    cardPlaceChangePosition: (params: any) => dispatch(cardsActions.cardPlaceChangePosition(params))
-  };
 }
 
 export default CardPlace;

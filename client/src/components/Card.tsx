@@ -7,26 +7,24 @@ const CardContainer = styled.div`
   border: solid 1px;
   font-size: 12px;
   position: absolute;
-  transition: all 1s ease-out;
+  transition: all 1.5s ease-in-out;
   left: 0;
   top: 0;
   border-radius: 2px;
   box-shadow: 0px 0px 1px 1px grey;
   font-family: sans-serif;
-`;
-
-const UntappedCardBorder = styled.div`
   width: 60px;
   height: 100px;
+  background: white;
 `;
 
-const TappedCardBorder = styled.div`
-  width: 100px;
-  height: 60px;
+const TappedCardContainer = CardContainer.extend`
+  transform-origin: top left;
+  transform: rotate(90deg) translateY(-100%);
 `;
 
 export const Card = (props: CardData): JSX.Element => {
-  const CardBorder = props.tapped ? TappedCardBorder : UntappedCardBorder;
+  const Container = props.tapped ? TappedCardContainer : CardContainer;
 
   let style = {
     'left': props.screenX,
@@ -34,14 +32,12 @@ export const Card = (props: CardData): JSX.Element => {
   };
 
   return (
-    <CardContainer style={style}>
-      <CardBorder>
-        <div>{props.name}</div>
-        <div>hp {props.alive ? props.currentHp + '/' : ''} {props.maxHp}</div>
-        <div>damage {props.damage}</div>
-        <div>manna {props.mannaCost}</div>
-      </CardBorder>
-    </CardContainer>
+    <Container style={style} key={'card-' + props.id}>
+      <div>{props.name}</div>
+      <div>hp {props.alive ? props.currentHp + '/' : ''} {props.maxHp}</div>
+      <div>damage {props.damage}</div>
+      <div>manna {props.mannaCost}</div>
+    </Container>
   );
 };
 

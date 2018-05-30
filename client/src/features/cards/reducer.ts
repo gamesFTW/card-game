@@ -56,8 +56,8 @@ const initState: CardsState = {
 export const cardsReducer = (state: CardsState = initState, action: Action) => {
   switch (action.type) {
     case getType(cardsActions.initCards):
-      let player = action.payload.player;
-      let opponent = action.payload.opponent;
+      let player = lodash.cloneDeep(action.payload.player);
+      let opponent = lodash.cloneDeep(action.payload.opponent);
 
       let allCards = player.deck
         .concat(player.hand)
@@ -70,19 +70,20 @@ export const cardsReducer = (state: CardsState = initState, action: Action) => {
         .concat(opponent.table)
         .concat(opponent.graveyard);
 
-      let newState = action.payload;
+      let newState = lodash.cloneDeep(action.payload);
       newState.allCards = allCards;
       return newState;
 
-    case getType(cardsActions.cardPlaceChangePosition):
-      let card = lodash.find(state.allCards, (card) => card.id === action.payload.id);
+    case getType(cardsActions.cardPlaceChangePosition): {
+      let newState = lodash.cloneDeep(state);
+      let card = lodash.find(newState.allCards, (card) => card.id === action.payload.id);
 
       if (card) {
         card.screenX = action.payload.x;
         card.screenY = action.payload.y;
       }
-      return lodash.cloneDeep(state);
-
+      return newState;
+    }
     default:
       return state;
   }
