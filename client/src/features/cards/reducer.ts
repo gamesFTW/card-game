@@ -17,8 +17,10 @@ export type Card = {
   mannaCost?: number;
   movingPoints?: number;
   currentMovingPoints?: number;
-  screenX?: number;
-  screenY?: number;
+  position: {
+    screenX?: number;
+    screenY?: number;
+  }
 };
 
 export type PlayerCards = {
@@ -55,7 +57,7 @@ const initState: CardsState = {
 
 export const cardsReducer = (state: CardsState = initState, action: Action) => {
   switch (action.type) {
-    case getType(cardsActions.initCards):
+    case getType(cardsActions.initCards): {
       let player = lodash.cloneDeep(action.payload.player);
       let opponent = lodash.cloneDeep(action.payload.opponent);
 
@@ -73,17 +75,57 @@ export const cardsReducer = (state: CardsState = initState, action: Action) => {
       let newState = lodash.cloneDeep(action.payload);
       newState.allCards = allCards;
       return newState;
+    }
 
     case getType(cardsActions.cardPlaceChangePosition): {
-      let newState = lodash.cloneDeep(state);
-      let card = lodash.find(newState.allCards, (card) => card.id === action.payload.id);
+      let card = lodash.find(state.allCards, (card) => card.id === action.payload.id);
 
       if (card) {
-        card.screenX = action.payload.x;
-        card.screenY = action.payload.y;
+        let cardIndex = state.allCards.indexOf(card);
+        let newCard = lodash.cloneDeep(card);
+        let allCards = lodash.cloneDeep(state.allCards);
+
+        newCard.position = {
+          screenX: action.payload.x,
+          screenY: action.payload.y
+        };
+
+        allCards[cardIndex] = newCard;
+        // state.allCards[cardIndex] = newCard;
+
+        state.allCards = allCards;
+
+        return {...state};
+      } else {
+        return state;
       }
-      return newState;
     }
+
+    case getType(cardsActions.drawCard): {
+      // let card = lodash.find(state.player.deck, (card) => card.id === action.payload.id);
+      //
+      // if (card) {
+      //   let cardIndex = state.allCards.indexOf(card);
+      // //   let newCard = lodash.cloneDeep(card);
+      // //   let allCards = lodash.cloneDeep(state.allCards);
+      // //
+      // //   newCard.position = {
+      // //     screenX: action.payload.x,
+      // //     screenY: action.payload.y
+      // //   };
+      // //
+      // //   allCards[cardIndex] = newCard;
+      // //   // state.allCards[cardIndex] = newCard;
+      // //
+      // //   state.allCards = allCards;
+      // //
+      //   return {...state};
+      // } else {
+      //   return state;
+      // }
+      return state;
+    }
+
     default:
       return state;
   }

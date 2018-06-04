@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { Card as CardData } from '../features/cards/reducer';
 import { cardsActions } from '../features/cards';
 
-const {whyDidYouUpdate} = require('why-did-you-update');
-whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: true });
+// const {whyDidYouUpdate} = require('why-did-you-update');
+// whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: true });
 
 const CardPlaceContainer = styled.div`
   display: inline-block;
@@ -19,16 +19,28 @@ const CardPlaceContainer = styled.div`
 
 interface CardPlaceData extends CardData {
   cardPlaceChangePosition: (params: any) => any;
+  drawCard: (params: any) => any;
 }
 
 export class CardPlace extends React.Component<CardPlaceData> {
+  constructor (props: CardPlaceData) {
+    super(props);
+    this.clickHandler = this.clickHandler.bind(this);
+  }
+
   componentDidMount (): void {
+    console.log('CardPlace componentDidMount');
     this.refreshPosition();
   }
 
   componentDidUpdate (): void {
+    console.log('CardPlace componentDidMount');
     this.refreshPosition();
   }
+
+  // shouldComponentUpdate (nextProps: any, nextState: any): void {
+  //   console.log(nextProps);
+  // }
 
   refreshPosition (): void {
     let element = ReactDOM.findDOMNode(this);
@@ -39,9 +51,14 @@ export class CardPlace extends React.Component<CardPlaceData> {
     );
   }
 
+  clickHandler (): void {
+    this.props.drawCard({id: this.props.id});
+  }
+
   render (): JSX.Element {
+    console.log('CardPlace render');
     return (
-      <CardPlaceContainer key={'card-place-' + this.props.id}/>
+      <CardPlaceContainer onClick={this.clickHandler}/>
     );
   }
 }

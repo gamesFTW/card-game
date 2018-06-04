@@ -25,11 +25,19 @@ const TappedCardContainer = CardContainer.extend`
 
 export const Card = (props: CardData): JSX.Element => {
   const Container = props.tapped ? TappedCardContainer : CardContainer;
+  let style;
 
-  let style = {
-    'left': props.screenX,
-    'top': props.screenY
-  };
+  if (props.position) {
+    style = {
+      'left': props.position.screenX,
+      'top': props.position.screenY
+    };
+  } else {
+    style = {
+      'left': 0,
+      'top': 0
+    };
+  }
 
   return (
     <Container style={style} key={'card-' + props.id}>

@@ -7,13 +7,15 @@ import { cardsActions } from '../features/cards';
 import { Card as CardData, PlayerCards } from '../features/cards/reducer';
 import { Card } from './Card';
 import CardPlace from './CardPlace';
+import Cards from './Cards';
 
 interface Props {
-  allCards: CardData[];
+  // allCards: CardData[];
   player: PlayerCards;
   opponent: PlayerCards;
   initCards: (params: any) => any;
   cardPlaceChangePosition: (params: any) => any;
+  drawCard: (params: any) => any;
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
@@ -27,7 +29,7 @@ export class Main extends React.Component<Props> {
 
     let socket = (window as any).io('http://localhost:3000');
     socket.on('connect', function (): void {
-      console.log('connect');
+      console.log('socket connected');
       socket.emit('register', { playerId: playerId });
     });
 
@@ -40,6 +42,7 @@ export class Main extends React.Component<Props> {
   }
 
   async componentDidMount (): Promise<void> {
+    console.log('Main componentDidMount');
     await this.loadGame();
   }
 
@@ -61,13 +64,19 @@ export class Main extends React.Component<Props> {
     });
   }
 
+  componentWillReceiveProps (): void {
+    console.log('Main componentWillReceiveProps');
+  }
+
   render (): JSX.Element {
+    console.log('Main render');
     let CardPlaceContainer = (cardData: CardData) => {
       let params = {
         id: cardData.id,
-        cardPlaceChangePosition: this.props.cardPlaceChangePosition
+        cardPlaceChangePosition: this.props.cardPlaceChangePosition,
+        drawCard: this.props.drawCard
       };
-      return (<CardPlace {...params}/>);
+      return (<CardPlace {...params} key={'card-place-' + cardData.id}/>);
     };
 
     let style = {
@@ -81,7 +90,7 @@ export class Main extends React.Component<Props> {
     return (
       <div>
         <div>
-          {this.props.allCards.map(Card)}
+          <Cards/>
         </div>
 
         <div style={style}>
@@ -120,7 +129,7 @@ export class Main extends React.Component<Props> {
 
 function mapStateToProps (state: any): any {
   return {
-    allCards: state.cards.allCards,
+    // allCards: state.cards.allCards,
     player: state.cards.player,
     opponent: state.cards.opponent
   };
@@ -129,7 +138,8 @@ function mapStateToProps (state: any): any {
 function mapDispatchToProps (dispatch: Dispatch<any>): any {
   return {
     initCards: (params: any) => dispatch(cardsActions.initCards(params)),
-    cardPlaceChangePosition: (params: any) => dispatch(cardsActions.cardPlaceChangePosition(params))
+    cardPlaceChangePosition: (params: any) => dispatch(cardsActions.cardPlaceChangePosition(params)),
+    drawCard: (params: any) => dispatch(cardsActions.drawCard(params))
   };
 }
 
