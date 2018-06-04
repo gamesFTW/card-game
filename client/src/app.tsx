@@ -6,6 +6,7 @@ import { Route } from 'react-router-dom';
 import { History } from 'history';
 
 import { Main } from './components/Main';
+import MegaMain from 'Components/MegaMain';
 
 interface Props {
   store: Store<any>;
@@ -22,7 +23,7 @@ export class App extends React.Component<Props, {}> {
             exact={true}
             path='/'
             render={() => (
-              <Main />
+              <MegaMain />
             )}
           />
         </ConnectedRouter>

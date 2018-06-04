@@ -23,7 +23,11 @@ const TappedCardContainer = CardContainer.extend`
   transform: rotate(90deg) translateY(-100%);
 `;
 
-export const Card = (props: CardData): JSX.Element => {
+interface CardPlaceData extends CardData {
+  drawCard: (params: any) => any;
+}
+
+export const Card = (props: CardPlaceData): JSX.Element => {
   const Container = props.tapped ? TappedCardContainer : CardContainer;
   let style;
 
@@ -39,8 +43,12 @@ export const Card = (props: CardData): JSX.Element => {
     };
   }
 
+  function clickHandler (): void {
+    props.drawCard({id: props.id});
+  }
+
   return (
-    <Container style={style} key={'card-' + props.id}>
+    <Container onClick={clickHandler} style={style} key={'card-' + props.id}>
       <div>{props.name}</div>
       <div>hp {props.alive ? props.currentHp + '/' : ''} {props.maxHp}</div>
       <div>damage {props.damage}</div>

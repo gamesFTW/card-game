@@ -10,71 +10,21 @@ import CardPlace from './CardPlace';
 import Cards from './Cards';
 
 interface Props {
-  // allCards: CardData[];
   player: PlayerCards;
   opponent: PlayerCards;
-  initCards: (params: any) => any;
   cardPlaceChangePosition: (params: any) => any;
-  drawCard: (params: any) => any;
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 export class Main extends React.Component<Props> {
-  constructor (props: Props) {
-    super(props);
-
-    let self = this;
-    let params = new URLSearchParams(window.location.search);
-    let playerId = params.get('playerId');
-
-    let socket = (window as any).io('http://localhost:3000');
-    socket.on('connect', function (): void {
-      console.log('socket connected');
-      socket.emit('register', { playerId: playerId });
-    });
-
-    socket.on('event', function (data: any): void {
-      console.log('server send event', data);
-      self.loadGame();
-    });
-
-    // socket.on('disconnect', function (): void {});
-  }
-
-  async componentDidMount (): Promise<void> {
-    console.log('Main componentDidMount');
-    await this.loadGame();
-  }
-
-  async loadGame (): Promise<void> {
-    let params = new URLSearchParams(window.location.search);
-    let gameId = params.get('gameId');
-    let playerId = params.get('playerId');
-
-    const serverPath = 'http://localhost:3000/';
-
-    let response = await axios.get(`${serverPath}getGame?gameId=${gameId}`);
-
-    let player = playerId === response.data.player1.id ? response.data.player1 : response.data.player2;
-    let opponent = playerId === response.data.player2.id ? response.data.player1 : response.data.player2;
-
-    this.props.initCards({
-      player: player,
-      opponent: opponent
-    });
-  }
-
   componentWillReceiveProps (): void {
-    console.log('Main componentWillReceiveProps');
   }
 
   render (): JSX.Element {
-    console.log('Main render');
     let CardPlaceContainer = (cardData: CardData) => {
       let params = {
         id: cardData.id,
-        cardPlaceChangePosition: this.props.cardPlaceChangePosition,
-        drawCard: this.props.drawCard
+        cardPlaceChangePosition: this.props.cardPlaceChangePosition
       };
       return (<CardPlace {...params} key={'card-place-' + cardData.id}/>);
     };
@@ -89,10 +39,6 @@ export class Main extends React.Component<Props> {
 
     return (
       <div>
-        <div>
-          <Cards/>
-        </div>
-
         <div style={style}>
           <div style={style2}>
             <div>Player</div>
@@ -129,7 +75,6 @@ export class Main extends React.Component<Props> {
 
 function mapStateToProps (state: any): any {
   return {
-    // allCards: state.cards.allCards,
     player: state.cards.player,
     opponent: state.cards.opponent
   };
@@ -137,9 +82,7 @@ function mapStateToProps (state: any): any {
 
 function mapDispatchToProps (dispatch: Dispatch<any>): any {
   return {
-    initCards: (params: any) => dispatch(cardsActions.initCards(params)),
-    cardPlaceChangePosition: (params: any) => dispatch(cardsActions.cardPlaceChangePosition(params)),
-    drawCard: (params: any) => dispatch(cardsActions.drawCard(params))
+    cardPlaceChangePosition: (params: any) => dispatch(cardsActions.cardPlaceChangePosition(params))
   };
 }
 

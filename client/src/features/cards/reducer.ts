@@ -77,13 +77,20 @@ export const cardsReducer = (state: CardsState = initState, action: Action) => {
       return newState;
     }
 
+    case getType(cardsActions.updateCards): {
+      let player = lodash.cloneDeep(action.payload.player);
+      let opponent = lodash.cloneDeep(action.payload.opponent);
+
+      return {...state, player, opponent};
+    }
+
     case getType(cardsActions.cardPlaceChangePosition): {
       let card = lodash.find(state.allCards, (card) => card.id === action.payload.id);
 
       if (card) {
         let cardIndex = state.allCards.indexOf(card);
-        let newCard = lodash.cloneDeep(card);
-        let allCards = lodash.cloneDeep(state.allCards);
+        let newCard = lodash.clone(card);
+        let allCards = lodash.clone(state.allCards);
 
         newCard.position = {
           screenX: action.payload.x,
@@ -102,28 +109,25 @@ export const cardsReducer = (state: CardsState = initState, action: Action) => {
     }
 
     case getType(cardsActions.drawCard): {
-      // let card = lodash.find(state.player.deck, (card) => card.id === action.payload.id);
-      //
-      // if (card) {
-      //   let cardIndex = state.allCards.indexOf(card);
-      // //   let newCard = lodash.cloneDeep(card);
-      // //   let allCards = lodash.cloneDeep(state.allCards);
-      // //
-      // //   newCard.position = {
-      // //     screenX: action.payload.x,
-      // //     screenY: action.payload.y
-      // //   };
-      // //
-      // //   allCards[cardIndex] = newCard;
-      // //   // state.allCards[cardIndex] = newCard;
-      // //
-      // //   state.allCards = allCards;
-      // //
-      //   return {...state};
-      // } else {
-      //   return state;
-      // }
-      return state;
+      let card = lodash.find(state.player.deck, (card) => card.id === action.payload.id);
+
+      if (card) {
+        let cardIndex = state.player.deck.indexOf(card);
+
+        let newDeck = lodash.clone(state.player.deck);
+        newDeck.splice(cardIndex, 1);
+
+        let newHand = lodash.clone(state.player.hand);
+        newHand.push(card);
+
+        let newPlayer = lodash.clone(state.player);
+        newPlayer.hand = newHand;
+        newPlayer.deck = newDeck;
+
+        return {...state, player: newPlayer};
+      } else {
+        return state;
+      }
     }
 
     default:

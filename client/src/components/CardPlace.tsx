@@ -19,22 +19,18 @@ const CardPlaceContainer = styled.div`
 
 interface CardPlaceData extends CardData {
   cardPlaceChangePosition: (params: any) => any;
-  drawCard: (params: any) => any;
 }
 
 export class CardPlace extends React.Component<CardPlaceData> {
   constructor (props: CardPlaceData) {
     super(props);
-    this.clickHandler = this.clickHandler.bind(this);
   }
 
   componentDidMount (): void {
-    console.log('CardPlace componentDidMount');
     this.refreshPosition();
   }
 
   componentDidUpdate (): void {
-    console.log('CardPlace componentDidMount');
     this.refreshPosition();
   }
 
@@ -51,14 +47,9 @@ export class CardPlace extends React.Component<CardPlaceData> {
     );
   }
 
-  clickHandler (): void {
-    this.props.drawCard({id: this.props.id});
-  }
-
   render (): JSX.Element {
-    console.log('CardPlace render');
     return (
-      <CardPlaceContainer onClick={this.clickHandler}/>
+      <CardPlaceContainer/>
     );
   }
 }
