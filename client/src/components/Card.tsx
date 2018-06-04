@@ -4,17 +4,18 @@ import { Card as CardData } from 'Features/cards/reducer';
 
 const CardContainer = styled.div`
   display: inline-block;
-  border: solid 1px;
-  font-size: 12px;
+  border: solid 1px gray;
+  font-size: 10px;
   position: absolute;
-  transition: all 1.5s ease-in-out;
+  transition: all 1.5s ease-out;
   left: 0;
   top: 0;
   border-radius: 2px;
-  box-shadow: 0px 0px 1px 1px grey;
+  box-shadow: 0 0 1px #00000040;
   font-family: sans-serif;
-  width: 60px;
-  height: 100px;
+  width: 54px;
+  height: 94px;
+  padding: 3px;
   background: white;
 `;
 
@@ -49,7 +50,7 @@ export const Card = (props: CardPlaceData): JSX.Element => {
 
   return (
     <Container onClick={clickHandler} style={style} key={'card-' + props.id}>
-      <div>{props.name}</div>
+      <b>{props.name}</b>
       <div>hp {props.alive ? props.currentHp + '/' : ''} {props.maxHp}</div>
       <div>damage {props.damage}</div>
       <div>manna {props.mannaCost}</div>

@@ -13,8 +13,9 @@ const CardPlaceContainer = styled.div`
   display: inline-block;
   width: 60px;
   height: 100px;
-  background: gray;
   margin: 0 4px;
+  
+  box-shadow: inset 0 0 2px #00000040;
 `;
 
 interface CardPlaceData extends CardData {
