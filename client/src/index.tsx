@@ -7,7 +7,7 @@ import './rxjs-imports';
 // tslint:enable:no-import-side-effect
 
 import { App } from './app';
-import { store, browserHistory, epicMiddleware } from './features/store';
+import { store, browserHistory, epicMiddleware } from './store/store';
 
 const renderRoot = (app: JSX.Element) => {
   ReactDOM.render(app, document.getElementById('root'));
@@ -33,14 +33,14 @@ if (module.hot) {
   });
 
   // reducers
-  module.hot.accept('./features/root-reducer', () => {
-    const newRootReducer = require('./features/root-reducer').default;
+  module.hot.accept('./store/root-reducer', () => {
+    const newRootReducer = require('./store/root-reducer').default;
     store.replaceReducer(newRootReducer);
   });
 
   // epics
-  module.hot.accept('./features/root-epic', () => {
-    const newRootEpic = require('./features/root-epic').default;
+  module.hot.accept('./store/root-epic', () => {
+    const newRootEpic = require('./store/root-epic').default;
     epicMiddleware.replaceEpic(newRootEpic);
   });
 }

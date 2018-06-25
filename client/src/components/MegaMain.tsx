@@ -5,7 +5,7 @@ import Cards from './Cards';
 import Main from './Main';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { cardsActions } from '../features/cards';
+import { cardsActions } from '../store/cards';
 
 interface Props {
   initCards: (params: any) => any;

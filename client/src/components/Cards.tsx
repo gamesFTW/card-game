@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import axios from 'axios';
 
-import { cardsActions } from '../features/cards';
-import { Card as CardData, PlayerCards } from '../features/cards/reducer';
-import { Card } from './Card';
+import { cardsActions } from '../store/cards';
+import { Card as CardData, PlayerCards } from '../store/cards/reducer';
+import { Card, CardProps } from './Card';
 import CardPlace from './CardPlace';
 
 interface Props {
@@ -23,9 +23,13 @@ export class Cards extends React.Component<Props> {
   render (): JSX.Element {
     return (
       <div>
-        {this.props.allCards.map(
-          (card: any) => {
-            card.drawCard = this.props.drawCard;
+        {Object.keys(this.props.allCards).map(
+          (cardId: any) => {
+            let card: any = {
+              ...this.props.allCards[cardId],
+              drawCard: this.props.drawCard
+            };
+
             return Card(card);
           }
         )}

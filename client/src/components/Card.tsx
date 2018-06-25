@@ -1,13 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Card as CardData } from 'Features/cards/reducer';
+import { Card as CardData } from 'store/cards/reducer';
 
 const CardContainer = styled.div`
   display: inline-block;
   border: solid 1px gray;
   font-size: 10px;
   position: absolute;
-  transition: all 1.5s ease-out;
+  transition: all 2s ease-out;
   left: 0;
   top: 0;
   border-radius: 2px;
@@ -24,11 +24,11 @@ const TappedCardContainer = CardContainer.extend`
   transform: rotate(90deg) translateY(-100%);
 `;
 
-interface CardPlaceData extends CardData {
+interface CardProps extends CardData {
   drawCard: (params: any) => any;
 }
 
-export const Card = (props: CardPlaceData): JSX.Element => {
+const Card = (props: CardProps): JSX.Element => {
   const Container = props.tapped ? TappedCardContainer : CardContainer;
   let style;
 
@@ -58,4 +58,4 @@ export const Card = (props: CardPlaceData): JSX.Element => {
   );
 };
 
-export default Card;
+export {Card, CardProps};

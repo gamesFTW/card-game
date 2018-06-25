@@ -29,11 +29,11 @@ class Event<DataType = any, ExtraType = any> {
 }
 
 class ClientEvent extends Event {
-  static convertFromEvent(event: Event, entity: Entity) : ClientEvent{
+  static convertFromEvent (event: Event, entity: Entity) : ClientEvent{
     return new ClientEvent(event.type, event.data, entity);
   }
 
-  public constructor(type: string, data: any, entity: Entity) {
+  public constructor (type: string, data: any, entity: Entity) {
     super(type, data, { id: entity.id });
   }
 

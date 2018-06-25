@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import axios from 'axios';
 
-import { cardsActions } from '../features/cards';
-import { Card as CardData, PlayerCards } from '../features/cards/reducer';
+import { cardsActions } from '../store/cards';
+import { Card as CardData, PlayerCards } from '../store/cards/reducer';
 import { Card } from './Card';
 import CardPlace from './CardPlace';
 import Cards from './Cards';
@@ -21,12 +21,12 @@ export class Main extends React.Component<Props> {
   }
 
   render (): JSX.Element {
-    let CardPlaceContainer = (cardData: CardData) => {
+    let CardPlaceContainer = (cardId: string) => {
       let params = {
-        id: cardData.id,
+        id: cardId,
         cardPlaceChangePosition: this.props.cardPlaceChangePosition
       };
-      return (<CardPlace {...params} key={'card-place-' + cardData.id}/>);
+      return (<CardPlace {...params} key={'card-place-' + cardId}/>);
     };
 
     let style = {
