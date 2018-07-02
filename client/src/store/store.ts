@@ -1,25 +1,21 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { createEpicMiddleware } from 'redux-observable';
 import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 
 import { rootReducer, RootState } from './root-reducer';
-import { rootEpic } from './root-epic';
 
 const composeEnhancers = (
   process.env.NODE_ENV === 'development' &&
   window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 ) || compose;
 
-export const epicMiddleware = createEpicMiddleware(rootEpic);
 export const browserHistory = createBrowserHistory();
 export const routerMiddleware = createRouterMiddleware(browserHistory);
 
 function configureStore(initialState?: RootState) {
   // configure middlewares
   const middlewares = [
-    epicMiddleware,
-    routerMiddleware,
+    routerMiddleware
   ];
   // compose enhancers
   const enhancer = composeEnhancers(

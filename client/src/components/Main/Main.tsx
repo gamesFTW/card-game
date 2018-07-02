@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
 
-import Cards from './Cards';
-import Main from './Main';
+import MainTemplate from './MainTemplate';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { cardsActions } from '../store/cards';
+import { cardsActions } from '../../store/cards/index';
 
 interface Props {
   initCards: (params: any) => any;
@@ -18,13 +17,24 @@ interface GameParams {
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
-export class MegaMain extends React.Component<Props> {
+export class Main extends React.Component<Props> {
   gameParams: GameParams;
 
   constructor (props: Props) {
     super(props);
+  }
 
-    let self = this;
+  async componentDidMount (): Promise<void> {
+    this.loadGameDataParams();
+    this.initSockets();
+
+    let data = await this.loadGameData();
+    this.props.initCards(data);
+
+    // setTimeout(this.loadGameData.bind(this), 3000);
+  }
+
+  loadGameDataParams (): void {
     let params = new URLSearchParams(window.location.search);
     let playerId = params.get('playerId');
     let gameId = params.get('gameId');
@@ -33,32 +43,26 @@ export class MegaMain extends React.Component<Props> {
       playerId,
       gameId
     };
+  }
 
+  initSockets (): void {
     let socket = (window as any).io('http://localhost:3000');
-    socket.on('connect', function (): void {
+    socket.on('connect', (): void => {
       console.log('socket connected');
-      socket.emit('register', { playerId: playerId });
+      socket.emit('register', { playerId: this.gameParams.playerId });
     });
 
-    socket.on('event', async function (data: any): Promise<void> {
+    socket.on('event', async (data: any): Promise<void> => {
       console.log('server send event', data);
-      let requestData = await self.loadGame();
+      let requestData = await this.loadGameData();
 
-      self.props.updateCards(requestData);
+      this.props.updateCards(requestData);
     });
 
     // socket.on('disconnect', function (): void {});
   }
 
-  async componentDidMount (): Promise<void> {
-    let data = await this.loadGame();
-
-    this.props.initCards(data);
-
-    // setTimeout(this.loadGame.bind(this), 3000);
-  }
-
-  async loadGame (): Promise<any> {
+  async loadGameData (): Promise<any> {
     const serverPath = 'http://localhost:3000/';
     let response = await axios.get(`${serverPath}getGame?gameId=${this.gameParams.gameId}`);
     let data = response.data;
@@ -72,8 +76,7 @@ export class MegaMain extends React.Component<Props> {
   render (): JSX.Element {
     return (
       <div>
-        <Cards/>
-        <Main/>
+        <MainTemplate/>
       </div>
     );
   }
@@ -91,4 +94,4 @@ function mapDispatchToProps (dispatch: Dispatch<any>): any {
   };
 }
 
-export default MegaMain;
+export default Main;

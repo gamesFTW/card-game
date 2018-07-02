@@ -3,8 +3,8 @@ import * as ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
-import { Card as CardData } from '../store/cards/reducer';
-import { cardsActions } from '../store/cards';
+import { Card as CardData } from '../../../store/cards/reducer';
+import { cardsActions } from '../../../store/cards/index';
 
 // const {whyDidYouUpdate} = require('why-did-you-update');
 // whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: true });
@@ -22,12 +22,13 @@ interface CardPlaceData extends CardData {
   cardPlaceChangePosition: (params: any) => any;
 }
 
-export class CardPlace extends React.Component<CardPlaceData> {
+export class CardPlaceholder extends React.Component<CardPlaceData> {
   constructor (props: CardPlaceData) {
     super(props);
   }
 
   componentDidMount (): void {
+    // TODO: Уходит в бесконечный абдейт.
     this.refreshPosition();
   }
 
@@ -55,4 +56,4 @@ export class CardPlace extends React.Component<CardPlaceData> {
   }
 }
 
-export default CardPlace;
+export default CardPlaceholder;

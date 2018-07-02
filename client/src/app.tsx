@@ -5,8 +5,8 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Route } from 'react-router-dom';
 import { History } from 'history';
 
-import { Main } from './components/Main';
-import MegaMain from 'Components/MegaMain';
+import { MainTemplate } from './components/Main/MainTemplate';
+import Main from 'components/Main/Main';
 
 interface Props {
   store: Store<any>;
@@ -23,7 +23,7 @@ export class App extends React.Component<Props, {}> {
             exact={true}
             path='/'
             render={() => (
-              <MegaMain />
+              <Main />
             )}
           />
         </ConnectedRouter>
