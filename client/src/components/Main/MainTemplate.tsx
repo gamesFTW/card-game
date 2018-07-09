@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Cards from '../Cards/Cards';
+import CardsLayerTemplate from '../CardsLayer/CardsLayerTemplate';
 
 interface Props {
 }
@@ -8,7 +8,7 @@ interface Props {
 export class MainTemplate extends React.Component<Props> {
   render (): JSX.Element {
     return (
-      <Cards/>
+      <CardsLayerTemplate/>
     );
   }
 }
