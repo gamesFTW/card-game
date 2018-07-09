@@ -37,38 +37,40 @@ debugController.post('/createDebugGame2', async (ctx) => {
   let response = await axios.get(`http://localhost:3000/getGame?gameId=${gameId}`);
   let player1 = response.data.player1;
   let player2 = response.data.player2;
+  
+  const delayTime = 3000;
 
   await delay(5000);
   await playCardAsManna(gameId, player1.id, player1.hand[0].id);
-  await delay(1000);
+  await delay(delayTime);
   await playCardAsManna(gameId, player1.id, player1.hand[1].id);
-  await delay(1000);
+  await delay(delayTime);
   await playCardAsManna(gameId, player1.id, player1.hand[2].id);
-  await delay(1000);
+  await delay(delayTime);
   await endTurn(gameId, player1.id);
-  await delay(1000);
+  await delay(delayTime);
 
   await playCardAsManna(gameId, player2.id, player2.hand[0].id);
-  await delay(1000);
+  await delay(delayTime);
   await playCardAsManna(gameId, player2.id, player2.hand[1].id);
-  await delay(1000);
+  await delay(delayTime);
   await playCardAsManna(gameId, player2.id, player2.hand[2].id);
-  await delay(1000);
+  await delay(delayTime);
   await endTurn(gameId, player2.id);
-  await delay(1000);
+  await delay(delayTime);
 
   await playCard(gameId, player1.id, player1.hand[3].id, 2, 2);
-  await delay(1000);
+  await delay(delayTime);
   await endTurn(gameId, player1.id);
-  await delay(1000);
+  await delay(delayTime);
 
   await playCard(gameId, player2.id, player2.hand[3].id, 2, 3);
-  await delay(1000);
+  await delay(delayTime);
   await endTurn(gameId, player2.id);
-  await delay(1000);
+  await delay(delayTime);
 
   await attackCard(gameId, player1.id, player1.hand[3].id, player2.hand[3].id);
-  await delay(1000);
+  await delay(delayTime);
 
   ctx.body = {gameId};
 });

@@ -12,5 +12,5 @@ export interface RootState extends StoreEnhancerState {
 
 export const rootReducer = combineReducers<RootState>({
   router,
-  cards: cardsReducer,
+  cards: cardsReducer
 });
