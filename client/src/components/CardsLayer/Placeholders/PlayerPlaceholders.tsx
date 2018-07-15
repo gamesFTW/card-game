@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 
 import { cardsActions } from '../../../store/cards/index';
 import { PlayerCards } from '../../../store/cards/reducer';
-import { CardPlaceholder } from './CardPlaceholder';
+import { Placeholder } from './Placeholder';
 
 interface Props {
   title: string;
@@ -19,7 +19,7 @@ export class PlayerPlaceholders extends React.Component<Props> {
         id: cardId,
         cardPlaceChangePosition: this.props.cardPlaceChangePosition
       };
-      return (<CardPlaceholder {...params} key={'card-place-' + cardId}/>);
+      return (<Placeholder {...params} key={'card-place-' + cardId}/>);
     };
 
     return (

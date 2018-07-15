@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 
 import { cardsActions } from '../../../store/cards/index';
 import { PlayerCards } from '../../../store/cards/reducer';
-import { CardPlaceholder } from './CardPlaceholder';
+import { Placeholder } from './Placeholder';
 import { PlayerPlaceholders } from './PlayerPlaceholders';
 
 interface Props {
@@ -14,20 +14,20 @@ interface Props {
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
-export class CardsPlaceholders extends React.Component<Props> {
+export class Placeholders extends React.Component<Props> {
   render (): JSX.Element {
 
     return (
       <div>
-        <PlayerPlaceholders 
+        <PlayerPlaceholders
           title='Player'
           cardsPlaceholders={this.props.playerCards}
-          cardPlaceChangePosition={this.props.cardPlaceChangePosition} 
+          cardPlaceChangePosition={this.props.cardPlaceChangePosition}
         />
         <PlayerPlaceholders
           title='Opponent'
-          cardsPlaceholders={this.props.opponentCards} 
-          cardPlaceChangePosition={this.props.cardPlaceChangePosition} 
+          cardsPlaceholders={this.props.opponentCards}
+          cardPlaceChangePosition={this.props.cardPlaceChangePosition}
         />
       </div>
     );
@@ -47,4 +47,4 @@ function mapDispatchToProps (dispatch: Dispatch<any>): any {
   };
 }
 
-export default CardsPlaceholders;
+export default Placeholders;

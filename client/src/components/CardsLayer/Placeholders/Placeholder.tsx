@@ -22,7 +22,7 @@ interface CardPlaceData extends CardData {
   cardPlaceChangePosition: (params: any) => any;
 }
 
-export class CardPlaceholder extends React.Component<CardPlaceData> {
+export class Placeholder extends React.Component<CardPlaceData> {
   constructor (props: CardPlaceData) {
     super(props);
   }
@@ -56,4 +56,4 @@ export class CardPlaceholder extends React.Component<CardPlaceData> {
   }
 }
 
-export default CardPlaceholder;
+export default Placeholder;

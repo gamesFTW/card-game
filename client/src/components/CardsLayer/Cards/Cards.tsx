@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 
 import { cardsActions } from '../../../store/cards/index';
 import { Card as CardData } from '../../../store/cards/reducer';
-import CardsTemplate from './CardsTemplate';
+import { Card } from './Card';
 
 interface Props {
   allCards: CardData[];
@@ -15,7 +15,18 @@ interface Props {
 export class Cards extends React.Component<Props> {
   render (): JSX.Element {
     return (
-      <CardsTemplate {...this.props}/>
+      <div>
+        {Object.keys(this.props.allCards).map(
+          (cardId: any) => {
+            let card: any = {
+              ...this.props.allCards[cardId],
+              drawCard: this.props.drawCard
+            };
+
+            return Card(card);
+          }
+        )}
+      </div>
     );
   }
 }

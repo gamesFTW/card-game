@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
 
-import MainTemplate from './MainTemplate';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { cardsActions } from '../../store/cards/index';
+
+import CardsLayer from '../CardsLayer/CardsLayer';
 
 interface Props {
   initCards: (params: any) => any;
@@ -76,7 +77,7 @@ export class Main extends React.Component<Props> {
   render (): JSX.Element {
     return (
       <div>
-        <MainTemplate/>
+        <CardsLayer/>
       </div>
     );
   }

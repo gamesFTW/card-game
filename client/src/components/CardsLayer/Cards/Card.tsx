@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Card as CardData } from 'store/cards/reducer';
+import { Card as CardData } from '../../../store/cards/reducer';
 
 const CardContainer = styled.div`
   display: inline-block;
