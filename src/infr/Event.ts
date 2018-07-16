@@ -30,16 +30,17 @@ class Event<DataType = any, ExtraType = any> {
   }
 }
 
+let formatEventsForClient = (param:Array<Entity | Array<Entity>>): Array<Event> => {
+  let params = lodash.isArray(param) ? param : [param];
 
-class ClientEvent extends Event {
-  static convertFromEvent (event: Event, entity: Entity) : ClientEvent{
-    return new ClientEvent(event.type, event.data, entity);
-  }
+  let entities: Array<Entity> = lodash.flatten(param);
 
-  public constructor (type: string, data: any, entity: Entity) {
-    super(type, data, { id: entity.id });
-  }
+  let events =  entities.map((entity) => {
+    return entity.changes;
+  });
+
+  return lodash.flatten(events);
 }
 
 
-export {Event, ClientEvent};
+export {Event, formatEventsForClient};
