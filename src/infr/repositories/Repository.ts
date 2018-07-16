@@ -75,9 +75,9 @@ class Repository {
     return new ClassConstructor(events);
   }
 
-  // static async getAll (): Promise<Array<Card>> {
+  // static async getAll (): Promise<Array<CardData>> {
   //   let events = await eventStore.getEvents({
-  //     aggregate: Card.name
+  //     aggregate: CardData.name
   //   });
   //
   //   let groupedEvents = lodash.groupBy(events, 'aggregateId');

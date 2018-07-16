@@ -125,12 +125,12 @@ class Field extends Entity {
 
 export {Field};
 
-  // public getTileByCard(card: Card): Tile {
+  // public getTileByCard(card: CardData): Tile {
   //   //TODO
   //   return new Tile();
   // }
 
-  // public move(card: Card, point: Point) {
+  // public move(card: CardData, point: Point) {
   //   let fromTile = this.getTileByCard(card);
   //   fromTile.removeCard(card);
   //

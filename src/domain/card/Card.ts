@@ -87,7 +87,7 @@ class Card extends Entity {
     ));
   }
 
-  // public setAttackTarget (defendingCard: Card) {
+  // public setAttackTarget (defendingCard: CardData) {
   //   if (this.tapped) {
   //     throw new Error('Tapped card cant attack.');
   //   }

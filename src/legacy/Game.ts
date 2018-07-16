@@ -16,13 +16,13 @@ class Game {
   //   this.state.cards.forEach(card => this.showCard(card));
   // }
 
-  // private showCard(card: Card): void {
+  // private showCard(card: CardData): void {
   //   let point = this.state.field.getPointByCard(card);
   //   console.log(card.name, point.x, point.y);
   // }
 
-  // private createCard(name: string, point: Point): Card {
-  //   let card = new Card(name);
+  // private createCard(name: string, point: Point): CardData {
+  //   let card = new CardData(name);
   //   // let tile = this.state.field.getTileByPoint(point);
   //   // tile.addCard(card);
   //   this.state.cards.push(card);
@@ -33,7 +33,7 @@ class Game {
 
 // class GameState {
 //   public field: Field;
-//   public cards: Array<Card> = [];
+//   public cards: Array<CardData> = [];
 //
 //   public constructor(field: Field) {
 //     this.field = field;

@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import styled from 'styled-components';
-import { Card as CardData } from '../../../store/cards/reducer';
+import { CardData as CardData } from '../../../store/cards/reducer';
 import { cardsActions } from '../../../store/cards/index';
 
 // const {whyDidYouUpdate} = require('why-did-you-update');
