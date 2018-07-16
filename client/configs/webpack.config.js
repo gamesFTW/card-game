@@ -37,7 +37,7 @@ module.exports = (env = {}) => {
     entry: {
       app: [
         'react-hot-loader/patch',
-        './src/index.tsx',
+        './src/UI/index.tsx',
       ],
     },
     output: {

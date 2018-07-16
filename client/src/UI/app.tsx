@@ -5,8 +5,8 @@ import { ConnectedRouter } from 'react-router-redux';
 import { Route } from 'react-router-dom';
 import { History } from 'history';
 
-import { MainTemplate } from './components/Main/MainTemplate';
-import Main from 'components/Main/Main';
+import { MainTemplate } from './UI/components/Main/MainTemplate';
+import Main from 'UI/components/Main/Main';
 
 interface Props {
   store: Store<any>;
