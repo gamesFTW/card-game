@@ -1,11 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { App } from './app';
+import { App } from './App';
 import { store, browserHistory } from './store/store';
-import { startGame } from '../UIField/Game';
-
-startGame();
 
 const renderRoot = (app: JSX.Element) => {
   ReactDOM.render(app, document.getElementById('root'));
@@ -20,9 +17,9 @@ renderRoot((
 
 if (module.hot) {
   // app
-  module.hot.accept('./app', async () => {
+  module.hot.accept('./App', async () => {
     // const NextApp = require('./app').App;
-    const NextApp = (await System.import('./app')).App;
+    const NextApp = (await System.import('./App')).App;
     renderRoot((
       <AppContainer>
         <NextApp store={store} history={browserHistory} />

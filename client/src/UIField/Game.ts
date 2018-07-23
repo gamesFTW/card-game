@@ -1,54 +1,35 @@
-import * as Phaser from 'phaser';
+import 'phaser';
+// import { BootScene } from './scenes/bootScene';
+// import { MainMenuScene } from './scenes/mainMenuScene';
+import { GameScene } from './GameScene';
 
-let config = {
+const config: GameConfig = {
+  title: 'Snake',
+  // url: 'https://github.com/digitsensitive/phaser3-typescript',
+  // version: '1.1',
+  width: 1600,
+  height: 900,
+  zoom: 1,
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: { y: 200 }
-    }
+  parent: 'game',
+  scene: [GameScene],
+  input: {
+    keyboard: true,
+    mouse: false,
+    touch: false,
+    gamepad: false
   },
-  scene: {
-    preload: preload,
-    create: create
-  }
+  backgroundColor: '#000000'
+  // pixelArt: true,
+  // antialias: false
 };
 
-function startGame () {
-  let game = new Phaser.Game(config);
+class Game extends Phaser.Game {
+  constructor (width: number, height: number) {
+    super(config);
+
+    this.scene.start('GameScene', { width, height });
+  }
 }
 
-
-function preload ()
-{
-  this.load.setBaseURL('http://labs.phaser.io');
-
-  this.load.image('sky', 'assets/skies/space3.png');
-  this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-  this.load.image('red', 'assets/particles/red.png');
-}
-
-function create ()
-{
-  this.add.image(400, 300, 'sky');
-
-  var particles = this.add.particles('red');
-
-  var emitter = particles.createEmitter({
-    speed: 100,
-    scale: { start: 1, end: 0 },
-    blendMode: 'ADD'
-  });
-
-  var logo = this.physics.add.image(400, 100, 'logo');
-
-  logo.setVelocity(100, 200);
-  logo.setBounce(1, 1);
-  logo.setCollideWorldBounds(true);
-
-  emitter.startFollow(logo);
-}
-
-export {startGame};
+export {Game};

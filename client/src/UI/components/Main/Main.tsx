@@ -7,6 +7,11 @@ import { cardsActions } from '../../store/cards/index';
 
 import CardsLayer from '../CardsLayer/CardsLayer';
 
+// ВРЕМЕННО
+import { Game } from '../../../UIField/Game';
+let game;
+// ВРЕМЕННО
+
 interface Props {
   initCards: (params: any) => any;
   updateCards: (params: any) => any;
@@ -31,6 +36,8 @@ export class Main extends React.Component<Props> {
 
     let data = await this.loadGameData();
     this.props.initCards(data);
+
+    game = new Game(10, 10);
 
     // setTimeout(this.loadGameData.bind(this), 3000);
   }
@@ -77,7 +84,7 @@ export class Main extends React.Component<Props> {
   render (): JSX.Element {
     return (
       <div>
-        <CardsLayer/>
+        {/*<CardsLayer/>*/}
       </div>
     );
   }

@@ -4,6 +4,7 @@ import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
+import * as koaStatic from 'koa-static';
 
 import { eventStore } from './infr/eventStore';
 import { cardController } from './app/card/cardController';
@@ -18,7 +19,11 @@ async function main (): Promise<void> {
   await eventStore.on('connect');
 
   const app = new Koa();
+
   app.use(cors());
+
+  app.use(koaStatic(__dirname + '\\static'));
+
 
   const wsIO = new IO();
   wsIO.attach(app, false);
@@ -52,7 +57,6 @@ async function main (): Promise<void> {
 
   wsUserRegistry.autoRegistrateUsers(wsIO);
   
-
   app.use(cardController.routes());
   app.use(gameController.routes());
   app.use(playerController.routes());

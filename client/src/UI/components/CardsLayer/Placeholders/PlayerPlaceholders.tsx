@@ -19,8 +19,12 @@ export class PlayerPlaceholders extends React.Component<Props> {
       return (<Placeholder {...params} key={'card-place-' + cardId}/>);
     };
 
+    let style = {
+      float: 'left'
+    };
+
     return (
-        <div>
+        <div style={style}>
           <h3>{this.props.title}</h3>
           <div>Deck</div>
           <div>{this.props.cardsPlaceholders.deck.map(CardPlaceContainer)}</div>
