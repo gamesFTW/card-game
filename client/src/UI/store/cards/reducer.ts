@@ -2,19 +2,17 @@ import { getType, getReturnOfExpression } from 'typesafe-actions';
 import lodash from 'lodash';
 
 import * as cardsActions from './actions';
+import { CardData, CardId } from '../../../typings/Cards';
 const returnsOfActions = Object.values(cardsActions).map(getReturnOfExpression);
-export type Action = typeof returnsOfActions[number];
+type Action = typeof returnsOfActions[number];
 
-// Не правильно хранить тут такие типы.
-type CardId = string;
-
-export type CardsState = {
+type CardsState = {
   player: PlayerCards;
   opponent: PlayerCards;
-  allCards: {[id: string]: CardData};
+  allCards: {[id: string]: CardWithPositionData};
 };
 
-export type PlayerCards = {
+type PlayerCards = {
   deck: CardId[];
   hand: CardId[];
   mannaPool: CardId[];
@@ -22,22 +20,12 @@ export type PlayerCards = {
   graveyard: CardId[];
 };
 
-export type CardData = {
-  id: CardId;
-  name?: string;
-  maxHp?: number;
-  currentHp?: number;
-  damage?: number;
-  alive?: boolean;
-  tapped?: boolean;
-  mannaCost?: number;
-  movingPoints?: number;
-  currentMovingPoints?: number;
+interface CardWithPositionData extends CardData {
   position: {
     screenX?: number;
     screenY?: number;
-  }
-};
+  };
+}
 
 const initState: CardsState = {
   player: {
@@ -57,11 +45,11 @@ const initState: CardsState = {
   allCards: {}
 };
 
-function returnIds (cards: CardData[]): CardId[] {
-  return cards.map((card: CardData) => card.id);
+function returnIds (cards: CardWithPositionData[]): CardId[] {
+  return cards.map((card: CardWithPositionData) => card.id);
 }
 
-export const cardsReducer = (state: CardsState = initState, action: Action) => {
+const cardsReducer = (state: CardsState = initState, action: Action) => {
   switch (action.type) {
     case getType(cardsActions.initCards):
       return initCardsReducer(state, action);
@@ -97,9 +85,9 @@ function initCardsReducer (state: CardsState, action: Action): CardsState {
     opponent.graveyard
   );
 
-  let allCards = {} as {[id: string]: CardData};
+  let allCards = {} as {[id: string]: CardWithPositionData};
 
-  allCardList.forEach((card: CardData) => {
+  allCardList.forEach((card: CardWithPositionData) => {
     allCards[card.id] = card;
   });
 
@@ -138,9 +126,9 @@ function updateCardsReducer (state: CardsState, action: Action): CardsState {
     opponent.graveyard
   );
 
-  let allCards = {} as {[id: string]: CardData};
+  let allCards = {} as {[id: string]: CardWithPositionData};
 
-  allCardList.forEach((card: CardData) => {
+  allCardList.forEach((card: CardWithPositionData) => {
     card.position = state.allCards[card.id].position;
     allCards[card.id] = card;
   });
@@ -210,3 +198,5 @@ function drawCardReducer (state: CardsState, action: Action): CardsState {
     return state;
   }
 }
+
+export {Action, CardsState, PlayerCards, cardsReducer};

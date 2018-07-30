@@ -26,7 +26,7 @@ class WSUserRegistry {
         } else {
 
           this.socketToUser.set(ctx.socket, playerId);
-          this.userToSocket.set(playerId, ctx.socket); 
+          this.userToSocket.set(playerId, ctx.socket);
           ctx.socket.join(gameId);
 
           console.log(chalk.yellow(`player ${playerId} is registred`));
@@ -38,7 +38,7 @@ class WSUserRegistry {
         if (!playerId) {
           console.info(chalk.yellow('Socket without registration is disconnected'));
         } else {
-          this.userToSocket.delete(playerId); 
+          this.userToSocket.delete(playerId);
           console.log(chalk.yellow(`User ${playerId} disconnected`));
         }
       });
@@ -52,13 +52,15 @@ class WSUserRegistry {
             socket.emit('event', events);
         }
   }
-  
+
   public sendEventsInGame(gameId: EntityId, playerId: EntityId, events: Array<Event>) {
     this.sendEvents(playerId, events);
     let socket = this.userToSocket.get(playerId);
+
+    // FIXME через раз сокета нет. Хз почему.
     socket.broadcast.to(gameId).emit('event', events);
   }
-  
+
 }
 const wsUserRegistry = new WSUserRegistry();
 export { wsUserRegistry };

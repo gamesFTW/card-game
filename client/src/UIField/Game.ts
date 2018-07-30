@@ -2,16 +2,17 @@ import 'phaser';
 // import { BootScene } from './scenes/bootScene';
 // import { MainMenuScene } from './scenes/mainMenuScene';
 import { GameScene } from './GameScene';
+import { GamePayload } from '../UI/components/Main/Main';
 
 const config: GameConfig = {
-  title: 'Snake',
+  title: 'MegaGame',
   // url: 'https://github.com/digitsensitive/phaser3-typescript',
   // version: '1.1',
   width: 1600,
   height: 900,
   zoom: 1,
   type: Phaser.AUTO,
-  parent: 'game',
+  parent: 'field',
   scene: [GameScene],
   input: {
     keyboard: true,
@@ -25,11 +26,21 @@ const config: GameConfig = {
 };
 
 class Game extends Phaser.Game {
-  constructor (width: number, height: number) {
-    super(config);
+  private width: number;
+  private height: number;
 
-    this.scene.start('GameScene', { width, height });
+  constructor (width: number, height: number, gamePayload: GamePayload) {
+    super(config);
+    this.width = width;
+    this.height = height;
+
+    this.scene.start('GameScene', { width, height, gamePayload });
+  }
+
+  updateGamePayload (gamePayload: GamePayload): void {
+    this.scene.stop('GameScene');
+    this.scene.start('GameScene', { width: this.width, height: this.height, gamePayload });
   }
 }
 
-export {Game};
+export {Game as UIField};

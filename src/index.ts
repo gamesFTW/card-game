@@ -24,7 +24,6 @@ async function main (): Promise<void> {
 
   app.use(koaStatic(__dirname + '\\static'));
 
-
   const wsIO = new IO();
   wsIO.attach(app, false);
 

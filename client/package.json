@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
+    "autobind-decorator": "^2.1.0",
     "axios": "^0.18.0",
     "lodash": "^3.10.1",
     "phaser": "^3.11.0",

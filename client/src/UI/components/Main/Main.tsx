@@ -4,17 +4,19 @@ import { Dispatch } from 'redux';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { cardsActions } from '../../store/cards/index';
+import autobind from 'autobind-decorator';
 
 import CardsLayer from '../CardsLayer/CardsLayer';
+import { CardData } from '../../../typings/Cards';
 
 // ВРЕМЕННО
-import { Game } from '../../../UIField/Game';
+import { UIField } from '../../../UIField/Game';
 let game;
 // ВРЕМЕННО
 
 interface Props {
-  initCards: (params: any) => any;
-  updateCards: (params: any) => any;
+  initCards: (params: GamePayload) => void;
+  updateCards: (params: GamePayload) => void;
 }
 
 interface GameParams {
@@ -22,8 +24,25 @@ interface GameParams {
   gameId: string|null;
 }
 
+interface GamePayload {
+  player: {
+    deck: CardData[];
+    hand: CardData[];
+    mannaPool: CardData[];
+    table: CardData[];
+    graveyard: CardData[];
+  };
+  opponent: {
+    deck: CardData[];
+    hand: CardData[];
+    mannaPool: CardData[];
+    table: CardData[];
+    graveyard: CardData[];
+  };
+}
+
 @(connect(mapStateToProps, mapDispatchToProps) as any)
-export class Main extends React.Component<Props> {
+class Main extends React.Component<Props> {
   gameParams: GameParams;
 
   constructor (props: Props) {
@@ -34,12 +53,23 @@ export class Main extends React.Component<Props> {
     this.loadGameDataParams();
     this.initSockets();
 
-    let data = await this.loadGameData();
-    this.props.initCards(data);
-
-    game = new Game(10, 10);
-
+    await this.initCards();
     // setTimeout(this.loadGameData.bind(this), 3000);
+  }
+
+  async initCards (): Promise<void> {
+    let gamePayload = await this.loadGameData();
+    this.props.initCards(gamePayload);
+
+    // game = new UIField(10, 10, gamePayload);
+  }
+
+  @autobind
+  async updateCards (): Promise<void> {
+    let gamePayload = await this.loadGameData();
+    this.props.updateCards(gamePayload);
+
+    // game.updateGamePayload(gamePayload);
   }
 
   loadGameDataParams (): void {
@@ -62,15 +92,16 @@ export class Main extends React.Component<Props> {
 
     socket.on('event', async (data: any): Promise<void> => {
       console.log('server send event', data);
-      let requestData = await this.loadGameData();
 
-      this.props.updateCards(requestData);
+      this.updateCards();
     });
 
-    // socket.on('disconnect', function (): void {});
+    socket.on('disconnect', function (): void {
+      console.log('socket disconnect');
+    });
   }
 
-  async loadGameData (): Promise<any> {
+  async loadGameData (): Promise<GamePayload> {
     const serverPath = 'http://localhost:3000/';
     let response = await axios.get(`${serverPath}getGame?gameId=${this.gameParams.gameId}`);
     let data = response.data;
@@ -82,9 +113,14 @@ export class Main extends React.Component<Props> {
   }
 
   render (): JSX.Element {
+    let fieldStyles = {
+      position: 'absolute'
+    };
+
     return (
       <div>
-        {/*<CardsLayer/>*/}
+        <div id='field' style={fieldStyles}/>
+        <CardsLayer/>
       </div>
     );
   }
@@ -102,4 +138,4 @@ function mapDispatchToProps (dispatch: Dispatch<any>): any {
   };
 }
 
-export default Main;
+export {Main, GamePayload};
