@@ -14,8 +14,6 @@ import { wsUserRegistry } from '../../infr/WSUserRegistry';
 const playerController = new Router();
 
 playerController.post('/playCardAsManna', async (ctx) => {
-  console.log(ctx.request.body);
-
   let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
   let playerId = ctx.request.body.playerId as EntityId;

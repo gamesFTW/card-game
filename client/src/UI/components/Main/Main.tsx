@@ -11,7 +11,7 @@ import { CardData } from '../../../typings/Cards';
 
 // ВРЕМЕННО
 import { UIField } from '../../../UIField/Game';
-let game;
+let game: UIField;
 // ВРЕМЕННО
 
 interface Props {
@@ -61,7 +61,7 @@ class Main extends React.Component<Props> {
     let gamePayload = await this.loadGameData();
     this.props.initCards(gamePayload);
 
-    // game = new UIField(10, 10, gamePayload);
+    game = new UIField(10, 10, gamePayload);
   }
 
   @autobind
@@ -69,7 +69,7 @@ class Main extends React.Component<Props> {
     let gamePayload = await this.loadGameData();
     this.props.updateCards(gamePayload);
 
-    // game.updateGamePayload(gamePayload);
+    game.updateGamePayload(gamePayload);
   }
 
   loadGameDataParams (): void {

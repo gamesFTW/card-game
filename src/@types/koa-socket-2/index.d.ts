@@ -20,17 +20,18 @@ type eventCtx = {
   acknowledge: Function 
 };
 
-interface eventCb { (ctx: eventCtx, data: any) : void } 
-interface useCb { (ctx: eventCtx, next: () => Promise<void>) : void } 
+interface eventCb { (ctx: eventCtx, data: any): void }
+interface useCb { (ctx: eventCtx, next: () => Promise<void>): void }
 
 declare class IO {
-  constructor(opts?: String|SocketOptions);
-  on (event: eventName, handler: eventCb) : this ;
-  off (event: eventName, handler: eventCb) : this ;
-  to (room: room) : SocketIO.Socket;
-  broadcast (event: eventName, data: any) : void ;
-  attach (app: Koa, https: Boolean) : void ;
-  use (cb: useCb) : void;
+  socket: socketIO.Server;
+  constructor (opts?: String|SocketOptions);
+  on (event: eventName, handler: eventCb): this;
+  off (event: eventName, handler: eventCb): this;
+  to (room: room): socketIO.Socket;
+  broadcast (event: eventName, data: any): void;
+  attach (app: Koa, https: Boolean): void ;
+  use (cb: useCb): void;
 }
 
 declare module IO {}

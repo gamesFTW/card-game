@@ -55,7 +55,7 @@ async function main (): Promise<void> {
   });
 
   wsUserRegistry.autoRegistrateUsers(wsIO);
-  
+
   app.use(cardController.routes());
   app.use(gameController.routes());
   app.use(playerController.routes());
