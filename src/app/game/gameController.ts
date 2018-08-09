@@ -8,9 +8,10 @@ import { Player } from '../../domain/player/Player';
 import { Card, CardCreationData } from '../../domain/card/Card';
 import { mapPlayer } from './mapPlayer';
 import { Field } from '../../domain/field/Field';
-import {mapPlayerPretty} from './mapPlayerPretty';
+import { mapPlayerPretty } from './mapPlayerPretty';
 
-import { wsUserRegistry } from '../../infr/WSUserRegistry';
+import { godOfSockets, registerGameNamespace, KoaWithSocketIo } from '../../infr/GodOfSockets';
+import { addGameToLobby } from '../../lobby/lobby';
 
 const gameController = new Router();
 
@@ -56,6 +57,9 @@ gameController.post('/createGame', async (ctx) => {
   let {player1, player2, player1Cards, player2Cards, field} = game.create(playerACardsData, playerBCardsData);
 
   await Repository.save([player1Cards, player1, player2Cards, player2, field, game]);
+
+  addGameToLobby(game.id);
+  registerGameNamespace(game.id, ctx.app as KoaWithSocketIo);
 
   ctx.body = {gameId: game.id};
 });
@@ -114,7 +118,7 @@ gameController.post('/endTurn', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEventsInGame(game.id, endingTurnPlayer.id, formatEventsForClient(entities));
+  godOfSockets.sendEventsInGame(game.id, endingTurnPlayer.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });

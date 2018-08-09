@@ -9,7 +9,7 @@ import { Point } from '../../infr/Point';
 import { Field } from '../../domain/field/Field';
 import { AttackService } from '../../domain/AttackService/AttackService';
 
-import { wsUserRegistry } from '../../infr/WSUserRegistry';
+import { godOfSockets } from '../../infr/GodOfSockets';
 
 const playerController = new Router();
 
@@ -29,7 +29,7 @@ playerController.post('/playCardAsManna', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
+  godOfSockets.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });
@@ -56,7 +56,7 @@ playerController.post('/playCard', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
+  godOfSockets.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
 
   ctx.body = `Ok`;
 });
@@ -82,7 +82,7 @@ playerController.post('/moveCard', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
+  godOfSockets.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 
@@ -108,7 +108,7 @@ playerController.post('/attackCard', async (ctx) => {
   await Repository.save(entities);
 
   // Send data to client
-  wsUserRegistry.sendEventsInGame(game.id, attackedPlayer.id, formatEventsForClient(entities));
+  godOfSockets.sendEventsInGame(game.id, attackedPlayer.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 

@@ -84,10 +84,18 @@ class Main extends React.Component<Props> {
   }
 
   initSockets (): void {
-    let socket = (window as any).io('http://localhost:3000');
+    let socket = (window as any).io('http://localhost:3000/' + this.gameParams.gameId);
     socket.on('connect', (): void => {
       console.log('socket connected');
       socket.emit('register', { playerId: this.gameParams.playerId });
+    });
+
+    socket.on('connect_timeout', async (data: any): Promise<void> => {
+      console.log('connection timeout');
+    });
+
+    socket.on('error', async (error: any): Promise<void> => {
+      console.error(error);
     });
 
     socket.on('event', async (data: any): Promise<void> => {

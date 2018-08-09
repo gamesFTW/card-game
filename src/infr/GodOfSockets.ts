@@ -2,12 +2,13 @@ import chalk from 'chalk';
 
 import * as koaSocketIO from 'socket.io';
 import * as koaIO from 'koa-socket-2';
+import * as Koa from 'koa';
 
 import { Player } from '../domain/player/Player';
 import { Event } from './Event';
 import { EntityId } from './Entity';
 
-class WSUserRegistry {
+class GodOfSockets {
   public userToSocket: Map<EntityId, koaSocketIO.Socket>;
   private socketToUser: WeakMap<koaSocketIO.Socket, EntityId>;
   private koaSocketIO: koaIO;
@@ -27,10 +28,8 @@ class WSUserRegistry {
         console.error(chalk.red('playerId|gameId must be set'));
         // throw new Error('PlayerId must be set');
       } else {
-
         this.socketToUser.set(ctx.socket, playerId);
         this.userToSocket.set(playerId, ctx.socket);
-        ctx.socket.join(gameId);
 
         console.info(chalk.yellow(`player ${playerId} is registred`));
       }
@@ -58,7 +57,11 @@ class WSUserRegistry {
     // }
 
     // console.log();
-    this.koaSocketIO.broadcast('event', events);
+    // this.koaSocketIO.broadcast('event', events);
+    this.koaSocketIO.socket.of('/' + gameId).emit('event', events);
+      // if (error) throw error;
+      // console.log('out clients', clients); // => [PZDoMHjiu8PYfRiKAAAF, Anw2LatarvGVVXEIAAAD]
+    // });
     // console.log('rooms:', this.koaSocketIO.socket.rooms);
     // console.log(this.koaSocketIO.socket);
     // TODO: всё это не работает. Решили переписать на express.
@@ -66,6 +69,16 @@ class WSUserRegistry {
     // this.koaSocketIO.to(gameId).emit('event', events);
   }
 }
+interface KoaWithSocketIo extends Koa {
+  _io: SocketIO.Server;
+}
 
-const wsUserRegistry = new WSUserRegistry();
-export { wsUserRegistry };
+// Register new namespace for game
+const registerGameNamespace = (gameId: EntityId, app: KoaWithSocketIo) => {
+  app._io.of('/' + gameId);
+};
+
+
+
+const godOfSockets = new GodOfSockets();
+export { godOfSockets, registerGameNamespace, KoaWithSocketIo };

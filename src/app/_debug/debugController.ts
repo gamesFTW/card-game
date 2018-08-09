@@ -1,5 +1,6 @@
 import * as Router from 'koa-router';
 import axios from 'axios';
+import opn = require('opn');
 
 const debugController = new Router();
 debugController.post('/createAndPlayDebugGame', async (ctx) => {
@@ -16,6 +17,7 @@ debugController.post('/createAndPlayDebugGame', async (ctx) => {
   });
 
   ctx.body = `http://localhost:8080/?gameId=${gameId}&playerId=${player1.id}`;
+  opn(ctx.body);
 });
 
 debugController.post('/playDebugGameWithDelay', async (ctx) => {
@@ -27,7 +29,7 @@ debugController.post('/playDebugGameWithDelay', async (ctx) => {
   
   const delayTime = 3000;
 
-  await delay(10000);
+  await delay(5000);
   await playCardAsManna(gameId, player1.id, player1.hand[0].id);
   await delay(delayTime);
   await playCardAsManna(gameId, player1.id, player1.hand[1].id);

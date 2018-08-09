@@ -15,7 +15,8 @@ import { playerController } from './app/player/playerController';
 import { staticContorller } from './app/static/StaticController';
 import { debugController } from './app/_debug/debugController';
 
-import { wsUserRegistry } from './infr/WSUserRegistry';
+import { godOfSockets } from './infr/GodOfSockets';
+import { getAllGames } from './lobby/lobby';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -56,7 +57,7 @@ async function main (): Promise<void> {
     console.log(chalk.yellow(`WS: ${ctx.event} - ${ms}ms`));
   });
 
-  wsUserRegistry.autoRegistrateUsers(wsIO);
+  godOfSockets.autoRegistrateUsers(wsIO);
 
   app.use(cardController.routes());
   app.use(gameController.routes());
@@ -69,6 +70,9 @@ async function main (): Promise<void> {
   app.use(playerController.allowedMethods());
   app.use(debugController.allowedMethods());
   app.use(staticContorller.allowedMethods());
+
+  let ids = await getAllGames();
+  console.log(ids);
 
   console.log('Server listen on 3000 http://localhost:3000');
   app.listen(3000);
