@@ -2,36 +2,23 @@ import * as Router from 'koa-router';
 import axios from 'axios';
 
 const debugController = new Router();
-debugController.post('/createDebugGame', async (ctx) => {
+debugController.post('/createAndPlayDebugGame', async (ctx) => {
   let response = await axios.post('http://localhost:3000/createGame');
   let gameId = response.data.gameId;
 
   response = await axios.get(`http://localhost:3000/getGame?gameId=${gameId}`);
   let player1 = response.data.player1;
-  let player2 = response.data.player2;
 
-  await playCardAsManna(gameId, player1.id, player1.hand[0].id);
-  await playCardAsManna(gameId, player1.id, player1.hand[1].id);
-  await playCardAsManna(gameId, player1.id, player1.hand[2].id);
-  await endTurn(gameId, player1.id);
+  axios.post(`http://localhost:3000/playDebugGameWithDelay`, { gameId }).then(() => {
+    console.info('Debug game creation is finished');
+  }).catch(e => {
+    console.error(e.message);
+  });
 
-  await playCardAsManna(gameId, player2.id, player2.hand[0].id);
-  await playCardAsManna(gameId, player2.id, player2.hand[1].id);
-  await playCardAsManna(gameId, player2.id, player2.hand[2].id);
-  await endTurn(gameId, player2.id);
-
-  await playCard(gameId, player1.id, player1.hand[3].id, 2, 2);
-  await endTurn(gameId, player1.id);
-
-  await playCard(gameId, player2.id, player2.hand[3].id, 2, 3);
-  await endTurn(gameId, player2.id);
-
-  await attackCard(gameId, player1.id, player1.hand[3].id, player2.hand[3].id);
-
-  ctx.body = {gameId};
+  ctx.body = `http://localhost:8080/?gameId=${gameId}&playerId=${player1.id}`;
 });
 
-debugController.post('/createDebugGame2', async (ctx) => {
+debugController.post('/playDebugGameWithDelay', async (ctx) => {
   let gameId = ctx.request.body.gameId as string;
 
   let response = await axios.get(`http://localhost:3000/getGame?gameId=${gameId}`);
@@ -40,7 +27,7 @@ debugController.post('/createDebugGame2', async (ctx) => {
   
   const delayTime = 3000;
 
-  await delay(5000);
+  await delay(10000);
   await playCardAsManna(gameId, player1.id, player1.hand[0].id);
   await delay(delayTime);
   await playCardAsManna(gameId, player1.id, player1.hand[1].id);
