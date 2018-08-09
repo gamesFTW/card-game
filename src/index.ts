@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import chalk from 'chalk';
 
 import * as Koa from 'koa';
@@ -22,7 +24,7 @@ async function main (): Promise<void> {
 
   app.use(cors());
 
-  app.use(koaStatic(__dirname + '\\static'));
+  app.use(koaStatic(path.join(__dirname, 'static')));
 
   const wsIO = new IO();
   wsIO.attach(app, false);
