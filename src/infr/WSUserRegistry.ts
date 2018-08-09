@@ -58,11 +58,11 @@ class WSUserRegistry {
     // }
 
     // console.log();
-    // this.koaSocketIO.broadcast('event', events);
+    this.koaSocketIO.broadcast('event', events);
     // console.log('rooms:', this.koaSocketIO.socket.rooms);
     // console.log(this.koaSocketIO.socket);
     // TODO: всё это не работает. Решили переписать на express.
-    this.koaSocketIO.socket.sockets.to(gameId).emit('event', events);
+    // this.koaSocketIO.socket.sockets.to(gameId).emit('event', events);
     // this.koaSocketIO.to(gameId).emit('event', events);
   }
 }
