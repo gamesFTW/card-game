@@ -1,18 +1,28 @@
-import { getCollection } from './db/db';
-import { EntityId } from '../infr/Entity';
+import { GameModel, GameStatus, connectToDb } from './db/db';
 
-const addGameToLobby = async (gameId: EntityId) => {
-  const collection = await getCollection('games');
-  collection.insert({gameId: gameId});
-};
+class Lobby {
+  static instance: Lobby = null;
 
-const getAllGames = async () => {
-  const collection = await getCollection('games');
+  constructor () {
+    connectToDb();
+  }
 
-  // return collection.find().map((g: any) => g.gameId);
-};
+  static getInstance (): Lobby {
+    if (!Lobby.instance) {
+      Lobby.instance = new Lobby();
+    }
+    return Lobby.instance;
+  }
 
-export {
-  addGameToLobby,
-  getAllGames
-};
+  public async addGame (gameId: String): Promise<void> {
+    const game = new GameModel({ gameId, status: GameStatus.NEW });
+    await game.save();
+  }
+
+  public async getAllGameIds (): Promise<String[]> {
+    const games = await GameModel.find({});
+    return games.map(g => g.gameId);
+  }
+}
+
+export { Lobby };

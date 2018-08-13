@@ -10,8 +10,10 @@ import { mapPlayer } from './mapPlayer';
 import { Field } from '../../domain/field/Field';
 import { mapPlayerPretty } from './mapPlayerPretty';
 
-import { godOfSockets, registerGameNamespace, KoaWithSocketIo } from '../../infr/GodOfSockets';
-import { addGameToLobby } from '../../lobby/lobby';
+import { godOfSockets } from '../../infr/GodOfSockets';
+
+import { Lobby } from '../../Lobby/Lobby';
+const lobby = Lobby.getInstance();
 
 const gameController = new Router();
 
@@ -58,8 +60,9 @@ gameController.post('/createGame', async (ctx) => {
 
   await Repository.save([player1Cards, player1, player2Cards, player2, field, game]);
 
-  addGameToLobby(game.id);
-  registerGameNamespace(game.id, ctx.app as KoaWithSocketIo);
+  await lobby.addGame(game.id);
+
+  godOfSockets.registerNamespace(game.id);
 
   ctx.body = {gameId: game.id};
 });

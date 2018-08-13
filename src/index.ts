@@ -8,6 +8,9 @@ import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
 import * as koaStatic from 'koa-static';
 
+import { Lobby } from './lobby/Lobby';
+const lobby = Lobby.getInstance();
+
 import { eventStore } from './infr/eventStore';
 import { cardController } from './app/card/cardController';
 import { gameController } from './app/game/gameController';
@@ -16,7 +19,6 @@ import { staticContorller } from './app/static/StaticController';
 import { debugController } from './app/_debug/debugController';
 
 import { godOfSockets } from './infr/GodOfSockets';
-import { getAllGames } from './lobby/lobby';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -58,6 +60,9 @@ async function main (): Promise<void> {
   });
 
   godOfSockets.autoRegistrateUsers(wsIO);
+  const gameIds = await lobby.getAllGameIds();
+  console.log('gameids', gameIds);
+  gameIds.forEach(id => godOfSockets.registerNamespace(id));
 
   app.use(cardController.routes());
   app.use(gameController.routes());
@@ -70,9 +75,6 @@ async function main (): Promise<void> {
   app.use(playerController.allowedMethods());
   app.use(debugController.allowedMethods());
   app.use(staticContorller.allowedMethods());
-
-  let ids = await getAllGames();
-  console.log(ids);
 
   console.log('Server listen on 3000 http://localhost:3000');
   app.listen(3000);

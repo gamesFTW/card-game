@@ -26,7 +26,7 @@ debugController.post('/playDebugGameWithDelay', async (ctx) => {
   let response = await axios.get(`http://localhost:3000/getGame?gameId=${gameId}`);
   let player1 = response.data.player1;
   let player2 = response.data.player2;
-  
+
   const delayTime = 3000;
 
   await delay(5000);
