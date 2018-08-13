@@ -8,6 +8,9 @@ import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
 import * as koaStatic from 'koa-static';
 
+import { mqMain } from '../mq/mq';
+mqMain();
+
 import { Lobby } from './lobby/Lobby';
 const lobby = Lobby.getInstance();
 
@@ -61,7 +64,6 @@ async function main (): Promise<void> {
 
   godOfSockets.autoRegistrateUsers(wsIO);
   const gameIds = await lobby.getAllGameIds();
-  console.log('gameids', gameIds);
   gameIds.forEach(id => godOfSockets.registerNamespace(id));
 
   app.use(cardController.routes());
