@@ -12,7 +12,6 @@ type SocketOptions = {
 type eventName = 'connect' | 'event' | 'message' | 'open' | 'close' | 'register' | 'disconnect';
 type room = String;
 
-
 type eventCtx = {
   event: String,
   data: any,

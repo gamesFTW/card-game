@@ -8,7 +8,7 @@ import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
 import * as koaStatic from 'koa-static';
 
-import { mqMain } from '../mq/mq';
+import { mqMain } from './infr/mq/mq';
 mqMain();
 
 import { Lobby } from './lobby/Lobby';

@@ -1,8 +1,6 @@
 version: '3'
 services:
   arena:
-   image: "mixmaxhq/arena"
-   volumes:
-    - ./:/opt/arena/src/server/config 
+   image: "arena"
    ports:
     - 4567:4567

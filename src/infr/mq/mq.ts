@@ -1,10 +1,10 @@
 import * as Queue from 'bull';
+import config from '../../config';
 
 function mqMain (): void {
-  let url = 'redis://192.168.99.100:6379';
-  let videoQueue = new Queue('video transcoding', url);
-  let imageQueue = new Queue('image_transcoding', url);
-  let pdfQueue = new Queue('pdf transcoding', url);
+  let videoQueue = new Queue('video transcoding', config.REDIS_URL);
+  let imageQueue = new Queue('image_transcoding', config.REDIS_URL);
+  let pdfQueue = new Queue('pdf transcoding', config.REDIS_URL);
 
   videoQueue.process(function (job: any, done: any): void {
 
@@ -53,5 +53,4 @@ function mqMain (): void {
   imageQueue.add({image: 'http://example.com/image1.tiff'});
 }
 
-mqMain();
-
+export { mqMain };

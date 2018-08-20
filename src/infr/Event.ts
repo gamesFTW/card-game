@@ -1,7 +1,7 @@
 import * as lodash from 'lodash';
 
-import { Config } from './Config';
 import { Entity } from './Entity';
+import config from '../config';
 
 class Event<DataType = any, ExtraType = any> {
   public static currentOrderIndex = 0;
@@ -23,7 +23,7 @@ class Event<DataType = any, ExtraType = any> {
       this.extra = extra;
     }
 
-    if (Config.isDev) {
+    if (config.DEV) {
       this.orderIndex = Event.currentOrderIndex;
       Event.currentOrderIndex ++;
     }

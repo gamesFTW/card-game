@@ -1,3 +1,8 @@
+# Software requirements
+nodejs 8.11.1
+redis
+mongodb
+
 # How to run dev env
 
 ## For Client

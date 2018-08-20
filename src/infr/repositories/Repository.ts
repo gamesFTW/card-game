@@ -4,7 +4,7 @@ import { eventStore } from '../eventStore';
 import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
 import { DevRepository } from './DevRepository';
-import { Config } from '../Config';
+import config from '../../config';
 
 class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
@@ -14,7 +14,7 @@ class Repository {
     let entities = Repository.prepareEntities(param);
     let events: Array<Event>;
 
-    if (Config.isDev) {
+    if (config.DEV) {
       events = await DevRepository.save(entities);
     } else {
       events = await Repository.saveInternal(entities);
