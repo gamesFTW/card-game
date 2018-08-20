@@ -4,11 +4,14 @@ import { eventStore } from '../eventStore';
 import * as lodash from 'lodash';
 
 class DevRepository {
-  static async save (entities: Array<Entity>): Promise<void> {
+  static async save (entities: Array<Entity>): Promise<Array<Event>> {
     let eventsWithEntity: Array<{event: Event, entity: Entity}> = [];
+    let events: Array<Event> = [];
+
     entities.forEach((entity: Entity) => {
       entity.changes.forEach((event: Event) => {
         eventsWithEntity.push({event: event, entity: entity});
+        events.push(event);
       });
     });
 
@@ -20,6 +23,8 @@ class DevRepository {
     for (let orderedEventWithEntity of orderedEventsWithEntity) {
       await DevRepository.saveOne(orderedEventWithEntity);
     }
+
+    return events;
   }
 
   private static async saveOne (orderedEventWithEntity: {event: Event, entity: Entity}): Promise<void> {

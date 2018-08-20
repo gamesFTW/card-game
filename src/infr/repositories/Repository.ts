@@ -11,15 +11,16 @@ class Repository {
   // Поэтому есть метод getMany.
 
   static async save (param: Entity | Array<Entity | Array<Entity>>): Promise<void> {
-    let params = lodash.isArray(param) ? param : [param];
-
-    let entities: Array<Entity> = lodash.flatten(params); 
+    let entities = Repository.prepareEntities(param);
+    let events: Array<Event>;
 
     if (Config.isDev) {
-      await DevRepository.save(entities);
+      events = await DevRepository.save(entities);
     } else {
-      await Promise.all(entities.map(Repository.saveOne));
+      events = await Repository.saveInternal(entities);
     }
+
+    // Repository.dispatchEvents(events);
   }
 
   static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
@@ -44,17 +45,38 @@ class Repository {
     })) as Array<EntityClass>;
   }
 
-  private static async saveOne (entity: Entity): Promise<void> {
+  // Приватность означает, что эти методы может вызывать только Repository.
+  private static prepareEntities (param: Entity | Array<Entity | Array<Entity>>): Array<Entity> {
+    let params = lodash.isArray(param) ? param : [param];
+    return lodash.flatten(params);
+  }
+
+  private static async saveInternal (entities: Array<Entity>): Promise<Array<Event>> {
+    let eventsArray = await Promise.all(entities.map(Repository.saveOne));
+    return lodash.flatten(eventsArray);
+  }
+
+  // private static async dispatchEvents (events: Entity): Promise<Array<Event>> {
+  //
+  // }
+
+  private static async saveOne (entity: Entity): Promise<Array<Event>> {
     let stream = await eventStore.getEventStream({
       aggregateId: entity.id,
       aggregate: entity.constructor.name
     });
 
-    entity.changes.forEach((event: Event<any>) => {
+    let events = entity.changes;
+
+    events.forEach((event: Event) => {
       stream.addEvent(event);
     });
 
     await stream.commit();
+
+    events.forEach(event => event.saved = true);
+
+    return events;
   }
 
   private static createEntityByEvents<EntityClass> (

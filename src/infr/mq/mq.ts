@@ -1,10 +1,10 @@
 import * as Queue from 'bull';
 
 function mqMain (): void {
-
-  let videoQueue = new Queue('video transcoding', 'redis://127.0.0.1:6379');
-  let imageQueue = new Queue('image_transcoding');
-  let pdfQueue = new Queue('pdf transcoding');
+  let url = 'redis://192.168.99.100:6379';
+  let videoQueue = new Queue('video transcoding', url);
+  let imageQueue = new Queue('image_transcoding', url);
+  let pdfQueue = new Queue('pdf transcoding', url);
 
   videoQueue.process(function (job: any, done: any): void {
 
@@ -26,7 +26,6 @@ function mqMain (): void {
     // If the job throws an unhandled exception it is also handled correctly
     throw new Error('some unexpected error');
   });
-
 
   imageQueue.process(function (job: any, done: any): void {
     // transcode image asynchronously and report progress
@@ -52,7 +51,7 @@ function mqMain (): void {
 
   videoQueue.add({video: 'http://example.com/video1.mov'});
   imageQueue.add({image: 'http://example.com/image1.tiff'});
-  console.log('q');
 }
 
-export { mqMain };
+mqMain();
+
