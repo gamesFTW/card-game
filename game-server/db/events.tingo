@@ -1,0 +1,12 @@
+{"k":"0000000082","o":"0000000275","v":"001"}
+{"_id":"-20","_uid":1,"_dt":1520888147682,"_s":"f296f79397d9356af8b45ce5e617e57b"}
+{"streamId":"streamId","aggregateId":"streamId","streamRevision":0,"commitId":"-2","commitSequence":0,"commitStamp":{"$wrap":"$date","v":1520888147671,"h":"2018-03-12T20:55:47.671Z"},"payload":{"add":"event1"},"id":"-20","restInCommitStream":3,"_id":"-20","dispatched":false}
+{"k":"0000000082","o":"0000000275","v":"001"}
+{"_id":"-21","_uid":1,"_dt":1520888147683,"_s":"d4d9b3fccb4496b816520d7ea983ebf1"}
+{"streamId":"streamId","aggregateId":"streamId","streamRevision":1,"commitId":"-2","commitSequence":1,"commitStamp":{"$wrap":"$date","v":1520888147671,"h":"2018-03-12T20:55:47.671Z"},"payload":{"add":"event2"},"id":"-21","restInCommitStream":2,"_id":"-21","dispatched":false}
+{"k":"0000000082","o":"0000000275","v":"001"}
+{"_id":"-22","_uid":1,"_dt":1520888147684,"_s":"c4b8cb14ba929f0c303f06638c6fbfb0"}
+{"streamId":"streamId","aggregateId":"streamId","streamRevision":2,"commitId":"-2","commitSequence":2,"commitStamp":{"$wrap":"$date","v":1520888147671,"h":"2018-03-12T20:55:47.671Z"},"payload":{"add":"event3"},"id":"-22","restInCommitStream":1,"_id":"-22","dispatched":false}
+{"k":"0000000082","o":"0000000275","v":"001"}
+{"_id":"-23","_uid":1,"_dt":1520888147684,"_s":"33a72dfac1068546013c015ebe876f31"}
+{"streamId":"streamId","aggregateId":"streamId","streamRevision":3,"commitId":"-2","commitSequence":3,"commitStamp":{"$wrap":"$date","v":1520888147671,"h":"2018-03-12T20:55:47.671Z"},"payload":{"add":"event4"},"id":"-23","restInCommitStream":0,"_id":"-23","dispatched":false}

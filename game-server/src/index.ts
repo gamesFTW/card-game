@@ -11,7 +11,7 @@ import * as koaStatic from 'koa-static';
 import { mqMain } from './infr/mq/mq';
 mqMain();
 
-import { Lobby } from './lobby/Lobby';
+import { Lobby } from '../../lobby-server/Lobby';
 const lobby = Lobby.getInstance();
 
 import { eventStore } from './infr/eventStore';
