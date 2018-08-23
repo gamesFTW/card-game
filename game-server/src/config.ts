@@ -1,4 +1,5 @@
 export default {
   REDIS_URL: 'redis://192.168.99.100:6379',
-  DEV: true
+  DEV: true,
+  MAIN_MQ: 'main'
 };

@@ -3,6 +3,7 @@ import axios from 'axios';
 import opn = require('opn');
 
 const debugController = new Router();
+
 debugController.post('/createAndPlayDebugGame', async (ctx) => {
   let response = await axios.post('http://localhost:3000/createGame');
   let gameId = response.data.gameId;

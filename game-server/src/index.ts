@@ -8,12 +8,6 @@ import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
 import * as koaStatic from 'koa-static';
 
-import { mqMain } from './infr/mq/mq';
-mqMain();
-
-import { Lobby } from '../../lobby-server/Lobby';
-const lobby = Lobby.getInstance();
-
 import { eventStore } from './infr/eventStore';
 import { cardController } from './app/card/cardController';
 import { gameController } from './app/game/gameController';
@@ -22,6 +16,7 @@ import { staticContorller } from './app/static/StaticController';
 import { debugController } from './app/_debug/debugController';
 
 import { godOfSockets } from './infr/GodOfSockets';
+import { lobbyService } from './app/lobbyService';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -63,7 +58,7 @@ async function main (): Promise<void> {
   });
 
   godOfSockets.autoRegistrateUsers(wsIO);
-  const gameIds = await lobby.getAllGameIds();
+  const gameIds = await lobbyService.getAllGames();
   gameIds.forEach(id => godOfSockets.registerNamespace(id));
 
   app.use(cardController.routes());

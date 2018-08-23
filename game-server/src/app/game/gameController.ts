@@ -11,9 +11,7 @@ import { Field } from '../../domain/field/Field';
 import { mapPlayerPretty } from './mapPlayerPretty';
 
 import { godOfSockets } from '../../infr/GodOfSockets';
-
-import { Lobby } from '../../Lobby/Lobby';
-const lobby = Lobby.getInstance();
+import { mainMQ } from '../../infr/mq/mainMQ';
 
 const gameController = new Router();
 
@@ -60,7 +58,8 @@ gameController.post('/createGame', async (ctx) => {
 
   await Repository.save([player1Cards, player1, player2Cards, player2, field, game]);
 
-  await lobby.addGame(game.id);
+  //TODO: убрать, сделать что диспатчится в Repository
+  mainMQ.add({id: game.id});
 
   godOfSockets.registerNamespace(game.id);
 

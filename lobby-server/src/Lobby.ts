@@ -25,4 +25,6 @@ class Lobby {
   }
 }
 
+let lobby = new Lobby();
+
 export { Lobby };
