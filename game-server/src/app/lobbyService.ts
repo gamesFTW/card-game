@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import {cardPlaceChangePosition} from '../../../client/src/UI/store/cards/actions';
 
 interface Games {
   games: Array<String>;
@@ -12,7 +13,13 @@ let lobbyMethods = {
 
 let lobbyService = {
   getAllGames: async (): Promise<Array<String>> => {
-    let response = await axios.get(lobbyMethods.GET_ALL_GAMES);
+    let response;
+    try {
+      response = await axios.get(lobbyMethods.GET_ALL_GAMES);
+    } catch (error) {
+      throw new Error('GAME: не могу достучатся до lobby. Скорее всего его забыли запустить.');
+    }
+
     return response.data.games;
   }
 };

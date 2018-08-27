@@ -9,3 +9,8 @@ services:
     image: "mongo"
     ports:
       - 27017:27017
+
+  rabbitMQ:
+    image: "rabbitmq:alpine"
+    ports:
+      - 5672:5672

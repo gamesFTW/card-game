@@ -9,6 +9,10 @@ class Event<DataType = any, ExtraType = any> {
   public type: string;
   public data?: DataType;
   public extra?: ExtraType;
+  // orderIndex нужен для воссоздания последовательности событий.
+  // Работает только в рамках одного экшна контроллера!
+  // Может показаться, что это костыль, но это не так.
+  // Просто не стоит задачи сделать ордер между разными экшнами.
   public orderIndex: number;
   public saved: Boolean = false;
 
