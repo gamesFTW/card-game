@@ -5,6 +5,7 @@ import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
 import { DevRepository } from './DevRepository';
 import config from '../../config';
+import { mq } from '../mq/mq';
 
 class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
@@ -20,7 +21,7 @@ class Repository {
       events = await Repository.saveInternal(entities);
     }
 
-    // Repository.dispatchEvents(events);
+    await Repository.dispatchEvents(events);
   }
 
   static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
@@ -56,9 +57,11 @@ class Repository {
     return lodash.flatten(eventsArray);
   }
 
-  // private static async dispatchEvents (events: Entity): Promise<Array<Event>> {
-  //
-  // }
+  private static async dispatchEvents (events: Array<Event>): Promise<void> {
+    events = lodash.sortBy(events, 'orderIndex');
+
+    events.forEach((event: Event) => mq.publish(event));
+  }
 
   private static async saveOne (entity: Entity): Promise<Array<Event>> {
     let stream = await eventStore.getEventStream({

@@ -15,6 +15,7 @@ class Event<DataType = any, ExtraType = any> {
   // Просто не стоит задачи сделать ордер между разными экшнами.
   public orderIndex: number;
   public saved: Boolean = false;
+  public published: Boolean = false;
 
   public constructor (type: string, data?: DataType, extra?: ExtraType) {
     this.type = type;
@@ -25,11 +26,6 @@ class Event<DataType = any, ExtraType = any> {
 
     if (extra) {
       this.extra = extra;
-    }
-
-    if (config.DEV) {
-      this.orderIndex = Event.currentOrderIndex;
-      Event.currentOrderIndex ++;
     }
   }
 }

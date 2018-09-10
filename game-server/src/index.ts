@@ -17,11 +17,8 @@ import { debugController } from './app/_debug/debugController';
 
 import { godOfSockets } from './infr/GodOfSockets';
 import { lobbyService } from './app/lobbyService';
-import { registerMQ } from './infr/mq/mainMQ';
 
 async function main (): Promise<void> {
-  registerMQ();
-
   await eventStore.on('connect');
 
   const app = new Koa();

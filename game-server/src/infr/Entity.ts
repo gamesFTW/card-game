@@ -11,6 +11,9 @@ class Entity {
   public get id (): EntityId { return this.state.id; }
 
   protected applyEvent (event: Event<any>): void {
+    event.orderIndex = Event.currentOrderIndex;
+    Event.currentOrderIndex ++;
+
     this.state.mutate(event);
     this.changes.push(event);
   }
