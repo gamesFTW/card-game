@@ -15,6 +15,8 @@ class Repository {
     let entities = Repository.prepareEntities(param);
     let events: Array<Event>;
 
+    // TODO нужно помечать события как сохраненные и как запаблишиные.
+
     if (config.DEV) {
       events = await DevRepository.save(entities);
     } else {

@@ -15,6 +15,8 @@ let registerMQ = async () => {
 };
 
 let mq = {
+  // TODO: научится подписываться а все ивенты, которые могут быть полезные в лобби,
+  // например игра закончилась.
   subscribe: (eventName: string, callback: Function) => {
     channel.bindQueue(queue.queue, config.MAIN_EXCHANGE, eventName);
 
