@@ -17,12 +17,11 @@ import { debugController } from './app/_debug/debugController';
 
 import { godOfSockets } from './infr/GodOfSockets';
 import { lobbyService } from './app/lobbyService';
-import {GameModel} from '../../lobby-server/src/db/db';
-import config from './config';
-import {mainMQ} from '../../lobby-server/src/mq/mainMQ';
-import * as Queue from 'bull';
+import { registerMQ } from './infr/mq/mainMQ';
 
 async function main (): Promise<void> {
+  registerMQ();
+
   await eventStore.on('connect');
 
   const app = new Koa();

@@ -1,18 +1,23 @@
-import * as Queue from 'bull';
 import config from '../../../game-server/src/config';
 import { GameModel, GameStatus } from '../db/db';
+import * as amqplib from 'amqplib';
 
-let mainMQ;
+let registerMQ = async () => {
+  let connect = await amqplib.connect(config.RABBIT_MQ_URL);
+  let channel = await connect.createChannel();
 
-let registerMQ = () => {
-  mainMQ = new Queue(config.MAIN_MQ, config.REDIS_URL);
+  channel.assertExchange(config.MAIN_EXCHANGE, 'fanout', {durable: true});
 
-  mainMQ.process(async (message: any): Promise<void> => {
-    const game = new GameModel({ gameId: message.data.id, status: GameStatus.NEW });
-    await game.save();
+  let queue = await channel.assertQueue('lobby', {exclusive: false});
 
-    return Promise.resolve();
-  });
+  channel.bindQueue(queue.queue, config.MAIN_EXCHANGE, '');
+
+  channel.consume(queue.queue, function (msg): void {
+    console.log(' [x] %s', msg.content.toString());
+  }, {noAck: true});
 };
 
-export { registerMQ, mainMQ };
+export { registerMQ };
+
+// const game = new GameModel({ gameId: message.data.id, status: GameStatus.NEW });
+// await game.save();

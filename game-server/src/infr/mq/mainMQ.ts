@@ -1,20 +1,18 @@
-import * as Queue from 'bull';
 import config from '../../config';
 import * as amqplib from 'amqplib';
 
-let mainMQ = new Queue(config.MAIN_MQ, config.REDIS_URL);
-
 let registerMQ = async () => {
-  let amqp = await amqplib.connect(config.RABBIT_MQ_URL);
-  let channel = await amqp.createChannel();
-  await channel.assertQueue('main');
-  await channel.consume('main', (message) => {
-    console.log('message:', message.content.toString());
-  });
+  let connect = await amqplib.connect(config.RABBIT_MQ_URL);
+  let channel = await connect.createChannel();
+  channel.assertExchange(config.MAIN_EXCHANGE, 'fanout', {durable: true});
 
-  await channel.sendToQueue('main', Buffer.from('MEGA MESSAGE'));
+  let i = 0;
+
+  setInterval(() => {
+    channel.publish(config.MAIN_EXCHANGE, '', new Buffer('HI ' + i));
+    console.log('PUBLISHED');
+    i++;
+  }, 2000);
 };
 
-registerMQ();
-
-export { mainMQ };
+export { registerMQ };
