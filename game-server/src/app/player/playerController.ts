@@ -6,7 +6,7 @@ import { formatEventsForClient } from '../../infr/Event';
 import { Player } from '../../domain/player/Player';
 import { Card } from '../../domain/card/Card';
 import { Point } from '../../infr/Point';
-import { Field } from '../../domain/field/Field';
+import { Board } from '../../domain/board/Board';
 import { AttackService } from '../../domain/AttackService/AttackService';
 
 import { godOfSockets } from '../../infr/GodOfSockets';
@@ -45,14 +45,14 @@ playerController.post('/playCard', async (ctx) => {
   let position = new Point(x, y);
 
   let game = await Repository.get<Game>(gameId, Game);
-  let field = await Repository.get<Field>(game.fieldId, Field);
+  let board = await Repository.get<Board>(game.boardId, Board);
   let player = await Repository.get<Player>(playerId, Player);
   let card = await Repository.get<Card>(cardId, Card);
   let playerMannaPoolCards = await Repository.getMany <Card>(player.mannaPool, Card);
 
-  player.playCard(card, playerMannaPoolCards, position, field);
+  player.playCard(card, playerMannaPoolCards, position, board);
 
-  let entities = [player, card, field, playerMannaPoolCards];
+  let entities = [player, card, board, playerMannaPoolCards];
   await Repository.save(entities);
 
   // Send data to client
@@ -72,13 +72,13 @@ playerController.post('/moveCard', async (ctx) => {
   let position = new Point(x, y);
 
   let game = await Repository.get<Game>(gameId, Game);
-  let field = await Repository.get<Field>(game.fieldId, Field);
+  let board = await Repository.get<Board>(game.boardId, Board);
   let player = await Repository.get<Player>(playerId, Player);
   let card = await Repository.get<Card>(cardId, Card);
 
-  player.moveCard(card, position, field);
+  player.moveCard(card, position, board);
 
-  let entities = [player, card, field];
+  let entities = [player, card, board];
   await Repository.save(entities);
 
   // Send data to client
@@ -95,14 +95,14 @@ playerController.post('/attackCard', async (ctx) => {
   let attackedCardId = ctx.request.body.attackedCardId as EntityId;
 
   let game = await Repository.get<Game>(gameId, Game);
-  let field = await Repository.get<Field>(game.fieldId, Field);
+  let board = await Repository.get<Board>(game.boardId, Board);
   let attackerPlayer = await Repository.get<Player>(attackerPlayerId, Player);
   let attackedPlayerId = game.getPlayerIdWhichIsOpponentFor(attackerPlayerId);
   let attackedPlayer = await Repository.get<Player>(attackedPlayerId, Player);
   let attackerCard = await Repository.get<Card>(attackerCardId, Card);
   let attackedCard = await Repository.get<Card>(attackedCardId, Card);
 
-  AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, field);
+  AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board);
 
   let entities = [attackedPlayer, attackerPlayer, attackedCard, attackerCard];
   await Repository.save(entities);

@@ -1,17 +1,17 @@
 import { Card } from '../card/Card';
 import { Point } from '../../infr/Point';
 import { Entity } from '../../infr/Entity';
-import { EntityPositions, FieldData, FieldState } from './FieldState';
+import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
-import { CardEventType, FieldEventType } from '../events';
+import { CardEventType, BoardEventType } from '../events';
 import * as lodash from 'lodash';
 
-class Field extends Entity {
-  protected state: FieldState;
+class Board extends Entity {
+  protected state: BoardState;
 
   constructor (events: Array<Event> = []) {
     super();
-    this.state = new FieldState(events);
+    this.state = new BoardState(events);
   }
 
   public create (width: number, height: number): void {
@@ -28,8 +28,8 @@ class Field extends Entity {
       }
     }
 
-    this.applyEvent(new Event<FieldData>(
-      FieldEventType.FIELD_CREATED, {id, width, height, units}
+    this.applyEvent(new Event<BoardData>(
+      BoardEventType.BOARD_CREATED, {id, width, height, units}
     ));
   }
 
@@ -75,7 +75,7 @@ class Field extends Entity {
     return false;
   }
 
-  public addCardToField (card: Card, toPosition: Point): void {
+  public addCardOnBoard (card: Card, toPosition: Point): void {
     let {x, y} = toPosition;
 
     if (x < 1 || x > this.state.width || y < 1 || y > this.state.height) {
@@ -87,8 +87,8 @@ class Field extends Entity {
     let newUnits = lodash.cloneDeep(this.state.units);
     newUnits[x][y] = card.id;
 
-    this.applyEvent(new Event<FieldData>(
-      FieldEventType.CARD_MOVED,
+    this.applyEvent(new Event<BoardData>(
+      BoardEventType.CARD_MOVED,
       { units: newUnits }
     ));
   }
@@ -107,8 +107,8 @@ class Field extends Entity {
     newUnits[fromPosition.x][fromPosition.y] = null;
     newUnits[toPosition.x][toPosition.y] = card.id;
 
-    this.applyEvent(new Event<FieldData>(
-      FieldEventType.CARD_MOVED,
+    this.applyEvent(new Event<BoardData>(
+      BoardEventType.CARD_MOVED,
       { units: newUnits }
     ));
   }
@@ -123,7 +123,7 @@ class Field extends Entity {
 
 }
 
-export {Field};
+export {Board};
 
   // public getTileByCard(card: CardData): Tile {
   //   //TODO

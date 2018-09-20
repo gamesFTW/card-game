@@ -33,8 +33,8 @@
 * CardDied
 * CardHealed
  
-## Field
+## Board
 * CardMoved
-* CardAddedToField
+* CardAddedToboard
 
 ## Tile

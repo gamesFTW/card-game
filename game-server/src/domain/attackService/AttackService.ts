@@ -1,15 +1,15 @@
 import { Player, CardStack } from '../Player/Player';
 import { Card } from '../card/Card';
-import { Field } from '../field/Field';
+import { Board } from '../board/Board';
 
 class AttackService {
   static attackUnit (
       attackerCard: Card, attackedCard: Card,
       attackerPlayer: Player, attackedPlayer: Player,
-      field: Field): void {
+      board: Board): void {
     attackerPlayer.checkIfItHisTurn();
 
-    if (!field.checkUnitsAdjacency(attackerCard, attackedCard)) {
+    if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
       throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
     }
 

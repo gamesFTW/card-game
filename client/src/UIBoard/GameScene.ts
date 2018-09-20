@@ -49,10 +49,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   createTiles (): void {
-    for (let x = 0; x < this.width; x++) {
+    for (let x = 1; x <= this.width; x++) {
       this.tiles[x] = {};
 
-      for (let y = 0; y < this.height; y++) {
+      for (let y = 1; y <= this.height; y++) {
         this.tiles[x][y] = this.createTile(x, y);
       }
     }

@@ -1,11 +1,12 @@
 import * as eventstoreConstructor from 'eventstore';
 
 import { promisify } from 'util';
+import config from '../config';
 
 let eventstore = eventstoreConstructor({
   type: 'mongodb',
-  host: process.env['MONGO_IP'] || '192.168.99.100',
-  port: 27017,
+  host: process.env['MONGO_IP'] || config.MONGO_URL,
+  port: config.MONGO_PORT,
   timeout: 1000
 });
 

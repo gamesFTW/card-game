@@ -1,12 +1,12 @@
 import { EventData, Event } from '../../infr/Event';
 
-class CardAddedToField extends Event {
-  static TYPE: string = 'CardAddedToField';
+class CardAddedToBoard extends Event {
+  static TYPE: string = 'CardAddedToBoard';
 
   public data: CardAddedData;
 
   public constructor (data: CardAddedData) {
-    super(CardAddedToField.TYPE, data);
+    super(CardAddedToBoard.TYPE, data);
   }
 }
 
@@ -32,4 +32,4 @@ interface CardMovedData extends EventData {
   fromY: number;
 }
 
-export {CardAddedToField, CardMoved};
+export {CardAddedToBoard, CardMoved};

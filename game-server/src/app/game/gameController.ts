@@ -4,62 +4,29 @@ import { Game } from '../../domain/game/Game';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { formatEventsForClient } from '../../infr/Event';
-import { Player } from '../../domain/player/Player';
+import {Player, PlayerCreationData} from '../../domain/player/Player';
 import { Card, CardCreationData } from '../../domain/card/Card';
 import { mapPlayer } from './mapPlayer';
-import { Field } from '../../domain/field/Field';
+import { Board } from '../../domain/board/Board';
 import { mapPlayerPretty } from './mapPlayerPretty';
 
 import { godOfSockets } from '../../infr/GodOfSockets';
-// import { mainMQ } from '../../infr/mq/mainMQ';
+import { startingCardsFixture } from './startingCardsFixture';
 
 const gameController = new Router();
 
 gameController.post('/createGame', async (ctx) => {
   // Temporary data
-  ctx.request.body.playerACards = [
-    {name: 'Orc1', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
-    {name: 'Orc2', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
-    {name: 'Orc3', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
-    {name: 'Orc4', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
-    {name: 'Orc5', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
-    {name: 'Orc6', maxHp: 10, damage: 2, mannaCost: 1, movingPoints: 3},
-    {name: 'Orc7', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc8', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc9', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc10', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc11', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc12', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc13', maxHp: 10, damage: 2, mannaCost: 2, movingPoints: 3},
-    {name: 'Orc Warlord', maxHp: 14, damage: 3, mannaCost: 2, movingPoints: 2}
-  ];
-  ctx.request.body.playerBCards = [
-    {name: 'Elf1', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
-    {name: 'Elf2', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
-    {name: 'Elf3', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
-    {name: 'Elf4', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
-    {name: 'Elf5', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
-    {name: 'Elf6', maxHp: 6, damage: 1, mannaCost: 1, movingPoints: 4},
-    {name: 'Elf7', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf8', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf9', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf10', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf11', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf12', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf13', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4},
-    {name: 'Elf14', maxHp: 6, damage: 1, mannaCost: 2, movingPoints: 4}
-  ];
+  ctx.request.body.playerA = startingCardsFixture.playerA;
+  ctx.request.body.playerB = startingCardsFixture.playerB;
 
-  let playerACardsData = ctx.request.body.playerACards as Array<CardCreationData>;
-  let playerBCardsData = ctx.request.body.playerBCards as Array<CardCreationData>;
+  let playerAData = ctx.request.body.playerA as PlayerCreationData;
+  let playerBData = ctx.request.body.playerB as PlayerCreationData;
 
   let game = new Game();
-  let {player1, player2, player1Cards, player2Cards, field} = game.create(playerACardsData, playerBCardsData);
+  let {player1, player2, player1Cards, player2Cards, board} = game.create(playerAData, playerBData);
 
-  await Repository.save([player1Cards, player1, player2Cards, player2, field, game]);
-
-  //TODO: убрать, сделать что диспатчится в Repository
-  // mainMQ.add({id: game.id});
+  await Repository.save([player1Cards, player1, player2Cards, player2, board, game]);
 
   godOfSockets.registerNamespace(game.id);
 
@@ -72,21 +39,21 @@ gameController.get('/getGame', async (ctx) => {
 
   let game = await Repository.get<Game>(gameId, Game);
 
-  let field = await Repository.get<Field>(game.fieldId, Field);
+  let board = await Repository.get<Board>(game.boardId, Board);
 
   let player1 = await Repository.get<Player>(game.player1Id, Player);
   let player2 = await Repository.get<Player>(game.player2Id, Player);
 
   if (isPretty) {
-    let player1Response = await mapPlayerPretty(player1, field);
-    let player2Response = await mapPlayerPretty(player2, field);
+    let player1Response = await mapPlayerPretty(player1, board);
+    let player2Response = await mapPlayerPretty(player2, board);
 
     ctx.body = `Game: ${JSON.stringify(game, undefined, 2)}
 Player1: ${player1Response}
 Player2: ${player2Response}`;
   } else {
-    let player1Response = await mapPlayer(player1, field);
-    let player2Response = await mapPlayer(player2, field);
+    let player1Response = await mapPlayer(player1, board);
+    let player2Response = await mapPlayer(player2, board);
 
     ctx.body = {
       game: Object(game).state,

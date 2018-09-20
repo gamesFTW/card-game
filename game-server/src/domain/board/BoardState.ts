@@ -3,14 +3,14 @@ import { EntityId, EntityState } from '../../infr/Entity';
 
 type EntityPositions = {[key: number]: {[key: number]: EntityId}};
 
-interface FieldData {
+interface BoardData {
   id?: EntityId;
   width?: number;
   height?: number;
   units?: EntityPositions;
 }
 
-class FieldState extends EntityState implements FieldData {
+class BoardState extends EntityState implements BoardData {
   public id: EntityId;
   public width: number;
   public height: number;
@@ -38,7 +38,7 @@ class FieldState extends EntityState implements FieldData {
   //   return new Tile();
   // }
   //
-  // private whenCardAddedToField (event: CardAddedToField) {
+  // private whenCardAddedToField (event: CardAddedToBoard) {
   //   let cardId = event.data.id;
   //   let x = event.data.x;
   //   let y = event.data.y;
@@ -63,4 +63,4 @@ class FieldState extends EntityState implements FieldData {
 
 }
 
-export {FieldState, FieldData, EntityPositions};
+export {BoardState, BoardData, EntityPositions};

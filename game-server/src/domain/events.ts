@@ -25,10 +25,10 @@ enum CardEventType {
   CARD_MOVED = 'CardMoved'
 }
 
-enum FieldEventType {
-  FIELD_CREATED = 'FieldCreated',
-  CARD_ADDED_TO_FIELD = 'CardAddedToField',
+enum BoardEventType {
+  BOARD_CREATED = 'BoardCreated',
+  CARD_ADDED_TO_BOARD = 'CardAddedToBoard',
   CARD_MOVED = 'CardMoved'
 }
 
-export {PlayerEventType, GameEventType, CardEventType, FieldEventType};
+export {PlayerEventType, GameEventType, CardEventType, BoardEventType};

@@ -4,7 +4,7 @@ import { Event } from '../../infr/Event';
 import { Point } from '../../infr/Point';
 import { Card, CardCreationData } from '../card/Card';
 import { PlayerEventType } from '../events';
-import { Field } from '../field/Field';
+import { Board } from '../board/Board';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState } from './PlayerState';
 
@@ -21,6 +21,11 @@ enum PlayerStatus {
   WAITING_FOR_TURN = 'WaitingForTurn'
 }
 
+interface PlayerCreationData {
+  deck: Array<CardCreationData>;
+  heroes: Array<CardCreationData>;
+}
+
 class Player extends Entity {
   protected state: PlayerState;
 
@@ -32,21 +37,27 @@ class Player extends Entity {
     this.state = new PlayerState(events);
   }
 
-  public create (cardsCreationData: Array<CardCreationData>, handicap: boolean): {cards: Array<Card>} {
+  public create (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean): Array<Card> {
     let id = this.generateId();
 
-    let cards = this.createCards(cardsCreationData);
+    // TODO сделать проверку на минимальное количество стартовых карт.
 
-    let cardIds = cards.map((card: Card) => card.id);
+    let creatures = this.createCards(playerCreationData.deck);
+    let heroes = this.createCards(playerCreationData.heroes);
+
+    let units = creatures.concat(heroes);
+
+    let cardIds = units.map((card: Card) => card.id);
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.PLAYER_CREATED, {id, deck: cardIds}
     ));
 
     this.shuffleDeck();
-    this.drawStartingHand(handicap);
+    this.placeHeroes(heroes, board, isFirstPlayer);
+    this.drawStartingHand(isFirstPlayer);
 
-    return {cards};
+    return units;
   }
 
   public endTurn (mannaPool: Array<Card>, table: Array<Card>): void {
@@ -97,7 +108,7 @@ class Player extends Entity {
       throw new Error(`Card ${card.id} isn't in hand`);
     }
 
-    let {fromStack: hand, toStack: mannaPool} = this.changeStack(this.state.hand, this.state.mannaPool, card.id);
+    let {fromStack: hand, toStack: mannaPool} = this.changeStack(CardStack.HAND, CardStack.MANA_POOL, card.id);
 
     this.applyEvent(new Event<PlayerData, PlayerPlayCardAsMannaData>(
       PlayerEventType.CARD_PLAYED_AS_MANNA,
@@ -108,7 +119,7 @@ class Player extends Entity {
     card.tap();
   }
 
-  public playCard (card: Card, mannaPoolCards: Array<Card>, position: Point, field: Field): void {
+  public playCard (card: Card, mannaPoolCards: Array<Card>, position: Point, board: Board): void {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
@@ -119,14 +130,7 @@ class Player extends Entity {
 
     // TODO: проверить на наличие рядом героя и на отсутствие врагов
 
-    field.addCardToField(card, position);
-
-    let {fromStack: hand, toStack: table} = this.changeStack(this.state.hand, this.state.table, card.id);
-
-    this.applyEvent(new Event<PlayerData>(
-      PlayerEventType.CARD_PLAYED,
-      {table, hand}
-    ));
+    this.placeCardOnBoard(card, board, position);
 
     card.play();
   }
@@ -134,7 +138,7 @@ class Player extends Entity {
   // WARNING: это очень не правильно, данный метод находится не на своем уровне абстракции
   // Нужно создать глобальную шину и делать такое через эвенты и этот метод должен быть приватным
   public endOfCardDeath (card: Card): void {
-    let {fromStack: table, toStack: graveyard} = this.changeStack(this.state.table, this.state.graveyard, card.id);
+    let {fromStack: table, toStack: graveyard} = this.changeStack(CardStack.TABLE, CardStack.GRAVEYARD, card.id);
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.CARD_DIED,
@@ -142,32 +146,16 @@ class Player extends Entity {
     ));
   }
 
-  public moveCard (card: Card, position: Point, field: Field): void {
+  public moveCard (card: Card, position: Point, board: Board): void {
     this.checkIfItHisTurn();
 
-    field.moveUnit(card, position);
+    board.moveUnit(card, position);
 
     card.move(1);
   }
 
   public checkCardIn (card: Card, stackName: CardStack): boolean {
-    let stack;
-    if (stackName === CardStack.DECK) {
-      stack = this.state.deck;
-    }
-    if (stackName === CardStack.HAND) {
-      stack = this.state.hand;
-    }
-    if (stackName === CardStack.TABLE) {
-      stack = this.state.table;
-    }
-    if (stackName === CardStack.MANA_POOL) {
-      stack = this.state.mannaPool;
-    }
-    if (stackName === CardStack.GRAVEYARD) {
-      stack = this.state.graveyard;
-    }
-
+    let stack = this.getStackByName(stackName);
     return this.checkCardInStack(card, stack);
   }
 
@@ -177,14 +165,32 @@ class Player extends Entity {
     }
   }
 
-  private drawStartingHand (handicap: boolean): void {
-    let drawCardNumber = handicap ?
+  private drawStartingHand (isFirstPlayer: boolean): void {
+    let drawCardNumber = isFirstPlayer ?
       GameConstants.STARTING_HAND - GameConstants.HANDICAP :
       GameConstants.STARTING_HAND;
 
     for (let i = 1; i <= drawCardNumber; i++) {
       this.drawCard();
     }
+  }
+
+  private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
+    let x = isFirstPlayer ? 1 : GameConstants.BOARD_WIDTH;
+    let position = new Point(x, Math.round(GameConstants.BOARD_HEIGHT / 2));
+
+    let hero = heroes[0];
+
+    board.addCardOnBoard(hero, position);
+
+    let {fromStack: deck, toStack: table} = this.changeStack(CardStack.DECK, CardStack.TABLE, hero.id);
+
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.CARD_PLAYED,
+      {table, deck}
+    ));
+
+    hero.play();
   }
 
   private untapCardsAtEndOfTurn (mannaPool: Array<Card>, table: Array<Card>): void {
@@ -204,6 +210,17 @@ class Player extends Entity {
     });
   }
 
+  private placeCardOnBoard (card: Card, board: Board, position: Point): void {
+    board.addCardOnBoard(card, position);
+
+    let {fromStack: hand, toStack: table} = this.changeStack(CardStack.HAND, CardStack.TABLE, card.id);
+
+    this.applyEvent(new Event<PlayerData>(
+      PlayerEventType.CARD_PLAYED,
+      {table, hand}
+    ));
+  }
+
   private checkCardInStack (card: Card, stack: Array<EntityId>): boolean {
     return stack.indexOf(card.id) >= 0 ? true : false;
   }
@@ -220,9 +237,20 @@ class Player extends Entity {
     mannaPoolCardsToTap.forEach((card) => card.tap());
   }
 
-  private changeStack (fromStack: Array<EntityId>, toStack: Array<EntityId>, cardId: EntityId)
+  private changeStack (fromStackName: CardStack, toStackName: CardStack, cardId: EntityId)
       : {fromStack: Array<EntityId>, toStack: Array<EntityId>} {
+    let fromStack: Array<EntityId> = this.getStackByName(fromStackName);
+    let toStack: Array<EntityId> = this.getStackByName(toStackName);
+
     let newFromStack = lodash.clone(fromStack);
+    let indexInArray = newFromStack.indexOf(cardId);
+
+    if (indexInArray === -1) {
+      throw new Error(
+        `There is no card ${cardId} in stack. Cant move card from ${fromStackName} to ${toStackName}.`
+      );
+    }
+
     newFromStack.splice(newFromStack.indexOf(cardId), 1);
 
     let newToStack = lodash.clone(toStack);
@@ -230,6 +258,27 @@ class Player extends Entity {
 
     return {fromStack: newFromStack, toStack: newToStack};
   }
+
+  private getStackByName (stackName: CardStack): Array<EntityId> {
+    let stack;
+    if (stackName === CardStack.DECK) {
+      stack = this.state.deck;
+    }
+    if (stackName === CardStack.HAND) {
+      stack = this.state.hand;
+    }
+    if (stackName === CardStack.TABLE) {
+      stack = this.state.table;
+    }
+    if (stackName === CardStack.MANA_POOL) {
+      stack = this.state.mannaPool;
+    }
+    if (stackName === CardStack.GRAVEYARD) {
+      stack = this.state.graveyard;
+    }
+
+    return stack;
+  }
 }
 
-export {Player, PlayerStatus, CardStack};
+export {Player, PlayerStatus, CardStack, PlayerCreationData};

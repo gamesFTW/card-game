@@ -10,8 +10,9 @@ import CardsLayer from '../CardsLayer/CardsLayer';
 import { CardData } from '../../../typings/Cards';
 
 // ВРЕМЕННО
-import { UIField } from '../../../UIField/Game';
-let game: UIField;
+import { UIBoard } from '../../../UIBoard/Game';
+import {GameConstants} from '../../../../../game-server/src/domain/game/GameConstants';
+let game: UIBoard;
 // ВРЕМЕННО
 
 interface Props {
@@ -61,7 +62,7 @@ class Main extends React.Component<Props> {
     let gamePayload = await this.loadGameData();
     this.props.initCards(gamePayload);
 
-    game = new UIField(10, 10, gamePayload);
+    game = new UIBoard(GameConstants.BOARD_WIDTH, GameConstants.BOARD_HEIGHT, gamePayload);
   }
 
   @autobind

@@ -43,4 +43,4 @@ class Game extends Phaser.Game {
   }
 }
 
-export {Game as UIField};
+export {Game as UIBoard};

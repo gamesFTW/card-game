@@ -27,11 +27,11 @@ class Card extends Entity {
     this.state = new CardState(events);
   }
 
-  public create (cardCreationData: CardCreationData): void {
+  public create (CardCreationData: CardCreationData): void {
     let id = this.generateId();
 
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_CREATED, {id, ...cardCreationData}
+      CardEventType.CARD_CREATED, {id, ...CardCreationData}
     ));
   }
 
