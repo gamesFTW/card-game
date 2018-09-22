@@ -75,7 +75,7 @@ class Board extends Entity {
     return false;
   }
 
-  public addCardOnBoard (card: Card, toPosition: Point): void {
+  public addUnitOnBoard (card: Card, toPosition: Point): void {
     let {x, y} = toPosition;
 
     if (x < 1 || x > this.state.width || y < 1 || y > this.state.height) {
