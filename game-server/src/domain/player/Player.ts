@@ -112,7 +112,15 @@ class Player extends Entity {
     card.play();
   }
 
-  // WARNING: это очень не правильно, данный метод находится не на своем уровне абстракции
+  public moveCard (card: Card, position: Point, board: Board): void {
+    this.checkIfItHisTurn();
+
+    board.moveUnit(card, position);
+
+    card.move(1);
+  }
+
+  // TODO: это очень не правильно, данный метод находится не на своем уровне абстракции
   // Нужно создать глобальную шину и делать такое через эвенты и этот метод должен быть приватным
   public endOfCardDeath (card: Card): void {
     let {fromStack: table, toStack: graveyard} = this.changeCardStack(CardStack.TABLE, CardStack.GRAVEYARD, card.id);
@@ -123,14 +131,6 @@ class Player extends Entity {
     ));
   }
 
-  public moveCard (card: Card, position: Point, board: Board): void {
-    this.checkIfItHisTurn();
-
-    board.moveUnit(card, position);
-
-    card.move(1);
-  }
-
   // TODO: Метод не на том уровне абстракции?
   public checkCardIn (card: Card, stackName: CardStack): boolean {
     let stack = this.getStackByName(stackName);
@@ -138,11 +138,14 @@ class Player extends Entity {
   }
 
   // TODO: Метод не на том уровне абстракции?
+  // Сделать геттером!
   public checkIfItHisTurn (): void {
     if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
       throw new Error(`Its not a turn of player: ${this.id}.`);
     }
   }
+
+  // Стартовые методы
 
   // TODO: Метод не на том уровне абстракции?
   private createCards (cardsCreationData: Array<CardCreationData>): Array<Card> {
@@ -154,7 +157,6 @@ class Player extends Entity {
     });
   }
 
-  // Стартовые методы
   private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
     let x = isFirstPlayer ? 1 : GameConstants.BOARD_WIDTH;
     let position = new Point(x, Math.round(GameConstants.BOARD_HEIGHT / 2));
