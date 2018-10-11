@@ -97,14 +97,21 @@ module.exports = (env = {}) => {
           use: { loader: 'json-loader' },
         },
         // // css
-        // {
-        //   test: /\.css$/,
-        //   include: [PATHS.STYLES],
-        //   loader: ExtractTextPlugin.extract([
-        //     'css-loader?{modules: false}',
-        //     'postcss-loader',
-        //   ]),
-        // },
+        { 
+          test: /\.css$/, 
+          use: [
+            {
+              loader: 'style-loader',
+            },
+            { 
+              loader: 'css-loader',
+              options: {
+                modules: true,
+              },
+            }
+          ]
+        },
+          // ...
         // // less
         // {
         //   test: /\.less$/,

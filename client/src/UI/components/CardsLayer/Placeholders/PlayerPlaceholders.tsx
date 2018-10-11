@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { PlayerCards } from '../../../store/cards/reducer';
 import { Placeholder } from './Placeholder';
+import css from './PlayerPlaceholders.css';
 
 interface Props {
   title: string;
@@ -19,12 +20,8 @@ export class PlayerPlaceholders extends React.Component<Props> {
       return (<Placeholder {...params} key={'card-place-' + cardId}/>);
     };
 
-    let style = {
-      float: 'left'
-    };
-
     return (
-        <div style={style}>
+        <div className={css.PlayerPlaceholders}>
           <h3>{this.props.title}</h3>
           <div>Deck</div>
           <div>{this.props.cardsPlaceholders.deck.map(CardPlaceContainer)}</div>
