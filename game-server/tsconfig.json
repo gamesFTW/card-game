@@ -19,5 +19,9 @@
   },
   "include": [
     "src/**/*"
+  ],
+  "allowJs": false,
+  "exclude": [
+    "dist/*"
   ]
 }

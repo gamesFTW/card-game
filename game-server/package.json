@@ -47,7 +47,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "ts-node-dev": "^1.0.0-pre.5",
+    "ts-node-dev": "1.0.0-pre.30",
     "tslint": "^5.8.0",
     "tslint-config-semistandard": "^6.0.4"
   }
