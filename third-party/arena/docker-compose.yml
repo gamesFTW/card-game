@@ -1,6 +1,0 @@
-version: '3'
-services:
-  arena:
-   image: "arena"
-   ports:
-    - 4567:4567
