@@ -97,16 +97,17 @@ module.exports = (env = {}) => {
           use: { loader: 'json-loader' },
         },
         // // css
-        { 
-          test: /\.css$/, 
+        {
+          test: /\.css$/,
           use: [
             {
               loader: 'style-loader',
             },
-            { 
+            {
               loader: 'css-loader',
               options: {
                 modules: true,
+                localIdentName: '[name]__[local]--[hash:base64:5]'
               },
             }
           ]

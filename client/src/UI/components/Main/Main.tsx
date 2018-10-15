@@ -127,7 +127,7 @@ class Main extends React.Component<Props> {
   render (): JSX.Element {
     return (
       <div className={css.main}>
-        <div className={css.mainContent}>
+        <div className={css.content}>
           <CardsLayer/>
           <div id='board'/>
         </div>
