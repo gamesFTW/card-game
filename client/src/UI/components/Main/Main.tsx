@@ -9,9 +9,12 @@ import autobind from 'autobind-decorator';
 import CardsLayer from '../CardsLayer/CardsLayer';
 import { CardData } from '../../../typings/Cards';
 
+import css from './Main.css';
+
 // ВРЕМЕННО
 import { UIBoard } from '../../../UIBoard/Game';
-import {GameConstants} from '../../../../../game-server/src/domain/game/GameConstants';
+import { GameConstants } from '../../../../../game-server/src/domain/game/GameConstants';
+
 let game: UIBoard;
 // ВРЕМЕННО
 
@@ -122,14 +125,12 @@ class Main extends React.Component<Props> {
   }
 
   render (): JSX.Element {
-    let fieldStyles = {
-      position: 'absolute'
-    };
-
     return (
-      <div>
-        <div id='field' style={fieldStyles}/>
-        <CardsLayer/>
+      <div className={css.main}>
+        <div className={css.mainContent}>
+          <CardsLayer/>
+          <div id='board'/>
+        </div>
       </div>
     );
   }

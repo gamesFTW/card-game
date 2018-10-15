@@ -10,8 +10,8 @@ let pointerToIcometric = function (pointer: {x: number, y: number}) {
   let TILE_WIDTH = 130;
   let TILE_HEIGHT = 65;
 
-  let xOffset = 870;
-  let yOffset = 210;
+  let xOffset = 580 + 20;//870;
+  let yOffset = 60; //210;
 
   return {
     x: (x - y) * (TILE_WIDTH / 2) + xOffset,
