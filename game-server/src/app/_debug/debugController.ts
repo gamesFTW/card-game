@@ -49,12 +49,12 @@ debugController.post('/playDebugGameWithDelay', async (ctx) => {
   await endTurn(gameId, player2.id);
   await delay(delayTime);
 
-  await playCard(gameId, player1.id, player1.hand[3].id, 2, 2);
+  await playCard(gameId, player1.id, player1.hand[3].id, 1, 1);
   await delay(delayTime);
   await endTurn(gameId, player1.id);
   await delay(delayTime);
 
-  await playCard(gameId, player2.id, player2.hand[3].id, 2, 3);
+  await playCard(gameId, player2.id, player2.hand[3].id, 1, 2);
   await delay(delayTime);
   await endTurn(gameId, player2.id);
   await delay(delayTime);
