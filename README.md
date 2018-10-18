@@ -1,9 +1,7 @@
 # Software requirements
-nodejs 8.11.1
-redis
-mongodb
+nodeJs 8, docker
 
-# How to run dev env
+# How to run dev enviroment
 
 ## For Client
 ```
@@ -13,12 +11,15 @@ npm i && npm run dev
 
 ## For Server
 ```
-docker-compose up
+docker-compose up -d
+export MONGO_IP=127.0.0.1  # set your docker agent ip address (not necessary for Win user)
+cd game-server && npm i && npm run dev
 ```
 
 In another terminal:
 ```
 export MONGO_IP=127.0.0.1  # set your docker agent ip address (not necessary for Win user)
+cd lobby-server
 npm i
 npm run dev 
 ```
