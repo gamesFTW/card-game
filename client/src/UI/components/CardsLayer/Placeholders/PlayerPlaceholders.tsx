@@ -2,10 +2,11 @@ import * as React from 'react';
 
 import { PlayerCards } from '../../../store/cards/reducer';
 import { Placeholder } from './Placeholder';
+import { FaceUpCard } from '../Cards/FaceUpCard';
 import css from './PlayerPlaceholders.css';
 
 interface Props {
-  title: string;
+  owner: string;
   cardsPlaceholders: PlayerCards;
   cardPlaceChangePosition: (params: any) => any;
 }
@@ -20,19 +21,15 @@ export class PlayerPlaceholders extends React.Component<Props> {
       return (<Placeholder {...params} key={'card-place-' + cardId}/>);
     };
 
+    let ownerClassName = this.props.owner === 'player' ? css.player : css.opponent;
+
     return (
-        <div className={css.PlayerPlaceholders}>
-          <h3>{this.props.title}</h3>
-          <div>Deck</div>
-          <div>{this.props.cardsPlaceholders.deck.map(CardPlaceContainer)}</div>
-          <div>Hand</div>
-          <div>{this.props.cardsPlaceholders.hand.map(CardPlaceContainer)}</div>
-          <div>Manna Pool</div>
-          <div>{this.props.cardsPlaceholders.mannaPool.map(CardPlaceContainer)}</div>
-          <div>Table</div>
-          <div>{this.props.cardsPlaceholders.table.map(CardPlaceContainer)}</div>
-          <div>Graveyard</div>
-          <div>{this.props.cardsPlaceholders.graveyard.map(CardPlaceContainer)}</div>
+        <div className={`${css.PlayerPlaceholders} ${ownerClassName}`}>
+          <div className={css.deck}><FaceUpCard/></div>
+          <div className={css.hand}>{this.props.cardsPlaceholders.hand.map(CardPlaceContainer)}</div>
+          <div className={css.mannaPool}>{this.props.cardsPlaceholders.mannaPool.map(CardPlaceContainer)}</div>
+          <div className={css.table}>{this.props.cardsPlaceholders.table.map(CardPlaceContainer)}</div>
+          <div className={css.graveyard}>{this.props.cardsPlaceholders.graveyard.map(CardPlaceContainer)}</div>
         </div>
     );
   }

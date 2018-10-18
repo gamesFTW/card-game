@@ -1,3 +1,28 @@
 .PlayerPlaceholders {
   float: left;
 }
+
+.player .deck {
+  /*position: absolute;*/
+
+}
+
+.player .hand {
+
+}
+
+.player .mannaPool {
+
+}
+
+.player .table {
+
+}
+
+.player .graveyard {
+
+}
+
+.opponent {
+
+}

@@ -20,12 +20,12 @@ export class Placeholders extends React.Component<Props> {
     return (
       <div>
         <PlayerPlaceholders
-          title='Player'
+          owner='player'
           cardsPlaceholders={this.props.playerCards}
           cardPlaceChangePosition={this.props.cardPlaceChangePosition}
         />
         <PlayerPlaceholders
-          title='Opponent'
+          owner='opponent'
           cardsPlaceholders={this.props.opponentCards}
           cardPlaceChangePosition={this.props.cardPlaceChangePosition}
         />

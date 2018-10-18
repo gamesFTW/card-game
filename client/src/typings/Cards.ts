@@ -1,6 +1,6 @@
 type CardId = string;
 
-type CardData = {
+interface CardData {
   id: CardId;
   name?: string;
   maxHp?: number;
@@ -13,6 +13,6 @@ type CardData = {
   currentMovingPoints?: number;
   x?: number;
   y?: number;
-};
+}
 
 export {CardData, CardId};
