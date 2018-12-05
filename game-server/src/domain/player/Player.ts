@@ -158,8 +158,8 @@ class Player extends Entity {
   }
 
   private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
-    let x = isFirstPlayer ? 1 : GameConstants.BOARD_WIDTH;
-    let position = new Point(x, Math.round(GameConstants.BOARD_HEIGHT / 2));
+    let y = isFirstPlayer ? 1 : GameConstants.BOARD_HEIGHT;
+    let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2), y);
 
     let hero = heroes[0];
 
