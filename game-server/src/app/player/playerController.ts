@@ -10,6 +10,8 @@ import { Board } from '../../domain/board/Board';
 import { AttackService } from '../../domain/AttackService/AttackService';
 
 import { godOfSockets } from '../../infr/GodOfSockets';
+import {CardEventType} from '../../domain/events';
+import {AttackCardUseCase} from './AttackCardUseCase';
 
 const playerController = new Router();
 
@@ -94,21 +96,9 @@ playerController.post('/attackCard', async (ctx) => {
   let attackerCardId = ctx.request.body.attackerCardId as EntityId;
   let attackedCardId = ctx.request.body.attackedCardId as EntityId;
 
-  let game = await Repository.get<Game>(gameId, Game);
-  let board = await Repository.get<Board>(game.boardId, Board);
-  let attackerPlayer = await Repository.get<Player>(attackerPlayerId, Player);
-  let attackedPlayerId = game.getPlayerIdWhichIsOpponentFor(attackerPlayerId);
-  let attackedPlayer = await Repository.get<Player>(attackedPlayerId, Player);
-  let attackerCard = await Repository.get<Card>(attackerCardId, Card);
-  let attackedCard = await Repository.get<Card>(attackedCardId, Card);
+  let attackCard = new AttackCardUseCase();
+  await attackCard.execute(gameId, attackerPlayerId, attackerCardId, attackedCardId);
 
-  AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board);
-
-  let entities = [attackedPlayer, attackerPlayer, attackedCard, attackerCard];
-  await Repository.save(entities);
-
-  // Send data to client
-  godOfSockets.sendEventsInGame(game.id, attackedPlayer.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 

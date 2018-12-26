@@ -11,7 +11,7 @@ class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
-  static async save (param: Entity | Array<Entity | Array<Entity>>): Promise<void> {
+  static async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
     let entities = Repository.prepareEntities(param);
     let events: Array<Event>;
 
@@ -24,6 +24,7 @@ class Repository {
     }
 
     await Repository.dispatchEvents(events);
+    return events;
   }
 
   static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
@@ -60,8 +61,6 @@ class Repository {
   }
 
   private static async dispatchEvents (events: Array<Event>): Promise<void> {
-    events = lodash.sortBy(events, 'orderIndex');
-
     events.forEach((event: Event) => mq.publish(event));
   }
 

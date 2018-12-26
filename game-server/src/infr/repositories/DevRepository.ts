@@ -19,12 +19,15 @@ class DevRepository {
       return eventWithEntity.event.orderIndex;
     });
 
+    // Нужно для визуального разделения событий.
     await DevRepository.saveDebugEntry();
     for (let orderedEventWithEntity of orderedEventsWithEntity) {
       await DevRepository.saveOne(orderedEventWithEntity);
     }
 
-    return events;
+    let orderedEvents = lodash.sortBy(events, 'orderIndex');
+
+    return orderedEvents;
   }
 
   private static async saveOne (orderedEventWithEntity: {event: Event, entity: Entity}): Promise<void> {

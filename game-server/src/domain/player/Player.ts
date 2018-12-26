@@ -127,7 +127,7 @@ class Player extends Entity {
 
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.CARD_DIED,
-      {table, graveyard}
+      {table, graveyard}, {diedCardId: card.id}
     ));
   }
 

@@ -6,9 +6,17 @@ type EntityId = string;
 
 class Entity {
   public changes: Array<Event<any>> = [];
-  protected state: EntityState;
-
   public get id (): EntityId { return this.state.id; }
+
+  protected state: EntityState;
+  private listeners: {[type: string]: Array<Function>} = {};
+
+  public addEventListener (type: string, callback: Function): void {
+    if (!this.listeners[type]) {
+      this.listeners[type] = [];
+    }
+    this.listeners[type].push(callback);
+  }
 
   protected applyEvent (event: Event<any>): void {
     event.orderIndex = Event.currentOrderIndex;
@@ -16,10 +24,20 @@ class Entity {
 
     this.state.mutate(event);
     this.changes.push(event);
+
+    this.callListeners(event);
   }
 
   protected generateId (): EntityId {
     return generate('1234567890qwertyuiopasdfghjklzxcvbnm', 30);
+  }
+
+  private callListeners (event: Event): void {
+    if (this.listeners[event.type]) {
+      for (let index in this.listeners[event.type]) {
+        this.listeners[event.type][index](event);
+      }
+    }
   }
 }
 

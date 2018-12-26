@@ -1,34 +1,38 @@
 enum PlayerEventType {
-  PLAYER_CREATED = 'PlayerCreated',
-  DECK_SHUFFLED = 'DeckShuffled',
-  CARD_DRAWN = 'CardDrawn',
-  TURN_ENDED = 'TurnEnded',
-  TURN_STARTED = 'TurnStarted',
-  CARD_PLAYED_AS_MANNA = 'CardPlayedAsManna',
-  CARD_DIED = 'CardDied',
-  CARD_PLAYED = 'CardPlayed'
+  PLAYER_CREATED = 'Player:PlayerCreated',
+  DECK_SHUFFLED = 'Player:DeckShuffled',
+  CARD_DRAWN = 'Player:CardDrawn',
+  TURN_ENDED = 'Player:TurnEnded',
+  TURN_STARTED = 'Player:TurnStarted',
+  CARD_PLAYED_AS_MANNA = 'Player:CardPlayedAsManna',
+  CARD_DIED = 'Player:CardDied',
+  CARD_PLAYED = 'Player:CardPlayed'
 }
 
+type CardDiedExtra = {
+  diedCardId: string;
+};
+
 enum GameEventType {
-  GAME_CREATED = 'GameCreated',
-  TURN_ENDED = 'TurnEnded'
+  GAME_CREATED = 'Game:GameCreated',
+  TURN_ENDED = 'Game:TurnEnded'
 }
 
 enum CardEventType {
-  CARD_CREATED = 'CardCreated',
-  CARD_TAPPED = 'CardTapped',
-  CARD_UNTAPPED = 'CardUntapped',
-  CARD_PLAYED = 'CardPlayed',
-  CARD_ADDED_CURRENT_MOVING_POINTS = 'CardAddedCurrentMovingPoints',
-  CARD_TOOK_DAMAGE = 'CardTookDamage',
-  CARD_DIED = 'CardDied',
-  CARD_MOVED = 'CardMoved'
+  CARD_CREATED = 'Card:CardCreated',
+  CARD_TAPPED = 'Card:CardTapped',
+  CARD_UNTAPPED = 'Card:CardUntapped',
+  CARD_PLAYED = 'Card:CardPlayed',
+  CARD_ADDED_CURRENT_MOVING_POINTS = 'Card:CardAddedCurrentMovingPoints',
+  CARD_TOOK_DAMAGE = 'Card:CardTookDamage',
+  CARD_DIED = 'Card:CardDied',
+  CARD_MOVED = 'Card:CardMoved'
 }
 
 enum BoardEventType {
-  BOARD_CREATED = 'BoardCreated',
-  CARD_ADDED_TO_BOARD = 'CardAddedToBoard',
-  CARD_MOVED = 'CardMoved'
+  BOARD_CREATED = 'Board:BoardCreated',
+  CARD_ADDED_TO_BOARD = 'Board:CardAddedToBoard',
+  CARD_MOVED = 'Board:CardMoved'
 }
 
-export {PlayerEventType, GameEventType, CardEventType, BoardEventType};
+export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra};

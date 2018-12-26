@@ -49,8 +49,8 @@ class GodOfSockets {
     });
   }
 
-  public sendEventsInGame (gameId: EntityId, playerId: EntityId, events: Array<Event>): void {
-    this.koaSocketIO.socket.of('/' + gameId).emit('event', events);
+  public sendClientEventsInGame (gameId: EntityId, playerId: EntityId, clientEvents: Array<any>): void {
+    this.koaSocketIO.socket.of('/' + gameId).emit('event', clientEvents);
   }
 }
 interface KoaWithSocketIo extends Koa {
