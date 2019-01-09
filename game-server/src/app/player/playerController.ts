@@ -7,11 +7,8 @@ import { Player } from '../../domain/player/Player';
 import { Card } from '../../domain/card/Card';
 import { Point } from '../../infr/Point';
 import { Board } from '../../domain/board/Board';
-import { AttackService } from '../../domain/AttackService/AttackService';
-
 import { godOfSockets } from '../../infr/GodOfSockets';
-import {CardEventType} from '../../domain/events';
-import {AttackCardUseCase} from './AttackCardUseCase';
+import { AttackCardUseCase } from './AttackCardUseCase';
 
 const playerController = new Router();
 

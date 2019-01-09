@@ -12,6 +12,7 @@ import { mapPlayerPretty } from './mapPlayerPretty';
 
 import { godOfSockets } from '../../infr/GodOfSockets';
 import { startingCardsFixture } from './startingCardsFixture';
+import {EndTurnUseCase} from './EndTurnUseCase';
 
 const gameController = new Router();
 
@@ -68,26 +69,8 @@ gameController.post('/endTurn', async (ctx) => {
   // TODO: playerId нужно доставать из сессии
   let endingTurnPlayerId = ctx.request.body.playerId as EntityId;
 
-  let game = await Repository.get<Game>(gameId, Game);
-
-  let endingTurnPlayerOpponentId = game.getPlayerIdWhichIsOpponentFor(endingTurnPlayerId);
-
-  let endingTurnPlayer = await Repository.get<Player>(endingTurnPlayerId, Player);
-  let endingTurnPlayerOpponent = await Repository.get<Player>(endingTurnPlayerOpponentId, Player);
-
-  let endingTurnPlayerMannaPoolCards = await Repository.getMany <Card>(endingTurnPlayer.mannaPool, Card);
-  let endingTurnPlayerTableCards = await Repository.getMany <Card>(endingTurnPlayer.table, Card);
-
-  game.endTurn(endingTurnPlayer, endingTurnPlayerOpponent, endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
-
-  let entities = [
-    game, endingTurnPlayer, endingTurnPlayerOpponent,
-    endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards
-  ];
-  await Repository.save(entities);
-
-  // Send data to client
-  godOfSockets.sendEventsInGame(game.id, endingTurnPlayer.id, formatEventsForClient(entities));
+  let endTurnUseCase = new EndTurnUseCase();
+  await endTurnUseCase.execute(gameId, endingTurnPlayerId);
 
   ctx.body = `Ok`;
 });

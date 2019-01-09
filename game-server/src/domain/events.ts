@@ -1,3 +1,5 @@
+import {EntityId} from '../infr/Entity';
+
 enum PlayerEventType {
   PLAYER_CREATED = 'Player:PlayerCreated',
   DECK_SHUFFLED = 'Player:DeckShuffled',
@@ -9,9 +11,17 @@ enum PlayerEventType {
   CARD_PLAYED = 'Player:CardPlayed'
 }
 
-type CardDiedExtra = {
+interface CardDiedExtra {
   diedCardId: string;
-};
+}
+
+interface PlayerDrawnCardData {
+  drawnCard?: EntityId;
+}
+
+interface PlayerPlayCardAsMannaData {
+  playedAsMannaCard?: EntityId;
+}
 
 enum GameEventType {
   GAME_CREATED = 'Game:GameCreated',
@@ -35,4 +45,4 @@ enum BoardEventType {
   CARD_MOVED = 'Board:CardMoved'
 }
 
-export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra};
+export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra, PlayerDrawnCardData, PlayerPlayCardAsMannaData};

@@ -13,14 +13,6 @@ interface PlayerData {
   status?: PlayerStatus;
 }
 
-interface PlayerDrawnCardData {
-  drawnCard?: EntityId;
-}
-
-interface PlayerPlayCardAsMannaData {
-  playedAsMannaCard?: EntityId;
-}
-
 class PlayerState extends EntityState implements PlayerData {
   public deck: Array<EntityId> = [];
   public hand: Array<EntityId> = [];
@@ -35,4 +27,4 @@ class PlayerState extends EntityState implements PlayerData {
   }
 }
 
-export {PlayerState, PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData};
+export {PlayerState, PlayerData};

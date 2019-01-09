@@ -1,42 +1,43 @@
 import { Player } from '../../domain/player/Player';
 import { Repository } from '../../infr/repositories/Repository';
 import { Board } from '../../domain/board/Board';
-import { formatEventsForClient } from '../../infr/Event';
 import { godOfSockets } from '../../infr/GodOfSockets';
 import { Game } from '../../domain/game/Game';
-import { CardDiedExtra, CardEventType, PlayerEventType } from '../../domain/events';
+import {CardDiedExtra, CardEventType, PlayerEventType} from '../../domain/events';
 import { AttackService } from '../../domain/attackService/AttackService';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
+import { EntityId } from '../../infr/Entity';
+import {PlayerData} from '../../domain/player/PlayerState';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 
-interface CardAttackedClientEvent {
+interface CardAttackedAction {
   type: string;
   attackerCard: {
     id?: string;
     isTapped?: boolean;
     newHp?: number;
-    alive?: boolean
+    alive?: boolean;
   };
   attackedCard: {
     id?: string;
     isTapped?: boolean;
     newHp?: number;
-    alive?: boolean
+    alive?: boolean;
   };
 }
 
 class AttackCardUseCase {
-  private cardAttackedClientEvent: CardAttackedClientEvent = {
+  private cardAttackedAction: CardAttackedAction = {
     type: 'CardAttacked',
     attackerCard: {},
     attackedCard: {}
   };
 
-  public async execute (gameId: string, attackerPlayerId: string, attackerCardId: string, attackedCardId: string): Promise<void> {
+  public async execute (gameId: EntityId, attackerPlayerId: EntityId, attackerCardId: EntityId, attackedCardId: EntityId): Promise<void> {
     let game = await Repository.get<Game>(gameId, Game);
     let board = await Repository.get<Board>(game.boardId, Board);
     let attackerPlayer = await Repository.get<Player>(attackerPlayerId, Player);
@@ -55,41 +56,42 @@ class AttackCardUseCase {
 
     AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board);
 
-    this.cardAttackedClientEvent.attackedCard.id = attackerCardId;
-    this.cardAttackedClientEvent.attackedCard.id = attackedCardId;
-    let clientEvents = [this.cardAttackedClientEvent];
+    await Repository.save([game, board, attackerPlayer, attackedPlayer, attackerCard, attackedCard]);
 
-    godOfSockets.sendClientEventsInGame(game.id, attackedPlayer.id, clientEvents);
+    this.cardAttackedAction.attackedCard.id = attackerCardId;
+    this.cardAttackedAction.attackedCard.id = attackedCardId;
+
+    godOfSockets.sendActions(game.id, [this.cardAttackedAction]);
   }
 
   @boundMethod
   private onAttackerCardTapped (event: Event<CardData>): void {
-    this.cardAttackedClientEvent.attackerCard.isTapped = true;
+    this.cardAttackedAction.attackerCard.isTapped = true;
   }
 
   @boundMethod
   private onAttackerCardTookDamage (event: Event<CardData>): void {
-    this.cardAttackedClientEvent.attackerCard.newHp = event.data.currentHp;
+    this.cardAttackedAction.attackerCard.newHp = event.data.currentHp;
   }
 
   @boundMethod
   private onAttackerCardDied (event: Event<CardData>): void {
-    this.cardAttackedClientEvent.attackerCard.alive = event.data.alive;
+    this.cardAttackedAction.attackerCard.alive = event.data.alive;
   }
 
   @boundMethod
   private onAttackedCardTapped (event: Event<CardData>): void {
-    this.cardAttackedClientEvent.attackedCard.isTapped = true;
+    this.cardAttackedAction.attackedCard.isTapped = true;
   }
 
   @boundMethod
   private onAttackedCardTookDamage (event: Event<CardData>): void {
-    this.cardAttackedClientEvent.attackedCard.newHp = event.data.currentHp;
+    this.cardAttackedAction.attackedCard.newHp = event.data.currentHp;
   }
 
   @boundMethod
   private onAttackedCardDied (event: Event<CardData>): void {
-    this.cardAttackedClientEvent.attackedCard.alive = event.data.alive;
+    this.cardAttackedAction.attackedCard.alive = event.data.alive;
   }
 }
 

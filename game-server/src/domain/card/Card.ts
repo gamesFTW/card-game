@@ -48,7 +48,7 @@ class Card extends Entity {
   public untap (): void {
     if (this.state.tapped) {
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_UNTAPPED, {tapped: false}
+        CardEventType.CARD_UNTAPPED, {tapped: false, id: this.state.id}
       ));
     } else {
       throw new Error(`Card ${this.id} already untapped`);

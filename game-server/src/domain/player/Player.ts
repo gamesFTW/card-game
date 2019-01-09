@@ -3,10 +3,10 @@ import { Entity, EntityId } from '../../infr/Entity';
 import { Event } from '../../infr/Event';
 import { Point } from '../../infr/Point';
 import { Card, CardCreationData } from '../card/Card';
-import { PlayerEventType } from '../events';
+import { PlayerDrawnCardData, PlayerEventType, PlayerPlayCardAsMannaData } from '../events';
 import { Board } from '../board/Board';
 import { GameConstants } from '../game/GameConstants';
-import { PlayerData, PlayerDrawnCardData, PlayerPlayCardAsMannaData, PlayerState } from './PlayerState';
+import { PlayerData, PlayerState } from './PlayerState';
 
 enum CardStack {
   DECK = 'deck',
@@ -221,11 +221,11 @@ class Player extends Entity {
   }
 
   // Мелкие методы, части публичных и важных приватных.
-  private untapCardsAtEndOfTurn (mannaPool: Array<Card>, table: Array<Card>): void {
-    let tappedMannaPoolCards = mannaPool.filter(card => card.tapped);
+  private untapCardsAtEndOfTurn (mannaPoolCards: Array<Card>, tableCards: Array<Card>): void {
+    let tappedMannaPoolCards = mannaPoolCards.filter(card => card.tapped);
     let mannaPoolCardsToUntap = tappedMannaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
 
-    table.forEach((card) => card.onEndOfTurn());
+    tableCards.forEach((card) => card.onEndOfTurn());
     mannaPoolCardsToUntap.forEach((card) => card.untap());
   }
 

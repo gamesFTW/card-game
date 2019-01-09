@@ -14,8 +14,8 @@ class Game extends Entity {
 
   get player1Id (): EntityId { return this.state.player1Id; }
   get player2Id (): EntityId { return this.state.player2Id; }
-  get currentPlayersTurn (): EntityId { return this.state.currentPlayersTurn; }
   get boardId (): EntityId { return this.state.boardId; }
+  get currentTurn (): number { return this.state.currentTurn; }
 
   constructor (events: Array<Event<GameData>> = []) {
     super();
