@@ -12,6 +12,10 @@ import {CardEventType, GameEventType, PlayerDrawnCardData, PlayerEventType} from
 import {GameData} from '../../domain/game/GameState';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
+interface EndTurnParams {
+  gameId: string;
+  endingTurnPlayerId: string;
+}
 
 interface EndTurnAction {
   type: string;
@@ -31,44 +35,71 @@ class EndTurnUseCase {
     cardsDrawn: []
   };
 
-  public async execute (gameId: EntityId, endingTurnPlayerId: EntityId): Promise<void> {
-    let game = await Repository.get<Game>(gameId, Game);
+  private entities: {
+    game?: Game;
+    endingTurnPlayer?: Player;
+    endingTurnPlayerOpponent?: Player;
+    endingTurnPlayerMannaPoolCards?: Card[];
+    endingTurnPlayerTableCards?: Card[];
+  } = {};
 
-    let endingTurnPlayerOpponentId = game.getPlayerIdWhichIsOpponentFor(endingTurnPlayerId);
+  private params : EndTurnParams;
 
-    let endingTurnPlayer = await Repository.get<Player>(endingTurnPlayerId, Player);
-    let endingTurnPlayerOpponent = await Repository.get<Player>(endingTurnPlayerOpponentId, Player);
+  public async execute (params: EndTurnParams): Promise<void> {
+    this.params = params;
 
-    let endingTurnPlayerMannaPoolCards = await Repository.getMany <Card>(endingTurnPlayer.mannaPool, Card);
-    let endingTurnPlayerTableCards = await Repository.getMany <Card>(endingTurnPlayer.table, Card);
+    await this.readEntities();
+    this.addEventListeners();
+    this.runBusinessLogic();
+    this.addClientActions();
 
-    endingTurnPlayerMannaPoolCards.forEach((card: Card) => {
+    let entities = [
+      this.entities.game, this.entities.endingTurnPlayer, this.entities.endingTurnPlayerOpponent,
+      this.entities.endingTurnPlayerMannaPoolCards, this.entities.endingTurnPlayerTableCards
+    ];
+
+    await Repository.save(entities);
+
+    // Send data to client
+    godOfSockets.sendActions(this.entities.game.id, [this.endTurnAction]);
+  }
+
+  private async readEntities () {
+    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
+
+    let endingTurnPlayerOpponentId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
+
+    this.entities.endingTurnPlayer = await Repository.get<Player>(this.params.endingTurnPlayerId, Player);
+    this.entities.endingTurnPlayerOpponent = await Repository.get<Player>(endingTurnPlayerOpponentId, Player);
+
+    this.entities.endingTurnPlayerMannaPoolCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.mannaPool, Card);
+    this.entities.endingTurnPlayerTableCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
+  }
+
+  private addEventListeners () {
+    this.entities.endingTurnPlayerMannaPoolCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
     });
 
-    endingTurnPlayerTableCards.forEach((card: Card) => {
+    this.entities.endingTurnPlayerTableCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
     });
 
-    endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);
+    this.entities.endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);
+  }
 
-    game.endTurn(endingTurnPlayer, endingTurnPlayerOpponent, endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
+  private runBusinessLogic () {
+    this.entities.game.endTurn(
+      this.entities.endingTurnPlayer, this.entities.endingTurnPlayerOpponent,
+      this.entities.endingTurnPlayerMannaPoolCards, this.entities.endingTurnPlayerTableCards
+    );
+  }
 
-    let entities = [
-      game, endingTurnPlayer, endingTurnPlayerOpponent,
-      endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards
-    ];
-    await Repository.save(entities);
-
-    this.endTurnAction.currentTurn = game.currentTurn;
-    this.endTurnAction.endedPlayerId = endingTurnPlayerId;
-    this.endTurnAction.startedPlayerId = endingTurnPlayerOpponentId;
-
-    console.log(this.endTurnAction);
-
-    // Send data to client
-    godOfSockets.sendActions(game.id, [this.endTurnAction]);
+  private addClientActions () {
+    this.endTurnAction.currentTurn = this.entities.game.currentTurn;
+    this.endTurnAction.endedPlayerId = this.params.endingTurnPlayerId;
+    this.endTurnAction.startedPlayerId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
   }
 
   @boundMethod
