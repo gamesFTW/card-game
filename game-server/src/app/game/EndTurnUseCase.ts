@@ -43,7 +43,7 @@ class EndTurnUseCase {
     endingTurnPlayerTableCards?: Card[];
   } = {};
 
-  private params : EndTurnParams;
+  private params: EndTurnParams;
 
   public async execute (params: EndTurnParams): Promise<void> {
     this.params = params;

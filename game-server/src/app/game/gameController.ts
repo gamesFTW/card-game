@@ -29,7 +29,7 @@ gameController.post('/createGame', async (ctx) => {
 
   await Repository.save([player1Cards, player1, player2Cards, player2, board, game]);
 
-  godOfSockets.registerNamespace(game.id);
+  // godOfSockets.registerNamespace(game.id);
 
   ctx.body = {gameId: game.id};
 });
@@ -70,7 +70,7 @@ gameController.post('/endTurn', async (ctx) => {
   let endingTurnPlayerId = ctx.request.body.playerId as EntityId;
 
   let endTurnUseCase = new EndTurnUseCase();
-  await endTurnUseCase.execute(gameId, endingTurnPlayerId);
+  await endTurnUseCase.execute({gameId, endingTurnPlayerId});
 
   ctx.body = `Ok`;
 });
