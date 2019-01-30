@@ -36,22 +36,54 @@ class GodOfSockets {
     });
 
     this.socketServer.addListener('connection', (socket: net.Socket) => {
+      console.log('player connected');
+      this.addPlayerSocket('1', socket);
+      socket.write(JSON.stringify({type: "Hello"}), 'utf-8');
 
       socket.on('error', (err: Error) => {
         console.error(err);
       });
 
       socket.on('close', (hadError: boolean) => {
-        console.log('🇭🇰');
+        console.log('player disconnected');
         this.removeSocket(socket);
       });
 
-      socket.on('data', (data: Buffer) => {
-        const playerId = data.toString('utf-8');
-        this.addPlayerSocket(playerId, socket);
+      socket.on('data', (dataBuffer: Buffer) => {
+        const data = dataBuffer.toString('utf-8');
+        //this.addPlayerSocket(playerId, socket);
 
-        console.log('<<', playerId);
+        console.log('<<', data);
       });
+    });
+  }
+
+  public sendActions (gameId: EntityId, clientEvents: Array<any>): void {
+    console.log('Send Data to players');
+
+    let sendingData = {actions: clientEvents};
+    const data = JSON.stringify(sendingData);
+    this.userToSocket.forEach((socket, playerId) => {
+      socket.write(data, 'utf-8');
+      console.info(chalk.green(`${playerId} << ${data}`));
+    });
+  }
+
+  public sendEventsInGame (gameId: EntityId, PlayerId: EntityId, clientEvents: Array<any>): void {
+    //console.log
+  }
+
+  private addPlayerSocket (playerId: EntityId, socket: net.Socket): void {
+    this.userToSocket.set(playerId, socket);
+    console.info(chalk.yellow(`player ${playerId} is registred`));
+  }
+
+  private removeSocket (socket: net.Socket): void {
+    this.userToSocket.forEach((currentSocket, playerId) => {
+      if (socket === currentSocket) {
+        this.userToSocket.delete(playerId);
+        console.info(chalk.yellow(`User ${playerId} disconnected`));
+      }
     });
   }
 
@@ -81,34 +113,6 @@ class GodOfSockets {
   //     }
   //   });
   // }
-
-  public sendActions (gameId: EntityId, clientEvents: Array<any>): void {
-    console.log('Send Data to players');
-    const data = JSON.stringify(clientEvents);
-    this.userToSocket.forEach((socket, playerId) => {
-      socket.write(data, 'utf-8');
-      console.info(chalk.green(`${playerId} << ${data}`));
-    });
-  }
-
-  public sendEventsInGame (gameId: EntityId, PlayerId: EntityId, clientEvents: Array<any>): void {
-    //console.log
-  }
-
-  private addPlayerSocket (playerId: EntityId, socket: net.Socket): void {
-    this.userToSocket.set(playerId, socket);
-    console.info(chalk.yellow(`player ${playerId} is registred`));
-  }
-
-  private removeSocket (socket: net.Socket): void {
-    this.userToSocket.forEach((currentSocket, playerId) => {
-      if (socket === currentSocket) {
-        this.userToSocket.delete(playerId);
-        console.info(chalk.yellow(`User ${playerId} disconnected`));
-      }
-    });
-
-  }
 }
 
 const godOfSockets = new GodOfSockets();
