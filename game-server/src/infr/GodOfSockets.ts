@@ -38,7 +38,7 @@ class GodOfSockets {
     this.socketServer.addListener('connection', (socket: net.Socket) => {
       console.log('player connected');
       this.addPlayerSocket('1', socket);
-      socket.write(JSON.stringify({type: "Hello"}), 'utf-8');
+      // socket.write(JSON.stringify({type: "Hello"}), 'utf-8');
 
       socket.on('error', (err: Error) => {
         console.error(err);
