@@ -17,7 +17,7 @@ class GodOfSockets {
     this.socketToUser = new WeakMap();
   }
 
-  public registerNamespace = (namespace: String) => {
+  public registerNamespace (namespace: String): void {
     this.koaSocketIO.socket.of('/' + namespace);
   }
 
