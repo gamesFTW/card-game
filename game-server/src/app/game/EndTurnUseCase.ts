@@ -1,3 +1,4 @@
+import { map } from 'lodash';
 import { Player } from '../../domain/player/Player';
 import { Repository } from '../../infr/repositories/Repository';
 import { formatEventsForClient } from '../../infr/Event';
@@ -52,13 +53,7 @@ class EndTurnUseCase {
     this.addEventListeners();
     this.runBusinessLogic();
     this.addClientActions();
-
-    let entities = [
-      this.entities.game, this.entities.endingTurnPlayer, this.entities.endingTurnPlayerOpponent,
-      this.entities.endingTurnPlayerMannaPoolCards, this.entities.endingTurnPlayerTableCards
-    ];
-
-    await Repository.save(entities);
+    await this.saveEntities();
 
     // Send data to client
     godOfSockets.sendActions(this.entities.game.id, [this.endTurnAction]);
@@ -74,6 +69,11 @@ class EndTurnUseCase {
 
     this.entities.endingTurnPlayerMannaPoolCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.mannaPool, Card);
     this.entities.endingTurnPlayerTableCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
+  }
+
+  private async saveEntities (): Promise<void> {
+    let entities = map(this.entities, (e: Entity) => e);
+    await Repository.save(entities);
   }
 
   private addEventListeners () {
