@@ -9,6 +9,7 @@ import { Point } from '../../infr/Point';
 import { Board } from '../../domain/board/Board';
 import { godOfSockets } from '../../infr/GodOfSockets';
 import { AttackCardUseCase } from './AttackCardUseCase';
+import {PlayCardAsManaUseCase} from './PlayCardAsManaUseCase';
 
 const playerController = new Router();
 
@@ -18,17 +19,8 @@ playerController.post('/playCardAsManna', async (ctx) => {
   let playerId = ctx.request.body.playerId as EntityId;
   let cardId = ctx.request.body.cardId as EntityId;
 
-  let game = await Repository.get<Game>(gameId, Game);
-  let player = await Repository.get<Player>(playerId, Player);
-  let card = await Repository.get<Card>(cardId, Card);
-
-  player.playCardAsManna(card);
-
-  let entities = [player, card];
-  await Repository.save(entities);
-
-  // Send data to client
-  godOfSockets.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
+  let useCase = new PlayCardAsManaUseCase();
+  await useCase.execute({gameId, playerId, cardId});
 
   ctx.body = `Ok`;
 });

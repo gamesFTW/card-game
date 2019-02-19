@@ -1,16 +1,14 @@
-import { map } from 'lodash';
 import { Player } from '../../domain/player/Player';
 import { Repository } from '../../infr/repositories/Repository';
-import { formatEventsForClient } from '../../infr/Event';
-import { godOfSockets } from '../../infr/GodOfSockets';
 import { Game } from '../../domain/game/Game';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
-import {CardEventType, GameEventType, PlayerDrawnCardData, PlayerEventType} from '../../domain/events';
+import {CardEventType, PlayerDrawnCardData, PlayerEventType} from '../../domain/events';
 import {GameData} from '../../domain/game/GameState';
+import { UseCase } from '../../infr/UseCase';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 interface EndTurnParams {
@@ -28,15 +26,15 @@ interface EndTurnAction {
   cardsDrawn?: Array<EntityId>;
 }
 
-class EndTurnUseCase {
-  private endTurnAction: EndTurnAction = {
+class EndTurnUseCase extends UseCase {
+  protected action: EndTurnAction = {
     type: 'EndTurnAction',
     cardsMovingPointsUpdated: [],
     cardsUntapped: [],
     cardsDrawn: []
   };
 
-  private entities: {
+  protected entities: {
     game?: Game;
     endingTurnPlayer?: Player;
     endingTurnPlayerOpponent?: Player;
@@ -44,22 +42,9 @@ class EndTurnUseCase {
     endingTurnPlayerTableCards?: Card[];
   } = {};
 
-  private params: EndTurnParams;
+  protected params: EndTurnParams;
 
-  public async execute (params: EndTurnParams): Promise<void> {
-    this.params = params;
-
-    await this.readEntities();
-    this.addEventListeners();
-    this.runBusinessLogic();
-    this.addClientActions();
-    await this.saveEntities();
-
-    // Send data to client
-    godOfSockets.sendActions(this.entities.game.id, [this.endTurnAction]);
-  }
-
-  private async readEntities () {
+  protected async readEntities (): Promise<void> {
     this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
 
     let endingTurnPlayerOpponentId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
@@ -71,12 +56,7 @@ class EndTurnUseCase {
     this.entities.endingTurnPlayerTableCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
   }
 
-  private async saveEntities (): Promise<void> {
-    let entities = map(this.entities, (e: Entity) => e);
-    await Repository.save(entities);
-  }
-
-  private addEventListeners () {
+  protected addEventListeners (): void {
     this.entities.endingTurnPlayerMannaPoolCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
@@ -89,37 +69,37 @@ class EndTurnUseCase {
     this.entities.endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);
   }
 
-  private runBusinessLogic () {
+  protected runBusinessLogic (): void {
     this.entities.game.endTurn(
       this.entities.endingTurnPlayer, this.entities.endingTurnPlayerOpponent,
       this.entities.endingTurnPlayerMannaPoolCards, this.entities.endingTurnPlayerTableCards
     );
   }
 
-  private addClientActions () {
-    this.endTurnAction.currentTurn = this.entities.game.currentTurn;
-    this.endTurnAction.endedPlayerId = this.params.endingTurnPlayerId;
-    this.endTurnAction.startedPlayerId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
+  protected addClientActions (): void {
+    this.action.currentTurn = this.entities.game.currentTurn;
+    this.action.endedPlayerId = this.params.endingTurnPlayerId;
+    this.action.startedPlayerId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
   }
 
   @boundMethod
   private onGameEnded (event: Event<GameData>): void {
-    this.endTurnAction.currentTurn = event.data.currentTurn;
+    this.action.currentTurn = event.data.currentTurn;
   }
 
   @boundMethod
   private onCardAddedCurrentMovingPoints (event: Event<CardData>): void {
-    this.endTurnAction.cardsMovingPointsUpdated.push({id: event.data.id, currentMovingPoints: event.data.currentMovingPoints})
+    this.action.cardsMovingPointsUpdated.push({id: event.data.id, currentMovingPoints: event.data.currentMovingPoints})
   }
 
   @boundMethod
   private onCardUntapped (event: Event<CardData>): void {
-    this.endTurnAction.cardsUntapped.push(event.data.id);
+    this.action.cardsUntapped.push(event.data.id);
   }
 
   @boundMethod
   private onCardDrawn (event: Event<CardData, PlayerDrawnCardData>): void {
-    this.endTurnAction.cardsDrawn.push(event.extra.drawnCard);
+    this.action.cardsDrawn.push(event.extra.drawnCard);
   }
 }
 
