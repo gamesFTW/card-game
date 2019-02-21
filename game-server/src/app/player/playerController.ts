@@ -13,7 +13,7 @@ import {PlayCardAsManaUseCase} from './PlayCardAsManaUseCase';
 
 const playerController = new Router();
 
-playerController.post('/playCardAsManna', async (ctx) => {
+playerController.post('/playCardAsMana', async (ctx) => {
   let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
   let playerId = ctx.request.body.playerId as EntityId;
@@ -39,11 +39,11 @@ playerController.post('/playCard', async (ctx) => {
   let board = await Repository.get<Board>(game.boardId, Board);
   let player = await Repository.get<Player>(playerId, Player);
   let card = await Repository.get<Card>(cardId, Card);
-  let playerMannaPoolCards = await Repository.getMany <Card>(player.mannaPool, Card);
+  let playerManaPoolCards = await Repository.getMany <Card>(player.manaPool, Card);
 
-  player.playCard(card, playerMannaPoolCards, position, board);
+  player.playCard(card, playerManaPoolCards, position, board);
 
-  let entities = [player, card, board, playerMannaPoolCards];
+  let entities = [player, card, board, playerManaPoolCards];
   await Repository.save(entities);
 
   // Send data to client

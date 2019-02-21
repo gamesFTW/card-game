@@ -31,20 +31,20 @@ debugController.post('/playDebugGameWithDelay', async (ctx) => {
   const delayTime = 3000;
 
   await delay(5000);
-  await playCardAsManna(gameId, player1.id, player1.hand[0].id);
+  await playCardAsMana(gameId, player1.id, player1.hand[0].id);
   await delay(delayTime);
-  await playCardAsManna(gameId, player1.id, player1.hand[1].id);
+  await playCardAsMana(gameId, player1.id, player1.hand[1].id);
   await delay(delayTime);
-  await playCardAsManna(gameId, player1.id, player1.hand[2].id);
+  await playCardAsMana(gameId, player1.id, player1.hand[2].id);
   await delay(delayTime);
   await endTurn(gameId, player1.id);
   await delay(delayTime);
 
-  await playCardAsManna(gameId, player2.id, player2.hand[0].id);
+  await playCardAsMana(gameId, player2.id, player2.hand[0].id);
   await delay(delayTime);
-  await playCardAsManna(gameId, player2.id, player2.hand[1].id);
+  await playCardAsMana(gameId, player2.id, player2.hand[1].id);
   await delay(delayTime);
-  await playCardAsManna(gameId, player2.id, player2.hand[2].id);
+  await playCardAsMana(gameId, player2.id, player2.hand[2].id);
   await delay(delayTime);
   await endTurn(gameId, player2.id);
   await delay(delayTime);
@@ -73,9 +73,9 @@ function delay (duration: number): Promise<void> {
   });
 }
 
-async function playCardAsManna (gameId: string, playerId: string, cardId: string): Promise<void> {
+async function playCardAsMana (gameId: string, playerId: string, cardId: string): Promise<void> {
   await axios.post(
-    'http://localhost:3000/playCardAsManna',
+    'http://localhost:3000/playCardAsMana',
     {playerId, cardId, gameId}
   );
 }

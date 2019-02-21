@@ -7,7 +7,7 @@ interface PlayerData {
   id?: EntityId;
   deck?: Array<EntityId>;
   hand?: Array<EntityId>;
-  mannaPool?: Array<EntityId>;
+  manaPool?: Array<EntityId>;
   table?: Array<EntityId>;
   graveyard?: Array<EntityId>;
   status?: PlayerStatus;
@@ -16,7 +16,7 @@ interface PlayerData {
 class PlayerState extends EntityState implements PlayerData {
   public deck: Array<EntityId> = [];
   public hand: Array<EntityId> = [];
-  public mannaPool: Array<EntityId> = [];
+  public manaPool: Array<EntityId> = [];
   public table: Array<EntityId> = [];
   public graveyard: Array<EntityId> = [];
   public status: PlayerStatus = PlayerStatus.WAITING_FOR_TURN;

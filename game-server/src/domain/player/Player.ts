@@ -3,7 +3,7 @@ import { Entity, EntityId } from '../../infr/Entity';
 import { Event } from '../../infr/Event';
 import { Point } from '../../infr/Point';
 import { Card, CardCreationData } from '../card/Card';
-import { PlayerDrawnCardData, PlayerEventType, PlayerPlayCardAsMannaData } from '../events';
+import { PlayerDrawnCardData, PlayerEventType, PlayerPlayCardAsManaData } from '../events';
 import { Board } from '../board/Board';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerData, PlayerState } from './PlayerState';
@@ -29,7 +29,7 @@ interface PlayerCreationData {
 class Player extends Entity {
   protected state: PlayerState;
 
-  get mannaPool (): Array<EntityId> { return this.state.mannaPool; }
+  get manaPool (): Array<EntityId> { return this.state.manaPool; }
   get table (): Array<EntityId> { return this.state.table; }
 
   constructor (events: Array<Event<PlayerData>> = []) {
@@ -66,10 +66,10 @@ class Player extends Entity {
     ));
   }
 
-  public endTurn (mannaPool: Array<Card>, table: Array<Card>): void {
+  public endTurn (manaPool: Array<Card>, table: Array<Card>): void {
     this.checkIfItHisTurn();
 
-    this.untapCardsAtEndOfTurn(mannaPool, table);
+    this.untapCardsAtEndOfTurn(manaPool, table);
     this.drawCard();
 
     this.applyEvent(new Event<PlayerData>(
@@ -78,32 +78,32 @@ class Player extends Entity {
     ));
   }
 
-  public playCardAsManna (card: Card): void {
+  public playCardAsMana (card: Card): void {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
       throw new Error(`Card ${card.id} isn't in hand`);
     }
 
-    let {fromStack: hand, toStack: mannaPool} = this.changeCardStack(CardStack.HAND, CardStack.MANA_POOL, card.id);
+    let {fromStack: hand, toStack: manaPool} = this.changeCardStack(CardStack.HAND, CardStack.MANA_POOL, card.id);
 
-    this.applyEvent(new Event<PlayerData, PlayerPlayCardAsMannaData>(
-      PlayerEventType.CARD_PLAYED_AS_MANNA,
-      {mannaPool, hand},
-      {playedAsMannaCard: card.id}
+    this.applyEvent(new Event<PlayerData, PlayerPlayCardAsManaData>(
+      PlayerEventType.CARD_PLAYED_AS_MANA,
+      {manaPool, hand},
+      {playedAsManaCard: card.id}
     ));
 
     card.tap();
   }
 
-  public playCard (card: Card, mannaPoolCards: Array<Card>, position: Point, board: Board): void {
+  public playCard (card: Card, manaPoolCards: Array<Card>, position: Point, board: Board): void {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
       throw new Error(`Card ${card.id} isn't in hand`);
     }
 
-    this.tapManna(card.mannaCost, mannaPoolCards);
+    this.tapMana(card.manaCost, manaPoolCards);
 
     // TODO: проверить на наличие рядом героя и на отсутствие врагов
 
@@ -208,25 +208,25 @@ class Player extends Entity {
     ));
   }
 
-  private tapManna (mannaNumber: number, mannaPoolCards: Array<Card>): void {
-    let untappedMannaPoolCards = mannaPoolCards.filter(card => !card.tapped);
+  private tapMana (manaNumber: number, manaPoolCards: Array<Card>): void {
+    let untappedManaPoolCards = manaPoolCards.filter(card => !card.tapped);
 
-    if (mannaNumber > untappedMannaPoolCards.length ) {
-      throw new Error('We need more manna!');
+    if (manaNumber > untappedManaPoolCards.length ) {
+      throw new Error('We need more mana!');
     }
 
-    let mannaPoolCardsToTap = untappedMannaPoolCards.slice(0, mannaNumber);
+    let manaPoolCardsToTap = untappedManaPoolCards.slice(0, manaNumber);
 
-    mannaPoolCardsToTap.forEach((card) => card.tap());
+    manaPoolCardsToTap.forEach((card) => card.tap());
   }
 
   // Мелкие методы, части публичных и важных приватных.
-  private untapCardsAtEndOfTurn (mannaPoolCards: Array<Card>, tableCards: Array<Card>): void {
-    let tappedMannaPoolCards = mannaPoolCards.filter(card => card.tapped);
-    let mannaPoolCardsToUntap = tappedMannaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
+  private untapCardsAtEndOfTurn (manaPoolCards: Array<Card>, tableCards: Array<Card>): void {
+    let tappedManaPoolCards = manaPoolCards.filter(card => card.tapped);
+    let manaPoolCardsToUntap = tappedManaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
 
     tableCards.forEach((card) => card.onEndOfTurn());
-    mannaPoolCardsToUntap.forEach((card) => card.untap());
+    manaPoolCardsToUntap.forEach((card) => card.untap());
   }
 
   private placeCardOnBoard (card: Card, board: Board, position: Point): void {
@@ -279,7 +279,7 @@ class Player extends Entity {
       stack = this.state.table;
     }
     if (stackName === CardStack.MANA_POOL) {
-      stack = this.state.mannaPool;
+      stack = this.state.manaPool;
     }
     if (stackName === CardStack.GRAVEYARD) {
       stack = this.state.graveyard;

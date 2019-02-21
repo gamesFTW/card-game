@@ -55,10 +55,10 @@ class Game extends Entity {
   public endTurn (
     endingTurnPlayer: Player,
     endingTurnPlayerOpponent: Player,
-    endingTurnPlayerMannaPoolCards: Array<Card>,
+    endingTurnPlayerManaPoolCards: Array<Card>,
     endingTurnPlayerTableCards: Array<Card>
   ): void {
-    endingTurnPlayer.endTurn(endingTurnPlayerMannaPoolCards, endingTurnPlayerTableCards);
+    endingTurnPlayer.endTurn(endingTurnPlayerManaPoolCards, endingTurnPlayerTableCards);
 
     this.applyEvent(new Event<GameData>(
       GameEventType.TURN_ENDED,

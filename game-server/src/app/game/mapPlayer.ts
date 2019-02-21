@@ -28,7 +28,7 @@ let mapPlayer = async (player: Player, board: Board): Promise<any> => {
   let playerResponse = Object.assign({}, Object(player).state);
   playerResponse.deck = await getCards(playerResponse.deck, board);
   playerResponse.hand = await getCards(playerResponse.hand, board);
-  playerResponse.mannaPool = await getCards(playerResponse.mannaPool, board);
+  playerResponse.manaPool = await getCards(playerResponse.manaPool, board);
   playerResponse.table = await getCards(playerResponse.table, board);
   playerResponse.graveyard = await getCards(playerResponse.graveyard, board);
 

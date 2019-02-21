@@ -8,7 +8,7 @@ interface CardCreationData {
   name: string;
   maxHp: number;
   damage: number;
-  mannaCost: number;
+  manaCost: number;
   movingPoints: number;
 }
 
@@ -20,7 +20,7 @@ class Card extends Entity {
   get damage (): number { return this.state.damage; }
   get alive (): boolean { return this.state.alive; }
   get tapped (): boolean { return this.state.tapped; }
-  get mannaCost (): number { return this.state.mannaCost; }
+  get manaCost (): number { return this.state.manaCost; }
 
   constructor (events: Array<Event<CardData>> = []) {
     super();

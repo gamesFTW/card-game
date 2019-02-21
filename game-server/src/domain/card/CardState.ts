@@ -9,7 +9,7 @@ interface CardData {
   damage?: number;
   alive?: boolean;
   tapped?: boolean;
-  mannaCost?: number;
+  manaCost?: number;
   movingPoints?: number;
   currentMovingPoints?: number;
 }
@@ -24,7 +24,7 @@ class CardState extends EntityState implements CardData {
   public tapped: boolean = false;
   public movingPoints: number;
   public currentMovingPoints: number;
-  public mannaCost: number;
+  public manaCost: number;
 
   public constructor (events: Array<Event<CardData>>) {
     super();

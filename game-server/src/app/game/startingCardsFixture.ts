@@ -1,12 +1,12 @@
 import * as lodash from 'lodash';
 
-let hero = {name: 'Герой', maxHp: 6, damage: 1, mannaCost: 0, movingPoints: 3};
+let hero = {name: 'Герой', maxHp: 6, damage: 1, manaCost: 0, movingPoints: 3};
 
-let fat = {name: 'Толстокожая', maxHp: 6, damage: 3, mannaCost: 2, movingPoints: 3};
-let goblin = {name: 'Гоблин', maxHp: 4, damage: 2, mannaCost: 2, movingPoints: 3};
-let boar = {name: 'Кабан', maxHp: 4, damage: 2, mannaCost: 2, movingPoints: 3};
-let reptile = {name: 'Ящер', maxHp: 2, damage: 1, mannaCost: 2, movingPoints: 3};
-let skeleton = {name: 'Скелет', maxHp: 2, damage: 1, mannaCost: 2, movingPoints: 3};
+let fat = {name: 'Толстокожая', maxHp: 6, damage: 3, manaCost: 2, movingPoints: 3};
+let goblin = {name: 'Гоблин', maxHp: 4, damage: 2, manaCost: 2, movingPoints: 3};
+let boar = {name: 'Кабан', maxHp: 4, damage: 2, manaCost: 2, movingPoints: 3};
+let reptile = {name: 'Ящер', maxHp: 2, damage: 1, manaCost: 2, movingPoints: 3};
+let skeleton = {name: 'Скелет', maxHp: 2, damage: 1, manaCost: 2, movingPoints: 3};
 
 let units = [fat, goblin, boar, reptile, skeleton];
 

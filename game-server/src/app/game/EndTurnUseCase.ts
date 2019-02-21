@@ -38,7 +38,7 @@ class EndTurnUseCase extends UseCase {
     game?: Game;
     endingTurnPlayer?: Player;
     endingTurnPlayerOpponent?: Player;
-    endingTurnPlayerMannaPoolCards?: Card[];
+    endingTurnPlayerManaPoolCards?: Card[];
     endingTurnPlayerTableCards?: Card[];
   } = {};
 
@@ -52,12 +52,12 @@ class EndTurnUseCase extends UseCase {
     this.entities.endingTurnPlayer = await Repository.get<Player>(this.params.endingTurnPlayerId, Player);
     this.entities.endingTurnPlayerOpponent = await Repository.get<Player>(endingTurnPlayerOpponentId, Player);
 
-    this.entities.endingTurnPlayerMannaPoolCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.mannaPool, Card);
+    this.entities.endingTurnPlayerManaPoolCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.manaPool, Card);
     this.entities.endingTurnPlayerTableCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
   }
 
   protected addEventListeners (): void {
-    this.entities.endingTurnPlayerMannaPoolCards.forEach((card: Card) => {
+    this.entities.endingTurnPlayerManaPoolCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
     });
@@ -72,7 +72,7 @@ class EndTurnUseCase extends UseCase {
   protected runBusinessLogic (): void {
     this.entities.game.endTurn(
       this.entities.endingTurnPlayer, this.entities.endingTurnPlayerOpponent,
-      this.entities.endingTurnPlayerMannaPoolCards, this.entities.endingTurnPlayerTableCards
+      this.entities.endingTurnPlayerManaPoolCards, this.entities.endingTurnPlayerTableCards
     );
   }
 

@@ -45,7 +45,7 @@ class PlayCardAsManaUseCase extends UseCase {
   }
 
   protected runBusinessLogic () {
-    this.entities.player.playCardAsManna(this.entities.card);
+    this.entities.player.playCardAsMana(this.entities.card);
   }
 
   protected addClientActions (): void {

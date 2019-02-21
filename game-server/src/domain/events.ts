@@ -6,7 +6,7 @@ enum PlayerEventType {
   CARD_DRAWN = 'Player:CardDrawn',
   TURN_ENDED = 'Player:TurnEnded',
   TURN_STARTED = 'Player:TurnStarted',
-  CARD_PLAYED_AS_MANNA = 'Player:CardPlayedAsManna',
+  CARD_PLAYED_AS_MANA = 'Player:CardPlayedAsMana',
   CARD_DIED = 'Player:CardDied',
   CARD_PLAYED = 'Player:CardPlayed'
 }
@@ -19,8 +19,8 @@ interface PlayerDrawnCardData {
   drawnCard?: EntityId;
 }
 
-interface PlayerPlayCardAsMannaData {
-  playedAsMannaCard?: EntityId;
+interface PlayerPlayCardAsManaData {
+  playedAsManaCard?: EntityId;
 }
 
 enum GameEventType {
@@ -45,4 +45,4 @@ enum BoardEventType {
   CARD_MOVED = 'Board:CardMoved'
 }
 
-export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra, PlayerDrawnCardData, PlayerPlayCardAsMannaData};
+export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra, PlayerDrawnCardData, PlayerPlayCardAsManaData};
