@@ -3,7 +3,7 @@ import { Repository } from './repositories/Repository';
 import { godOfSockets } from './GodOfSockets';
 import { Entity } from './Entity';
 
-class UseCase {
+abstract class UseCase {
   protected params: any;
   protected action: any;
   protected entities: any;
@@ -20,13 +20,13 @@ class UseCase {
     godOfSockets.sendActions(this.entities.game.id, [this.action]);
   }
 
-  protected async readEntities (): Promise<void> {}
+  protected abstract async readEntities (): Promise<void>;
 
-  protected addEventListeners (): void {}
+  protected abstract addEventListeners (): void;
 
-  protected runBusinessLogic (): void {}
+  protected abstract runBusinessLogic (): void;
 
-  protected addClientActions (): void {}
+  protected abstract addClientActions (): void;
 
   private async saveEntities (): Promise<void> {
     let entities = map(this.entities, (e: Entity) => e);

@@ -7,7 +7,7 @@ import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
 import { CardEventType } from '../../domain/events';
-import {UseCase} from '../../infr/UseCase';
+import { UseCase } from '../../infr/UseCase';
 
 interface PlayCardAsManaParams {
   gameId: EntityId;
@@ -40,11 +40,11 @@ class PlayCardAsManaUseCase extends UseCase {
     this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
   }
 
-  protected addEventListeners () {
+  protected addEventListeners (): void {
     this.entities.card.addEventListener(CardEventType.CARD_TAPPED, this.onCardTapped);
   }
 
-  protected runBusinessLogic () {
+  protected runBusinessLogic (): void {
     this.entities.player.playCardAsMana(this.entities.card);
   }
 
