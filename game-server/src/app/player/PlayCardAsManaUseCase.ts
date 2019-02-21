@@ -19,6 +19,7 @@ interface PlayCardAsManaAction {
   type: string;
   cardId?: EntityId;
   tapped?: boolean;
+  playerId?: EntityId;
 }
 
 class PlayCardAsManaUseCase extends UseCase {
@@ -50,11 +51,11 @@ class PlayCardAsManaUseCase extends UseCase {
 
   protected addClientActions (): void {
     this.action.cardId = this.entities.card.id;
+    this.action.playerId = this.entities.player.id;
   }
 
   @boundMethod
   private onCardTapped (event: Event<CardData>): void {
-    this.action.cardId = event.data.id;
     this.action.tapped = event.data.tapped;
   }
 }
