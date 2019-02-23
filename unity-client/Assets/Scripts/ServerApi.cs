@@ -50,12 +50,9 @@ public class GameData
 
 public class ServerApi
 {
-    static public String gameId = "4axika2z0dydpf8jtjzewc0sjp37zz";
-    static public String currentPlayerId = "onjf60th9zy6dcu48en07g6qu610xm";
-    public static String serverURL = "http://127.0.0.1:3000";
-
-    //public static String serverWSURL = "ws://game.ep1c.org";
-    
+    static public String gameId = "ez6hdiawp9llsov2w4zpq9ecxw3n9k";
+    static public String currentPlayerId = "oj0wg0w7nqraisd8p3xjmbttvug8z5";
+    static public String serverURL = "http://127.0.0.1:3000";
 
     public async static Task<GameData> GetGame()
     {
@@ -71,32 +68,17 @@ public class ServerApi
 
     public async static Task EndOfTurn()
     {
-        var httpClient = new HttpClient();
-
         var values = new Dictionary<string, string>
         {
            { "gameId", gameId },
            { "playerId", currentPlayerId }
         };
 
-        var content = new FormUrlEncodedContent(values);
-        HttpResponseMessage response = await httpClient.PostAsync(String.Format(serverURL + "/endTurn"), content);
-        string responseContent = await response.Content.ReadAsStringAsync();
-        Debug.Log(responseContent);
-
-        try
-        {
-            response.EnsureSuccessStatusCode();
-        }
-        catch (HttpRequestException e) {
-            return;
-        }
+        await HttpRequest.Post("/endTurn", values);
     }
 
     public async static Task PlayCardAsMana(string cardId)
     {
-        var httpClient = new HttpClient();
-
         var values = new Dictionary<string, string>
         {
            { "gameId", gameId },
@@ -104,18 +86,6 @@ public class ServerApi
            { "cardId", cardId }
         };
 
-        var content = new FormUrlEncodedContent(values);
-        HttpResponseMessage response = await httpClient.PostAsync(String.Format(serverURL + "/playCardAsMana"), content);
-        string responseContent = await response.Content.ReadAsStringAsync();
-        Debug.Log("Server response:" + responseContent);
-
-        try
-        {
-            response.EnsureSuccessStatusCode();
-        }
-        catch (HttpRequestException e)
-        {
-            return;
-        }
+        await HttpRequest.Post("/playCardAsMana", values);
     }
 }

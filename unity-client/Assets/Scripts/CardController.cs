@@ -18,7 +18,6 @@ public class CardController : MonoBehaviour
 
     async void onCardPlayAsMana(string id)
     {
-        Debug.Log("controller");
         await ServerApi.PlayCardAsMana(id);
     }
 }
