@@ -22,7 +22,7 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
     public Text currentHpText;
     public Text maxHpText;
 
-    static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
+    public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
 
     // Use this for initialization
     void Start () 
@@ -36,23 +36,7 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
         damageText.text = cardData.damage.ToString();
         maxHpText.text = cardData.maxHp.ToString();
         currentHpText.text = cardData.currentHp.ToString();
-
-
     }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            OnRightMouseClicked();
-        }
-    }
-
-    void OnRightMouseClicked()
-    {
-        Unibus.Dispatch(CARD_PLAY_AS_MANA, cardData.id);
-    }
-
 
     public void FaceUp() {
         this.transform.Find("Back").gameObject.SetActive(false);
@@ -64,7 +48,6 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
         this.transform.Find("Front").gameObject.SetActive(false);
     }
 
-
     public void Tap()
     {
         cardData.tapped = true;
@@ -74,7 +57,20 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
     public void UnTap()
     {
         cardData.tapped = false;
-        this.transform.Rotate(0, 0, -90);
+        this.transform.Rotate(0, 0, 0);
 
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnRightMouseClicked();
+        }
+    }
+
+    private void OnRightMouseClicked()
+    {
+        Unibus.Dispatch(CARD_PLAY_AS_MANA, cardData.id);
     }
 }

@@ -35,8 +35,6 @@ public class CardManger : MonoBehaviour {
 
     private Dictionary<string, PlayerStacks> playerStacks = new Dictionary<string, PlayerStacks>();
 
-    public List<string> test = new List<string>();
-
     public async void Start ()
     {
         boardController = this.transform.Find("Board").GetComponent<BoardController>();
@@ -44,15 +42,7 @@ public class CardManger : MonoBehaviour {
         GameData gameData = await ServerApi.GetGame();
 
         this.CreateCards(gameData);
-
-        // sub
-        //Unibus.Subscribe<string>(OnEvent);
     }
-
-    //void OnEvent(string msg)
-    //{
-    //    Debug.Log("lol " + msg);
-    //}
 
     public void DrawCards(string playerId, string[] cardsIds)
     {
@@ -62,9 +52,6 @@ public class CardManger : MonoBehaviour {
            
             var cardTransform = cardIdToCards[cardId];
 
-          
-            EditorGUIUtility.PingObject(cardTransform);
-
             cardTransform.SetParent(this.playerStacks[playerId].hand, false);
             cardTransform.GetComponent<CardDisplay>().FaceUp();
         }
@@ -72,19 +59,16 @@ public class CardManger : MonoBehaviour {
 
     public void PlayCardAsMana(string playerId, string cardId, bool taped)
     {
-
         var cardTransform = cardIdToCards[cardId];
 
-
-        EditorGUIUtility.PingObject(cardTransform);
-
         cardTransform.SetParent(this.playerStacks[playerId].manaPool, false);
+
         if (taped)
         {
             cardTransform.GetComponent<CardDisplay>().Tap();
         }
-        cardTransform.GetComponent<CardDisplay>().FaceDown();
 
+        cardTransform.GetComponent<CardDisplay>().FaceDown();
     }
 
     private void CreateCards(GameData gameData)
@@ -138,7 +122,6 @@ public class CardManger : MonoBehaviour {
     {
         Transform newCard = (Transform)Instantiate(CardPrefab, new Vector2(0, 0), new Quaternion());
         cardIdToCards.Add(cardData.id, newCard);
-        test.Add(cardData.id);
 
         newCard.transform.SetParent(stack, false);
 
@@ -152,6 +135,11 @@ public class CardManger : MonoBehaviour {
         } else
         {
             cardDisplay.FaceDown();
+        }
+
+        if (cardData.tapped)
+        {
+            cardDisplay.Tap();
         }
 
         if (cardData.alive)
