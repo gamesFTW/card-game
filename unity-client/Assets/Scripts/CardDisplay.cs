@@ -51,7 +51,7 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
     public void Tap()
     {
         cardData.tapped = true;
-        this.transform.Rotate(0, 0, 90);
+        this.transform.Rotate(0, 0, -90);
     }
 
     public void UnTap()

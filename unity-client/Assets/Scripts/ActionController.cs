@@ -23,7 +23,7 @@ public class PlayCardAsManaAction
 {
     public string cardId;
     public string playerId;
-    public Boolean taped;
+    public bool tapped;
 }
 
 public class ActionController : MonoBehaviour
@@ -45,13 +45,8 @@ public class ActionController : MonoBehaviour
 
         if (type == "PlayCardAsManaAction")
         {
-            Debug.Log(message);
-
             SocketData<PlayCardAsManaAction> data = JsonUtility.FromJson<SocketData<PlayCardAsManaAction>>(message);
             this.OnPlayCardAsManaAction(data.actions[index]);
-
-
-            Debug.Log(JsonUtility.ToJson(data));
         }
     }
 
@@ -62,6 +57,6 @@ public class ActionController : MonoBehaviour
 
     public void OnPlayCardAsManaAction(PlayCardAsManaAction action)
     {
-        cardManger.PlayCardAsMana(action.playerId, action.cardId, action.taped);
+        cardManger.PlayCardAsMana(action.playerId, action.cardId, action.tapped);
     }
 }
