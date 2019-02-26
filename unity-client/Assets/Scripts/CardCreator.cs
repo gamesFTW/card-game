@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-class PlayerStacks
+public class PlayerStacks
 {
     public Transform deck;
     public Transform hand;
@@ -10,7 +11,7 @@ class PlayerStacks
     public Transform graveyard;
 }
 
-public class CardManger : MonoBehaviour {
+public class CardCreator : MonoBehaviour {
     public Transform CardPrefab;
 
     public Transform PlayerDeck;
@@ -25,52 +26,21 @@ public class CardManger : MonoBehaviour {
     public Transform OpponentTable;
     public Transform OpponentGraveyard;
 
-    private string currentPlayerId;
-
     private BoardController boardController;
 
-    private Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
+    public Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
 
-    private Dictionary<string, PlayerStacks> playerStacks = new Dictionary<string, PlayerStacks>();
+    public Dictionary<string, PlayerStacks> playerStacks = new Dictionary<string, PlayerStacks>();
 
-    public async void Start ()
+    public void Start ()
     {
         boardController = this.transform.Find("Board").GetComponent<BoardController>();
+    }
 
+    public async Task CreateCards()
+    {
         GameData gameData = await ServerApi.GetGame();
 
-        this.CreateCards(gameData);
-    }
-
-    public void DrawCards(string playerId, string[] cardsIds)
-    {
-        for (int i = 0; i < cardsIds.Length; i++)
-        {
-            var cardId = cardsIds[i];
-           
-            var cardTransform = cardIdToCards[cardId];
-
-            cardTransform.SetParent(this.playerStacks[playerId].hand, false);
-            cardTransform.GetComponent<CardDisplay>().FaceUp();
-        }
-    }
-
-    public void PlayCardAsMana(string playerId, string cardId, bool taped)
-    {
-        var cardTransform = cardIdToCards[cardId];
-
-        cardTransform.SetParent(this.playerStacks[playerId].manaPool, false);
-
-        if (taped)
-        {
-            cardTransform.GetComponent<CardDisplay>().Tap();
-        }
-
-        cardTransform.GetComponent<CardDisplay>().FaceDown();
-    }
-
-    private void CreateCards(GameData gameData)
-    {
         CardData[][] stacksData = this.CreateStacksData(gameData);
 
         Transform[] stacksTransforms = new Transform[] {
