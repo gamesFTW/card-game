@@ -50,8 +50,8 @@ public class GameData
 
 public class ServerApi
 {
-    static public String gameId = "62442exribl5zt2jk9okev7jhquob0";
-    static public String currentPlayerId = "dhrt6sve6fp5ric2qix19o0lu3lhvw";
+    static public String gameId = "ewpnvs34xvqqcjxtby50agpbvxkrh0";
+    static public String currentPlayerId = "xmq46b1a0wcmbz0s7pwkvlvjstpikg";
     static public String serverURL = "http://127.0.0.1:3000";
 
     public async static Task<GameData> GetGame()

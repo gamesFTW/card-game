@@ -28,11 +28,11 @@ public class PlayCardAsManaAction
 
 public class ActionController : MonoBehaviour
 {
-    private CardManger cardManger;
+    private CardManager cardManger;
 
     void Awake()
     {
-        cardManger = this.GetComponent<CardManger>();
+        cardManger = this.GetComponent<CardManager>();
     }
 
     public void ProcessAction(string type, int index, string message)
@@ -53,6 +53,7 @@ public class ActionController : MonoBehaviour
     public void OnEndTurnAction(EndTurnAction action)
     {
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
+        cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
     }
 
     public void OnPlayCardAsManaAction(PlayCardAsManaAction action)
