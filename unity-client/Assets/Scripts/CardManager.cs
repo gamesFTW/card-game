@@ -21,11 +21,14 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < cardsIds.Length; i++)
         {
             var cardId = cardsIds[i];
-
             var cardTransform = cardIdToCards[cardId];
 
             cardTransform.SetParent(this.playerStacks[playerId].hand, false);
-            cardTransform.GetComponent<CardDisplay>().FaceUp();
+
+            if (playerId == ServerApi.currentPlayerId)
+            {
+                cardTransform.GetComponent<CardDisplay>().FaceUp();
+            }
         }
     }
 
@@ -34,7 +37,6 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < cardsIds.Length; i++)
         {
             var cardId = cardsIds[i];
-
             var cardTransform = cardIdToCards[cardId];
 
             cardTransform.GetComponent<CardDisplay>().Untap();
