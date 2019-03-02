@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 using UnibusEvent;
 
 using UnityEngine.EventSystems;
-
+using System;
 
 public class CardDisplay : MonoBehaviour, IPointerClickHandler
 {
@@ -23,6 +22,7 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
     public Text maxHpText;
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
+    public static readonly string CARD_PLAY = "CARD_PLAY";
 
     // Use this for initialization
     void Start () 
@@ -62,10 +62,19 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            OnLeftMouseClicked();
+        }
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             OnRightMouseClicked();
         }
+    }
+
+    private void OnLeftMouseClicked()
+    {
+        Unibus.Dispatch(CARD_PLAY, cardData.id);
     }
 
     private void OnRightMouseClicked()

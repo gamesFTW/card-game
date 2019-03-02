@@ -2,7 +2,7 @@
 using System.Collections;
 using UnibusEvent;
 
-public class CardController : MonoBehaviour
+public class CardSenderToServer : MonoBehaviour
 {
     // Use this for initialization
     void Start()

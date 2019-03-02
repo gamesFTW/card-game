@@ -26,7 +26,7 @@ public class PlayCardAsManaAction
     public bool tapped;
 }
 
-public class ActionController : MonoBehaviour
+public class ReceiverFromServer : MonoBehaviour
 {
     private CardManager cardManger;
 

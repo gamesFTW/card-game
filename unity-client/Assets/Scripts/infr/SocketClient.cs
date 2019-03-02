@@ -21,12 +21,12 @@ public class SocketClient : MonoBehaviour
 {
     private TcpClient socketConnection;
     private Thread clientReceiveThread;
-    private ActionController controller;
+    private ReceiverFromServer receiverFromServer;
     private SocketListener socketListener;
 
     void Start()
     {
-        controller = this.GetComponent<ActionController>();
+        receiverFromServer = this.GetComponent<ReceiverFromServer>();
 
         ConnectToTcpServer();
     }
@@ -50,7 +50,7 @@ public class SocketClient : MonoBehaviour
             for (int i = 0; i < socketData.actions.Length; i++)
             {
                 var action = socketData.actions[i];
-                controller.ProcessAction(action.type, i, serverMessage);
+                receiverFromServer.ProcessAction(action.type, i, serverMessage);
             }
         }
     }

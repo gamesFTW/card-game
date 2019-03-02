@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-public class BoardController : MonoBehaviour
+public class BoardCreator : MonoBehaviour
 {
     public int Width;
     public int Height;

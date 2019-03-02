@@ -26,7 +26,7 @@ public class CardCreator : MonoBehaviour {
     public Transform OpponentTable;
     public Transform OpponentGraveyard;
 
-    private BoardController boardController;
+    private BoardCreator boardCreator;
 
     public Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
 
@@ -34,7 +34,7 @@ public class CardCreator : MonoBehaviour {
 
     public void Start ()
     {
-        boardController = this.transform.Find("Board").GetComponent<BoardController>();
+        boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
     }
 
     public async Task CreateCards()
@@ -112,7 +112,7 @@ public class CardCreator : MonoBehaviour {
 
         if (cardData.alive)
         {
-            boardController.CreateUnit(cardData);
+            boardCreator.CreateUnit(cardData);
         }
     }
 }
