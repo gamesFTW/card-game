@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnibusEvent;
-
 using UnityEngine.EventSystems;
-using System;
 
-public class CardDisplay : MonoBehaviour, IPointerClickHandler
+public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
 	public CardData cardData;
 
@@ -22,7 +18,9 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
     public Text maxHpText;
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
-    public static readonly string CARD_PLAY = "CARD_PLAY";
+    public static readonly string CARD_PRE_PLAY = "CARD_PRE_PLAY";
+    public static readonly string CARD_MOUSE_OVER = "CARD_MOUSE_OVER";
+    public static readonly string CARD_MOUSE_OUT = "CARD_MOUSE_OUT";
 
     // Use this for initialization
     void Start () 
@@ -72,9 +70,19 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    public void OnPointerEnter(PointerEventData pointerEventData)
+    {
+        Unibus.Dispatch(CARD_MOUSE_OVER, cardData.id);
+    }
+
+    public void OnPointerExit(PointerEventData pointerEventData)
+    {
+        Unibus.Dispatch(CARD_MOUSE_OUT, cardData.id);
+    }
+
     private void OnLeftMouseClicked()
     {
-        Unibus.Dispatch(CARD_PLAY, cardData.id);
+        Unibus.Dispatch(CARD_PRE_PLAY, cardData.id);
     }
 
     private void OnRightMouseClicked()

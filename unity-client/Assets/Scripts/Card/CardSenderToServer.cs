@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnibusEvent;
+using System.Collections.Generic;
 
 public class CardSenderToServer : MonoBehaviour
 {
-    // Use this for initialization
     void Start()
     {
         Unibus.Subscribe<string>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
+        Unibus.Subscribe<Dictionary<string, string>> (PlayCardHandler.CARD_PLAY, OnCardPlay);
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -19,5 +18,10 @@ public class CardSenderToServer : MonoBehaviour
     async void OnCardPlayAsMana(string id)
     {
         await ServerApi.PlayCardAsMana(id);
+    }
+
+    async void OnCardPlay(Dictionary<string, string> data)
+    {
+        await ServerApi.PlayCard(data);
     }
 }

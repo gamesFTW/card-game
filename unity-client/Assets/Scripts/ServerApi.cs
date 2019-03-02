@@ -88,4 +88,12 @@ public class ServerApi
 
         await HttpRequest.Post("/playCardAsMana", values);
     }
+
+    public async static Task PlayCard(Dictionary<string, string> values)
+    {
+        values.Add("gameId", gameId);
+        values.Add("playerId", currentPlayerId);
+
+        await HttpRequest.Post("/playCard", values);
+    }
 }

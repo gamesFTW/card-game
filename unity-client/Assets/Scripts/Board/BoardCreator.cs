@@ -90,6 +90,10 @@ public class BoardCreator : MonoBehaviour
 
                 tile.transform.localPosition = PointerToIcometric(new Vector2(x, y), tileWidth, tileHeight);
 
+                TileDisplay tileDisplay = tile.GetComponent<TileDisplay>();
+                tileDisplay.x = x;
+                tileDisplay.y = y;
+
                 Tiles[x, y] = tile as GameObject;
             }
         }
