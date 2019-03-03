@@ -7,8 +7,12 @@ public class CardManager : MonoBehaviour
     private Dictionary<string, Transform> cardIdToCards;
     private Dictionary<string, PlayerStacks> playerStacks;
 
+    private BoardCreator boardCreator;
+
     public async void Start()
     {
+        boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
+
         CardCreator cardCreator = this.GetComponent<CardCreator>();
         await cardCreator.CreateCards();
 
@@ -32,15 +36,43 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void TapCards(string playerId, string[] cardsIds)
+    {
+        foreach (string cardId in cardsIds)
+        {
+            var cardTransform = cardIdToCards[cardId];
+            cardTransform.GetComponent<CardDisplay>().Tap();
+        }
+    }
+
     public void UntapCards(string playerId, string[] cardsIds)
     {
-        for (int i = 0; i < cardsIds.Length; i++)
+        foreach (string cardId in cardsIds)
         {
-            var cardId = cardsIds[i];
             var cardTransform = cardIdToCards[cardId];
-
             cardTransform.GetComponent<CardDisplay>().Untap();
         }
+    }
+
+    public void PlayCard(string playerId, string cardId, Point position, bool taped)
+    {
+        var cardTransform = cardIdToCards[cardId];
+
+        cardTransform.SetParent(this.playerStacks[playerId].table, false);
+
+        CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        cardDisplay.cardData.x = position.x;
+        cardDisplay.cardData.y = position.y;
+
+        if (taped)
+        {
+            cardDisplay.Tap();
+        }
+
+        cardDisplay.FaceUp();
+
+        boardCreator.CreateUnit(cardDisplay.cardData);
     }
 
     public void PlayCardAsMana(string playerId, string cardId, bool taped)

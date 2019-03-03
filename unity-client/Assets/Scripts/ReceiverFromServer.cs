@@ -26,6 +26,29 @@ public class PlayCardAsManaAction
     public bool tapped;
 }
 
+[Serializable]
+public class Point
+{
+    public int x;
+    public int y;
+
+    public Point(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+[Serializable]
+public class PlayCardAction
+{
+    public string cardId;
+    public string playerId;
+    public string[] manaCardsTapped;
+    public bool tapped;
+    public Point position;
+}
+
 public class ReceiverFromServer : MonoBehaviour
 {
     private CardManager cardManger;
@@ -48,6 +71,12 @@ public class ReceiverFromServer : MonoBehaviour
             SocketData<PlayCardAsManaAction> data = JsonUtility.FromJson<SocketData<PlayCardAsManaAction>>(message);
             this.OnPlayCardAsManaAction(data.actions[index]);
         }
+
+        if (type == "PlayCardAction")
+        {
+            SocketData<PlayCardAction> data = JsonUtility.FromJson<SocketData<PlayCardAction>>(message);
+            this.OnPlayCardAction(data.actions[index]);
+        }
     }
 
     public void OnEndTurnAction(EndTurnAction action)
@@ -56,6 +85,13 @@ public class ReceiverFromServer : MonoBehaviour
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
+    }
+
+    public void OnPlayCardAction(PlayCardAction action)
+    {
+        cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped);
+
+        cardManger.UntapCards(action.playerId, action.manaCardsTapped);
     }
 
     public void OnPlayCardAsManaAction(PlayCardAsManaAction action)

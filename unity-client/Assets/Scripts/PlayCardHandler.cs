@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnibusEvent;
-using System.Drawing;
 using System.Collections.Generic;
 
 public class PlayCardHandler : MonoBehaviour
@@ -48,8 +47,8 @@ public class PlayCardHandler : MonoBehaviour
         {
             Unibus.Dispatch<Dictionary<string, string>>(CARD_PLAY, new Dictionary<string, string>{
                 { "cardId", SelectedCardId },
-                { "x", point.X.ToString() },
-                { "y", point.Y.ToString() },
+                { "x", point.x.ToString() },
+                { "y", point.y.ToString() },
             });
         }
     }

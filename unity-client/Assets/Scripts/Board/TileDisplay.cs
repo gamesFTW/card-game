@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnibusEvent;
-using System.Drawing;
+using UnityEngine.EventSystems;
 
 public class TileDisplay : MonoBehaviour
 {
@@ -21,7 +21,7 @@ public class TileDisplay : MonoBehaviour
 
     void OnMouseDown()
     {
-        
+        Debug.Log("Beep");
         Unibus.Dispatch<Point>(TILE_MOUSE_LEFT_CLICK, new Point(x, y));
     }
 }
