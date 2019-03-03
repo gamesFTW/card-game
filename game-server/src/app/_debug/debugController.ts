@@ -1,17 +1,18 @@
 import * as Router from 'koa-router';
 import axios from 'axios';
 import opn = require('opn');
+import config from '../../config';
 
 const debugController = new Router();
 
 debugController.post('/createAndPlayDebugGame', async (ctx) => {
-  let response = await axios.post('http://localhost:3000/createGame');
+  let response = await axios.post(config.GAME_URL + 'createGame');
   let gameId = response.data.gameId;
 
-  response = await axios.get(`http://localhost:3000/getGame?gameId=${gameId}`);
+  response = await axios.get(config.GAME_URL + `getGame?gameId=${gameId}`);
   let player1 = response.data.player1;
 
-  axios.post(`http://localhost:3000/playDebugGameWithDelay`, { gameId }).then(() => {
+  axios.post(config.GAME_URL + `playDebugGameWithDelay`, { gameId }).then(() => {
     console.info('Debug game creation is finished');
   }).catch(e => {
     console.error(e.message);
@@ -24,7 +25,7 @@ debugController.post('/createAndPlayDebugGame', async (ctx) => {
 debugController.post('/playDebugGameWithDelay', async (ctx) => {
   let gameId = ctx.request.body.gameId as string;
 
-  let response = await axios.get(`http://localhost:3000/getGame?gameId=${gameId}`);
+  let response = await axios.get(config.GAME_URL + `getGame?gameId=${gameId}`);
   let player1 = response.data.player1;
   let player2 = response.data.player2;
 
@@ -75,14 +76,14 @@ function delay (duration: number): Promise<void> {
 
 async function playCardAsMana (gameId: string, playerId: string, cardId: string): Promise<void> {
   await axios.post(
-    'http://localhost:3000/playCardAsMana',
+    config.GAME_URL + 'playCardAsMana',
     {playerId, cardId, gameId}
   );
 }
 
 async function playCard (gameId: string, playerId: string, cardId: string, x: number, y: number): Promise<void> {
   await axios.post(
-    'http://localhost:3000/playCard',
+    config.GAME_URL + 'playCard',
     {gameId, playerId, cardId, x, y}
   );
 }
@@ -91,13 +92,13 @@ async function attackCard (
     gameId: string, playerId: string, attackerCardId: string, attackedCardId: string
   ): Promise<void> {
   await axios.post(
-    'http://localhost:3000/attackCard',
+    config.GAME_URL + 'attackCard',
     {gameId, playerId, attackerCardId, attackedCardId}
   );
 }
 
 async function endTurn (gameId: string, playerId: string): Promise<void> {
-  await axios.post('http://localhost:3000/endTurn',{gameId, playerId});
+  await axios.post(config.GAME_URL + 'endTurn',{gameId, playerId});
 }
 
 export {debugController};

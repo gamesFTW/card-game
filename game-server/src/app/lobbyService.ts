@@ -1,14 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
 import {cardPlaceChangePosition} from '../../../client/src/UI/store/cards/actions';
+import config from '../config';
 
 interface Games {
   games: Array<String>;
 }
 
-let LOBBY_URL = 'http://localhost:3001/';
-
 let lobbyMethods = {
-  GET_ALL_GAMES: LOBBY_URL + 'games'
+  GET_ALL_GAMES: config.LOBBY_URL + 'games'
 };
 
 let lobbyService = {

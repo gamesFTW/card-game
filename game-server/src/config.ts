@@ -5,6 +5,8 @@ export default {
   REDIS_URL: `redis://${DOCKER_HOST}:6379`,
   MONGO_URL: `${DOCKER_HOST}`,
   MONGO_PORT: 27017,
+  GAME_URL: 'http://localhost:3000/',
+  LOBBY_URL: 'http://localhost:3001/',
   DEV: true,
   MAIN_EXCHANGE: 'main'
 };

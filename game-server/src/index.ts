@@ -16,6 +16,7 @@ import { debugController } from './app/_debug/debugController';
 
 import { godOfSockets } from './infr/GodOfSockets';
 import { lobbyService } from './app/lobbyService';
+import config from './config';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -62,7 +63,7 @@ async function main (): Promise<void> {
   app.use(debugController.allowedMethods());
   app.use(staticContorller.allowedMethods());
 
-  console.log('Server listen on 3000 http://localhost:3000');
+  console.log('Server listen on ' + config.GAME_URL);
   app.listen(3000);
 }
 

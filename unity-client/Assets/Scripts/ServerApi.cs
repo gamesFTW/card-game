@@ -50,19 +50,25 @@ public class GameData
 
 public class ServerApi
 {
-    static public String gameId = "ewpnvs34xvqqcjxtby50agpbvxkrh0";
-    static public String currentPlayerId = "xmq46b1a0wcmbz0s7pwkvlvjstpikg";
+    static public String gameId = "ajrwo65ddgy8uctn1fz2lifjf3tpte";
+    static public String currentPlayerId = "r9j7woknqodm6l2en4pv9ex0ei5od9";
+    static public String enemyPlayerId = "r9j7woknqodm6l2en4pv9ex0ei5od9";
     static public String serverURL = "http://127.0.0.1:3000";
 
     public async static Task<GameData> GetGame()
     {
         var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync(String.Format(serverURL + "/getGame?gameId=" + gameId));
+        var response = await httpClient.GetAsync(String.Format(serverURL + "/getLastGame"));
         response.EnsureSuccessStatusCode();
 
         string responseContent = await response.Content.ReadAsStringAsync();
 
         GameData gameData = JsonUtility.FromJson<GameData>(responseContent);
+
+        gameId = gameData.id;
+        currentPlayerId = gameData.player1Id;
+        enemyPlayerId = gameData.player2Id;
+
         return gameData;
     }
 

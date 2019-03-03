@@ -13,6 +13,9 @@ import { mapPlayerPretty } from './mapPlayerPretty';
 import { godOfSockets } from '../../infr/GodOfSockets';
 import { startingCardsFixture } from './startingCardsFixture';
 import {EndTurnUseCase} from './EndTurnUseCase';
+import { lobbyService } from '../lobbyService';
+import axios from 'axios';
+import config from '../../config';
 
 const gameController = new Router();
 
@@ -73,6 +76,15 @@ gameController.post('/endTurn', async (ctx) => {
   await endTurnUseCase.execute({gameId, endingTurnPlayerId});
 
   ctx.body = `Ok`;
+});
+
+gameController.get('/getLastGame', async (ctx) => {
+  let games = await lobbyService.getAllGames();
+  let lastGameId = games[games.length - 1];
+
+  let response = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
+
+  ctx.body = response.data;
 });
 
 export {gameController};
