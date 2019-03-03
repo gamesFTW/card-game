@@ -37,22 +37,29 @@ public class PlayerData
 }
 
 [Serializable]
-public class GameData
+public class GameInfoData
 {
     public string id;
     public string player1Id;
     public string player2Id;
     public string currentPlayersTurn;
     public string boardId;
+    public int currentTurn;
+}
+
+[Serializable]
+public class GameData
+{
+    public GameInfoData game;
     public PlayerData player1;
     public PlayerData player2;
 }
 
 public class ServerApi
 {
-    static public String gameId = "ajrwo65ddgy8uctn1fz2lifjf3tpte";
-    static public String currentPlayerId = "r9j7woknqodm6l2en4pv9ex0ei5od9";
-    static public String enemyPlayerId = "r9j7woknqodm6l2en4pv9ex0ei5od9";
+    static public String gameId = "";
+    static public String mainPlayerId = "";
+    static public String enemyOfMainPlayerId = "";
     static public String serverURL = "http://127.0.0.1:3000";
 
     public async static Task<GameData> GetGame()
@@ -63,11 +70,15 @@ public class ServerApi
 
         string responseContent = await response.Content.ReadAsStringAsync();
 
+        Debug.Log(responseContent);
+
         GameData gameData = JsonUtility.FromJson<GameData>(responseContent);
 
-        gameId = gameData.id;
-        currentPlayerId = gameData.player1Id;
-        enemyPlayerId = gameData.player2Id;
+        gameId = gameData.game.id;
+        mainPlayerId = gameData.game.player1Id;
+        enemyOfMainPlayerId = gameData.game.player2Id;
+
+        GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
 
         return gameData;
     }
@@ -77,7 +88,7 @@ public class ServerApi
         var values = new Dictionary<string, string>
         {
            { "gameId", gameId },
-           { "playerId", currentPlayerId }
+           { "playerId", GameState.playerIdWhoMakesMove }
         };
 
         await HttpRequest.Post("/endTurn", values);
@@ -88,7 +99,7 @@ public class ServerApi
         var values = new Dictionary<string, string>
         {
            { "gameId", gameId },
-           { "playerId", currentPlayerId },
+           { "playerId", mainPlayerId },
            { "cardId", cardId }
         };
 
@@ -98,7 +109,7 @@ public class ServerApi
     public async static Task PlayCard(Dictionary<string, string> values)
     {
         values.Add("gameId", gameId);
-        values.Add("playerId", currentPlayerId);
+        values.Add("playerId", mainPlayerId);
 
         await HttpRequest.Post("/playCard", values);
     }

@@ -54,6 +54,8 @@ public class ReceiverFromServer : MonoBehaviour
     {
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
+
+        GameState.playerIdWhoMakesMove = action.startedPlayerId;
     }
 
     public void OnPlayCardAsManaAction(PlayCardAsManaAction action)

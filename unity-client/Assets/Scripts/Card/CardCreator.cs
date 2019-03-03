@@ -59,7 +59,7 @@ public class CardCreator : MonoBehaviour {
 
     private CardData[][] CreateStacksData(GameData gameData)
     {
-        string playerId = ServerApi.currentPlayerId;
+        string playerId = ServerApi.mainPlayerId;
 
         PlayerData player;
         PlayerData opponent;

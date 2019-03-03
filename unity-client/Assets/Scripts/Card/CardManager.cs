@@ -25,7 +25,7 @@ public class CardManager : MonoBehaviour
 
             cardTransform.SetParent(this.playerStacks[playerId].hand, false);
 
-            if (playerId == ServerApi.currentPlayerId)
+            if (playerId == ServerApi.mainPlayerId)
             {
                 cardTransform.GetComponent<CardDisplay>().FaceUp();
             }
