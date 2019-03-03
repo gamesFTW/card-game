@@ -21,7 +21,6 @@ public class TileDisplay : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log("Beep");
         Unibus.Dispatch<Point>(TILE_MOUSE_LEFT_CLICK, new Point(x, y));
     }
 }

@@ -106,11 +106,31 @@ public class ServerApi
         await HttpRequest.Post("/playCardAsMana", values);
     }
 
-    public async static Task PlayCard(Dictionary<string, string> values)
+    public async static Task PlayCard(PlayCardAction action)
     {
-        values.Add("gameId", gameId);
-        values.Add("playerId", mainPlayerId);
+        var values = new Dictionary<string, string>
+        {
+           { "gameId", gameId },
+           { "playerId", mainPlayerId },
+           { "cardId", action.cardId },
+           { "x", action.x },
+           { "y", action.y }
+        };
 
         await HttpRequest.Post("/playCard", values);
+    }
+
+    public async static Task MoveCard(MoveCardAction action)
+    {
+        var values = new Dictionary<string, string>
+        {
+           { "gameId", gameId },
+           { "playerId", mainPlayerId },
+           { "cardId", action.cardId },
+           { "x", action.x },
+           { "y", action.y }
+        };
+
+        await HttpRequest.Post("/moveCard", values);
     }
 }

@@ -1,8 +1,11 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using UnibusEvent;
 
 public class BoardCreator : MonoBehaviour
 {
+    public static readonly string UNIT_CLICKED_ON_BOARD = "UNIT_CLICKED_ON_BOARD";
+    public static readonly string CLICKED_ON_VOID_TILE = "CLICKED_ON_VOID_TILE";
+
     public int Width;
     public int Height;
 
@@ -10,51 +13,29 @@ public class BoardCreator : MonoBehaviour
     public GameObject UnitPrefab;
 
     private GameObject[,] Tiles;
+    private GameObject[,] Units;
 
     private float tileWidth;
     private float tileHeight;
 
-    private Sprite fat;
-    private Sprite boar;
-    private Sprite goblin;
-    private Sprite hero;
-    private Sprite reptile;
-    private Sprite skeleton;
+    public static Sprite fat;
+    public static Sprite boar;
+    public static Sprite goblin;
+    public static Sprite hero;
+    public static Sprite reptile;
+    public static Sprite skeleton;
 
-    public void CreateUnit(CardData cardData)
+    public void CreateUnit(CardDisplay cardDisplay, Point position)
     {
-        Vector2 position = new Vector2(cardData.x, cardData.y);
-
         GameObject unit = Instantiate<GameObject>(UnitPrefab, this.transform);
         unit.transform.SetParent(this.transform);
         unit.transform.localPosition = PointerToIcometric(position, tileWidth, tileHeight);
 
-        Unit unitComponent = unit.GetComponent<Unit>();
+        UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
+        unitDisplay.CardData = cardDisplay.cardData;
+        unitDisplay.CardDisplay = cardDisplay;
 
-        if (cardData.name == "Герой")
-        {
-            unitComponent.SetSprite(hero);
-        }
-        if (cardData.name == "Толстокожая")
-        {
-            unitComponent.SetSprite(fat);
-        }
-        if (cardData.name == "Гоблин")
-        {
-            unitComponent.SetSprite(goblin);
-        }
-        if (cardData.name == "Кабан")
-        {
-            unitComponent.SetSprite(boar);
-        }
-        if (cardData.name == "Ящер")
-        {
-            unitComponent.SetSprite(reptile);
-        }
-        if (cardData.name == "Скелет")
-        {
-            unitComponent.SetSprite(skeleton);
-        }
+        Units[position.x, position.y] = unit as GameObject;
     }
 
     private void Awake()
@@ -69,9 +50,15 @@ public class BoardCreator : MonoBehaviour
         CreateTiles();
     }
 
+    private void Start()
+    {
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
+    }
+
     private void CreateTiles ()
     {
         Tiles = new GameObject[Width + 1, Height + 1];
+        Units = new GameObject[Width + 1, Height + 1];
 
         for (int x = 1; x <= Width; x++)
         {
@@ -88,7 +75,7 @@ public class BoardCreator : MonoBehaviour
                 //TextMeshPro text = tile.transform.Find("Text").gameObject.GetComponent<TextMeshPro>();
                 //text.SetText(x.ToString() + ";" + y.ToString());
 
-                tile.transform.localPosition = PointerToIcometric(new Vector2(x, y), tileWidth, tileHeight);
+                tile.transform.localPosition = PointerToIcometric(new Point(x, y), tileWidth, tileHeight);
 
                 TileDisplay tileDisplay = tile.GetComponent<TileDisplay>();
                 tileDisplay.x = x;
@@ -98,11 +85,26 @@ public class BoardCreator : MonoBehaviour
             }
         }
     }
-       
-    Vector3 PointerToIcometric(Vector2 vector, float tileWidth, float tileHeight)
+
+    void OnTileMouseLeftClick(Point position)
     {
-        float x = vector.x;
-        float y = vector.y;
+        GameObject unit = Units[position.x, position.y];
+
+        if (unit)
+        {
+            UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
+
+            Unibus.Dispatch<UnitDisplay>(UNIT_CLICKED_ON_BOARD, unitDisplay);
+        } else
+        {
+            Unibus.Dispatch<Point>(CLICKED_ON_VOID_TILE, position);
+        }
+    }
+
+    Vector3 PointerToIcometric(Point position, float tileWidth, float tileHeight)
+    {
+        float x = position.x;
+        float y = position.y;
 
         return new Vector2(
             (x - y) * (tileWidth / 2),

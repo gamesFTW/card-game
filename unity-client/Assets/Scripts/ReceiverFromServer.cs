@@ -2,31 +2,6 @@
 using System;
 
 [Serializable]
-public class EndTurnAction
-{
-    public int currentTurn;
-    public string endedPlayerId;
-    public string startedPlayerId;
-    public MovingPoints[] cardsMovingPointsUpdated;
-    public string[] cardsUntapped;
-    public string[] cardsDrawn;
-}
-
-public class MovingPoints
-{
-    public string id;
-    public int currentMovingPoints;
-}
-
-[Serializable]
-public class PlayCardAsManaAction
-{
-    public string cardId;
-    public string playerId;
-    public bool tapped;
-}
-
-[Serializable]
 public class Point
 {
     public int x;
@@ -39,14 +14,42 @@ public class Point
     }
 }
 
-[Serializable]
-public class PlayCardAction
+namespace ServerActions
 {
-    public string cardId;
-    public string playerId;
-    public string[] manaCardsTapped;
-    public bool tapped;
-    public Point position;
+    [Serializable]
+    public class EndTurnAction
+    {
+        public int currentTurn;
+        public string endedPlayerId;
+        public string startedPlayerId;
+        public MovingPoints[] cardsMovingPointsUpdated;
+        public string[] cardsUntapped;
+        public string[] cardsDrawn;
+    }
+
+    public class MovingPoints
+    {
+        public string id;
+        public int currentMovingPoints;
+    }
+
+    [Serializable]
+    public class PlayCardAsManaAction
+    {
+        public string cardId;
+        public string playerId;
+        public bool tapped;
+    }
+
+    [Serializable]
+    public class PlayCardAction
+    {
+        public string cardId;
+        public string playerId;
+        public string[] manaCardsTapped;
+        public bool tapped;
+        public Point position;
+    }
 }
 
 public class ReceiverFromServer : MonoBehaviour
@@ -62,24 +65,24 @@ public class ReceiverFromServer : MonoBehaviour
     {
         if (type == "EndTurnAction")
         {
-            SocketData<EndTurnAction> data = JsonUtility.FromJson<SocketData<EndTurnAction>>(message);
+            SocketData<ServerActions.EndTurnAction> data = JsonUtility.FromJson<SocketData<ServerActions.EndTurnAction>>(message);
             this.OnEndTurnAction(data.actions[index]);
         }
 
         if (type == "PlayCardAsManaAction")
         {
-            SocketData<PlayCardAsManaAction> data = JsonUtility.FromJson<SocketData<PlayCardAsManaAction>>(message);
+            SocketData<ServerActions.PlayCardAsManaAction> data = JsonUtility.FromJson<SocketData<ServerActions.PlayCardAsManaAction>>(message);
             this.OnPlayCardAsManaAction(data.actions[index]);
         }
 
         if (type == "PlayCardAction")
         {
-            SocketData<PlayCardAction> data = JsonUtility.FromJson<SocketData<PlayCardAction>>(message);
+            SocketData<ServerActions.PlayCardAction> data = JsonUtility.FromJson<SocketData<ServerActions.PlayCardAction>>(message);
             this.OnPlayCardAction(data.actions[index]);
         }
     }
 
-    public void OnEndTurnAction(EndTurnAction action)
+    public void OnEndTurnAction(ServerActions.EndTurnAction action)
     {
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
@@ -87,14 +90,14 @@ public class ReceiverFromServer : MonoBehaviour
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
     }
 
-    public void OnPlayCardAction(PlayCardAction action)
+    public void OnPlayCardAction(ServerActions.PlayCardAction action)
     {
         cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped);
 
         cardManger.UntapCards(action.playerId, action.manaCardsTapped);
     }
 
-    public void OnPlayCardAsManaAction(PlayCardAsManaAction action)
+    public void OnPlayCardAsManaAction(ServerActions.PlayCardAsManaAction action)
     {
         cardManger.PlayCardAsMana(action.playerId, action.cardId, action.tapped);
     }

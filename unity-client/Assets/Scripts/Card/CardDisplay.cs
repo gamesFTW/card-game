@@ -18,7 +18,7 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public Text maxHpText;
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
-    public static readonly string CARD_PRE_PLAY = "CARD_PRE_PLAY";
+    public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
     public static readonly string CARD_MOUSE_OVER = "CARD_MOUSE_OVER";
     public static readonly string CARD_MOUSE_OUT = "CARD_MOUSE_OUT";
 
@@ -72,17 +72,17 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
 
     public void OnPointerEnter(PointerEventData pointerEventData)
     {
-        Unibus.Dispatch(CARD_MOUSE_OVER, cardData.id);
+        //Unibus.Dispatch(CARD_MOUSE_OVER, cardData.id);
     }
 
     public void OnPointerExit(PointerEventData pointerEventData)
     {
-        Unibus.Dispatch(CARD_MOUSE_OUT, cardData.id);
+        //Unibus.Dispatch(CARD_MOUSE_OUT, cardData.id);
     }
 
     private void OnLeftMouseClicked()
     {
-        Unibus.Dispatch(CARD_PRE_PLAY, cardData.id);
+        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, cardData.id);
     }
 
     private void OnRightMouseClicked()

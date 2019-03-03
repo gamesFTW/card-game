@@ -112,7 +112,7 @@ public class CardCreator : MonoBehaviour {
 
         if (cardData.alive)
         {
-            boardCreator.CreateUnit(cardData);
+            boardCreator.CreateUnit(cardDisplay, new Point(cardData.x, cardData.y));
         }
     }
 }

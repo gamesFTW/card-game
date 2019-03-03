@@ -62,9 +62,6 @@ public class CardManager : MonoBehaviour
 
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
-        cardDisplay.cardData.x = position.x;
-        cardDisplay.cardData.y = position.y;
-
         if (taped)
         {
             cardDisplay.Tap();
@@ -72,7 +69,7 @@ public class CardManager : MonoBehaviour
 
         cardDisplay.FaceUp();
 
-        boardCreator.CreateUnit(cardDisplay.cardData);
+        boardCreator.CreateUnit(cardDisplay, position);
     }
 
     public void PlayCardAsMana(string playerId, string cardId, bool taped)

@@ -1,16 +1,30 @@
 ﻿using UnityEngine;
 using UnibusEvent;
-using System.Collections.Generic;
+
+public class PlayCardAction
+{
+    public string cardId;
+    public string x;
+    public string y;
+}
+
+public class MoveCardAction
+{
+    public string cardId;
+    public string x;
+    public string y;
+}
 
 public class CardSenderToServer : MonoBehaviour
 {
     void Start()
     {
         Unibus.Subscribe<string>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
-        Unibus.Subscribe<Dictionary<string, string>> (PlayCardHandler.CARD_PLAY, OnCardPlay);
+        Unibus.Subscribe<PlayCardAction> (PlayCardHandler.CARD_PLAY, OnCardPlay);
+        Unibus.Subscribe<MoveCardAction> (MoveCardHandler.CARD_MOVE, OnCardMove);
     }
 
-    void Update()
+    void Update() 
     {
 
     }
@@ -20,8 +34,13 @@ public class CardSenderToServer : MonoBehaviour
         await ServerApi.PlayCardAsMana(id);
     }
 
-    async void OnCardPlay(Dictionary<string, string> data)
+    async void OnCardPlay(PlayCardAction action)
     {
-        await ServerApi.PlayCard(data);
+        await ServerApi.PlayCard(action);
+    }
+
+    async void OnCardMove(MoveCardAction action)
+    {
+        await ServerApi.MoveCard(action);
     }
 }

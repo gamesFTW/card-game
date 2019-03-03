@@ -7,20 +7,22 @@ public class PlayCardHandler : MonoBehaviour
     public static readonly string CARD_PLAY = "CARD_PLAY";
 
     private string SelectedCardId;
-    private string MouseOverCardId;
 
     void Start()
     {
-        Unibus.Subscribe<string>(CardDisplay.CARD_MOUSE_OVER, OnCardMouseOver);
-        Unibus.Subscribe<string>(CardDisplay.CARD_MOUSE_OUT, OnCardMouseOut);
-        Unibus.Subscribe<string>(CardDisplay.CARD_PRE_PLAY, OnCardPlay);
+        Unibus.Subscribe<string>(CardDisplay.CARD_SELECTED_TO_PLAY, OnCardPlay);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
     }
 
     void Update()
     {
+        CheckClickOutOfAnyCard();
+    }
+
+    void CheckClickOutOfAnyCard()
+    {
         var leftMouseClicked = Input.GetButtonDown("Fire1");
-        if (leftMouseClicked && MouseOverCardId == null)
+        if (leftMouseClicked)
         {
             SelectedCardId = null;
         }
@@ -31,25 +33,17 @@ public class PlayCardHandler : MonoBehaviour
         SelectedCardId = id;
     }
 
-    void OnCardMouseOver(string id)
-    {
-        MouseOverCardId = id;
-    }
-
-    void OnCardMouseOut(string id)
-    {
-        MouseOverCardId = null;
-    }
-
     void OnTileMouseLeftClick(Point point)
     {
         if (SelectedCardId != null)
         {
-            Unibus.Dispatch<Dictionary<string, string>>(CARD_PLAY, new Dictionary<string, string>{
-                { "cardId", SelectedCardId },
-                { "x", point.x.ToString() },
-                { "y", point.y.ToString() },
+            Unibus.Dispatch<PlayCardAction>(CARD_PLAY, new PlayCardAction {
+                cardId = SelectedCardId,
+                x = point.x.ToString(),
+                y = point.y.ToString()
             });
+
+            SelectedCardId = null;
         }
     }
 }
