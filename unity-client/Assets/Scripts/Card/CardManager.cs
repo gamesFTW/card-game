@@ -85,4 +85,13 @@ public class CardManager : MonoBehaviour
 
         cardTransform.GetComponent<CardDisplay>().FaceDown();
     }
+
+    public void MoveCard(string playerId, string cardId, Point position, int currentMovingPoints)
+    {
+        var cardTransform = cardIdToCards[cardId];
+
+        CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        boardCreator.MoveUnit(cardDisplay, position);
+    }
 }

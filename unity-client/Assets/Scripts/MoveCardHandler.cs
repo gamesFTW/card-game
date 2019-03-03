@@ -6,11 +6,14 @@ public class MoveCardHandler : MonoBehaviour
     public static readonly string CARD_MOVE = "CARD_MOVE";
 
     private UnitDisplay SelectedUnit;
+    private bool MouseOnTile = false;
 
     void Start()
     {
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_OVER, OnTileMouseOver);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
     }
 
     void Update()
@@ -21,22 +24,19 @@ public class MoveCardHandler : MonoBehaviour
     void CheckClickOutOfAnyCard()
     {
         var leftMouseClicked = Input.GetButtonDown("Fire1");
-        if (leftMouseClicked)
+        if (leftMouseClicked && MouseOnTile == false)
         {
-            Debug.Log("SelectedUnit = null");
             SelectedUnit = null;
         }
     }
 
     void OnUnitSelectedOnBoard(UnitDisplay unitDisplay)
     {
-        Debug.Log("OnUnitSelectedOnBoard");
         SelectedUnit = unitDisplay;
     }
 
     void OnClickedOnVoidTile(Point point)
     {
-        Debug.Log("OnClickedOnVoidTile");
         if (SelectedUnit != null)
         {
             Unibus.Dispatch<MoveCardAction>(CARD_MOVE, new MoveCardAction
@@ -45,8 +45,16 @@ public class MoveCardHandler : MonoBehaviour
                 x = point.x.ToString(),
                 y = point.y.ToString()
             });
-
-            SelectedUnit = null;
         }
+    }
+
+    void OnTileMouseOver(Point point)
+    {
+        MouseOnTile = true;
+    }
+
+    void OnTileMouseExit(Point point)
+    {
+        MouseOnTile = false;
     }
 }

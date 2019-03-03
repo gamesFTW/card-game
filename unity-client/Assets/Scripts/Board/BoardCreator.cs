@@ -34,8 +34,21 @@ public class BoardCreator : MonoBehaviour
         UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
         unitDisplay.CardData = cardDisplay.cardData;
         unitDisplay.CardDisplay = cardDisplay;
+        cardDisplay.UnitDisplay = unitDisplay;
 
         Units[position.x, position.y] = unit as GameObject;
+    }
+
+    public void MoveUnit(CardDisplay cardDisplay, Point position)
+    {
+        UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
+
+        unitDisplay.transform.localPosition = PointerToIcometric(position, tileWidth, tileHeight);
+
+        Point oldPosition = GetUnitsPosition(unitDisplay);
+
+        Units[oldPosition.x, oldPosition.y] = null;
+        Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
     }
 
     private void Awake()
@@ -84,6 +97,22 @@ public class BoardCreator : MonoBehaviour
                 Tiles[x, y] = tile as GameObject;
             }
         }
+    }
+
+    private Point GetUnitsPosition(UnitDisplay unitDisplay)
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                if (Units[x, y] == unitDisplay.gameObject)
+                {
+                    return new Point(x, y);
+                }
+            }
+        }
+
+        return null;
     }
 
     void OnTileMouseLeftClick(Point position)

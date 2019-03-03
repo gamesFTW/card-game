@@ -50,6 +50,15 @@ namespace ServerActions
         public bool tapped;
         public Point position;
     }
+
+    [Serializable]
+    public class MoveCardAction
+    {
+        public string cardId;
+        public string playerId;
+        public Point position;
+        public int currentMovingPoints;
+    }
 }
 
 public class ReceiverFromServer : MonoBehaviour
@@ -75,6 +84,12 @@ public class ReceiverFromServer : MonoBehaviour
             this.OnPlayCardAsManaAction(data.actions[index]);
         }
 
+        if (type == "MoveCardAction")
+        {
+            SocketData<ServerActions.MoveCardAction> data = JsonUtility.FromJson<SocketData<ServerActions.MoveCardAction>>(message);
+            this.OnMoveCardAction(data.actions[index]);
+        }
+
         if (type == "PlayCardAction")
         {
             SocketData<ServerActions.PlayCardAction> data = JsonUtility.FromJson<SocketData<ServerActions.PlayCardAction>>(message);
@@ -93,12 +108,16 @@ public class ReceiverFromServer : MonoBehaviour
     public void OnPlayCardAction(ServerActions.PlayCardAction action)
     {
         cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped);
-
         cardManger.UntapCards(action.playerId, action.manaCardsTapped);
     }
 
     public void OnPlayCardAsManaAction(ServerActions.PlayCardAsManaAction action)
     {
         cardManger.PlayCardAsMana(action.playerId, action.cardId, action.tapped);
+    }
+
+    public void OnMoveCardAction(ServerActions.MoveCardAction action)
+    {
+        cardManger.MoveCard(action.playerId, action.cardId, action.position, action.currentMovingPoints);
     }
 }

@@ -1,16 +1,10 @@
 import * as Router from 'koa-router';
-import { Game } from '../../domain/game/Game';
-import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
-import { formatEventsForClient } from '../../infr/Event';
-import { Player } from '../../domain/player/Player';
-import { Card } from '../../domain/card/Card';
 import { Point } from '../../infr/Point';
-import { Board } from '../../domain/board/Board';
-import { godOfSockets } from '../../infr/GodOfSockets';
 import { AttackCardUseCase } from './AttackCardUseCase';
 import { PlayCardAsManaUseCase } from './PlayCardAsManaUseCase';
 import { PlayCardUseCase } from './PlayCardUseCase';
+import { MoveCardUseCase } from './MoveCardUseCase';
 
 const playerController = new Router();
 
@@ -52,18 +46,9 @@ playerController.post('/moveCard', async (ctx) => {
 
   let position = new Point(x, y);
 
-  let game = await Repository.get<Game>(gameId, Game);
-  let board = await Repository.get<Board>(game.boardId, Board);
-  let player = await Repository.get<Player>(playerId, Player);
-  let card = await Repository.get<Card>(cardId, Card);
+  let useCase = new MoveCardUseCase();
+  await useCase.execute({gameId, playerId, cardId, position});
 
-  player.moveCard(card, position, board);
-
-  let entities = [player, card, board];
-  await Repository.save(entities);
-
-  // Send data to client
-  godOfSockets.sendEventsInGame(game.id, player.id, formatEventsForClient(entities));
   ctx.body = `Ok`;
 });
 

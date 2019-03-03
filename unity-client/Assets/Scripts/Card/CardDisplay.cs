@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+	public UnitDisplay UnitDisplay;
 	public CardData cardData;
 
 	public Text nameText;
