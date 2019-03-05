@@ -4,6 +4,7 @@ using UnibusEvent;
 public class MoveCardHandler : MonoBehaviour
 {
     public static readonly string CARD_MOVE = "CARD_MOVE";
+    public static readonly string CARD_ATTACK = "CARD_ATTACK";
 
     private UnitDisplay SelectedUnit;
     private bool MouseOnTile = false;
@@ -30,9 +31,23 @@ public class MoveCardHandler : MonoBehaviour
         }
     }
 
-    void OnUnitSelectedOnBoard(UnitDisplay unitDisplay)
+    void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        SelectedUnit = unitDisplay;
+        if (SelectedUnit == null)
+        {
+            SelectedUnit = clickedUnitDisplay;
+        }
+        else
+        {
+            if (SelectedUnit.CardData.ownerId == clickedUnitDisplay.CardData.ownerId)
+            {
+                SelectedUnit = clickedUnitDisplay;
+            }
+            else
+            {
+                EmmitCardAttackAction(SelectedUnit, clickedUnitDisplay);
+            }
+        }
     }
 
     void OnClickedOnVoidTile(Point point)
@@ -56,5 +71,14 @@ public class MoveCardHandler : MonoBehaviour
     void OnTileMouseExit(Point point)
     {
         MouseOnTile = false;
+    }
+
+    void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit)
+    {
+        Unibus.Dispatch<AttackCardAction>(CARD_ATTACK, new AttackCardAction
+        {
+            attackerCardId = attackerUnit.CardData.id,
+            attackedCardId = attackedUnit.CardData.id
+        });
     }
 }

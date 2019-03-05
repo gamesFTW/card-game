@@ -9,6 +9,7 @@ public class HttpRequest
     public async static Task<string> Post(string url, Dictionary<string, string> values)
     {
         HttpResponseMessage response = await PostInternal(url, values);
+        GenerateDebugMessage(url, values);
         string responseContent = await response.Content.ReadAsStringAsync();
 
         try
@@ -26,6 +27,7 @@ public class HttpRequest
     public async static Task<T> Post<T>(string url, Dictionary<string, string> values)
     {
         HttpResponseMessage response = await PostInternal(url, values);
+        GenerateDebugMessage(url, values);
         string responseContent = await response.Content.ReadAsStringAsync();
         T responseObject = JsonUtility.FromJson<T>(responseContent);
 
@@ -46,5 +48,16 @@ public class HttpRequest
         var httpClient = new HttpClient();
         var content = new FormUrlEncodedContent(values);
         return await httpClient.PostAsync(String.Format(ServerApi.serverURL + url), content);
+    }
+
+    private static void GenerateDebugMessage(string url, Dictionary<string, string> values)
+    {
+        string valuesText = "";
+        foreach (KeyValuePair<string, string> entry in values)
+        {
+            valuesText += entry.Key + " = " + entry.Value + "; ";
+        }
+
+        Debug.Log("Send POST to server. Url: '" + url + "' Body: " + valuesText);
     }
 }

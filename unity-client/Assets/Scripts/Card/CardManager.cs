@@ -5,7 +5,7 @@ using UnityEngine;
 public class CardManager : MonoBehaviour
 {
     private Dictionary<string, Transform> cardIdToCards;
-    private Dictionary<string, PlayerStacks> playerStacks;
+    private Dictionary<string, PlayerTransformsStacks> playerStacks;
 
     private BoardCreator boardCreator;
 
@@ -17,7 +17,7 @@ public class CardManager : MonoBehaviour
         await cardCreator.CreateCards();
 
         cardIdToCards = cardCreator.cardIdToCards;
-        playerStacks = cardCreator.playerStacks;
+        playerStacks = cardCreator.playersTransformsStacks;
     }
 
     public void DrawCards(string playerId, string[] cardsIds)
@@ -54,7 +54,7 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public void PlayCard(string playerId, string cardId, Point position, bool taped)
+    public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];
 
@@ -68,6 +68,8 @@ public class CardManager : MonoBehaviour
         }
 
         cardDisplay.FaceUp();
+
+        cardDisplay.CurrentHp = newHp;
 
         boardCreator.CreateUnit(cardDisplay, position);
     }
@@ -93,5 +95,25 @@ public class CardManager : MonoBehaviour
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
         boardCreator.MoveUnit(cardDisplay, position);
+    }
+
+    public void CardWasInBattle(ServerActions.CardAfterBattle card)
+    {
+        var cardTransform = cardIdToCards[card.id];
+
+        CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        if (card.isTapped)
+        {
+            cardDisplay.Tap();
+        }
+
+        cardDisplay.CurrentHp = card.newHp;
+
+        if (card.killed)
+        {
+            cardTransform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
+            boardCreator.KillUnit(cardDisplay);
+        }
     }
 }

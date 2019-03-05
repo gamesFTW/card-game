@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerStacks
+public class PlayerTransformsStacks
 {
     public Transform deck;
     public Transform hand;
@@ -30,7 +30,7 @@ public class CardCreator : MonoBehaviour {
 
     public Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
 
-    public Dictionary<string, PlayerStacks> playerStacks = new Dictionary<string, PlayerStacks>();
+    public Dictionary<string, PlayerTransformsStacks> playersTransformsStacks = new Dictionary<string, PlayerTransformsStacks>();
 
     public void Start ()
     {
@@ -52,7 +52,17 @@ public class CardCreator : MonoBehaviour {
         {
             foreach (CardData card in stacksData[i])
             {
-                CreateCardIn(card, stacksTransforms[i]);
+                string playerId;
+                // Простите меня за такое
+                if (i <= 3)
+                {
+                    playerId = ServerApi.mainPlayerId;
+                } else
+                {
+                    playerId = ServerApi.enemyOfMainPlayerId;
+                }
+
+                CreateCardIn(card, playerId, stacksTransforms[i]);
             }
         }
     }
@@ -80,13 +90,13 @@ public class CardCreator : MonoBehaviour {
             opponent.deck, opponent.hand, opponent.manaPool, opponent.table, opponent.graveyard,
         };
 
-        playerStacks.Add(player.id, new PlayerStacks { deck = PlayerDeck, hand = PlayerHand, manaPool = PlayerManaPool, table = PlayerTable, graveyard = PlayerGraveyard });
-        playerStacks.Add(opponent.id, new PlayerStacks { deck = OpponentDeck, hand = OpponentHand, manaPool = OpponentManaPool, table = OpponentTable, graveyard = OpponentGraveyard });
+        playersTransformsStacks.Add(player.id, new PlayerTransformsStacks { deck = PlayerDeck, hand = PlayerHand, manaPool = PlayerManaPool, table = PlayerTable, graveyard = PlayerGraveyard });
+        playersTransformsStacks.Add(opponent.id, new PlayerTransformsStacks { deck = OpponentDeck, hand = OpponentHand, manaPool = OpponentManaPool, table = OpponentTable, graveyard = OpponentGraveyard });
 
         return stacksData;
     }
 
-    private void CreateCardIn(CardData cardData, Transform stack)
+    private void CreateCardIn(CardData cardData, string playerId, Transform stack)
     {
         Transform newCard = (Transform)Instantiate(CardPrefab, new Vector2(0, 0), new Quaternion());
         cardIdToCards.Add(cardData.id, newCard);
@@ -95,6 +105,7 @@ public class CardCreator : MonoBehaviour {
 
         CardDisplay cardDisplay = newCard.GetComponent<CardDisplay>();
 
+        cardData.ownerId = playerId;
         cardDisplay.cardData = cardData;
 
         if (stack.GetComponent<StackDisplay>().IsFaceUp)

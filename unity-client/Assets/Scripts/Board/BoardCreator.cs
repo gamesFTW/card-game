@@ -51,6 +51,16 @@ public class BoardCreator : MonoBehaviour
         Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
     }
 
+    public void KillUnit(CardDisplay cardDisplay)
+    {
+        UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
+
+        Point position = GetUnitsPosition(unitDisplay);
+        Units[position.x, position.y] = null;
+
+        Destroy(unitDisplay.gameObject);
+    }
+
     private void Awake()
     {
         fat = Resources.Load<Sprite>("Sprites/Units/fat");

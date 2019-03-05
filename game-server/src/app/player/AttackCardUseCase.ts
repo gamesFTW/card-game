@@ -11,8 +11,17 @@ import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
 import {PlayerData} from '../../domain/player/PlayerState';
+import {Point} from '../../infr/Point';
+import { UseCase } from '../../infr/UseCase';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
+
+interface AttackCardParams {
+  gameId: EntityId;
+  attackerPlayerId: EntityId;
+  attackerCardId: EntityId;
+  attackedCardId: EntityId;
+}
 
 interface CardAttackedAction {
   type: string;
@@ -20,78 +29,94 @@ interface CardAttackedAction {
     id?: string;
     isTapped?: boolean;
     newHp?: number;
-    alive?: boolean;
+    killed?: boolean;
   };
   attackedCard: {
     id?: string;
     isTapped?: boolean;
     newHp?: number;
-    alive?: boolean;
+    killed?: boolean;
   };
 }
 
-class AttackCardUseCase {
-  private cardAttackedAction: CardAttackedAction = {
-    type: 'CardAttacked',
+class AttackCardUseCase extends UseCase {
+  protected action: CardAttackedAction = {
+    type: 'CardAttackedAction',
     attackerCard: {},
     attackedCard: {}
   };
 
-  public async execute (gameId: EntityId, attackerPlayerId: EntityId, attackerCardId: EntityId, attackedCardId: EntityId): Promise<void> {
-    let game = await Repository.get<Game>(gameId, Game);
-    let board = await Repository.get<Board>(game.boardId, Board);
-    let attackerPlayer = await Repository.get<Player>(attackerPlayerId, Player);
-    let attackedPlayerId = game.getPlayerIdWhichIsOpponentFor(attackerPlayerId);
-    let attackedPlayer = await Repository.get<Player>(attackedPlayerId, Player);
-    let attackerCard = await Repository.get<Card>(attackerCardId, Card);
-    let attackedCard = await Repository.get<Card>(attackedCardId, Card);
+  protected entities: {
+    game?: Game;
+    attackerPlayer?: Player,
+    attackedPlayer?: Player,
+    attackerCard?: Card,
+    attackedCard?: Card,
+    board?: Board
+  } = {};
 
-    attackerCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackerCardTapped);
-    attackerCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackerCardTookDamage);
-    attackerCard.addEventListener(CardEventType.CARD_DIED, this.onAttackerCardDied);
+  protected params: AttackCardParams;
 
-    attackedCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackedCardTapped);
-    attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardTookDamage);
-    attackedCard.addEventListener(CardEventType.CARD_DIED, this.onAttackedCardDied);
+  protected async readEntities (): Promise<void> {
+    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
+    this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
+    this.entities.attackerPlayer = await Repository.get<Player>(this.params.attackerPlayerId, Player);
+    let attackedPlayerId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.attackerPlayerId);
+    this.entities.attackedPlayer = await Repository.get<Player>(attackedPlayerId, Player);
+    this.entities.attackerCard = await Repository.get<Card>(this.params.attackerCardId, Card);
+    this.entities.attackedCard = await Repository.get<Card>(this.params.attackedCardId, Card);
+  }
 
-    AttackService.attackUnit(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board);
+  protected addEventListeners (): void {
+    this.entities.attackerCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackerCardTapped);
+    this.entities.attackerCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackerCardTookDamage);
+    this.entities.attackerCard.addEventListener(CardEventType.CARD_DIED, this.onAttackerCardDied);
 
-    await Repository.save([game, board, attackerPlayer, attackedPlayer, attackerCard, attackedCard]);
-
-    this.cardAttackedAction.attackedCard.id = attackerCardId;
-    this.cardAttackedAction.attackedCard.id = attackedCardId;
-
-    godOfSockets.sendActions(game.id, [this.cardAttackedAction]);
+    this.entities.attackedCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackedCardTapped);
+    this.entities.attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardTookDamage);
+    this.entities.attackedCard.addEventListener(CardEventType.CARD_DIED, this.onAttackedCardDied);
+  }
+  
+  protected runBusinessLogic (): void {
+    AttackService.attackUnit(
+      this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
+      this.entities.attackedPlayer, this.entities.board
+    );
+  }
+  
+  protected addClientActions (): void {
+    this.action.attackerCard.id = this.params.attackerCardId;
+    this.action.attackedCard.id = this.params.attackedCardId;
   }
 
   @boundMethod
   private onAttackerCardTapped (event: Event<CardData>): void {
-    this.cardAttackedAction.attackerCard.isTapped = true;
+    this.action.attackerCard.isTapped = true;
   }
 
   @boundMethod
   private onAttackerCardTookDamage (event: Event<CardData>): void {
-    this.cardAttackedAction.attackerCard.newHp = event.data.currentHp;
+    this.action.attackerCard.newHp = event.data.currentHp;
   }
 
   @boundMethod
   private onAttackerCardDied (event: Event<CardData>): void {
-    this.cardAttackedAction.attackerCard.alive = event.data.alive;
+    this.action.attackerCard.killed = !event.data.alive;
   }
 
   @boundMethod
   private onAttackedCardTapped (event: Event<CardData>): void {
-    this.cardAttackedAction.attackedCard.isTapped = true;
+    this.action.attackedCard.isTapped = true;
   }
 
   @boundMethod
   private onAttackedCardTookDamage (event: Event<CardData>): void {
-    this.cardAttackedAction.attackedCard.newHp = event.data.currentHp;
+    this.action.attackedCard.newHp = event.data.currentHp;
   }
 
   @boundMethod
   private onAttackedCardDied (event: Event<CardData>): void {
-    this.cardAttackedAction.attackedCard.alive = event.data.alive;
+    this.action.attackedCard.killed = !event.data.alive;
   }
 }
 

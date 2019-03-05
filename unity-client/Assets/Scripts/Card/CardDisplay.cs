@@ -23,6 +23,15 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public static readonly string CARD_MOUSE_OVER = "CARD_MOUSE_OVER";
     public static readonly string CARD_MOUSE_OUT = "CARD_MOUSE_OUT";
 
+    public int CurrentHp
+    {
+        get { return cardData.currentHp; }
+        set {
+            cardData.currentHp = value;
+            currentHpText.text = value.ToString();
+        }
+    }
+
     // Use this for initialization
     void Start () 
     {
