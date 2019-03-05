@@ -134,6 +134,7 @@ class Player extends Entity {
   // TODO: Метод не на том уровне абстракции?
   public checkCardIn (card: Card, stackName: CardStack): boolean {
     let stack = this.getStackByName(stackName);
+    console.log(stack);
     return this.checkCardInStack(card, stack);
   }
 

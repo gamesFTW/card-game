@@ -15,6 +15,12 @@ public class MoveCardAction
     public string y;
 }
 
+public class AttackCardAction
+{
+    public string attackerCardId;
+    public string attackedCardId;
+}
+
 public class CardSenderToServer : MonoBehaviour
 {
     void Start()
@@ -22,6 +28,7 @@ public class CardSenderToServer : MonoBehaviour
         Unibus.Subscribe<string>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
         Unibus.Subscribe<PlayCardAction> (PlayCardHandler.CARD_PLAY, OnCardPlay);
         Unibus.Subscribe<MoveCardAction> (MoveCardHandler.CARD_MOVE, OnCardMove);
+        Unibus.Subscribe<AttackCardAction> (MoveCardHandler.CARD_ATTACK, OnCardAttack);
     }
 
     void Update() 
@@ -42,5 +49,10 @@ public class CardSenderToServer : MonoBehaviour
     async void OnCardMove(MoveCardAction action)
     {
         await ServerApi.MoveCard(action);
+    }
+
+    async void OnCardAttack(AttackCardAction action)
+    {
+        await ServerApi.AttackCard(action);
     }
 }

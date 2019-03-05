@@ -24,6 +24,7 @@ interface PlayCardAction {
   tapped?: boolean;
   playerId?: EntityId;
   position?: Point;
+  newHp?: number;
   manaCardsTapped?: EntityId[]
 }
 
@@ -49,11 +50,11 @@ class PlayCardUseCase extends UseCase {
     this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
     this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
     this.entities.playerManaPoolCards = await Repository.getMany <Card>(this.entities.player.manaPool, Card);
-
   }
 
   protected addEventListeners (): void {
     this.entities.card.addEventListener(CardEventType.CARD_TAPPED, this.onCardTapped);
+    this.entities.card.addEventListener(CardEventType.CARD_PLAYED, this.onCardPlayed);
 
     this.entities.playerManaPoolCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_TAPPED, this.onManaTapped);
@@ -80,6 +81,11 @@ class PlayCardUseCase extends UseCase {
   @boundMethod
   private onManaTapped (event: Event<CardData>): void {
     this.action.manaCardsTapped.push(event.data.id);
+  }
+
+  @boundMethod
+  private onCardPlayed (event: Event<CardData>): void {
+    this.action.newHp = event.data.currentHp;
   }
 }
 

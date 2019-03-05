@@ -23,6 +23,9 @@ public class CardData
     public int currentHp;
     public int x;
     public int y;
+    // Простите, но слишком долго делать по другому.
+    // По правильному нужно хранить стеки со ссылками на карты.
+    public string ownerId;
 }
 
 [Serializable]
@@ -132,5 +135,18 @@ public class ServerApi
         };
 
         await HttpRequest.Post("/moveCard", values);
+    }
+
+    public async static Task AttackCard(AttackCardAction action)
+    {
+        var values = new Dictionary<string, string>
+        {
+           { "gameId", gameId },
+           { "playerId", mainPlayerId },
+           { "attackerCardId", action.attackerCardId },
+           { "attackedCardId", action.attackedCardId }
+        };
+
+        await HttpRequest.Post("/attackCard", values);
     }
 }

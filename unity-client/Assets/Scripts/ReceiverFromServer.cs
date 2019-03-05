@@ -47,6 +47,7 @@ namespace ServerActions
         public string cardId;
         public string playerId;
         public string[] manaCardsTapped;
+        public int newHp;
         public bool tapped;
         public Point position;
     }
@@ -58,6 +59,22 @@ namespace ServerActions
         public string playerId;
         public Point position;
         public int currentMovingPoints;
+    }
+
+    [Serializable]
+    public class CardAttackedAction
+    {
+        public CardAfterBattle attackerCard;
+        public CardAfterBattle attackedCard;
+    }
+
+    [Serializable]
+    public class CardAfterBattle
+    {
+        public string id;
+        public bool isTapped;
+        public int newHp;
+        public bool killed;
     }
 }
 
@@ -95,6 +112,12 @@ public class ReceiverFromServer : MonoBehaviour
             SocketData<ServerActions.PlayCardAction> data = JsonUtility.FromJson<SocketData<ServerActions.PlayCardAction>>(message);
             this.OnPlayCardAction(data.actions[index]);
         }
+
+        if (type == "CardAttackedAction")
+        {
+            SocketData<ServerActions.CardAttackedAction> data = JsonUtility.FromJson<SocketData<ServerActions.CardAttackedAction>>(message);
+            this.OnCardAttackedAction(data.actions[index]);
+        }
     }
 
     public void OnEndTurnAction(ServerActions.EndTurnAction action)
@@ -107,7 +130,7 @@ public class ReceiverFromServer : MonoBehaviour
 
     public void OnPlayCardAction(ServerActions.PlayCardAction action)
     {
-        cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped);
+        cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped, action.newHp);
         cardManger.UntapCards(action.playerId, action.manaCardsTapped);
     }
 
@@ -119,5 +142,11 @@ public class ReceiverFromServer : MonoBehaviour
     public void OnMoveCardAction(ServerActions.MoveCardAction action)
     {
         cardManger.MoveCard(action.playerId, action.cardId, action.position, action.currentMovingPoints);
+    }
+
+    public void OnCardAttackedAction(ServerActions.CardAttackedAction action)
+    {
+        cardManger.CardWasInBattle(action.attackerCard);
+        cardManger.CardWasInBattle(action.attackedCard);
     }
 }

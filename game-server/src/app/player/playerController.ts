@@ -56,12 +56,11 @@ playerController.post('/attackCard', async (ctx) => {
   let gameId = ctx.request.body.gameId as EntityId;
   // TODO: его нужно доставать из сессии
   let attackerPlayerId = ctx.request.body.playerId as EntityId;
-
   let attackerCardId = ctx.request.body.attackerCardId as EntityId;
   let attackedCardId = ctx.request.body.attackedCardId as EntityId;
 
   let attackCard = new AttackCardUseCase();
-  await attackCard.execute(gameId, attackerPlayerId, attackerCardId, attackedCardId);
+  await attackCard.execute({gameId, attackerPlayerId, attackerCardId, attackedCardId});
 
   ctx.body = `Ok`;
 });
