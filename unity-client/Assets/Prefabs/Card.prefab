@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81b9379e27093cd469ac394adb1b703f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UnitDisplay: {fileID: 0}
   cardData:
     id: 
     alive: 0
