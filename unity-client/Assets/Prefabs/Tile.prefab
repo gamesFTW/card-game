@@ -28,7 +28,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 884036361225012054}
-  m_LocalRotation: {x: -0.08838055, y: 0.008964619, z: 0.00079544657, w: 0.9960461}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -64.25104}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -115,7 +115,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   glowEffectValues: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
     type: 2}
-  glowEffect: {fileID: 0}
   x: 0
   y: 0
 --- !u!222 &3101436907010750809
@@ -148,7 +147,7 @@ PolygonCollider2D:
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   m_Points:
     m_Paths:
     - - {x: -0.65, y: -0.024999999}
