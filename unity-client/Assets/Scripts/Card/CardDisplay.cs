@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnibusEvent;
 using UnityEngine.EventSystems;
+using UnityEditor.Presets;
 
 public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -17,6 +18,8 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
 	public Text damageText;
     public Text currentHpText;
     public Text maxHpText;
+
+    public Preset glowEffectValues;
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
@@ -88,6 +91,26 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public void OnPointerExit(PointerEventData pointerEventData)
     {
         //Unibus.Dispatch(CARD_MOUSE_OUT, cardData.id);
+    }
+
+    // TODO ПРЕНЕСТИ В ОТДЕЛЬНЫЙ ХЕНДЛЕР
+    public void highlightOn()
+    {
+        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+
+        if (go.GetComponent<SpriteGlow.SpriteGlowEffect>() == null)
+        {
+            SpriteGlow.SpriteGlowEffect effect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
+            glowEffectValues.ApplyTo(effect);
+        }
+    }
+
+    public void highlightOff()
+    {
+        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+        SpriteGlow.SpriteGlowEffect effect = go.GetComponent<SpriteGlow.SpriteGlowEffect>();
+        Destroy(effect);
+
     }
 
     private void OnLeftMouseClicked()

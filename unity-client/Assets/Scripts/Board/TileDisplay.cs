@@ -31,10 +31,11 @@ public class TileDisplay : MonoBehaviour
 
     }
 
-    void OnMouseOver()
+    void OnMouseEnter()
     {
         Unibus.Dispatch<Point>(TILE_MOUSE_OVER, new Point(x, y));
         highlightOn();
+        Debug.Log("sfsdf");
     }
 
     void OnMouseExit()

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnibusEvent;
 
 public class CardManager : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class CardManager : MonoBehaviour
     private Dictionary<string, PlayerTransformsStacks> playerStacks;
 
     private BoardCreator boardCreator;
+
+    private CardDisplay highlightedCard; 
 
     public async void Start()
     {
@@ -18,6 +21,10 @@ public class CardManager : MonoBehaviour
 
         cardIdToCards = cardCreator.cardIdToCards;
         playerStacks = cardCreator.playersTransformsStacks;
+
+
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSEOVER_ON_BOARD, OnUnitBoardMouseOver);
+        Unibus.Subscribe<Point>(BoardCreator.MOUSEOVER_ON_VOID_TILE, OnVoidBoardMouseOver);
     }
 
     public void DrawCards(string playerId, string[] cardsIds)
@@ -115,5 +122,38 @@ public class CardManager : MonoBehaviour
             cardTransform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
             boardCreator.KillUnit(cardDisplay);
         }
+    }
+
+
+
+    private void highlightCard(CardDisplay card)
+    {
+        card.highlightOn();
+        if (card != highlightedCard)
+        {
+            unHighlightCard();
+        }
+
+        highlightedCard = card;
+    }
+
+    private void unHighlightCard()
+    {
+        if (highlightedCard)
+        {
+            highlightedCard.highlightOff();
+            highlightedCard = null;
+        }
+    }
+
+    private void OnUnitBoardMouseOver(UnitDisplay unit)
+    {
+        CardDisplay card = cardIdToCards[unit.CardData.id].GetComponent<CardDisplay>();
+        highlightCard(card);
+    }
+
+    private void OnVoidBoardMouseOver(Point point)
+    {
+        unHighlightCard();
     }
 }

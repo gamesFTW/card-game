@@ -4,6 +4,8 @@ using UnibusEvent;
 public class BoardCreator : MonoBehaviour
 {
     public static readonly string UNIT_CLICKED_ON_BOARD = "UNIT_CLICKED_ON_BOARD";
+    public static readonly string UNIT_MOUSEOVER_ON_BOARD = "UNIT_MOUSEOVER_ON_BOARD";
+    public static readonly string MOUSEOVER_ON_VOID_TILE = "MOUSEOVER_ON_VOID_TILE";
     public static readonly string CLICKED_ON_VOID_TILE = "CLICKED_ON_VOID_TILE";
 
     public int Width;
@@ -76,6 +78,7 @@ public class BoardCreator : MonoBehaviour
     private void Start()
     {
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_OVER, OnTileMouseOver);
     }
 
     private void CreateTiles ()
@@ -137,6 +140,22 @@ public class BoardCreator : MonoBehaviour
         } else
         {
             Unibus.Dispatch<Point>(CLICKED_ON_VOID_TILE, position);
+        }
+    }
+
+    void OnTileMouseOver(Point position)
+    {
+        GameObject unit = Units[position.x, position.y];
+
+        if (unit)
+        {
+            UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
+
+            Unibus.Dispatch<UnitDisplay>(UNIT_MOUSEOVER_ON_BOARD, unitDisplay);
+        }
+        else
+        {
+            Unibus.Dispatch<Point>(MOUSEOVER_ON_VOID_TILE, position);
         }
     }
 

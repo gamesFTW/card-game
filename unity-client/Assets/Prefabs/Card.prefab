@@ -241,6 +241,7 @@ MonoBehaviour:
     currentHp: 0
     x: 0
     y: 0
+    ownerId: 
   nameText: {fileID: 114593963480022986}
   descriptionText: {fileID: 114754400711330348}
   artworkImage: {fileID: 114249135997916530}
@@ -248,6 +249,8 @@ MonoBehaviour:
   damageText: {fileID: 114960741744032802}
   currentHpText: {fileID: 114457601060822844}
   maxHpText: {fileID: 5040660112500052177}
+  glowEffectValues: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
+    type: 2}
 --- !u!1 &1364282028053026
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,9 +717,8 @@ GameObject:
   - component: {fileID: 222684944050670920}
   - component: {fileID: 114961570500437642}
   - component: {fileID: 6770347052178301735}
-  - component: {fileID: 4616087019467939725}
   m_Layer: 5
-  m_Name: Card Template
+  m_Name: CardTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -795,7 +797,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: d24927d9caad3f04ab7b19ba0b6796d5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -826,24 +828,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4616087019467939725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1996936224542484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  glowColor: {r: 1, g: 1, b: 1, a: 1}
-  glowBrightness: 3.3
-  outlineWidth: 6
-  alphaThreshold: 0.4
-  drawOutside: 1
-  enableInstancing: 1
 --- !u!1 &38222266021754629
 GameObject:
   m_ObjectHideFlags: 0
