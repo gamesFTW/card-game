@@ -31,11 +31,11 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: glowColor.g
-    value: 0.12660766
+    value: 0.97
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: glowColor.b
-    value: 0.5
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: glowColor.a
@@ -43,21 +43,21 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: glowBrightness
-    value: 10
+    value: 4.06
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: outlineWidth
-    value: 5
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: alphaThreshold
-    value: 0.88
+    value: 0.43
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: drawOutside
-    value: 1
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: enableInstancing
-    value: 1
+    value: 0
     objectReference: {fileID: 0}
