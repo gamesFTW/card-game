@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnibusEvent;
-using UnityEngine.EventSystems;
+﻿using UnibusEvent;
 using UnityEditor.Presets;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -19,7 +19,8 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public Text currentHpText;
     public Text maxHpText;
 
-    public Preset glowEffectValues;
+    public Preset SelectedHighlightGlow;
+    public Preset OverHighlightGlow;
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
@@ -93,33 +94,49 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
 
-    // TODO ПРЕНЕСТИ В ОТДЕЛЬНЫЙ ХЕНДЛЕР
-    public void highlightOn()
+    public void SelectedHighlightOn()
     {
         GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
 
         if (go.GetComponent<SpriteGlow.SpriteGlowEffect>() == null)
         {
             SpriteGlow.SpriteGlowEffect effect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-            glowEffectValues.ApplyTo(effect);
+            SelectedHighlightGlow.ApplyTo(effect);
         }
     }
 
-    public void highlightOff()
+    public void SelectedHighlightOff()
     {
         GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
         SpriteGlow.SpriteGlowEffect effect = go.GetComponent<SpriteGlow.SpriteGlowEffect>();
         Destroy(effect);
+    }
 
+    public void OverHighlightOn()
+    {
+        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+
+        if (go.GetComponent<SpriteGlow.SpriteGlowEffect>() == null)
+        {
+            SpriteGlow.SpriteGlowEffect effect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
+            OverHighlightGlow.ApplyTo(effect);
+        }
+    }
+
+    public void OverHighlightOff()
+    {
+        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+        SpriteGlow.SpriteGlowEffect effect = go.GetComponent<SpriteGlow.SpriteGlowEffect>();
+        Destroy(effect);
     }
 
     private void OnLeftMouseClicked()
     {
-        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, cardData.id);
+        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
     }
 
     private void OnRightMouseClicked()
     {
-        Unibus.Dispatch(CARD_PLAY_AS_MANA, cardData.id);
+        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
     }
 }

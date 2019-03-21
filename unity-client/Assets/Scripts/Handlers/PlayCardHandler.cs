@@ -6,11 +6,11 @@ public class PlayCardHandler : MonoBehaviour
 {
     public static readonly string CARD_PLAY = "CARD_PLAY";
 
-    private string SelectedCardId;
+    private CardDisplay SelectedCard;
 
     void Start()
     {
-        Unibus.Subscribe<string>(CardDisplay.CARD_SELECTED_TO_PLAY, OnCardPlay);
+        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_SELECTED_TO_PLAY, OnCardPlay);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
     }
 
@@ -24,26 +24,29 @@ public class PlayCardHandler : MonoBehaviour
         var leftMouseClicked = Input.GetButtonDown("Fire1");
         if (leftMouseClicked)
         {
-            SelectedCardId = null;
+            SelectedCard.SelectedHighlightOff();
+            SelectedCard = null;
         }
     }
 
-    void OnCardPlay(string id)
+    void OnCardPlay(CardDisplay card)
     {
-        SelectedCardId = id;
+        card.SelectedHighlightOn();
+        SelectedCard = card;
     }
 
     void OnTileMouseLeftClick(Point point)
     {
-        if (SelectedCardId != null)
+        if (SelectedCard != null)
         {
             Unibus.Dispatch<PlayCardAction>(CARD_PLAY, new PlayCardAction {
-                cardId = SelectedCardId,
+                cardId = SelectedCard.cardData.id,
                 x = point.x.ToString(),
                 y = point.y.ToString()
             });
 
-            SelectedCardId = null;
+            SelectedCard.SelectedHighlightOff();
+            SelectedCard = null;
         }
     }
 }

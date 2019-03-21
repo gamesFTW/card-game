@@ -25,7 +25,7 @@ public class CardSenderToServer : MonoBehaviour
 {
     void Start()
     {
-        Unibus.Subscribe<string>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
+        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
         Unibus.Subscribe<PlayCardAction> (PlayCardHandler.CARD_PLAY, OnCardPlay);
         Unibus.Subscribe<MoveCardAction> (MoveAndAttackCardHandler.CARD_MOVE, OnCardMove);
         Unibus.Subscribe<AttackCardAction> (MoveAndAttackCardHandler.CARD_ATTACK, OnCardAttack);
@@ -36,9 +36,9 @@ public class CardSenderToServer : MonoBehaviour
 
     }
 
-    async void OnCardPlayAsMana(string id)
+    async void OnCardPlayAsMana(CardDisplay card)
     {
-        await ServerApi.PlayCardAsMana(id);
+        await ServerApi.PlayCardAsMana(card.cardData.id);
     }
 
     async void OnCardPlay(PlayCardAction action)

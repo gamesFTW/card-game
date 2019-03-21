@@ -249,7 +249,9 @@ MonoBehaviour:
   damageText: {fileID: 114960741744032802}
   currentHpText: {fileID: 114457601060822844}
   maxHpText: {fileID: 5040660112500052177}
-  glowEffectValues: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
+  SelectedHighlightGlow: {fileID: 2655988077585873504, guid: 9508ea35afba7b441a42a87af38cf9bf,
+    type: 2}
+  OverHighlightGlow: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
     type: 2}
 --- !u!1 &1364282028053026
 GameObject:
