@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -2120633175
-  m_SortingLayer: -2
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -99,6 +99,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 0}
+  CardDisplay: {fileID: 0}
+  SelectedHighlightGlow: {fileID: 2655988077585873504, guid: 9508ea35afba7b441a42a87af38cf9bf,
+    type: 2}
 --- !u!114 &5030752837413325246
 MonoBehaviour:
   m_ObjectHideFlags: 0

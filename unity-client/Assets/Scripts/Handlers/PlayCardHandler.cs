@@ -22,7 +22,7 @@ public class PlayCardHandler : MonoBehaviour
     void CheckClickOutOfAnyCard()
     {
         var leftMouseClicked = Input.GetButtonDown("Fire1");
-        if (leftMouseClicked)
+        if (leftMouseClicked && SelectedCard)
         {
             SelectedCard.SelectedHighlightOff();
             SelectedCard = null;

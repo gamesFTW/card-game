@@ -113,7 +113,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3e6e27669bdf943ab075a47798dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  glowEffectValues: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
+  SelectedHighlightGlow: {fileID: 2655988077585873504, guid: 9508ea35afba7b441a42a87af38cf9bf,
+    type: 2}
+  OverHighlightGlow: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
     type: 2}
   x: 0
   y: 0

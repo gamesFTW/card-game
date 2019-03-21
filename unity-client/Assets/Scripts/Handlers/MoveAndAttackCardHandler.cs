@@ -9,12 +9,16 @@ public class MoveAndAttackCardHandler : MonoBehaviour
     private UnitDisplay SelectedUnit;
     private bool MouseOnTile = false;
 
+    private BoardCreator boardCreator;
+
     void Start()
     {
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
+
+        boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
     }
 
     void Update()
@@ -27,7 +31,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
         var leftMouseClicked = Input.GetButtonDown("Fire1");
         if (leftMouseClicked && MouseOnTile == false)
         {
-            SelectedUnit = null;
+            UnselectUnit();
         }
     }
 
@@ -35,13 +39,14 @@ public class MoveAndAttackCardHandler : MonoBehaviour
     {
         if (SelectedUnit == null)
         {
-            SelectedUnit = clickedUnitDisplay;
+            SelectUnit(clickedUnitDisplay);
         }
         else
         {
             if (SelectedUnit.CardData.ownerId == clickedUnitDisplay.CardData.ownerId)
             {
-                SelectedUnit = clickedUnitDisplay;
+                UnselectUnit();
+                SelectUnit(clickedUnitDisplay);
             }
             else
             {
@@ -60,6 +65,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
                 x = point.x.ToString(),
                 y = point.y.ToString()
             });
+            UnselectUnit();
         }
     }
 
@@ -80,5 +86,25 @@ public class MoveAndAttackCardHandler : MonoBehaviour
             attackerCardId = attackerUnit.CardData.id,
             attackedCardId = attackedUnit.CardData.id
         });
+    }
+
+    void SelectUnit(UnitDisplay unit)
+    {
+        GameObject tile = boardCreator.GetTileByUnit(unit.gameObject);
+        tile.GetComponent<TileDisplay>().SelectedHighlightOn();
+
+        unit.CardDisplay.SelectedHighlightOn();
+
+        SelectedUnit = unit;
+    }
+
+    void UnselectUnit()
+    {
+        GameObject tile = boardCreator.GetTileByUnit(SelectedUnit.gameObject);
+        tile.GetComponent<TileDisplay>().SelectedHighlightOff();
+
+        SelectedUnit.CardDisplay.SelectedHighlightOff();
+
+        SelectedUnit = null;
     }
 }

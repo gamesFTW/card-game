@@ -27,6 +27,9 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
 
+    private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
+    private bool IsSelected = false;
+
     public int CurrentHp
     {
         get { return cardData.currentHp; }
@@ -96,38 +99,40 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
 
     public void SelectedHighlightOn()
     {
-        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+        IsSelected = true;
 
-        if (go.GetComponent<SpriteGlow.SpriteGlowEffect>() == null)
+        if (!spriteGlowEffect)
         {
-            SpriteGlow.SpriteGlowEffect effect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-            SelectedHighlightGlow.ApplyTo(effect);
+            GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+            spriteGlowEffect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
         }
+
+        SelectedHighlightGlow.ApplyTo(spriteGlowEffect);
     }
 
     public void SelectedHighlightOff()
     {
-        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
-        SpriteGlow.SpriteGlowEffect effect = go.GetComponent<SpriteGlow.SpriteGlowEffect>();
-        Destroy(effect);
+        IsSelected = false;
+        Destroy(spriteGlowEffect);
     }
 
     public void OverHighlightOn()
     {
-        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
-
-        if (go.GetComponent<SpriteGlow.SpriteGlowEffect>() == null)
+        if (!IsSelected)
         {
-            SpriteGlow.SpriteGlowEffect effect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-            OverHighlightGlow.ApplyTo(effect);
+            GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
+
+            spriteGlowEffect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
+            OverHighlightGlow.ApplyTo(spriteGlowEffect);
         }
     }
 
     public void OverHighlightOff()
     {
-        GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
-        SpriteGlow.SpriteGlowEffect effect = go.GetComponent<SpriteGlow.SpriteGlowEffect>();
-        Destroy(effect);
+        if (!IsSelected)
+        {
+            Destroy(spriteGlowEffect);
+        }
     }
 
     private void OnLeftMouseClicked()

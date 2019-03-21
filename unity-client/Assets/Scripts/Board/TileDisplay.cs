@@ -8,16 +8,17 @@ public class TileDisplay : MonoBehaviour
     public static readonly string TILE_MOUSE_ENTER = "TILE_MOUSE_ENTER";
     public static readonly string TILE_MOUSE_EXIT = "TILE_MOUSE_EXIT";
 
-    //public SpriteGlow.SpriteGlowEffect glowEffectValues;
-    public Preset glowEffectValues;
-    //public SpriteGlow.SpriteGlowEffect glowEffect;
+    public Preset SelectedHighlightGlow;
+    public Preset OverHighlightGlow;
 
     public int x;
     public int y;
 
+    private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
+    private bool IsSelected = false;
+
     void Start()
     {
-        
     }
 
     void Update()
@@ -43,19 +44,32 @@ public class TileDisplay : MonoBehaviour
         HighlightOff();
     }
 
+    public void SelectedHighlightOn()
+    {
+        IsSelected = true;
+        SelectedHighlightGlow.ApplyTo(spriteGlowEffect);
+    }
+
+    public void SelectedHighlightOff()
+    {
+        IsSelected = false;
+        Destroy(spriteGlowEffect);
+    }
+
     public void HighlightOn()
     {
-        if (gameObject.GetComponent<SpriteGlow.SpriteGlowEffect>() == null) {
-            SpriteGlow.SpriteGlowEffect effect = gameObject.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-            glowEffectValues.ApplyTo(effect);
+        if (!IsSelected)
+        {
+            spriteGlowEffect = gameObject.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
+            OverHighlightGlow.ApplyTo(spriteGlowEffect);
         }
     }
 
     public void HighlightOff()
     {
-        SpriteGlow.SpriteGlowEffect effect = gameObject.GetComponent<SpriteGlow.SpriteGlowEffect>();
-        Destroy(effect);
-
+        if (!IsSelected)
+        {
+            Destroy(spriteGlowEffect);
+        }
     }
-
 }
