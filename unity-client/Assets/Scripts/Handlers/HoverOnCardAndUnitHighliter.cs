@@ -34,7 +34,7 @@ public class HoverOnCardAndUnitHighliter : MonoBehaviour
 
     private void OnCardMouseEnter(CardDisplay card)
     {
-        if (card.cardData.alive)
+        if (card.UnitDisplay)
         {
             GameObject tile = boardCreator.GetTileByUnit(card.UnitDisplay.gameObject);
             tile.GetComponent<TileDisplay>().HighlightOn();
@@ -43,7 +43,7 @@ public class HoverOnCardAndUnitHighliter : MonoBehaviour
 
     private void OnCardMouseExit(CardDisplay card)
     {
-        if (card.cardData.alive)
+        if (card.UnitDisplay)
         {
             GameObject tile = boardCreator.GetTileByUnit(card.UnitDisplay.gameObject);
             tile.GetComponent<TileDisplay>().HighlightOff();

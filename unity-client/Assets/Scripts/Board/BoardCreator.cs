@@ -67,8 +67,6 @@ public class BoardCreator : MonoBehaviour
     {
         UnitDisplay unitDisplay = card.GetComponent<UnitDisplay>();
 
-        Debug.Log(unitDisplay);
-
         Point unitPosition = GetUnitsPosition(unitDisplay);
 
         return Tiles[unitPosition.x, unitPosition.y];
