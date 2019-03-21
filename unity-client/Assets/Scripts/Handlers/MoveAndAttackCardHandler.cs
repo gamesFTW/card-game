@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnibusEvent;
 
-public class MoveCardHandler : MonoBehaviour
+public class MoveAndAttackCardHandler : MonoBehaviour
 {
     public static readonly string CARD_MOVE = "CARD_MOVE";
     public static readonly string CARD_ATTACK = "CARD_ATTACK";
@@ -13,7 +13,7 @@ public class MoveCardHandler : MonoBehaviour
     {
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
-        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_OVER, OnTileMouseOver);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
     }
 
@@ -63,7 +63,7 @@ public class MoveCardHandler : MonoBehaviour
         }
     }
 
-    void OnTileMouseOver(Point point)
+    void OnTileMouseEnter(Point point)
     {
         MouseOnTile = true;
     }

@@ -4,8 +4,8 @@ using UnibusEvent;
 public class BoardCreator : MonoBehaviour
 {
     public static readonly string UNIT_CLICKED_ON_BOARD = "UNIT_CLICKED_ON_BOARD";
-    public static readonly string UNIT_MOUSEOVER_ON_BOARD = "UNIT_MOUSEOVER_ON_BOARD";
-    public static readonly string MOUSEOVER_ON_VOID_TILE = "MOUSEOVER_ON_VOID_TILE";
+    public static readonly string UNIT_MOUSE_ENTER_ON_BOARD = "UNIT_MOUSE_ENTER_ON_BOARD";
+    public static readonly string UNIT_MOUSE_EXIT_ON_BOARD = "UNIT_MOUSE_EXIT_ON_BOARD";
     public static readonly string CLICKED_ON_VOID_TILE = "CLICKED_ON_VOID_TILE";
 
     public int Width;
@@ -63,6 +63,17 @@ public class BoardCreator : MonoBehaviour
         Destroy(unitDisplay.gameObject);
     }
 
+    public GameObject GetTileByUnit(GameObject card)
+    {
+        UnitDisplay unitDisplay = card.GetComponent<UnitDisplay>();
+
+        Debug.Log(unitDisplay);
+
+        Point unitPosition = GetUnitsPosition(unitDisplay);
+
+        return Tiles[unitPosition.x, unitPosition.y];
+    }
+
     private void Awake()
     {
         fat = Resources.Load<Sprite>("Sprites/Units/fat");
@@ -78,7 +89,8 @@ public class BoardCreator : MonoBehaviour
     private void Start()
     {
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
-        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_OVER, OnTileMouseOver);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
     }
 
     private void CreateTiles ()
@@ -143,7 +155,7 @@ public class BoardCreator : MonoBehaviour
         }
     }
 
-    void OnTileMouseOver(Point position)
+    void OnTileMouseEnter(Point position)
     {
         GameObject unit = Units[position.x, position.y];
 
@@ -151,11 +163,19 @@ public class BoardCreator : MonoBehaviour
         {
             UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
 
-            Unibus.Dispatch<UnitDisplay>(UNIT_MOUSEOVER_ON_BOARD, unitDisplay);
+            Unibus.Dispatch<UnitDisplay>(UNIT_MOUSE_ENTER_ON_BOARD, unitDisplay);
         }
-        else
+    }
+
+    void OnTileMouseExit(Point position)
+    {
+        GameObject unit = Units[position.x, position.y];
+
+        if (unit)
         {
-            Unibus.Dispatch<Point>(MOUSEOVER_ON_VOID_TILE, position);
+            UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
+
+            Unibus.Dispatch<UnitDisplay>(UNIT_MOUSE_EXIT_ON_BOARD, unitDisplay);
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEditor.Presets;
 public class TileDisplay : MonoBehaviour
 {
     public static readonly string TILE_MOUSE_LEFT_CLICK = "TILE_MOUSE_LEFT_CLICK";
-    public static readonly string TILE_MOUSE_OVER = "TILE_MOUSE_OVER";
+    public static readonly string TILE_MOUSE_ENTER = "TILE_MOUSE_ENTER";
     public static readonly string TILE_MOUSE_EXIT = "TILE_MOUSE_EXIT";
 
     //public SpriteGlow.SpriteGlowEffect glowEffectValues;
@@ -33,18 +33,17 @@ public class TileDisplay : MonoBehaviour
 
     void OnMouseEnter()
     {
-        Unibus.Dispatch<Point>(TILE_MOUSE_OVER, new Point(x, y));
-        highlightOn();
-        Debug.Log("sfsdf");
+        Unibus.Dispatch<Point>(TILE_MOUSE_ENTER, new Point(x, y));
+        HighlightOn();
     }
 
     void OnMouseExit()
     {
         Unibus.Dispatch<Point>(TILE_MOUSE_EXIT, new Point(x, y));
-        highlightOff();
+        HighlightOff();
     }
 
-    private void highlightOn()
+    public void HighlightOn()
     {
         if (gameObject.GetComponent<SpriteGlow.SpriteGlowEffect>() == null) {
             SpriteGlow.SpriteGlowEffect effect = gameObject.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
@@ -52,7 +51,7 @@ public class TileDisplay : MonoBehaviour
         }
     }
 
-    private void highlightOff()
+    public void HighlightOff()
     {
         SpriteGlow.SpriteGlowEffect effect = gameObject.GetComponent<SpriteGlow.SpriteGlowEffect>();
         Destroy(effect);

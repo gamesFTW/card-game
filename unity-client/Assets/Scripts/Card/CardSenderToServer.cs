@@ -27,8 +27,8 @@ public class CardSenderToServer : MonoBehaviour
     {
         Unibus.Subscribe<string>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
         Unibus.Subscribe<PlayCardAction> (PlayCardHandler.CARD_PLAY, OnCardPlay);
-        Unibus.Subscribe<MoveCardAction> (MoveCardHandler.CARD_MOVE, OnCardMove);
-        Unibus.Subscribe<AttackCardAction> (MoveCardHandler.CARD_ATTACK, OnCardAttack);
+        Unibus.Subscribe<MoveCardAction> (MoveAndAttackCardHandler.CARD_MOVE, OnCardMove);
+        Unibus.Subscribe<AttackCardAction> (MoveAndAttackCardHandler.CARD_ATTACK, OnCardAttack);
     }
 
     void Update() 

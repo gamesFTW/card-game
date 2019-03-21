@@ -23,8 +23,8 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
-    public static readonly string CARD_MOUSE_OVER = "CARD_MOUSE_OVER";
-    public static readonly string CARD_MOUSE_OUT = "CARD_MOUSE_OUT";
+    public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
+    public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
 
     public int CurrentHp
     {
@@ -85,12 +85,12 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
 
     public void OnPointerEnter(PointerEventData pointerEventData)
     {
-        //Unibus.Dispatch(CARD_MOUSE_OVER, cardData.id);
+        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     public void OnPointerExit(PointerEventData pointerEventData)
     {
-        //Unibus.Dispatch(CARD_MOUSE_OUT, cardData.id);
+        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
 
     // TODO ПРЕНЕСТИ В ОТДЕЛЬНЫЙ ХЕНДЛЕР
