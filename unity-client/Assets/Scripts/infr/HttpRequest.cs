@@ -3,10 +3,14 @@ using System;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Text;
+using System.Net.Http.Headers;
+using System.Reflection;
 
 public class HttpRequest
 {
-    public async static Task<string> Post(string url, Dictionary<string, string> values)
+    public async static Task<string> Post(string url, object values)
     {
         HttpResponseMessage response = await PostInternal(url, values);
         GenerateDebugMessage(url, values);
@@ -24,12 +28,12 @@ public class HttpRequest
         return responseContent;
     }
 
-    public async static Task<T> Post<T>(string url, Dictionary<string, string> values)
+    public async static Task<T> Post<T>(string url, object values)
     {
         HttpResponseMessage response = await PostInternal(url, values);
         GenerateDebugMessage(url, values);
         string responseContent = await response.Content.ReadAsStringAsync();
-        T responseObject = JsonUtility.FromJson<T>(responseContent);
+        T responseObject = JsonConvert.DeserializeObject<T>(responseContent);
 
         try
         {
@@ -43,19 +47,21 @@ public class HttpRequest
         return responseObject;
     }
 
-    public async static Task<HttpResponseMessage> PostInternal(string url, Dictionary<string, string> values)
+    public async static Task<HttpResponseMessage> PostInternal(string url, object values)
     {
+        var stringContent = new StringContent(JsonConvert.SerializeObject(values), Encoding.UTF8, "application/json");
+        stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
         var httpClient = new HttpClient();
-        var content = new FormUrlEncodedContent(values);
-        return await httpClient.PostAsync(String.Format(ServerApi.serverURL + url), content);
+        return await httpClient.PostAsync(String.Format(ServerApi.serverURL + url), stringContent);
     }
 
-    private static void GenerateDebugMessage(string url, Dictionary<string, string> values)
+    private static void GenerateDebugMessage(string url, object values)
     {
         string valuesText = "";
-        foreach (KeyValuePair<string, string> entry in values)
+        foreach (PropertyInfo propertyInfo in values.GetType().GetProperties())
         {
-            valuesText += entry.Key + " = " + entry.Value + "; ";
+            valuesText += propertyInfo.Name + " = " + propertyInfo.GetValue(values, null) + "; ";
         }
 
         Debug.Log("Send POST to server. Url: '" + url + "' Body: " + valuesText);

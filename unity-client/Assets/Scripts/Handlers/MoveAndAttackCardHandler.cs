@@ -81,10 +81,14 @@ public class MoveAndAttackCardHandler : MonoBehaviour
 
     void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit)
     {
+        bool isCardsAdjacent = boardCreator.CheckCardsAdjacency(attackerUnit.gameObject, attackedUnit.gameObject);
+        bool isRangeAttack = !isCardsAdjacent;
+
         Unibus.Dispatch<AttackCardAction>(CARD_ATTACK, new AttackCardAction
         {
             attackerCardId = attackerUnit.CardData.id,
-            attackedCardId = attackedUnit.CardData.id
+            attackedCardId = attackedUnit.CardData.id,
+            isRangeAttack = isRangeAttack
         });
     }
 

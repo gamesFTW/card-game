@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using Newtonsoft.Json;
 
 [Serializable]
 public class Point
@@ -91,31 +92,31 @@ public class ReceiverFromServer : MonoBehaviour
     {
         if (type == "EndTurnAction")
         {
-            SocketData<ServerActions.EndTurnAction> data = JsonUtility.FromJson<SocketData<ServerActions.EndTurnAction>>(message);
+            SocketData<ServerActions.EndTurnAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.EndTurnAction>>(message);
             this.OnEndTurnAction(data.actions[index]);
         }
 
         if (type == "PlayCardAsManaAction")
         {
-            SocketData<ServerActions.PlayCardAsManaAction> data = JsonUtility.FromJson<SocketData<ServerActions.PlayCardAsManaAction>>(message);
+            SocketData<ServerActions.PlayCardAsManaAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.PlayCardAsManaAction>>(message);
             this.OnPlayCardAsManaAction(data.actions[index]);
         }
 
         if (type == "MoveCardAction")
         {
-            SocketData<ServerActions.MoveCardAction> data = JsonUtility.FromJson<SocketData<ServerActions.MoveCardAction>>(message);
+            SocketData<ServerActions.MoveCardAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.MoveCardAction>>(message);
             this.OnMoveCardAction(data.actions[index]);
         }
 
         if (type == "PlayCardAction")
         {
-            SocketData<ServerActions.PlayCardAction> data = JsonUtility.FromJson<SocketData<ServerActions.PlayCardAction>>(message);
+            SocketData<ServerActions.PlayCardAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.PlayCardAction>>(message);
             this.OnPlayCardAction(data.actions[index]);
         }
 
         if (type == "CardAttackedAction")
         {
-            SocketData<ServerActions.CardAttackedAction> data = JsonUtility.FromJson<SocketData<ServerActions.CardAttackedAction>>(message);
+            SocketData<ServerActions.CardAttackedAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardAttackedAction>>(message);
             this.OnCardAttackedAction(data.actions[index]);
         }
     }

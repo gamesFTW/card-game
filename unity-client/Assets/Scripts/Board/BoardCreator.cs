@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnibusEvent;
+using System;
 
 public class BoardCreator : MonoBehaviour
 {
@@ -70,6 +71,22 @@ public class BoardCreator : MonoBehaviour
         Point unitPosition = GetUnitsPosition(unitDisplay);
 
         return Tiles[unitPosition.x, unitPosition.y];
+    }
+
+    public bool CheckCardsAdjacency(GameObject firstCard, GameObject secondCard)
+    {
+        Point firstCardPoint = GetUnitsPosition(firstCard.GetComponent<UnitDisplay>());
+        Point secondCardPoint = GetUnitsPosition(secondCard.GetComponent<UnitDisplay>());
+
+        int xDistance = Math.Abs(firstCardPoint.x - secondCardPoint.x);
+        int yDistance = Math.Abs(firstCardPoint.y - secondCardPoint.y);
+
+        if (xDistance + yDistance < 2)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void Awake()

@@ -7,6 +7,9 @@ using System.Collections;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Text;
+using Newtonsoft.Json;
 
 [Serializable]
 public class CardData
@@ -75,7 +78,7 @@ public class ServerApi
 
         Debug.Log(responseContent);
 
-        GameData gameData = JsonUtility.FromJson<GameData>(responseContent);
+        GameData gameData = JsonConvert.DeserializeObject<GameData>(responseContent);
 
         gameId = gameData.game.id;
         mainPlayerId = gameData.game.player1Id;
@@ -99,11 +102,11 @@ public class ServerApi
 
     public async static Task PlayCardAsMana(string cardId)
     {
-        var values = new Dictionary<string, string>
+        var values = new
         {
-           { "gameId", gameId },
-           { "playerId", mainPlayerId },
-           { "cardId", cardId }
+            gameId,
+            playerId = mainPlayerId,
+            cardId,
         };
 
         await HttpRequest.Post("/playCardAsMana", values);
@@ -111,13 +114,13 @@ public class ServerApi
 
     public async static Task PlayCard(PlayCardAction action)
     {
-        var values = new Dictionary<string, string>
+        var values = new
         {
-           { "gameId", gameId },
-           { "playerId", mainPlayerId },
-           { "cardId", action.cardId },
-           { "x", action.x },
-           { "y", action.y }
+            gameId,
+            playerId = mainPlayerId,
+            action.cardId,
+            action.x,
+            action.y
         };
 
         await HttpRequest.Post("/playCard", values);
@@ -125,13 +128,13 @@ public class ServerApi
 
     public async static Task MoveCard(MoveCardAction action)
     {
-        var values = new Dictionary<string, string>
+        var values = new
         {
-           { "gameId", gameId },
-           { "playerId", mainPlayerId },
-           { "cardId", action.cardId },
-           { "x", action.x },
-           { "y", action.y }
+           gameId,
+           playerId = mainPlayerId,
+           action.cardId,
+           action.x,
+           action.y
         };
 
         await HttpRequest.Post("/moveCard", values);
@@ -139,12 +142,13 @@ public class ServerApi
 
     public async static Task AttackCard(AttackCardAction action)
     {
-        var values = new Dictionary<string, string>
+        var values = new
         {
-           { "gameId", gameId },
-           { "playerId", mainPlayerId },
-           { "attackerCardId", action.attackerCardId },
-           { "attackedCardId", action.attackedCardId }
+            gameId,
+            playerId = mainPlayerId,
+            action.attackerCardId,
+            action.attackedCardId,
+            action.isRangeAttack
         };
 
         await HttpRequest.Post("/attackCard", values);

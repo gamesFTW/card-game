@@ -34,7 +34,7 @@ class Card extends Entity {
     let id = this.generateId();
 
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_CREATED, {id, ...cardCreationData}
+      CardEventType.CARD_CREATED, {id, abilities: {}, ...cardCreationData}
     ));
   }
 

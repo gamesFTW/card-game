@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 [Serializable]
 public class SocketData<Action>
@@ -45,7 +46,7 @@ public class SocketClient : MonoBehaviour
             var serverMessage = socketListener.events[0];
             socketListener.events.RemoveAt(0);
 
-            SocketData<SocketAction> socketData = JsonUtility.FromJson<SocketData<SocketAction>>(serverMessage);
+            SocketData<SocketAction> socketData = JsonConvert.DeserializeObject<SocketData<SocketAction>>(serverMessage);
 
             for (int i = 0; i < socketData.actions.Length; i++)
             {

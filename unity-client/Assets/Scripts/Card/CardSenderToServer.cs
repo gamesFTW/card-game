@@ -19,6 +19,7 @@ public class AttackCardAction
 {
     public string attackerCardId;
     public string attackedCardId;
+    public bool isRangeAttack;
 }
 
 public class CardSenderToServer : MonoBehaviour
