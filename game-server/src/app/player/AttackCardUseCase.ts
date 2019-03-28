@@ -1,17 +1,14 @@
 import { Player } from '../../domain/player/Player';
 import { Repository } from '../../infr/repositories/Repository';
 import { Board } from '../../domain/board/Board';
-import { godOfSockets } from '../../infr/GodOfSockets';
 import { Game } from '../../domain/game/Game';
-import {CardDiedExtra, CardEventType, PlayerEventType} from '../../domain/events';
+import { CardEventType } from '../../domain/events';
 import { AttackService } from '../../domain/attackService/AttackService';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
-import {PlayerData} from '../../domain/player/PlayerState';
-import {Point} from '../../infr/Point';
 import { UseCase } from '../../infr/UseCase';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
@@ -21,6 +18,7 @@ interface AttackCardParams {
   attackerPlayerId: EntityId;
   attackerCardId: EntityId;
   attackedCardId: EntityId;
+  isRangeAttack: boolean;
 }
 
 interface CardAttackedAction {
@@ -78,10 +76,17 @@ class AttackCardUseCase extends UseCase {
   }
   
   protected runBusinessLogic (): void {
-    AttackService.attackUnit(
-      this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
-      this.entities.attackedPlayer, this.entities.board
-    );
+    if (this.params.isRangeAttack) {
+      AttackService.rangeAttackUnit(
+        this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
+        this.entities.attackedPlayer, this.entities.board
+      );
+    } else {
+      AttackService.meleeAttackUnit(
+        this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
+        this.entities.attackedPlayer, this.entities.board
+      );
+    }
   }
   
   protected addClientActions (): void {

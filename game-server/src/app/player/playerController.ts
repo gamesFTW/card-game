@@ -58,9 +58,10 @@ playerController.post('/attackCard', async (ctx) => {
   let attackerPlayerId = ctx.request.body.playerId as EntityId;
   let attackerCardId = ctx.request.body.attackerCardId as EntityId;
   let attackedCardId = ctx.request.body.attackedCardId as EntityId;
+  let isRangeAttack = ctx.request.body.isRangeAttack as boolean;
 
   let attackCard = new AttackCardUseCase();
-  await attackCard.execute({gameId, attackerPlayerId, attackerCardId, attackedCardId});
+  await attackCard.execute({gameId, attackerPlayerId, attackerCardId, attackedCardId, isRangeAttack});
 
   ctx.body = `Ok`;
 });

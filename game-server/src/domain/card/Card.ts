@@ -1,7 +1,7 @@
 import { Entity, EntityId } from '../../infr/Entity';
 
 import { Event } from '../../infr/Event';
-import { CardData, CardState } from './CardState';
+import { AnyAbility, CardData, CardState } from './CardState';
 import { CardEventType } from '../events';
 
 interface CardCreationData {
@@ -10,6 +10,7 @@ interface CardCreationData {
   damage: number;
   manaCost: number;
   movingPoints: number;
+  abilities?: {[abilityName: string]: AnyAbility};
 }
 
 class Card extends Entity {
@@ -22,16 +23,18 @@ class Card extends Entity {
   get tapped (): boolean { return this.state.tapped; }
   get manaCost (): number { return this.state.manaCost; }
 
+  get abilities (): {[abilityName: string]: AnyAbility} { return this.state.abilities; }
+
   constructor (events: Array<Event<CardData>> = []) {
     super();
     this.state = new CardState(events);
   }
 
-  public create (CardCreationData: CardCreationData): void {
+  public create (cardCreationData: CardCreationData): void {
     let id = this.generateId();
 
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_CREATED, {id, ...CardCreationData}
+      CardEventType.CARD_CREATED, {id, ...cardCreationData}
     ));
   }
 

@@ -29,7 +29,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
     void CheckClickOutOfAnyCard()
     {
         var leftMouseClicked = Input.GetButtonDown("Fire1");
-        if (leftMouseClicked && MouseOnTile == false)
+        if (leftMouseClicked && MouseOnTile == false && SelectedUnit)
         {
             UnselectUnit();
         }

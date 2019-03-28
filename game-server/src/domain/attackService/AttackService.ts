@@ -3,18 +3,12 @@ import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 
 class AttackService {
-  static attackUnit (
+  static meleeAttackUnit (
       attackerCard: Card, attackedCard: Card,
       attackerPlayer: Player, attackedPlayer: Player,
       board: Board): void {
     attackerPlayer.checkIfItHisTurn();
 
-    if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
-      throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
-    }
-
-    // TODO возможно нужен отдельный метод
-    attackerCard.tap();
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
       throw new Error(`Card ${attackerCard.id} is not in table stack`);
     }
@@ -22,6 +16,12 @@ class AttackService {
     if (!attackedPlayer.checkCardIn(attackedCard, CardStack.TABLE)) {
       throw new Error(`Card ${attackedCard.id} is not in table stack`);
     }
+
+    if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
+      throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
+    }
+
+    attackerCard.tap();
 
     let attackerDmg = attackerCard.damage;
     let attackedDmg = attackedCard.damage;
@@ -35,6 +35,40 @@ class AttackService {
 
     if (!attackerCard.alive) {
       attackerPlayer.endOfCardDeath(attackerCard);
+    }
+  }
+
+  static rangeAttackUnit (
+    attackerCard: Card, attackedCard: Card,
+    attackerPlayer: Player, attackedPlayer: Player,
+    board: Board): void {
+    attackerPlayer.checkIfItHisTurn();
+
+    if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
+      throw new Error(`Card ${attackerCard.id} is not in table stack`);
+    }
+
+    if (!attackedPlayer.checkCardIn(attackedCard, CardStack.TABLE)) {
+      throw new Error(`Card ${attackedCard.id} is not in table stack`);
+    }
+
+    // TODO: проверить нет ли врагов рядом
+    // if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
+    //   throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
+    // }
+
+    if (!attackerCard.abilities.range) {
+      throw new Error(`Card ${attackedCard.id} dont have range ability`);
+    }
+
+    attackerCard.tap();
+
+    let attackerDmg = attackerCard.damage;
+
+    attackedCard.takeDamage(attackerDmg);
+
+    if (!attackedCard.alive) {
+      attackedPlayer.endOfCardDeath(attackedCard);
     }
   }
 }

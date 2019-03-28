@@ -1,6 +1,13 @@
 import { Event } from '../../infr/Event';
 import { EntityId, EntityState } from '../../infr/Entity';
 
+type AnyAbility = RangeAbility;
+
+interface RangeAbility {
+  range: number;
+  blockedInBeginningOfTurn: boolean;
+}
+
 interface CardData {
   id?: EntityId;
   name?: string;
@@ -12,6 +19,7 @@ interface CardData {
   manaCost?: number;
   movingPoints?: number;
   currentMovingPoints?: number;
+  abilities?: {[abilityName: string]: AnyAbility};
 }
 
 class CardState extends EntityState implements CardData {
@@ -25,6 +33,7 @@ class CardState extends EntityState implements CardData {
   public movingPoints: number;
   public currentMovingPoints: number;
   public manaCost: number;
+  public abilities: {[abilityName: string]: AnyAbility};
 
   public constructor (events: Array<Event<CardData>>) {
     super();
@@ -32,4 +41,4 @@ class CardState extends EntityState implements CardData {
   }
 }
 
-export {CardState, CardData};
+export {CardState, CardData, AnyAbility};

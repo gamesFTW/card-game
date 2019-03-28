@@ -100,7 +100,7 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     public void SelectedHighlightOn()
     {
         IsSelected = true;
-
+        
         if (!spriteGlowEffect)
         {
             GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
