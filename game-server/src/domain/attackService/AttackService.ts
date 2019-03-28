@@ -1,6 +1,7 @@
 import { Player, CardStack } from '../Player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
+import { canRangeAttackTo } from '../../infr/Attack';
 
 class AttackService {
   static meleeAttackUnit (
@@ -59,6 +60,10 @@ class AttackService {
 
     if (!attackerCard.abilities.range) {
       throw new Error(`Card ${attackedCard.id} dont have range ability`);
+    }
+
+    if (!canRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board)) {
+      throw new Error(`Card ${attackedCard.id} can't attack range to ${board.getPositionByUnit(attackedCard)}`);
     }
 
     attackerCard.tap();

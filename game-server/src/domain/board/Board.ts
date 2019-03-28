@@ -1,10 +1,13 @@
+import * as lodash from 'lodash';
+import { Grid, AStarFinder } from 'pathfinding';
+
 import { Card } from '../card/Card';
 import { Point } from '../../infr/Point';
 import { Entity } from '../../infr/Entity';
 import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
 import { CardEventType, BoardEventType } from '../events';
-import * as lodash from 'lodash';
+import { Player, CardStack } from '../player/Player';
 
 class Board extends Entity {
   protected state: BoardState;
@@ -113,6 +116,21 @@ class Board extends Entity {
     ));
   }
 
+  public getPFGrid (opponent: Player): Grid {
+    const grid = new Grid(this.state.width, this.state.height);
+
+    for (let x in this.state.units) {
+      for (let y in this.state.units[x]) {
+        let cardId = this.state.units[x][y];
+        if (opponent.checkCardIdIn(cardId, CardStack.TABLE)) {
+          grid.setWalkableAt(Number(x), Number(y), false);
+        }
+      }
+    }
+
+    return grid;
+  }
+
   private checkPositionForVacancy (toPosition: Point): void {
     let {x, y} = toPosition;
 
@@ -120,20 +138,6 @@ class Board extends Entity {
       throw new Error(`Tile x: ${x}, y: ${y} is occupied`);
     }
   }
-
 }
 
 export {Board};
-
-  // public getTileByCard(card: CardData): Tile {
-  //   //TODO
-  //   return new Tile();
-  // }
-
-  // public move(card: CardData, point: Point) {
-  //   let fromTile = this.getTileByCard(card);
-  //   fromTile.removeCard(card);
-  //
-  //   let toTile = this.getTileByPoint(point);
-  //   toTile.addCard(card);
-  // }

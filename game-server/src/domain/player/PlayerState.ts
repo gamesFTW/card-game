@@ -25,6 +25,7 @@ class PlayerState extends EntityState implements PlayerData {
     super();
     this.applyEvents(events);
   }
+
 }
 
 export {PlayerState, PlayerData};

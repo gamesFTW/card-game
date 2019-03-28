@@ -10,6 +10,9 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "lib": [
+      "es7"
+    ],
     "paths": {
       "*": [
         "node_modules/*",

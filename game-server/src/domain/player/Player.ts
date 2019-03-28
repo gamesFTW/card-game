@@ -134,8 +134,12 @@ class Player extends Entity {
   // TODO: Метод не на том уровне абстракции?
   public checkCardIn (card: Card, stackName: CardStack): boolean {
     let stack = this.getStackByName(stackName);
-    console.log(stack);
     return this.checkCardInStack(card, stack);
+  }
+
+  public checkCardIdIn (cardId: EntityId, stackName: CardStack): boolean {
+    let stack = this.getStackByName(stackName);
+    return this.checkCardIdInStack(cardId, stack);
   }
 
   // TODO: Метод не на том уровне абстракции?
@@ -243,7 +247,11 @@ class Player extends Entity {
 
   // Хелперы
   private checkCardInStack (card: Card, stack: Array<EntityId>): boolean {
-    return stack.indexOf(card.id) >= 0 ? true : false;
+    return this.checkCardIdInStack(card.id, stack);
+  }
+
+  private checkCardIdInStack (cardId: EntityId, stack: Array<EntityId>): boolean {
+    return stack.includes(cardId);
   }
 
   private changeCardStack (fromStackName: CardStack, toStackName: CardStack, cardId: EntityId)
