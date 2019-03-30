@@ -2,6 +2,7 @@ import { Player, CardStack } from '../Player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { canRangeAttackTo } from '../../infr/Attack';
+import {MeleeAttackService} from './MeleeAttackService';
 
 class RangeAttackService {
   public static rangeAttackUnit (
@@ -33,7 +34,7 @@ class RangeAttackService {
 
     attackerCard.tap();
 
-    let attackerDmg = attackerCard.damage;
+    let attackerDmg = MeleeAttackService.calcDamage(attackerCard, attackedCard);
 
     attackedCard.takeDamage(attackerDmg);
 

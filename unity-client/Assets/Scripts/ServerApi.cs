@@ -81,8 +81,8 @@ public class ServerApi
         GameData gameData = JsonConvert.DeserializeObject<GameData>(responseContent);
 
         gameId = gameData.game.id;
-        mainPlayerId = gameData.game.player1Id;
-        enemyOfMainPlayerId = gameData.game.player2Id;
+        mainPlayerId = "j3cyu0rtixmyrt5txbsta3v9ml7iyg";
+        enemyOfMainPlayerId = "a3skjs18aqjcj784rmo4bd26lochnr";
 
         GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
 

@@ -47,8 +47,9 @@ class MeleeAttackService {
 
   private static attackWithoutFirstStrikeOrBothCardHaveFirstStrike (attackerCard: Card, attackedCard: Card): void {
     let isAttackedCardRetaliation = !(attackedCard.abilities.range);
-    let attackerDmg = attackerCard.damage;
-    let attackedDmg = attackedCard.damage;
+
+    let attackerDmg = this.calcDamage(attackerCard, attackedCard);
+    let attackedDmg = this.calcDamage(attackedCard, attackerCard);
 
     attackedCard.takeDamage(attackerDmg);
 
@@ -64,8 +65,8 @@ class MeleeAttackService {
     let firstAttacker = isAttackerCardHaveFirstStrike ? attackerCard : attackedCard;
     let secondAttacker = isAttackedCardHaveFirstStrike ? attackerCard : attackedCard;
 
-    let firstAttackerDmg = firstAttacker.damage;
-    let secondAttackerDmg = secondAttacker.damage;
+    let firstAttackerDmg = this.calcDamage(firstAttacker, secondAttacker);
+    let secondAttackerDmg = this.calcDamage(secondAttacker, firstAttacker);
 
     secondAttacker.takeDamage(firstAttackerDmg);
 
@@ -74,6 +75,14 @@ class MeleeAttackService {
     if (secondAttacker.alive && secondAttackerRetaliation) {
       firstAttacker.takeDamage(secondAttackerDmg);
     }
+  }
+
+  public static calcDamage (attackerCard: Card, attackedCard: Card): number {
+    let attackerDmg = attackerCard.damage - attackedCard.armor;
+
+    attackerDmg = attackerDmg >= 0 ? attackerDmg : 0;
+
+    return attackerDmg;
   }
 }
 
