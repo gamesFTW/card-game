@@ -68,11 +68,13 @@ class AttackCardUseCase extends UseCase {
 
   protected addEventListeners (): void {
     this.entities.attackerCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackerCardTapped);
-    this.entities.attackerCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackerCardTookDamage);
+    this.entities.attackerCard.addEventListener(CardEventType.CARD_HEALED, this.onAttackerCardHpChanged);
+    this.entities.attackerCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackerCardHpChanged);
     this.entities.attackerCard.addEventListener(CardEventType.CARD_DIED, this.onAttackerCardDied);
 
     this.entities.attackedCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackedCardTapped);
-    this.entities.attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardTookDamage);
+    this.entities.attackedCard.addEventListener(CardEventType.CARD_HEALED, this.onAttackedCardHpChanged);
+    this.entities.attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_DIED, this.onAttackedCardDied);
   }
   
@@ -101,7 +103,7 @@ class AttackCardUseCase extends UseCase {
   }
 
   @boundMethod
-  private onAttackerCardTookDamage (event: Event<CardData>): void {
+  private onAttackerCardHpChanged (event: Event<CardData>): void {
     this.action.attackerCard.newHp = event.data.currentHp;
   }
 
@@ -116,7 +118,7 @@ class AttackCardUseCase extends UseCase {
   }
 
   @boundMethod
-  private onAttackedCardTookDamage (event: Event<CardData>): void {
+  private onAttackedCardHpChanged (event: Event<CardData>): void {
     this.action.attackedCard.newHp = event.data.currentHp;
   }
 

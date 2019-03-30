@@ -36,7 +36,8 @@ enum CardEventType {
   CARD_ADDED_CURRENT_MOVING_POINTS = 'Card:CardAddedCurrentMovingPoints',
   CARD_TOOK_DAMAGE = 'Card:CardTookDamage',
   CARD_DIED = 'Card:CardDied',
-  CARD_MOVED = 'Card:CardMoved'
+  CARD_MOVED = 'Card:CardMoved',
+  CARD_HEALED = 'Card:CardHealed'
 }
 
 enum BoardEventType {

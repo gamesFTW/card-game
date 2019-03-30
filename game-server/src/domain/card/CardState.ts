@@ -6,12 +6,11 @@ interface Abilities {
     range: number;
     blockedInBeginningOfTurn: boolean;
   },
-  firstStrike?: {
-
-  },
+  firstStrike?: boolean,
   armored?: {
     armor: number;
-  }
+  },
+  vampiric?: true
 }
 
 interface CardData {

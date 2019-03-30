@@ -17,6 +17,7 @@ class Card extends Entity {
   protected state: CardState;
 
   get name (): string { return this.state.name; }
+  get currentHp (): number { return this.state.currentHp; }
   get maxHp (): number { return this.state.maxHp; }
   get damage (): number { return this.state.damage; }
   get alive (): boolean { return this.state.alive; }
@@ -123,6 +124,24 @@ class Card extends Entity {
         CardEventType.CARD_DIED, {alive: false})
       );
     }
+  }
+
+  public heal (heal: number): void {
+    let newHp = this.state.currentHp + heal;
+
+    newHp = newHp <= this.state.maxHp ? newHp : this.state.maxHp;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_HEALED, {currentHp: newHp}
+    ));
+  }
+
+  public overheal (heal: number): void {
+    let newHp = this.state.currentHp + heal;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_HEALED, {currentHp: newHp}
+    ));
   }
 
   private makeAlive (): void {

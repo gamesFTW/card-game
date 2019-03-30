@@ -1,7 +1,6 @@
 import { Player, CardStack } from '../Player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
-import { canRangeAttackTo } from '../../infr/Attack';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
@@ -26,12 +25,14 @@ class MeleeAttackService {
 
     let isAttackerCardHaveFirstStrike = !!(attackerCard.abilities.firstStrike);
     let isAttackedCardHaveFirstStrike = !!(attackedCard.abilities.firstStrike);
+    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
 
     if (isAttackerCardHaveFirstStrike && isAttackedCardHaveFirstStrike ||
-      !isAttackerCardHaveFirstStrike && !isAttackedCardHaveFirstStrike) {
-      this.attackWithoutFirstStrikeOrBothCardHaveFirstStrike(attackerCard, attackedCard);
+      !isAttackerCardHaveFirstStrike && !isAttackedCardHaveFirstStrike ||
+      !isAttackedCardRetaliation) {
+      this.attackWithoutFirstStrike(attackerCard, attackedCard);
     } else {
-      this.attackWithOneCardHaveFirstStrike(attackerCard, attackedCard);
+      this.attackWithFirstStrike(attackerCard, attackedCard);
     }
 
     if (!attackedCard.alive) {
@@ -45,20 +46,21 @@ class MeleeAttackService {
     }
   }
 
-  private static attackWithoutFirstStrikeOrBothCardHaveFirstStrike (attackerCard: Card, attackedCard: Card): void {
-    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
-
+  private static attackWithoutFirstStrike (attackerCard: Card, attackedCard: Card): void {
     let attackerDmg = this.calcDamage(attackerCard, attackedCard);
     let attackedDmg = this.calcDamage(attackedCard, attackerCard);
 
-    attackedCard.takeDamage(attackerDmg);
+    this.makeAttack(attackerCard, attackedCard, attackerDmg);
+
+    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
 
     if (isAttackedCardRetaliation) {
-      attackerCard.takeDamage(attackedDmg);
+      this.makeAttack(attackedCard, attackerCard, attackedDmg);
     }
   }
 
-  private static attackWithOneCardHaveFirstStrike (attackerCard: Card, attackedCard: Card): void {
+  // Напоминаю, что в этом методе isAttackedCardRetaliation не может быть false
+  private static attackWithFirstStrike (attackerCard: Card, attackedCard: Card): void {
     let isAttackerCardHaveFirstStrike = !!(attackerCard.abilities.firstStrike);
     let isAttackedCardHaveFirstStrike = !!(attackedCard.abilities.firstStrike);
 
@@ -68,12 +70,10 @@ class MeleeAttackService {
     let firstAttackerDmg = this.calcDamage(firstAttacker, secondAttacker);
     let secondAttackerDmg = this.calcDamage(secondAttacker, firstAttacker);
 
-    secondAttacker.takeDamage(firstAttackerDmg);
+    this.makeAttack(firstAttacker, secondAttacker, firstAttackerDmg);
 
-    let secondAttackerRetaliation = !(secondAttacker.abilities.range);
-
-    if (secondAttacker.alive && secondAttackerRetaliation) {
-      firstAttacker.takeDamage(secondAttackerDmg);
+    if (secondAttacker.alive) {
+      this.makeAttack(secondAttacker, firstAttacker, secondAttackerDmg);
     }
   }
 
@@ -83,6 +83,22 @@ class MeleeAttackService {
     attackerDmg = attackerDmg >= 0 ? attackerDmg : 0;
 
     return attackerDmg;
+  }
+
+  private static makeAttack (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
+    if (attackerCard.abilities.vampiric) {
+      this.drainHP(attackerCard, attackedCard, attackerDmg);
+    }
+    attackedCard.takeDamage(attackerDmg);
+  }
+
+  private static drainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
+    let attackerCardVampiricPower = attackerDmg;
+
+    let attackerCardVampiredHP = attackedCard.currentHp >= attackerCardVampiricPower ?
+      attackerCardVampiricPower : attackedCard.currentHp;
+
+    attackerCard.overheal(attackerCardVampiredHP);
   }
 }
 
