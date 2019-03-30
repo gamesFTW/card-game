@@ -24,11 +24,16 @@ class AttackService {
 
     attackerCard.tap();
 
+    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
+
     let attackerDmg = attackerCard.damage;
     let attackedDmg = attackedCard.damage;
 
     attackedCard.takeDamage(attackerDmg);
-    attackerCard.takeDamage(attackedDmg);
+
+    if (isAttackedCardRetaliation) {
+      attackerCard.takeDamage(attackedDmg);
+    }
 
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
