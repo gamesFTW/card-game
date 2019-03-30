@@ -3,48 +3,8 @@ import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { canRangeAttackTo } from '../../infr/Attack';
 
-class AttackService {
-  static meleeAttackUnit (
-      attackerCard: Card, attackedCard: Card,
-      attackerPlayer: Player, attackedPlayer: Player,
-      board: Board): void {
-    attackerPlayer.checkIfItHisTurn();
-
-    if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
-      throw new Error(`Card ${attackerCard.id} is not in table stack`);
-    }
-
-    if (!attackedPlayer.checkCardIn(attackedCard, CardStack.TABLE)) {
-      throw new Error(`Card ${attackedCard.id} is not in table stack`);
-    }
-
-    if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
-      throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
-    }
-
-    attackerCard.tap();
-
-    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
-
-    let attackerDmg = attackerCard.damage;
-    let attackedDmg = attackedCard.damage;
-
-    attackedCard.takeDamage(attackerDmg);
-
-    if (isAttackedCardRetaliation) {
-      attackerCard.takeDamage(attackedDmg);
-    }
-
-    if (!attackedCard.alive) {
-      attackedPlayer.endOfCardDeath(attackedCard);
-    }
-
-    if (!attackerCard.alive) {
-      attackerPlayer.endOfCardDeath(attackerCard);
-    }
-  }
-
-  static rangeAttackUnit (
+class RangeAttackService {
+  public static rangeAttackUnit (
     attackerCard: Card, attackedCard: Card,
     attackerPlayer: Player, attackedPlayer: Player,
     board: Board): void {
@@ -79,8 +39,9 @@ class AttackService {
 
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
+      board.removeUnitFromBoard(attackedCard);
     }
   }
 }
 
-export {AttackService};
+export {RangeAttackService};

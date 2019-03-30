@@ -91,7 +91,19 @@ class Board extends Entity {
     newUnits[x][y] = card.id;
 
     this.applyEvent(new Event<BoardData>(
-      BoardEventType.CARD_MOVED,
+      BoardEventType.CARD_ADDED_TO_BOARD,
+      { units: newUnits }
+    ));
+  }
+
+  public removeUnitFromBoard (card: Card): void {
+    let position = this.getPositionByUnit(card);
+    let newUnits = lodash.cloneDeep(this.state.units);
+
+    newUnits[position.x][position.y] = null;
+
+    this.applyEvent(new Event<BoardData>(
+      BoardEventType.CARD_REMOVED,
       { units: newUnits }
     ));
   }

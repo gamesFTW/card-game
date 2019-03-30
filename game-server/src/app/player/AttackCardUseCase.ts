@@ -3,13 +3,14 @@ import { Repository } from '../../infr/repositories/Repository';
 import { Board } from '../../domain/board/Board';
 import { Game } from '../../domain/game/Game';
 import { CardEventType } from '../../domain/events';
-import { AttackService } from '../../domain/attackService/AttackService';
+import { MeleeAttackService } from '../../domain/attackService/MeleeAttackService';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
 import { UseCase } from '../../infr/UseCase';
+import { RangeAttackService } from '../../domain/attackService/RangeAttackService';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 
@@ -77,12 +78,12 @@ class AttackCardUseCase extends UseCase {
   
   protected runBusinessLogic (): void {
     if (this.params.isRangeAttack) {
-      AttackService.rangeAttackUnit(
+      RangeAttackService.rangeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
         this.entities.attackedPlayer, this.entities.board
       );
     } else {
-      AttackService.meleeAttackUnit(
+      MeleeAttackService.meleeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
         this.entities.attackedPlayer, this.entities.board
       );

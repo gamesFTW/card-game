@@ -42,7 +42,8 @@ enum CardEventType {
 enum BoardEventType {
   BOARD_CREATED = 'Board:BoardCreated',
   CARD_ADDED_TO_BOARD = 'Board:CardAddedToBoard',
-  CARD_MOVED = 'Board:CardMoved'
+  CARD_MOVED = 'Board:CardMoved',
+  CARD_REMOVED = 'Board:CardRemoved'
 }
 
 export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra, PlayerDrawnCardData, PlayerPlayCardAsManaData};
