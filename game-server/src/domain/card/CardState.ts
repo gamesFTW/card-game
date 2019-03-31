@@ -10,7 +10,8 @@ interface Abilities {
   armored?: {
     armor: number;
   },
-  vampiric?: true
+  vampiric?: boolean,
+  noEnemyRetaliation?: boolean
 }
 
 interface CardData {

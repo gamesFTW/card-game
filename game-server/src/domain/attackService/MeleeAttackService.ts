@@ -52,7 +52,7 @@ class MeleeAttackService {
 
     this.makeAttack(attackerCard, attackedCard, attackerDmg);
 
-    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
+    let isAttackedCardRetaliation = !(attackedCard.abilities.range) && !(attackerCard.abilities.noEnemyRetaliation);
 
     if (isAttackedCardRetaliation) {
       this.makeAttack(attackedCard, attackerCard, attackedDmg);
