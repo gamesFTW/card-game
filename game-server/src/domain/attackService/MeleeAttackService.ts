@@ -46,7 +46,7 @@ class MeleeAttackService {
       board.removeUnitFromBoard(attackerCard);
     }
 
-    if (!!(attackerCard.abilities.piercing)) {
+    if (attackerCard.abilities.piercing) {
       this.makePiercingAttack(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board, attackedPlayerTableCards);
     }
   }
@@ -90,10 +90,11 @@ class MeleeAttackService {
     }
   }
 
+  // Здесь намеренно не написан vamparic логика, мы решили что vamparic не должен работать с piercing
   private static makePiercingAttack (
     attackerCard: Card, attackedCard: Card,
     attackerPlayer: Player, attackedPlayer: Player,
-    board: Board, attackedPlayerTableCards: Card[]) {
+    board: Board, attackedPlayerTableCards: Card[]): void {
     let attackerCardPosition: Point = board.getPositionByUnit(attackerCard);
     let attackedCardPosition: Point = board.getPositionByUnit(attackedCard);
 
@@ -106,7 +107,7 @@ class MeleeAttackService {
     if (piercingTargetCardId) {
       let piercingTargetCard: Card;
       for (let card of attackedPlayerTableCards) {
-        if (card.id == piercingTargetCardId) {
+        if (card.id === piercingTargetCardId) {
           piercingTargetCard = card;
         }
       }
@@ -122,6 +123,7 @@ class MeleeAttackService {
     }
   }
 
+  // tslint:disable-next-line:member-ordering
   public static calcDamage (attackerCard: Card, attackedCard: Card): number {
     let attackerDmg = attackerCard.damage - attackedCard.armor;
 
@@ -130,17 +132,18 @@ class MeleeAttackService {
     return attackerDmg;
   }
 
+  // tslint:disable-next-line:member-ordering
   public static calcRetaliation (attackerCard: Card, attackedCard: Card): boolean {
     return !(attackedCard.abilities.range) && !(attackerCard.abilities.noEnemyRetaliation);
   }
 
-  private static checkForVampiricAndDrainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
+  private static checkForVampiricAndDrainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number): void {
     if (attackerCard.abilities.vampiric) {
       this.drainHP(attackerCard, attackedCard, attackerDmg);
     }
   }
 
-  private static drainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
+  private static drainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number): void {
     let attackerCardVampiricPower = attackerDmg;
 
     let attackerCardVampiredHP = attackedCard.currentHp >= attackerCardVampiricPower ?
