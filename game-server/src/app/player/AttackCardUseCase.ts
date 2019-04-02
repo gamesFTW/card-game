@@ -51,7 +51,8 @@ class AttackCardUseCase extends UseCase {
     attackedPlayer?: Player,
     attackerCard?: Card,
     attackedCard?: Card,
-    board?: Board
+    board?: Board,
+    attackedPlayerTableCards?: Card[],
   } = {};
 
   protected params: AttackCardParams;
@@ -64,6 +65,7 @@ class AttackCardUseCase extends UseCase {
     this.entities.attackedPlayer = await Repository.get<Player>(attackedPlayerId, Player);
     this.entities.attackerCard = await Repository.get<Card>(this.params.attackerCardId, Card);
     this.entities.attackedCard = await Repository.get<Card>(this.params.attackedCardId, Card);
+    this.entities.attackedPlayerTableCards = await Repository.getMany<Card>(this.entities.attackedPlayer.table, Card);
   }
 
   protected addEventListeners (): void {
@@ -87,7 +89,7 @@ class AttackCardUseCase extends UseCase {
     } else {
       MeleeAttackService.meleeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
-        this.entities.attackedPlayer, this.entities.board
+        this.entities.attackedPlayer, this.entities.board, this.entities.attackedPlayerTableCards
       );
     }
   }

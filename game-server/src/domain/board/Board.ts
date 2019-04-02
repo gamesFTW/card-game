@@ -3,7 +3,7 @@ import { Grid, AStarFinder } from 'pathfinding';
 
 import { Card } from '../card/Card';
 import { Point } from '../../infr/Point';
-import { Entity } from '../../infr/Entity';
+import { Entity, EntityId } from '../../infr/Entity';
 import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
 import { CardEventType, BoardEventType } from '../events';
@@ -48,6 +48,14 @@ class Board extends Entity {
           return new Point(Number(x), Number(y));
         }
       }
+    }
+
+    return null;
+  }
+
+  public getCardIdByPosition (position: Point): EntityId {
+    if (this.state.units[position.x] && this.state.units[position.x][position.y]) {
+      return this.state.units[position.x][position.y];
     }
 
     return null;

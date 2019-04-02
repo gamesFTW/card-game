@@ -11,7 +11,8 @@ interface Abilities {
     armor: number;
   },
   vampiric?: boolean,
-  noEnemyRetaliation?: boolean
+  noEnemyRetaliation?: boolean,
+  piercing?: boolean
 }
 
 interface CardData {

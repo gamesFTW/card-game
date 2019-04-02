@@ -1,12 +1,13 @@
 import { Player, CardStack } from '../Player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
+import { Point } from '../../infr/Point';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
       attackerCard: Card, attackedCard: Card,
       attackerPlayer: Player, attackedPlayer: Player,
-      board: Board): void {
+      board: Board, attackedPlayerTableCards: Card[]): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -25,7 +26,7 @@ class MeleeAttackService {
 
     let isAttackerCardHaveFirstStrike = !!(attackerCard.abilities.firstStrike);
     let isAttackedCardHaveFirstStrike = !!(attackedCard.abilities.firstStrike);
-    let isAttackedCardRetaliation = !(attackedCard.abilities.range);
+    let isAttackedCardRetaliation = this.calcRetaliation(attackerCard, attackedCard);
 
     if (isAttackerCardHaveFirstStrike && isAttackedCardHaveFirstStrike ||
       !isAttackerCardHaveFirstStrike && !isAttackedCardHaveFirstStrike ||
@@ -44,18 +45,28 @@ class MeleeAttackService {
       attackerPlayer.endOfCardDeath(attackerCard);
       board.removeUnitFromBoard(attackerCard);
     }
+
+    if (!!(attackerCard.abilities.piercing)) {
+      this.makePiercingAttack(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board, attackedPlayerTableCards);
+    }
   }
 
   private static attackWithoutFirstStrike (attackerCard: Card, attackedCard: Card): void {
     let attackerDmg = this.calcDamage(attackerCard, attackedCard);
     let attackedDmg = this.calcDamage(attackedCard, attackerCard);
 
-    this.makeAttack(attackerCard, attackedCard, attackerDmg);
+    let isAttackedCardRetaliation = this.calcRetaliation(attackerCard, attackedCard);
 
-    let isAttackedCardRetaliation = !(attackedCard.abilities.range) && !(attackerCard.abilities.noEnemyRetaliation);
+    this.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
 
     if (isAttackedCardRetaliation) {
-      this.makeAttack(attackedCard, attackerCard, attackedDmg);
+      this.checkForVampiricAndDrainHP(attackedCard, attackerCard, attackedDmg);
+    }
+
+    attackedCard.takeDamage(attackerDmg);
+
+    if (isAttackedCardRetaliation) {
+      attackerCard.takeDamage(attackedDmg);
     }
   }
 
@@ -70,10 +81,44 @@ class MeleeAttackService {
     let firstAttackerDmg = this.calcDamage(firstAttacker, secondAttacker);
     let secondAttackerDmg = this.calcDamage(secondAttacker, firstAttacker);
 
-    this.makeAttack(firstAttacker, secondAttacker, firstAttackerDmg);
+    this.checkForVampiricAndDrainHP(firstAttacker, secondAttacker, firstAttackerDmg);
+    secondAttacker.takeDamage(firstAttackerDmg);
 
     if (secondAttacker.alive) {
-      this.makeAttack(secondAttacker, firstAttacker, secondAttackerDmg);
+      this.checkForVampiricAndDrainHP(secondAttacker, firstAttacker, secondAttackerDmg);
+      firstAttacker.takeDamage(secondAttackerDmg);
+    }
+  }
+
+  private static makePiercingAttack (
+    attackerCard: Card, attackedCard: Card,
+    attackerPlayer: Player, attackedPlayer: Player,
+    board: Board, attackedPlayerTableCards: Card[]) {
+    let attackerCardPosition: Point = board.getPositionByUnit(attackerCard);
+    let attackedCardPosition: Point = board.getPositionByUnit(attackedCard);
+
+    let piercingCandidateX = attackedCardPosition.x + (attackedCardPosition.x - attackerCardPosition.x);
+    let piercingCandidateY = attackedCardPosition.y + (attackedCardPosition.y - attackerCardPosition.y);
+
+    let piercingCandidatePosition: Point = new Point(piercingCandidateX, piercingCandidateY);
+    let piercingTargetCardId = board.getCardIdByPosition(piercingCandidatePosition);
+
+    if (piercingTargetCardId) {
+      let piercingTargetCard: Card;
+      for (let card of attackedPlayerTableCards) {
+        if (card.id == piercingTargetCardId) {
+          piercingTargetCard = card;
+        }
+      }
+
+      let attackerDmg = this.calcDamage(piercingTargetCard, attackerCard);
+
+      attackedCard.takeDamage(attackerDmg);
+
+      if (!piercingTargetCard.alive) {
+        attackedPlayer.endOfCardDeath(piercingTargetCard);
+        board.removeUnitFromBoard(piercingTargetCard);
+      }
     }
   }
 
@@ -85,11 +130,14 @@ class MeleeAttackService {
     return attackerDmg;
   }
 
-  private static makeAttack (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
+  public static calcRetaliation (attackerCard: Card, attackedCard: Card): boolean {
+    return !(attackedCard.abilities.range) && !(attackerCard.abilities.noEnemyRetaliation);
+  }
+
+  private static checkForVampiricAndDrainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
     if (attackerCard.abilities.vampiric) {
       this.drainHP(attackerCard, attackedCard, attackerDmg);
     }
-    attackedCard.takeDamage(attackerDmg);
   }
 
   private static drainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number) {
