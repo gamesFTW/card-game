@@ -22,27 +22,26 @@ interface AttackCardParams {
   isRangeAttack: boolean;
 }
 
+interface CardChanges {
+  id?: string;
+  isTapped?: boolean;
+  newHp?: number;
+  killed?: boolean;
+}
+
 interface CardAttackedAction {
   type: string;
-  attackerCard: {
-    id?: string;
-    isTapped?: boolean;
-    newHp?: number;
-    killed?: boolean;
-  };
-  attackedCard: {
-    id?: string;
-    isTapped?: boolean;
-    newHp?: number;
-    killed?: boolean;
-  };
+  attackerCard: CardChanges;
+  attackedCard: CardChanges;
+  otherCards: CardChanges[];
 }
 
 class AttackCardUseCase extends UseCase {
   protected action: CardAttackedAction = {
     type: 'CardAttackedAction',
     attackerCard: {},
-    attackedCard: {}
+    attackedCard: {},
+    otherCards: []
   };
 
   protected entities: {
@@ -78,8 +77,15 @@ class AttackCardUseCase extends UseCase {
     this.entities.attackedCard.addEventListener(CardEventType.CARD_HEALED, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_DIED, this.onAttackedCardDied);
+
+    for (let card of this.entities.attackedPlayerTableCards) {
+      if (card.id !== this.entities.attackedCard.id) {
+        card.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onCardHpChanged);
+        card.addEventListener(CardEventType.CARD_DIED, this.onCardDied);
+      }
+    }
   }
-  
+
   protected runBusinessLogic (): void {
     if (this.params.isRangeAttack) {
       RangeAttackService.rangeAttackUnit(
@@ -93,7 +99,7 @@ class AttackCardUseCase extends UseCase {
       );
     }
   }
-  
+
   protected addClientActions (): void {
     this.action.attackerCard.id = this.params.attackerCardId;
     this.action.attackedCard.id = this.params.attackedCardId;
@@ -127,6 +133,36 @@ class AttackCardUseCase extends UseCase {
   @boundMethod
   private onAttackedCardDied (event: Event<CardData>): void {
     this.action.attackedCard.killed = !event.data.alive;
+  }
+
+  @boundMethod
+  private onCardHpChanged (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.newHp = event.data.currentHp;
+  }
+
+  @boundMethod
+  private onCardDied (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.killed = !event.data.alive;
+  }
+
+  private getOrCreateCardChangesById (cardId: EntityId): CardChanges {
+    let cardChanges = null;
+    for (let card of this.action.otherCards) {
+      if (card.id === cardId) {
+        cardChanges = card;
+      }
+    }
+
+    if (!cardChanges) {
+      cardChanges = {id: cardId};
+      this.action.otherCards.push(cardChanges);
+    }
+
+    return cardChanges;
   }
 }
 

@@ -5,18 +5,18 @@ interface Abilities {
   range?: {
     range: number;
     blockedInBeginningOfTurn: boolean;
-  },
-  firstStrike?: boolean,
+  };
+  firstStrike?: boolean;
   armored?: {
     armor: number;
-  },
-  vampiric?: boolean,
-  noEnemyRetaliation?: boolean,
-  piercing?: boolean
+  };
+  vampiric?: boolean;
+  noEnemyRetaliation?: boolean;
+  piercing?: boolean;
 }
 
 interface CardData {
-  id?: EntityId;
+  id: EntityId;
   name?: string;
   maxHp?: number;
   currentHp?: number;

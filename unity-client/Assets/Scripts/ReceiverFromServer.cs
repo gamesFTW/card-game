@@ -67,6 +67,7 @@ namespace ServerActions
     {
         public CardAfterBattle attackerCard;
         public CardAfterBattle attackedCard;
+        public CardAfterBattle[] otherCards;
     }
 
     [Serializable]
@@ -149,5 +150,10 @@ public class ReceiverFromServer : MonoBehaviour
     {
         cardManger.CardWasInBattle(action.attackerCard);
         cardManger.CardWasInBattle(action.attackedCard);
+
+        foreach (ServerActions.CardAfterBattle card in action.otherCards)
+        {
+            cardManger.CardWasInBattle(card);
+        }
     }
 }

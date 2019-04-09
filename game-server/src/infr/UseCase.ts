@@ -17,6 +17,8 @@ abstract class UseCase {
     this.addClientActions();
     await this.saveEntities();
 
+    console.log(this.action);
+
     godOfSockets.sendActions(this.entities.game.id, [this.action]);
   }
 

@@ -1,7 +1,7 @@
 import { Entity, EntityId } from '../../infr/Entity';
 
 import { Event } from '../../infr/Event';
-import {Abilities, CardData, CardState} from './CardState';
+import { Abilities, CardData, CardState } from './CardState';
 import { CardEventType } from '../events';
 
 interface CardCreationData {
@@ -70,7 +70,7 @@ class Card extends Entity {
 
       this.applyEvent(new Event<CardData>(
         CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
-        {currentMovingPoints: this.state.movingPoints}
+        {currentMovingPoints: this.state.movingPoints, id: this.state.id}
       ));
     }
 
@@ -93,7 +93,7 @@ class Card extends Entity {
 
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_MOVED,
-      {currentMovingPoints: newCurrentMovingPoints}
+      {currentMovingPoints: newCurrentMovingPoints, id: this.state.id}
     ));
   }
 
@@ -112,7 +112,7 @@ class Card extends Entity {
     let newHp = this.state.currentHp - damage;
 
     this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_TOOK_DAMAGE, {currentHp: newHp}
+        CardEventType.CARD_TOOK_DAMAGE, {currentHp: newHp, id: this.state.id}
       ));
 
     if (newHp <= 0) {
@@ -121,7 +121,7 @@ class Card extends Entity {
       }
 
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_DIED, {alive: false})
+        CardEventType.CARD_DIED, {alive: false, id: this.state.id})
       );
     }
   }
@@ -132,7 +132,7 @@ class Card extends Entity {
     newHp = newHp <= this.state.maxHp ? newHp : this.state.maxHp;
 
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_HEALED, {currentHp: newHp}
+      CardEventType.CARD_HEALED, {currentHp: newHp, id: this.state.id}
     ));
   }
 
@@ -140,13 +140,13 @@ class Card extends Entity {
     let newHp = this.state.currentHp + heal;
 
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_HEALED, {currentHp: newHp}
+      CardEventType.CARD_HEALED, {currentHp: newHp, id: this.state.id}
     ));
   }
 
   private makeAlive (): void {
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_PLAYED, {alive: true, currentMovingPoints: 0, currentHp: this.maxHp}
+      CardEventType.CARD_PLAYED, {alive: true, currentMovingPoints: 0, currentHp: this.maxHp, id: this.state.id}
     ));
   }
 }

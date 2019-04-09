@@ -112,9 +112,9 @@ class MeleeAttackService {
         }
       }
 
-      let attackerDmg = this.calcDamage(piercingTargetCard, attackerCard);
+      let attackerDmg = this.calcDamage(attackerCard, piercingTargetCard);
 
-      attackedCard.takeDamage(attackerDmg);
+      piercingTargetCard.takeDamage(attackerDmg);
 
       if (!piercingTargetCard.alive) {
         attackedPlayer.endOfCardDeath(piercingTargetCard);
