@@ -1,4 +1,4 @@
-import { Player, CardStack } from '../Player/Player';
+import { Player, CardStack } from '../player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { canRangeAttackTo } from '../../infr/Attack';
