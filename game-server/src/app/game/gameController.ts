@@ -20,10 +20,6 @@ import config from '../../config';
 const gameController = new Router();
 
 gameController.post('/createGame', async (ctx) => {
-  // Temporary data
-  ctx.request.body.playerA = startingCardsFixture.playerA;
-  ctx.request.body.playerB = startingCardsFixture.playerB;
-
   let playerAData = ctx.request.body.playerA as PlayerCreationData;
   let playerBData = ctx.request.body.playerB as PlayerCreationData;
 

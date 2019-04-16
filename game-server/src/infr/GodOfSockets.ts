@@ -31,7 +31,7 @@ class GodOfSockets {
     this.socketServer = net.createServer();
     // TODO добавить возможность поменять из env
     this.socketServer.listen({
-      host: 'localhost',
+      host: '0.0.0.0',
       port: 3002
     });
 
