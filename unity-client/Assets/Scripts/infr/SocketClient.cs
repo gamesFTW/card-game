@@ -92,7 +92,7 @@ public class SocketListener
     {
         try
         {
-            socketConnection = new TcpClient("localhost", 3002);
+            socketConnection = new TcpClient(Config.GAME_SERVER_SOCKET_URL, Config.GAME_SERVER_SOCKET_PORT);
             Byte[] bytes = new Byte[1024];
             while (true)
             {

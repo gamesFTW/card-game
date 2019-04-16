@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,6 +8,14 @@ public class UIManager : MonoBehaviour
     {
         Button endOfTurnButton = this.transform.Find("UI/EndOfTurn").GetComponent<Button>();
         endOfTurnButton.onClick.AddListener(OnClick);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Lobby");
+        }
     }
 
     void OnClick()

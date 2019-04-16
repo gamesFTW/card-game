@@ -63,94 +63,78 @@ public class GameData
 
 public class ServerApi
 {
-    static public String gameId = "";
-    static public String mainPlayerId = "";
-    static public String enemyOfMainPlayerId = "";
-    static public String serverURL = "http://127.0.0.1:3000";
-
-    public async static Task<GameData> GetGame()
+    public async static Task<GameData> GetGame(string gameId)
     {
-        var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync(String.Format(serverURL + "/getLastGame"));
-        response.EnsureSuccessStatusCode();
+        return await HttpRequest.Get<GameData>(Config.GAME_SERVER_URL + "getGame?gameId=" + gameId);
+    }
 
-        string responseContent = await response.Content.ReadAsStringAsync();
-
-        Debug.Log(responseContent);
-
-        GameData gameData = JsonConvert.DeserializeObject<GameData>(responseContent);
-
-        gameId = gameData.game.id;
-        mainPlayerId = gameData.game.player1Id;
-        enemyOfMainPlayerId = gameData.game.player2Id;
-
-        GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
-
-        return gameData;
+    public async static Task<GameData> GetLastGame()
+    {
+        return await HttpRequest.Get<GameData>(Config.GAME_SERVER_URL + "getLastGame");
     }
 
     public async static Task EndOfTurn()
     {
         var values = new Dictionary<string, string>
         {
-           { "gameId", gameId },
+           { "gameId", GameState.gameId },
            { "playerId", GameState.playerIdWhoMakesMove }
         };
 
-        await HttpRequest.Post("/endTurn", values);
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "endTurn", values);
     }
 
     public async static Task PlayCardAsMana(string cardId)
     {
         var values = new
         {
-            gameId,
-            playerId = mainPlayerId,
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
             cardId,
         };
 
-        await HttpRequest.Post("/playCardAsMana", values);
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "playCardAsMana", values);
     }
 
     public async static Task PlayCard(PlayCardAction action)
     {
         var values = new
         {
-            gameId,
-            playerId = mainPlayerId,
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
             action.cardId,
             action.x,
             action.y
         };
 
-        await HttpRequest.Post("/playCard", values);
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "playCard", values);
     }
 
     public async static Task MoveCard(MoveCardAction action)
     {
         var values = new
         {
-           gameId,
-           playerId = mainPlayerId,
+            GameState.gameId,
+           playerId = GameState.mainPlayerId,
            action.cardId,
            action.x,
            action.y
         };
 
-        await HttpRequest.Post("/moveCard", values);
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "moveCard", values);
     }
 
     public async static Task AttackCard(AttackCardAction action)
     {
         var values = new
         {
-            gameId,
-            playerId = mainPlayerId,
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
             action.attackerCardId,
             action.attackedCardId,
             action.isRangeAttack
         };
 
-        await HttpRequest.Post("/attackCard", values);
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "attackCard", values);
     }
 }

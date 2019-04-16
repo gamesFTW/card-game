@@ -39,7 +39,35 @@ public class CardCreator : MonoBehaviour {
 
     public async Task CreateCards()
     {
-        GameData gameData = await ServerApi.GetGame();
+        GameData gameData;
+        if (GameState.gameId != null)
+        {
+            gameData = await ServerApi.GetGame(GameState.gameId);
+
+            GameState.gameId = gameData.game.id;
+
+            if (GameState.isMainPlayerFirstPlayer)
+            {
+                GameState.mainPlayerId = gameData.game.player1Id;
+                GameState.enemyOfMainPlayerId = gameData.game.player2Id;
+            } else
+            {
+                GameState.mainPlayerId = gameData.game.player2Id;
+                GameState.enemyOfMainPlayerId = gameData.game.player1Id;
+            }
+
+            GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
+        } else
+        {
+            gameData = await ServerApi.GetLastGame();
+
+            GameState.gameId = gameData.game.id;
+            GameState.mainPlayerId = gameData.game.player1Id;
+            GameState.enemyOfMainPlayerId = gameData.game.player2Id;
+
+            GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
+        }
+
 
         CardData[][] stacksData = this.CreateStacksData(gameData);
 
@@ -56,10 +84,10 @@ public class CardCreator : MonoBehaviour {
                 // Простите меня за такое
                 if (i <= 3)
                 {
-                    playerId = ServerApi.mainPlayerId;
+                    playerId = GameState.mainPlayerId;
                 } else
                 {
-                    playerId = ServerApi.enemyOfMainPlayerId;
+                    playerId = GameState.enemyOfMainPlayerId;
                 }
 
                 CreateCardIn(card, playerId, stacksTransforms[i]);
@@ -69,7 +97,7 @@ public class CardCreator : MonoBehaviour {
 
     private CardData[][] CreateStacksData(GameData gameData)
     {
-        string playerId = ServerApi.mainPlayerId;
+        string playerId = GameState.mainPlayerId;
 
         PlayerData player;
         PlayerData opponent;

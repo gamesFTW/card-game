@@ -10,6 +10,21 @@ using System.Reflection;
 
 public class HttpRequest
 {
+    public async static Task<T> Get<T>(string url)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.GetAsync(String.Format(url));
+        response.EnsureSuccessStatusCode();
+
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        Debug.Log(responseContent);
+
+        T data = JsonConvert.DeserializeObject<T>(responseContent);
+
+        return data;
+    }
+
     public async static Task<string> Post(string url, object values)
     {
         HttpResponseMessage response = await PostInternal(url, values);
@@ -53,7 +68,7 @@ public class HttpRequest
         stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         var httpClient = new HttpClient();
-        return await httpClient.PostAsync(String.Format(ServerApi.serverURL + url), stringContent);
+        return await httpClient.PostAsync(String.Format(url), stringContent);
     }
 
     private static void GenerateDebugMessage(string url, object values)
