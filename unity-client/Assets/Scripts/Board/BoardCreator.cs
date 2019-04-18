@@ -21,13 +21,6 @@ public class BoardCreator : MonoBehaviour
     private float tileWidth;
     private float tileHeight;
 
-    public static Sprite fat;
-    public static Sprite boar;
-    public static Sprite goblin;
-    public static Sprite hero;
-    public static Sprite reptile;
-    public static Sprite skeleton;
-
     public void CreateUnit(CardDisplay cardDisplay, Point position)
     {
         GameObject unit = Instantiate<GameObject>(UnitPrefab, this.transform);
@@ -91,13 +84,6 @@ public class BoardCreator : MonoBehaviour
 
     private void Awake()
     {
-        fat = Resources.Load<Sprite>("Sprites/Units/fat");
-        boar = Resources.Load<Sprite>("Sprites/Units/boar");
-        goblin = Resources.Load<Sprite>("Sprites/Units/goblin");
-        hero = Resources.Load<Sprite>("Sprites/Units/hero");
-        reptile = Resources.Load<Sprite>("Sprites/Units/reptile");
-        skeleton = Resources.Load<Sprite>("Sprites/Units/skeleton");
-
         CreateTiles();
     }
 

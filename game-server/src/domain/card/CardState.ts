@@ -27,6 +27,7 @@ interface CardData {
   movingPoints?: number;
   currentMovingPoints?: number;
   abilities?: Abilities;
+  image?: string;
 }
 
 class CardState extends EntityState implements CardData {
@@ -41,6 +42,7 @@ class CardState extends EntityState implements CardData {
   public currentMovingPoints: number;
   public manaCost: number;
   public abilities: Abilities;
+  public image: string;
 
   public constructor (events: Array<Event<CardData>>) {
     super();

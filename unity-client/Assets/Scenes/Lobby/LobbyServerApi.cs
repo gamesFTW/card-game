@@ -15,6 +15,8 @@ namespace Lobby
     {
         public string _id;
         public string gameServerId;
+        public string deckName1;
+        public string deckName2;
     }
 
     [Serializable]
@@ -34,7 +36,7 @@ namespace Lobby
     {
         public async static Task<GamesData> GetGames<GamesData>()
         {
-            return await HttpRequest.Get<GamesData>(Config.LOBBY_SERVER_URL + "publications/Games");
+            return await HttpRequest.Get<GamesData>(Config.LOBBY_SERVER_URL + "methods/getGames");
         }
 
         public async static Task<DecksData> GetDecks<DecksData>()
@@ -52,6 +54,17 @@ namespace Lobby
             };
 
             await HttpRequest.Post(Config.LOBBY_SERVER_URL + "methods/createGame", values);
+        }
+
+        public async static Task DeleteGame(string gameId)
+        {
+
+            var values = new
+            {
+                gameLobbyId = gameId
+            };
+
+            await HttpRequest.Post(Config.LOBBY_SERVER_URL + "methods/removeGameById", values);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnibusEvent;
 
 namespace Lobby
 {
@@ -10,7 +11,7 @@ namespace Lobby
         public Dropdown player1DeckDropdown;
         public Dropdown player2DeckDropdown;
 
-        public GameObject LobbyGame;
+        public GameObject lobbyGame;
 
         private List<string> deckIds;
 
@@ -21,6 +22,8 @@ namespace Lobby
 
             UpdateGames();
             UpdateDropdowns();
+
+            Unibus.Subscribe<LobbyGame>(LobbyGame.DETELE_GAME, OnDeleteGameHandler);
         }
 
         // Update is called once per frame
@@ -65,11 +68,14 @@ namespace Lobby
 
             foreach (GameData game in gamesData.Games)
             {
-                GameObject lobbyGame = Instantiate<GameObject>(LobbyGame, lobbyGames);
+                GameObject lobbyGame = Instantiate<GameObject>(this.lobbyGame, lobbyGames);
                 lobbyGame.transform.SetParent(lobbyGames.transform);
 
                 LobbyGame lobbyGameComponent = lobbyGame.GetComponent<LobbyGame>();
-                lobbyGameComponent.gameId = game.gameServerId;
+
+                lobbyGameComponent.gameId = game._id;
+                lobbyGameComponent.deckName1 = game.deckName1;
+                lobbyGameComponent.deckName2 = game.deckName2;
             }
         }
 
@@ -79,6 +85,13 @@ namespace Lobby
             string player2DeckId = deckIds[player2DeckDropdown.value];
 
             await LobbyServerApi.CreateGame(player1DeckId, player2DeckId);
+
+            UpdateGames();
+        }
+
+        private async void OnDeleteGameHandler(LobbyGame lobbyGame)
+        {
+            await LobbyServerApi.DeleteGame(lobbyGame.gameId);
 
             UpdateGames();
         }

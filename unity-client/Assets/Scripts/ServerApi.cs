@@ -26,6 +26,7 @@ public class CardData
     public int currentHp;
     public int x;
     public int y;
+    public string image;
     // Простите, но слишком долго делать по другому.
     // По правильному нужно хранить стеки со ссылками на карты.
     public string ownerId;

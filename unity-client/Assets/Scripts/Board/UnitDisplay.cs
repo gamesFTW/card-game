@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor.Presets;
+using System.Collections;
 
 public class UnitDisplay : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class UnitDisplay : MonoBehaviour
         get { return cardData; }
         set {
             cardData = value;
-            SetSprite();
+            StartCoroutine(LoadSprite());
         }
     }
 
@@ -29,40 +30,14 @@ public class UnitDisplay : MonoBehaviour
         
     }
 
-    public void SetSprite()
+    public IEnumerator LoadSprite()
     {
-        Sprite sprite = FindSprite();
+        WWW www = new WWW(Config.LOBBY_SERVER_URL + CardData.image);
+        yield return www;
+
+        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
+
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = sprite;
-    }
-
-    private Sprite FindSprite()
-    {
-        if (cardData.name == "Герой")
-        {
-            return BoardCreator.hero;
-        }
-        if (cardData.name == "Толстокожая")
-        {
-            return BoardCreator.fat;
-        }
-        if (cardData.name == "Гоблин")
-        {
-            return BoardCreator.goblin;
-        }
-        if (cardData.name == "Кабан")
-        {
-            return BoardCreator.boar;
-        }
-        if (cardData.name == "Ящер")
-        {
-            return BoardCreator.reptile;
-        }
-        if (cardData.name == "Скелет")
-        {
-            return BoardCreator.skeleton;
-        }
-
-        return null;
     }
 }
