@@ -42,6 +42,11 @@ class Player extends Entity {
 
     // TODO сделать проверку на минимальное количество стартовых карт.
 
+    if (playerCreationData.deck.length < GameConstants.STARTING_HAND) {
+      throw new Error(`Player ${this.state.id} have only ${playerCreationData.deck.length} cards in deck. ' +
+        'It's should be ${GameConstants.STARTING_HAND} or great.`);
+    }
+
     let cards = this.createCards(playerCreationData.deck);
     let heroes = this.createCards(playerCreationData.heroes);
     let allCards = cards.concat(heroes);
