@@ -14,14 +14,15 @@ public class LobbyGame : MonoBehaviour
 
     public Button deleteGameButton;
 
-    public string gameId;
+    public string lobbyGameId;
+    public string gameServerId;
     public string deckName1;
     public string deckName2;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameIdText.text = gameId;
+        gameIdText.text = lobbyGameId;
         deckNamesText.text = deckName1 + " vs "+ deckName2;
 
         playAs1PlayerButton.onClick.AddListener(OnPlayAs1PlayerButtonClick);
@@ -38,14 +39,14 @@ public class LobbyGame : MonoBehaviour
 
     private void OnPlayAs1PlayerButtonClick()
     {
-        GameState.gameId = gameId;
+        GameState.gameId = gameServerId;
         GameState.isMainPlayerFirstPlayer = true;
         SceneManager.LoadScene("Game");
     }
 
     private void OnPlayAs2PlayerButtonClick()
     {
-        GameState.gameId = gameId;
+        GameState.gameId = gameServerId;
         GameState.isMainPlayerFirstPlayer = false;
         SceneManager.LoadScene("Game");
     }

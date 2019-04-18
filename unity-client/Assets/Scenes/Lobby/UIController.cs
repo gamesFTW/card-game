@@ -73,7 +73,8 @@ namespace Lobby
 
                 LobbyGame lobbyGameComponent = lobbyGame.GetComponent<LobbyGame>();
 
-                lobbyGameComponent.gameId = game._id;
+                lobbyGameComponent.lobbyGameId = game._id;
+                lobbyGameComponent.gameServerId = game.gameServerId;
                 lobbyGameComponent.deckName1 = game.deckName1;
                 lobbyGameComponent.deckName2 = game.deckName2;
             }
@@ -91,7 +92,7 @@ namespace Lobby
 
         private async void OnDeleteGameHandler(LobbyGame lobbyGame)
         {
-            await LobbyServerApi.DeleteGame(lobbyGame.gameId);
+            await LobbyServerApi.DeleteGame(lobbyGame.lobbyGameId);
 
             UpdateGames();
         }
