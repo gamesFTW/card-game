@@ -79,11 +79,6 @@ class Card extends Entity {
     }
   }
 
-  public play (): void {
-    this.makeAlive();
-    this.tap();
-  }
-
   public move (movingPoints: number): void {
     if (movingPoints > this.state.currentMovingPoints) {
       throw new Error(`Card ${this.state.id} dont have moving points`);
@@ -144,7 +139,7 @@ class Card extends Entity {
     ));
   }
 
-  private makeAlive (): void {
+  public makeAlive (): void {
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_PLAYED, {alive: true, currentMovingPoints: 0, currentHp: this.maxHp, id: this.state.id}
     ));

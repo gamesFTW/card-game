@@ -1,15 +1,6 @@
-﻿using UnityEngine;
-using System.Net;
-using System.IO;
-using System;
-using UnityEngine.Networking;
-using System.Collections;
+﻿using System;
 using System.Threading.Tasks;
-using System.Net.Http;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Text;
-using Newtonsoft.Json;
 
 [Serializable]
 public class CardData

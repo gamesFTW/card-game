@@ -114,7 +114,8 @@ class Player extends Entity {
 
     this.placeCardOnBoard(card, board, position);
 
-    card.play();
+    card.makeAlive();
+    card.tap();
   }
 
   public moveCard (card: Card, position: Point, board: Board): void {
@@ -182,7 +183,7 @@ class Player extends Entity {
       {table, deck}
     ));
 
-    hero.play();
+    hero.makeAlive();
   }
 
   private drawStartingHand (isFirstPlayer: boolean): void {

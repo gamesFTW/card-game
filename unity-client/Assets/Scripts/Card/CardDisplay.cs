@@ -1,18 +1,20 @@
-﻿using UnibusEvent;
+﻿using System;
+using System.Collections;
+using UnibusEvent;
 using UnityEditor.Presets;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class CardDisplay : MonoBehaviour
 {
 	public UnitDisplay UnitDisplay;
 	public CardData cardData;
 
+	public GameObject artwork;
+
 	public Text nameText;
 	public Text descriptionText;
-
-	public Image artworkImage;
 
 	public Text manaText;
 	public Text damageText;
@@ -30,6 +32,8 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
     private bool IsSelected = false;
 
+    private int currentMouseButton;
+
     public int CurrentHp
     {
         get { return cardData.currentHp; }
@@ -38,19 +42,23 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
             currentHpText.text = value.ToString();
         }
     }
-
+    
     // Use this for initialization
     void Start () 
     {
 		nameText.text = cardData.name;
-		//descriptionText.text = cardData.description;
-
-		//artworkImage.sprite = cardData.artwork;
 
 		manaText.text = cardData.manaCost.ToString();
         damageText.text = cardData.damage.ToString();
         maxHpText.text = cardData.maxHp.ToString();
         currentHpText.text = cardData.currentHp.ToString();
+
+        StartCoroutine(LoadSprite());
+    }
+
+    void Update()
+    {
+        CheckRightMouseDown();
     }
 
     public void FaceUp() {
@@ -75,28 +83,48 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
         this.transform.Rotate(0, 0, 90);
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void ZoomIn ()
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
+        this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
+        this.transform.position += new Vector3(0, 2.5F, 0);
+    }
+
+    public void ZoomOut ()
+    {
+        this.transform.localScale = new Vector3(1, 1, 1);
+        this.transform.position -= new Vector3(0, 2.5F, 0);
+    }
+
+    void CheckRightMouseDown()
+    {
+        if (Input.GetMouseButtonDown(1))
         {
-            OnLeftMouseClicked();
-        }
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            OnRightMouseClicked();
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+            if (hit.collider.gameObject == this.gameObject)
+            {
+                OnRightMouseClicked();
+            }
         }
     }
 
-    public void OnPointerEnter(PointerEventData pointerEventData)
+    void OnMouseDown()
+    {
+        OnLeftMouseClicked();
+    }
+
+    void OnMouseEnter()
     {
         Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
-    public void OnPointerExit(PointerEventData pointerEventData)
+    void OnMouseExit()
     {
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
-
+    
     public void SelectedHighlightOn()
     {
         IsSelected = true;
@@ -143,5 +171,15 @@ public class CardDisplay : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     private void OnRightMouseClicked()
     {
         Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
+    }
+
+    public IEnumerator LoadSprite()
+    {
+        WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
+        yield return www;
+
+        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
+
+        artwork.GetComponent<SpriteRenderer>().sprite = sprite;
     }
 }
