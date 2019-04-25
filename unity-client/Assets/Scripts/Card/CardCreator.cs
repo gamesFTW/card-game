@@ -12,6 +12,9 @@ public class PlayerTransformsStacks
 }
 
 public class CardCreator : MonoBehaviour {
+
+    public bool firstTimeDataRecived = false;
+
     public Transform CardPrefab;
 
     public Transform PlayerDeck;
@@ -93,6 +96,13 @@ public class CardCreator : MonoBehaviour {
                 CreateCardIn(card, playerId, stacksTransforms[i]);
             }
         }
+
+        if (!firstTimeDataRecived)
+        {
+            firstTimeDataRecived = true;
+            OnGameDataFirstTimeRecived();
+        }
+
     }
 
     private CardData[][] CreateStacksData(GameData gameData)
@@ -153,5 +163,12 @@ public class CardCreator : MonoBehaviour {
         {
             boardCreator.CreateUnit(cardDisplay, new Point(cardData.x, cardData.y));
         }
+    }
+
+    private void OnGameDataFirstTimeRecived()
+    {
+        GameObject go = GameObject.Find("Canvas");
+        SocketIOClient socketClient = go.GetComponent<SocketIOClient>();
+        socketClient.StartExchange();
     }
 }
