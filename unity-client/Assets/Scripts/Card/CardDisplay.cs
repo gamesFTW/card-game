@@ -85,14 +85,14 @@ public class CardDisplay : MonoBehaviour
 
     public void ZoomIn ()
     {
-        this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
-        this.transform.position += new Vector3(0, 2.5F, 0);
+        //this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
+        //this.transform.position += new Vector3(0, 2.5F, 0);
     }
 
     public void ZoomOut ()
     {
-        this.transform.localScale = new Vector3(1, 1, 1);
-        this.transform.position -= new Vector3(0, 2.5F, 0);
+        //this.transform.localScale = new Vector3(1, 1, 1);
+        //this.transform.position -= new Vector3(0, 2.5F, 0);
     }
 
     void CheckRightMouseDown()
