@@ -1,9 +1,13 @@
 {
   "name": "card-game-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
+  "author": "GamesFTW",
+  "license": "ISC",
+  "version": "0.0.1",
+  "description": "game microserver for card game",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@types/pathfinding": "0.0.2",
     "@types/amqplib": "^0.5.8",
     "@types/axios": "^0.14.0",
     "@types/bull": "^3.3.19",
@@ -20,6 +24,11 @@
     "@types/nanoid": "^1.0.0",
     "@types/opn": "^5.1.0",
     "@types/socket.io": "^1.4.33",
+    "ts-node-dev": "1.0.0-pre.30",
+    "tslint": "^5.8.0",
+    "tslint-config-semistandard": "^6.0.4"
+  },
+  "dependencies": {
     "amqplib": "^0.5.2",
     "autobind-decorator": "^2.4.0",
     "axios": "^0.18.0",
@@ -44,14 +53,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "build": "rm -rf dist && tsc src/index.ts"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/pathfinding": "0.0.2",
-    "ts-node-dev": "1.0.0-pre.30",
-    "tslint": "^5.8.0",
-    "tslint-config-semistandard": "^6.0.4"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gamesFtw/eventsourcing-test"
+  },
+  "keywords": [
+    "typescript",
+    "node",
+    "game",
+    "server",
+    "ccg"
+  ]
 }
