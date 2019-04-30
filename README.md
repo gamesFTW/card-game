@@ -4,10 +4,7 @@ nodeJs 8, docker
 # How to run dev enviroment
 
 ## For Client
-```
-cd client
-npm i && npm run dev 
-```
+Get unity compiled bin file and run it (or build it in unity editor from `unity-client/`)
 
 ## For Server
 ```
