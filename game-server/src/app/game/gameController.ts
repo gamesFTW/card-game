@@ -4,7 +4,7 @@ import { Game } from '../../domain/game/Game';
 import { Repository } from '../../infr/repositories/Repository';
 import { EntityId } from '../../infr/Entity';
 import { formatEventsForClient } from '../../infr/Event';
-import {Player, PlayerCreationData} from '../../domain/player/Player';
+import { Player, PlayerCreationData } from '../../domain/player/Player';
 import { Card, CardCreationData } from '../../domain/card/Card';
 import { mapPlayer } from './mapPlayer';
 import { Board } from '../../domain/board/Board';
@@ -12,7 +12,7 @@ import { mapPlayerPretty } from './mapPlayerPretty';
 
 import { godOfSockets } from '../../infr/GodOfSockets';
 import { startingCardsFixture } from './startingCardsFixture';
-import {EndTurnUseCase} from './EndTurnUseCase';
+import { EndTurnUseCase } from './EndTurnUseCase';
 import { lobbyService } from '../lobbyService';
 import axios from 'axios';
 import config from '../../config';
@@ -20,6 +20,10 @@ import config from '../../config';
 const gameController = new Router();
 
 gameController.post('/createGame', async (ctx) => {
+  // Temporary data
+  ctx.request.body.playerA = startingCardsFixture.playerA;
+  ctx.request.body.playerB = startingCardsFixture.playerB;
+
   let playerAData = ctx.request.body.playerA as PlayerCreationData;
   let playerBData = ctx.request.body.playerB as PlayerCreationData;
 
@@ -28,7 +32,7 @@ gameController.post('/createGame', async (ctx) => {
 
   await Repository.save([player1Cards, player1, player2Cards, player2, board, game]);
 
-  // godOfSockets.registerNamespace(game.id);
+  godOfSockets.registerNamespace(game.id);
 
   ctx.body = {gameId: game.id};
 });

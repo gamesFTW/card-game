@@ -9,7 +9,7 @@ type SocketOptions = {
   }
 };
 
-type eventName = 'connect' | 'event' | 'message' | 'open' | 'close' | 'register' | 'disconnect';
+type eventName = 'beep' | 'connection' | 'event' | 'message' | 'open' | 'close' | 'register' | 'disconnect';
 type room = String;
 
 type eventCtx = {

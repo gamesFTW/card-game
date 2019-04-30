@@ -29,7 +29,7 @@ public class SocketClient : MonoBehaviour
     {
         receiverFromServer = this.GetComponent<ReceiverFromServer>();
 
-        ConnectToTcpServer();
+        //ConnectToTcpServer();
     }
 
     private void ConnectToTcpServer()
@@ -41,19 +41,19 @@ public class SocketClient : MonoBehaviour
 
     void Update()
     {
-        if (socketListener.events.Count > 0)
-        {
-            var serverMessage = socketListener.events[0];
-            socketListener.events.RemoveAt(0);
+        //if (socketListener.events.Count > 0)
+        //{
+        //    var serverMessage = socketListener.events[0];
+        //    socketListener.events.RemoveAt(0);
 
-            SocketData<SocketAction> socketData = JsonConvert.DeserializeObject<SocketData<SocketAction>>(serverMessage);
+        //    SocketData<SocketAction> socketData = JsonConvert.DeserializeObject<SocketData<SocketAction>>(serverMessage);
 
-            for (int i = 0; i < socketData.actions.Length; i++)
-            {
-                var action = socketData.actions[i];
-                receiverFromServer.ProcessAction(action.type, i, serverMessage);
-            }
-        }
+        //    for (int i = 0; i < socketData.actions.Length; i++)
+        //    {
+        //        var action = socketData.actions[i];
+        //        receiverFromServer.ProcessAction(action.type, i, serverMessage);
+        //    }
+        //}
     }
 
     private void SendMessage()

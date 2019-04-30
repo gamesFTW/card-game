@@ -4,6 +4,7 @@ import chalk from 'chalk';
 
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
+import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
 import * as koaStatic from 'koa-static';
 
@@ -29,6 +30,9 @@ async function main (): Promise<void> {
 
   app.use(bodyParser());
 
+  const wsIO = new IO();
+  wsIO.attach(app, false);
+
   app.use(async (ctx: any, next: any) => {
     const start = Date.now();
     await next();
@@ -47,9 +51,9 @@ async function main (): Promise<void> {
     }
   });
 
-  // godOfSockets.autoRegistrateUsers(wsIO);
+  godOfSockets.autoRegistrateUsers(wsIO);
   const gameIds = await lobbyService.getAllGames();
-  // gameIds.forEach(id => godOfSockets.registerNamespace(id));
+  gameIds.forEach(id => godOfSockets.registerNamespace(id));
 
   app.use(cardController.routes());
   app.use(gameController.routes());
