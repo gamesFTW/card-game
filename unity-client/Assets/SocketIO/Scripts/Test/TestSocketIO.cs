@@ -36,7 +36,7 @@ public class TestSocketIO : MonoBehaviour
 
 	public void Start() 
 	{
-		GameObject go = GameObject.Find("Canvas");
+		GameObject go = GameObject.Find("SocketIO");
 		socket = go.GetComponent<SocketIOComponent>();
 
 		socket.On("open", TestOpen);

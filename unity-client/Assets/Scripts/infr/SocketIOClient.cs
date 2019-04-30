@@ -5,6 +5,7 @@ using System.Threading;
 using UnityEngine;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 //[Serializable]
 //public class SocketData<Action>
@@ -52,7 +53,7 @@ public class SocketIOClient : MonoBehaviour
         connection.On("open", OnConnection);
         connection.On("close", OnDisconect);
         connection.On("error", OnError);
-        //connection.On("event", OnEvent);
+        connection.On("event", OnEvent);
 
     }
 
@@ -84,12 +85,27 @@ public class SocketIOClient : MonoBehaviour
 
     protected void OnError(SocketIO.SocketIOEvent e)
     {
+        Debug.Log(e);
         Debug.Log("Socket error:" + e.data);
     }
 
     protected void OnEvent(SocketIO.SocketIOEvent e)
     {
-        Debug.Log(e.data);
-        //receiverFromServer.ProcessAction(e.data.type, e.data);
+        //Debug.Log("Event");
+        Debug.Log(e);
+        //Debug.Log(e.data["clientEvents"].ToString());
+        var serverMessage = e.data.ToString();
+
+        SocketData<SocketAction> socketData = JsonConvert.DeserializeObject<SocketData<SocketAction>>(serverMessage);
+
+        for (int i = 0; i < socketData.actions.Length; i++)
+        {
+            Debug.Log(socketData.actions);
+            var action = socketData.actions[i];
+            receiverFromServer.ProcessAction(action.type, i, serverMessage);
+        }
+
+        //(e.data as JObject).ToObject<StatusPong>();
+        //receiverFromServer.ProcessAction(e.data["clientEvents"].ToString());
     }
 }
