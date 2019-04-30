@@ -24,31 +24,33 @@ class GodOfSockets {
   public autoRegistrateUsers (koaSocketIO: koaIO): void {
     this.koaSocketIO = koaSocketIO;
 
-    koaSocketIO.on('register', (ctx, data) => {
-      let playerId = data.playerId as EntityId;
-      let gameId = data.gameId as EntityId;
-      if (!playerId || !gameId) {
-        console.error(chalk.red('playerId & gameId must be set'));
-        return;
-        // throw new Error('PlayerId must be set');
-      }
-
-      this.socketToUser.set(ctx.socket, playerId);
-      this.userToSocket.set(playerId, ctx.socket);
-
-      if (!this.gameIdToSockets.get(gameId)) {
-        this.gameIdToSockets.set(gameId, []);
-      }
-      this.gameIdToSockets.get(gameId).push(ctx.socket);
-
-      console.info(chalk.yellow(`player ${playerId} is registred`));
-    });
+    // koaSocketIO.on('beep', (ctx_, data) => {
+    //   console.info(chalk.yellow(`Beep to boop`));
+    //   console.log('aaaa', ctx_, data);
+    //   ctx_.socket.emit('boop');
+    // });
 
     koaSocketIO.on('connection', (ctx, data) => {
       console.info(chalk.yellow(`Sombody connected ${data}`));
-      ctx.socket.on('beep', function (): void {
-        console.info(chalk.yellow('beep'));
-        ctx.socket.emit('boop');
+
+      ctx.socket.on('register', (data) => {
+        let playerId = data.playerId as EntityId;
+        let gameId = data.gameId as EntityId;
+        if (!playerId || !gameId) {
+          console.error(chalk.red('playerId & gameId must be set'));
+          return;
+          // throw new Error('PlayerId must be set');
+        }
+
+        this.socketToUser.set(ctx.socket, playerId);
+        this.userToSocket.set(playerId, ctx.socket);
+
+        if (!this.gameIdToSockets.get(gameId)) {
+          this.gameIdToSockets.set(gameId, []);
+        }
+        this.gameIdToSockets.get(gameId).push(ctx.socket);
+
+        console.info(chalk.yellow(`player ${playerId} is registred`));
       });
     });
 
@@ -72,8 +74,7 @@ class GodOfSockets {
       this.gameIdToSockets.get(gameId).forEach(socket => {
         const playerId = this.socketToUser.get(socket);
         console.info(chalk.yellow(`${playerId} <<< ${JSON.stringify(clientEvents)}`));
-        // socket.emit('event', clientEvents);
-        socket.emit('event');
+        socket.emit('event', {clientEvents});
       });
     }
   }
