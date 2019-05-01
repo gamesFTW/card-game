@@ -40,8 +40,9 @@ namespace SocketIO
     {
         #region Public Properties
 
-        protected string url = "ws://127.0.0.1:3000/socket.io/?EIO=3&transport=websocket";
-       
+        //protected string url = "ws://127.0.0.1:3000/socket.io/?EIO=3&transport=websocket";
+        protected string url = "ws://" + Config.GAME_SERVER_SOCKET_IO + "socket.io/?EIO=3&transport=websocket";
+
         public bool autoConnect = true;
         public int reconnectDelay = 5;
         public float ackExpirationTime = 1800f;
@@ -408,6 +409,7 @@ namespace SocketIO
 
         private void OnError(object sender, ErrorEventArgs e)
         {
+            Debug.Log("ERROR: " + e.Message);
             EmitEvent("error");
         }
 

@@ -40,6 +40,8 @@ public class SocketIOClient : MonoBehaviour
             throw new Exception("There is no SocketIOConnection on the same component");
         }
 
+        Debug.Log("Found socketIOConnection component url:" + connection.Url);
+
         SubscribeOnSocketIOEvents();
 
         if (connection.IsConnected)

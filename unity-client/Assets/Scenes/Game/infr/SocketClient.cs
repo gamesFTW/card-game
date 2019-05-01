@@ -90,26 +90,26 @@ public class SocketListener
 
     public void ListenForData()
     {
-        try
-        {
-            socketConnection = new TcpClient(Config.GAME_SERVER_SOCKET_URL, Config.GAME_SERVER_SOCKET_PORT);
-            Byte[] bytes = new Byte[1024];
-            while (true)
-            {
-                using (NetworkStream stream = socketConnection.GetStream())
-                {
-                    int length;
-                    while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                    {
-                        this.GetActionsFromBytes(bytes, length);
-                    }
-                }
-            }
-        }
-        catch (SocketException socketException)
-        {
-            Debug.Log("Socket exception: " + socketException);
-        }
+        //try
+        //{
+            //socketConnection = new TcpClient(Config.GAME_SERVER_SOCKET_URL, Config.GAME_SERVER_SOCKET_PORT);
+            //Byte[] bytes = new Byte[1024];
+            //while (true)
+            //{
+            //    using (NetworkStream stream = socketConnection.GetStream())
+            //    {
+            //        int length;
+            //        while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
+            //        {
+            //            this.GetActionsFromBytes(bytes, length);
+            //        }
+            //    }
+            //}
+        //}
+        //catch (SocketException socketException)
+        //{
+        //    Debug.Log("Socket exception: " + socketException);
+        //}
     }
 
     private void GetActionsFromBytes(Byte[] bytes, int length)
