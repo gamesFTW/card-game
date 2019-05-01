@@ -58,12 +58,12 @@ class EndTurnUseCase extends UseCase {
 
   protected addEventListeners (): void {
     this.entities.endingTurnPlayerManaPoolCards.forEach((card: Card) => {
-      card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
     });
 
     this.entities.endingTurnPlayerTableCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
+      card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
     });
 
     this.entities.endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);

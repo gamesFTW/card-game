@@ -20,6 +20,7 @@ public class CardDisplay : MonoBehaviour
 	public Text damageText;
     public Text currentHpText;
     public Text maxHpText;
+    public Text currentMovingPoints;
 
     public Preset SelectedHighlightGlow;
     public Preset OverHighlightGlow;
@@ -42,7 +43,17 @@ public class CardDisplay : MonoBehaviour
             currentHpText.text = value.ToString();
         }
     }
-    
+
+    public int CurrentMovingPoints
+    {
+        get { return cardData.currentMovingPoints; }
+        set
+        {
+            cardData.currentMovingPoints = value;
+            currentMovingPoints.text = value.ToString();
+        }
+    }
+
     // Use this for initialization
     void Start () 
     {
@@ -52,6 +63,7 @@ public class CardDisplay : MonoBehaviour
         damageText.text = cardData.damage.ToString();
         maxHpText.text = cardData.maxHp.ToString();
         currentHpText.text = cardData.currentHp.ToString();
+        currentMovingPoints.text = cardData.currentMovingPoints.ToString();
 
         StartCoroutine(LoadSprite());
     }

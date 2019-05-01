@@ -126,6 +126,7 @@ public class ReceiverFromServer : MonoBehaviour
     {
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
+        cardManger.UpdateMovingPoints(action.cardsMovingPointsUpdated);
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
     }

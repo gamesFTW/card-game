@@ -67,16 +67,17 @@ class Card extends Entity {
 
   public onEndOfTurn (): void {
     if (this.state.alive) {
-
-      this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
-        {currentMovingPoints: this.state.movingPoints, id: this.state.id}
-      ));
+      this.addDefaultMovingPoints();
     }
 
     if (this.tapped) {
       this.untap();
     }
+  }
+
+  public prepareAtStartOfGame (): void {
+    this.makeAlive();
+    this.addDefaultMovingPoints();
   }
 
   public move (movingPoints: number): void {
@@ -142,6 +143,13 @@ class Card extends Entity {
   public makeAlive (): void {
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_PLAYED, {alive: true, currentMovingPoints: 0, currentHp: this.maxHp, id: this.state.id}
+    ));
+  }
+
+  private addDefaultMovingPoints (): void {
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
+      {currentMovingPoints: this.state.movingPoints, id: this.state.id}
     ));
   }
 }

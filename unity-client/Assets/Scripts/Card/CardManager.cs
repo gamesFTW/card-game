@@ -53,6 +53,16 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void UpdateMovingPoints(ServerActions.MovingPoints[] movingPoints)
+    {
+        foreach (ServerActions.MovingPoints movingPoint in movingPoints)
+        {
+            var cardId = movingPoint.id;
+            var cardTransform = cardIdToCards[cardId];
+            cardTransform.GetComponent<CardDisplay>().CurrentMovingPoints = movingPoint.currentMovingPoints;
+        }
+    }
+
     public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];
@@ -92,6 +102,8 @@ public class CardManager : MonoBehaviour
         var cardTransform = cardIdToCards[cardId];
 
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        cardDisplay.CurrentMovingPoints = currentMovingPoints;
 
         boardCreator.MoveUnit(cardDisplay, position);
     }

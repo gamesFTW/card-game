@@ -183,7 +183,7 @@ class Player extends Entity {
       {table, deck}
     ));
 
-    hero.makeAlive();
+    hero.prepareAtStartOfGame();
   }
 
   private drawStartingHand (isFirstPlayer: boolean): void {
