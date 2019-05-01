@@ -15,6 +15,7 @@ public class PlayerHandDisplay : MonoBehaviour
         if (card.transform.IsChildOf(this.transform))
         {
             card.ZoomIn();
+            card.transform.position += new Vector3(0, 2.5F, 0);
         }
     }
 
@@ -23,6 +24,7 @@ public class PlayerHandDisplay : MonoBehaviour
         if (card.transform.IsChildOf(this.transform))
         {
             card.ZoomOut();
+            card.transform.position -= new Vector3(0, 2.5F, 0);
         }
     }
 }

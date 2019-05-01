@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using TMPro;
 using UnibusEvent;
 using UnityEditor.Presets;
 using UnityEngine;
@@ -13,14 +14,14 @@ public class CardDisplay : MonoBehaviour
 
 	public GameObject artwork;
 
-	public Text nameText;
-	public Text descriptionText;
+	public TextMeshPro nameText;
+	public TextMeshPro descriptionText;
 
-	public Text manaText;
-	public Text damageText;
-    public Text currentHpText;
-    public Text maxHpText;
-    public Text currentMovingPoints;
+	public TextMeshPro manaText;
+	public TextMeshPro damageText;
+    public TextMeshPro currentHpText;
+    public TextMeshPro maxHpText;
+    public TextMeshPro currentMovingPoints;
 
     public Preset SelectedHighlightGlow;
     public Preset OverHighlightGlow;
@@ -97,14 +98,14 @@ public class CardDisplay : MonoBehaviour
 
     public void ZoomIn ()
     {
-        //this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
-        //this.transform.position += new Vector3(0, 2.5F, 0);
+        this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
+        this.transform.position += new Vector3(0, 0, -1);
     }
 
     public void ZoomOut ()
     {
-        //this.transform.localScale = new Vector3(1, 1, 1);
-        //this.transform.position -= new Vector3(0, 2.5F, 0);
+        this.transform.localScale = new Vector3(1, 1, 1);
+        this.transform.position -= new Vector3(0, 0, -1);
     }
 
     void CheckRightMouseDown()
@@ -129,11 +130,13 @@ public class CardDisplay : MonoBehaviour
 
     void OnMouseEnter()
     {
+        this.ZoomIn();
         Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     void OnMouseExit()
     {
+        this.ZoomOut();
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
     
