@@ -1,14 +1,14 @@
 import { Player, CardStack } from '../player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
-import { canRangeAttackTo } from '../../infr/Attack';
-import {MeleeAttackService} from './MeleeAttackService';
+import { MeleeAttackService } from './MeleeAttackService';
+import { checkCanRangeAttackTo } from '../board/Path/Attack';
 
 class RangeAttackService {
   public static rangeAttackUnit (
     attackerCard: Card, attackedCard: Card,
     attackerPlayer: Player, attackedPlayer: Player,
-    board: Board): void {
+    board: Board, attackedPlayerTableCards: Card[]): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -28,9 +28,7 @@ class RangeAttackService {
       throw new Error(`Card ${attackedCard.id} dont have range ability`);
     }
 
-    if (!canRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board)) {
-      throw new Error(`Card ${attackedCard.id} can't attack range to ${board.getPositionByUnit(attackedCard)}`);
-    }
+    checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards);
 
     attackerCard.tap();
 

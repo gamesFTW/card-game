@@ -1,6 +1,6 @@
 import { Grid } from 'pathfinding';
-import { Point } from './Point';
 import { findPath } from './Path';
+import { Point } from '../../../infr/Point';
 
 export function canGoInRange (from: Point, to: Point, range: number, grid: Grid): boolean {
   const path = findPath(from, to, grid);

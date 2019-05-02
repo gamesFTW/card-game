@@ -90,7 +90,7 @@ class AttackCardUseCase extends UseCase {
     if (this.params.isRangeAttack) {
       RangeAttackService.rangeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
-        this.entities.attackedPlayer, this.entities.board
+        this.entities.attackedPlayer, this.entities.board, this.entities.attackedPlayerTableCards
       );
     } else {
       MeleeAttackService.meleeAttackUnit(
