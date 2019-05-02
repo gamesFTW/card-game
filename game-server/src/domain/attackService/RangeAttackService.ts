@@ -28,6 +28,10 @@ class RangeAttackService {
       throw new Error(`Card ${attackedCard.id} dont have range ability`);
     }
 
+    if (attackerCard.abilities.range.blockedInBeginningOfTurn) {
+      throw new Error(`Card ${attackedCard.id} can't attack because blocked in beginning of turn`);
+    }
+
     checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards);
 
     attackerCard.tap();

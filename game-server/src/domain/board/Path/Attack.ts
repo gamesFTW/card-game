@@ -11,7 +11,7 @@ export function checkCanRangeAttackTo (
 
   let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
 
-  const range = attackerCard.abilities['range'].range;
+  const range = attackerCard.abilities.range.range;
 
   if (path.length > range) {
     throw new Error(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);

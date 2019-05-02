@@ -2,12 +2,13 @@ import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
 
 import { GameData, GameState } from './GameState';
-import {Player, PlayerCreationData} from '../player/Player';
+import { Player, PlayerCreationData } from '../player/Player';
 import { Card, CardCreationData } from '../card/Card';
 import * as lodash from 'lodash';
 import { GameEventType } from '../events';
 import { Board } from '../board/Board';
 import { GameConstants } from './GameConstants';
+import { RangeService } from '../abilities/RangeService';
 
 class Game extends Entity {
   protected state: GameState;
@@ -55,10 +56,14 @@ class Game extends Entity {
   public endTurn (
     endingTurnPlayer: Player,
     endingTurnPlayerOpponent: Player,
-    endingTurnPlayerManaPoolCards: Array<Card>,
-    endingTurnPlayerTableCards: Array<Card>
+    endingTurnPlayerManaPoolCards: Card[],
+    endingTurnPlayerTableCards: Card[],
+    endingTurnPlayerOpponentTableCards: Card[],
+    board: Board
   ): void {
     endingTurnPlayer.endTurn(endingTurnPlayerManaPoolCards, endingTurnPlayerTableCards);
+
+    RangeService.applyBlockForRangeUnits(endingTurnPlayerTableCards, endingTurnPlayerOpponentTableCards, board);
 
     this.applyEvent(new Event<GameData>(
       GameEventType.TURN_ENDED,

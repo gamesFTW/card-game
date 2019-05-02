@@ -3,6 +3,7 @@ import { Entity, EntityId } from '../../infr/Entity';
 import { Event } from '../../infr/Event';
 import { Abilities, CardData, CardState } from './CardState';
 import { CardEventType } from '../events';
+import * as lodash from 'lodash';
 
 interface CardCreationData {
   name: string;
@@ -23,6 +24,8 @@ class Card extends Entity {
   get alive (): boolean { return this.state.alive; }
   get tapped (): boolean { return this.state.tapped; }
   get manaCost (): number { return this.state.manaCost; }
+
+  // Deprecared. Надо выпилить.
   get armor (): number {
     if (this.state.abilities.armored) {
       return this.state.abilities.armored.armor;
@@ -75,6 +78,7 @@ class Card extends Entity {
     }
   }
 
+  // Нужно вызвать в начале игры, если карта лежит на столе при старте игры.
   public prepareAtStartOfGame (): void {
     this.makeAlive();
     this.addDefaultMovingPoints();
@@ -143,6 +147,26 @@ class Card extends Entity {
   public makeAlive (): void {
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_PLAYED, {alive: true, currentMovingPoints: 0, currentHp: this.maxHp, id: this.state.id}
+    ));
+  }
+
+  public blockRangeAbility (): void {
+    let abilities = lodash.cloneDeep(this.state.abilities);
+    abilities.range.blockedInBeginningOfTurn = true;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_BLOCKED_RANGE_ABILITY,
+      {id: this.id, abilities}
+    ));
+  }
+
+  public unblockRangeAbility (): void {
+    let abilities = lodash.cloneDeep(this.state.abilities);
+    abilities.range.blockedInBeginningOfTurn = false;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_UNBLOCKED_RANGE_ABILITY,
+      {id: this.id, abilities}
     ));
   }
 

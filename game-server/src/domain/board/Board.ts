@@ -61,7 +61,7 @@ class Board extends Entity {
     return null;
   }
 
-  public checkUnitsAdjacency (firstCard: Card, secondCard: Card): Boolean {
+  public checkUnitsAdjacency (firstCard: Card, secondCard: Card): boolean {
     let firstCardPoint = this.getPositionByUnit(firstCard);
     let secondCardPoint = this.getPositionByUnit(secondCard);
 
@@ -75,7 +75,7 @@ class Board extends Entity {
     return false;
   }
 
-  public checkPositionsAdjacency (firstPosition: Point, secondPosition: Point): Boolean {
+  public checkPositionsAdjacency (firstPosition: Point, secondPosition: Point): boolean {
     let xDistance = Math.abs(firstPosition.x - secondPosition.x);
     let yDistance = Math.abs(firstPosition.y - secondPosition.y);
 

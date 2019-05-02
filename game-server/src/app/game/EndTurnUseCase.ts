@@ -9,6 +9,7 @@ import { EntityId } from '../../infr/Entity';
 import {CardEventType, PlayerDrawnCardData, PlayerEventType} from '../../domain/events';
 import {GameData} from '../../domain/game/GameState';
 import { UseCase } from '../../infr/UseCase';
+import {Board} from '../../domain/board/Board';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 interface EndTurnParams {
@@ -40,6 +41,8 @@ class EndTurnUseCase extends UseCase {
     endingTurnPlayerOpponent?: Player;
     endingTurnPlayerManaPoolCards?: Card[];
     endingTurnPlayerTableCards?: Card[];
+    endingTurnPlayerOpponentTableCards?: Card[];
+    board?: Board;
   } = {};
 
   protected params: EndTurnParams;
@@ -54,6 +57,10 @@ class EndTurnUseCase extends UseCase {
 
     this.entities.endingTurnPlayerManaPoolCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.manaPool, Card);
     this.entities.endingTurnPlayerTableCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
+
+    this.entities.endingTurnPlayerOpponentTableCards = await Repository.getMany<Card>(this.entities.endingTurnPlayerOpponent.table, Card);
+
+    this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
   }
 
   protected addEventListeners (): void {
@@ -72,7 +79,8 @@ class EndTurnUseCase extends UseCase {
   protected runBusinessLogic (): void {
     this.entities.game.endTurn(
       this.entities.endingTurnPlayer, this.entities.endingTurnPlayerOpponent,
-      this.entities.endingTurnPlayerManaPoolCards, this.entities.endingTurnPlayerTableCards
+      this.entities.endingTurnPlayerManaPoolCards, this.entities.endingTurnPlayerTableCards,
+      this.entities.endingTurnPlayerOpponentTableCards, this.entities.board
     );
   }
 
