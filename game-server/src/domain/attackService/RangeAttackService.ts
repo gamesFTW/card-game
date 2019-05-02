@@ -3,6 +3,7 @@ import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { MeleeAttackService } from './MeleeAttackService';
 import { checkCanRangeAttackTo } from '../board/Path/Attack';
+import { RangeService } from '../abilities/RangeService';
 
 class RangeAttackService {
   public static rangeAttackUnit (
@@ -19,17 +20,17 @@ class RangeAttackService {
       throw new Error(`Card ${attackedCard.id} is not in table stack`);
     }
 
-    // TODO: проверить нет ли врагов рядом
-    // if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
-    //   throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
-    // }
-
     if (!attackerCard.abilities.range) {
       throw new Error(`Card ${attackedCard.id} dont have range ability`);
     }
 
     if (attackerCard.abilities.range.blockedInBeginningOfTurn) {
-      throw new Error(`Card ${attackedCard.id} can't attack because blocked in beginning of turn`);
+      throw new Error(`Card ${attackedCard.id} can't range attack because blocked in beginning of turn`);
+    }
+
+    let isBlocked = RangeService.checkIsBlocked(attackerCard, attackedPlayerTableCards, board);
+    if (isBlocked) {
+      throw new Error(`Card ${attackedCard.id} can't range attack because blocked by enemy unit`);
     }
 
     checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards);

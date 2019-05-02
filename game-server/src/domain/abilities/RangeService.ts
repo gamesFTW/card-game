@@ -18,7 +18,7 @@ class RangeService {
     }
   }
 
-  private static checkIsBlocked (card: Card, opponentTableCards: Card[], board: Board): boolean {
+  public static checkIsBlocked (card: Card, opponentTableCards: Card[], board: Board): boolean {
     let isBlocked = false;
     for (let opponentCard of opponentTableCards) {
       isBlocked = board.checkUnitsAdjacency(card, opponentCard);
