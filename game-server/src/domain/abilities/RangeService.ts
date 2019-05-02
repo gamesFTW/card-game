@@ -22,6 +22,10 @@ class RangeService {
     let isBlocked = false;
     for (let opponentCard of opponentTableCards) {
       isBlocked = board.checkUnitsAdjacency(card, opponentCard);
+
+      if (isBlocked) {
+        return true;
+      }
     }
 
     return isBlocked;
