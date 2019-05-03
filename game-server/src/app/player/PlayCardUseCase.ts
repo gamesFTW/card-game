@@ -9,7 +9,7 @@ import { EntityId } from '../../infr/Entity';
 import { CardEventType } from '../../domain/events';
 import { UseCase } from '../../infr/UseCase';
 import { Point } from '../../infr/Point';
-import {Board} from '../../domain/board/Board';
+import { Board } from '../../domain/board/Board';
 
 interface PlayCardParams {
   gameId: EntityId;

@@ -2,8 +2,9 @@ import { Player, CardStack } from '../player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { MeleeAttackService } from './MeleeAttackService';
-import { checkCanRangeAttackTo } from '../board/Path/Attack';
 import { RangeService } from '../abilities/RangeService';
+import { Point } from '../../infr/Point';
+import Bresenham from './Bresenham';
 
 class RangeAttackService {
   public static rangeAttackUnit (
@@ -33,7 +34,7 @@ class RangeAttackService {
       throw new Error(`Card ${attackedCard.id} can't range attack because blocked by enemy unit`);
     }
 
-    checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards);
+    this.checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards);
 
     attackerCard.tap();
 
@@ -44,6 +45,40 @@ class RangeAttackService {
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
       board.removeUnitFromBoard(attackedCard);
+    }
+  }
+
+  private static checkCanRangeAttackTo (
+    attackerCard: Card, attackedCard: Card, attackedPlayer: Player, board: Board, attackedPlayerTableCards: Card[]): boolean {
+    const attackerCardPosition = board.getPositionByUnit(attackerCard);
+    const attackedCardPosition = board.getPositionByUnit(attackedCard);
+
+    let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
+
+    const range = attackerCard.abilities.range.range;
+
+    if (path.length > range) {
+      throw new Error(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
+    }
+
+    let attackedPlayerTableCardsMap: any = {};
+    for (let card of attackedPlayerTableCards) {
+      attackedPlayerTableCardsMap[card.id] = card;
+    }
+
+    let blockersOfRangeAttack = [];
+    for (let point of path) {
+      const cardId = board.getCardIdByPosition(point);
+
+      if (attackedPlayerTableCardsMap[cardId]) {
+        blockersOfRangeAttack.push(attackedPlayerTableCardsMap[cardId]);
+      }
+    }
+
+    if (blockersOfRangeAttack.length > 0) {
+      throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack.join(', ')}`);
+    } else {
+      return true;
     }
   }
 }
