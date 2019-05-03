@@ -47,7 +47,7 @@ async function main (): Promise<void> {
       console.error(chalk.red(error.stack));
 
       ctx.status = 500;
-      ctx.body = `${error.stack}`;
+      ctx.body = `${error.message}`;
     }
   });
 

@@ -7,9 +7,12 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Net.Http.Headers;
 using System.Reflection;
+using UnibusEvent;
 
 public class HttpRequest
 {
+    public static string HTTP_ERROR = "HTTP_ERROR";
+
     public async static Task<T> Get<T>(string url)
     {
         var httpClient = new HttpClient();
@@ -37,7 +40,9 @@ public class HttpRequest
         }
         catch (HttpRequestException e)
         {
-            Debug.Log(e);
+            Debug.Log("Error: " + responseContent);
+
+            Unibus.Dispatch(HTTP_ERROR, responseContent);
         }
 
         return responseContent;
@@ -56,7 +61,9 @@ public class HttpRequest
         }
         catch (HttpRequestException e)
         {
-            Debug.Log(e);
+            Debug.Log("Error: " + responseContent);
+
+            Unibus.Dispatch(HTTP_ERROR, responseContent);
         }
 
         return responseObject;
