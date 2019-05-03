@@ -17,6 +17,7 @@ interface Abilities {
 
 interface CardData {
   id: EntityId;
+  hero?: boolean;
   name?: string;
   maxHp?: number;
   currentHp?: number;
@@ -32,6 +33,7 @@ interface CardData {
 
 class CardState extends EntityState implements CardData {
   public id: EntityId;
+  public hero: boolean;
   public name: string;
   public maxHp: number;
   public currentHp: number;

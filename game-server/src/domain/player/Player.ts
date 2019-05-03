@@ -87,7 +87,7 @@ class Player extends Entity {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
-      throw new Error(`Card ${card.id} isn't in hand`);
+      throw new Error(`Card ${card.id} isn't in hand.`);
     }
 
     let {fromStack: hand, toStack: manaPool} = this.changeCardStack(CardStack.HAND, CardStack.MANA_POOL, card.id);
@@ -101,16 +101,28 @@ class Player extends Entity {
     card.tap();
   }
 
-  public playCard (card: Card, manaPoolCards: Array<Card>, position: Point, board: Board): void {
+  public playCard (
+      card: Card, manaPoolCards: Array<Card>, tableCards: Array<Card>,
+      position: Point, board: Board, enemyPlayerTableCards: Card[]
+    ): void {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
-      throw new Error(`Card ${card.id} isn't in hand`);
+      throw new Error(`Card ${card.id} isn't in hand.`);
+    }
+
+    const isPositionAdjacentToEnemies = board.checkIsPositionAdjacentToCards(position, enemyPlayerTableCards);
+    if (isPositionAdjacentToEnemies) {
+      throw new Error(`Card ${card.id} is adjacent to the enemy.`);
+    }
+
+    const CAST_CREATURE_DISTANCE = 2;
+    const isPositionIsNear = this.assertPositionNearAtHeroOnDistance(position, CAST_CREATURE_DISTANCE, tableCards, board);
+    if (!isPositionIsNear) {
+      throw new Error(`Cant cast card ${card.id}. It far from heroes.`);
     }
 
     this.tapMana(card.manaCost, manaPoolCards);
-
-    // TODO: проверить на наличие рядом героя и на отсутствие врагов
 
     this.placeCardOnBoard(card, board, position);
 
@@ -249,6 +261,20 @@ class Player extends Entity {
       PlayerEventType.CARD_PLAYED,
       {table, hand}
     ));
+  }
+
+  private assertPositionNearAtHeroOnDistance (position: Point, distance: number, tableCards: Card[], board: Board): boolean {
+    for (let card of tableCards) {
+      if (card.hero) {
+        const heroPosition = board.getPositionByUnit(card);
+        const distanceBetweenPoints = board.getDistanceBetweenPositions(position, heroPosition);
+
+        if (distanceBetweenPoints <= distance) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   // Хелперы

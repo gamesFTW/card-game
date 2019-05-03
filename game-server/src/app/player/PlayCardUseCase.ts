@@ -37,9 +37,11 @@ class PlayCardUseCase extends UseCase {
   protected entities: {
     game?: Game;
     player?: Player,
-    card?: Card
-    board?: Board
-    playerManaPoolCards?: Card[]
+    card?: Card,
+    board?: Board,
+    playerManaPoolCards?: Card[],
+    playerTableCards?: Card[],
+    enemyPlayerTableCards?: Card[]
   } = {};
 
   protected params: PlayCardParams;
@@ -50,6 +52,11 @@ class PlayCardUseCase extends UseCase {
     this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
     this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
     this.entities.playerManaPoolCards = await Repository.getMany <Card>(this.entities.player.manaPool, Card);
+    this.entities.playerTableCards = await Repository.getMany <Card>(this.entities.player.table, Card);
+
+    let enemyId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
+    let enemy = await Repository.get<Player>(enemyId, Player);
+    this.entities.enemyPlayerTableCards = await Repository.getMany<Card>(enemy.table, Card);
   }
 
   protected addEventListeners (): void {
@@ -63,7 +70,8 @@ class PlayCardUseCase extends UseCase {
 
   protected runBusinessLogic (): void {
     this.entities.player.playCard(
-      this.entities.card, this.entities.playerManaPoolCards, this.params.position, this.entities.board
+      this.entities.card, this.entities.playerManaPoolCards, this.entities.playerTableCards,
+      this.params.position, this.entities.board, this.entities.enemyPlayerTableCards
     );
   }
 

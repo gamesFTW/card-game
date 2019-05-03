@@ -2,7 +2,7 @@ import { Grid } from 'pathfinding';
 import { findPath } from './Path';
 import { Point } from '../../../infr/Point';
 
-export function canGoInRange (from: Point, to: Point, range: number, grid: Grid): boolean {
+function canGoInRange (from: Point, to: Point, range: number, grid: Grid): boolean {
   const path = findPath(from, to, grid);
   if (path.length === 0) {
     return false;
@@ -14,3 +14,10 @@ export function canGoInRange (from: Point, to: Point, range: number, grid: Grid)
 
   return false;
 }
+
+function calcDistance (from: Point, to: Point, grid: Grid): number {
+  const path = findPath(from, to, grid);
+  return path.length - 1;
+}
+
+export {canGoInRange, calcDistance};

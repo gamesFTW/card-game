@@ -8,6 +8,7 @@ import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
 import { CardEventType, BoardEventType } from '../events';
 import { Player, CardStack } from '../player/Player';
+import { calcDistance } from './Path/Path.helpers';
 
 class Board extends Entity {
   protected state: BoardState;
@@ -136,13 +137,36 @@ class Board extends Entity {
     ));
   }
 
-  public getPFGrid (opponent: Player): Grid {
+  public checkIsPositionAdjacentToCards (position: Point, cards: Card[]): boolean {
+    let isAdjacent = false;
+    for (let card of cards) {
+      let cardPosition = this.getPositionByUnit(card);
+      isAdjacent = this.checkPositionsAdjacency(position, cardPosition);
+
+      if (isAdjacent) {
+        return true;
+      }
+    }
+
+    return isAdjacent;
+  }
+
+  public getDistanceBetweenPositions (position1: Point, position2: Point): number {
+    let grid = this.getPFGrid();
+    return calcDistance(position1, position2, grid);
+  }
+
+  private getPFGrid (): Grid {
+    return new Grid(this.state.width, this.state.height);
+  }
+
+  private getPFGridWithEnemies (player: Player): Grid {
     const grid = new Grid(this.state.width, this.state.height);
 
     for (let x in this.state.units) {
       for (let y in this.state.units[x]) {
         let cardId = this.state.units[x][y];
-        if (opponent.checkCardIdIn(cardId, CardStack.TABLE)) {
+        if (player.checkCardIdIn(cardId, CardStack.TABLE)) {
           grid.setWalkableAt(Number(x), Number(y), false);
         }
       }

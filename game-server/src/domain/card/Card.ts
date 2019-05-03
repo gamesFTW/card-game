@@ -17,6 +17,7 @@ interface CardCreationData {
 class Card extends Entity {
   protected state: CardState;
 
+  get hero (): boolean { return this.state.hero; }
   get name (): string { return this.state.name; }
   get currentHp (): number { return this.state.currentHp; }
   get maxHp (): number { return this.state.maxHp; }
