@@ -30,6 +30,7 @@ public class CardDisplay : MonoBehaviour
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
+    public static readonly string CARD_DIED = "CARD_DIED";
 
     private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
     private bool IsSelected = false;
@@ -101,16 +102,21 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    public void ZoomIn ()
+    public void ZoomIn()
     {
         this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
         this.transform.position += new Vector3(0, 0, -1);
     }
 
-    public void ZoomOut ()
+    public void ZoomOut()
     {
         this.transform.localScale = new Vector3(1, 1, 1);
         this.transform.position -= new Vector3(0, 0, -1);
+    }
+
+    public void Kill()
+    {
+        Unibus.Dispatch(CARD_DIED, this);
     }
 
     void CheckRightMouseDown()

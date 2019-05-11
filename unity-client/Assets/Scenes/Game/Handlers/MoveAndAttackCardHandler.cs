@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnibusEvent;
+﻿using UnibusEvent;
+using UnityEngine;
 
 public class MoveAndAttackCardHandler : MonoBehaviour
 {
@@ -13,6 +13,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
 
     void Start()
     {
+        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_DIED, OnCardDied);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
@@ -31,7 +32,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
         var leftMouseClicked = Input.GetButtonDown("Fire1");
         if (leftMouseClicked && MouseOnTile == false && SelectedUnit)
         {
-            UnselectUnit();
+            UnselectSelectedUnit();
         }
     }
 
@@ -45,7 +46,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
         {
             if (SelectedUnit.CardData.ownerId == clickedUnitDisplay.CardData.ownerId)
             {
-                UnselectUnit();
+                UnselectSelectedUnit();
                 SelectUnit(clickedUnitDisplay);
             }
             else
@@ -65,7 +66,7 @@ public class MoveAndAttackCardHandler : MonoBehaviour
                 x = point.x.ToString(),
                 y = point.y.ToString()
             });
-            UnselectUnit();
+            UnselectSelectedUnit();
         }
     }
 
@@ -102,13 +103,22 @@ public class MoveAndAttackCardHandler : MonoBehaviour
         SelectedUnit = unit;
     }
 
-    void UnselectUnit()
+    void UnselectSelectedUnit()
     {
-        GameObject tile = boardCreator.GetTileByUnit(SelectedUnit.gameObject);
+        UnselectUnit(SelectedUnit.CardDisplay);
+        SelectedUnit = null;
+    }
+
+    void UnselectUnit(CardDisplay cardDisplay)
+    {
+        GameObject tile = boardCreator.GetTileByUnit(cardDisplay.UnitDisplay.gameObject);
         tile.GetComponent<TileDisplay>().SelectedHighlightOff();
 
-        SelectedUnit.CardDisplay.SelectedHighlightOff();
+        cardDisplay.SelectedHighlightOff();
+    }
 
-        SelectedUnit = null;
+    void OnCardDied(CardDisplay cardDisplay)
+    {
+        UnselectUnit(cardDisplay);
     }
 }

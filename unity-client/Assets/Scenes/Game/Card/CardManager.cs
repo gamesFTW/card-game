@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnibusEvent;
 using UnityEngine;
 
 public class CardManager : MonoBehaviour
@@ -123,10 +124,16 @@ public class CardManager : MonoBehaviour
 
         if (card.killed)
         {
-            cardTransform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
-            boardCreator.KillUnit(cardDisplay);
-            cardDisplay.SelectedHighlightOff();
-            cardDisplay.Untap();
+            KillUnit(cardDisplay);
         }
+    }
+
+    private void KillUnit(CardDisplay cardDisplay)
+    {
+        cardDisplay.Kill();
+        cardDisplay.transform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
+        boardCreator.KillUnit(cardDisplay);
+        cardDisplay.SelectedHighlightOff();
+        cardDisplay.Untap();
     }
 }
