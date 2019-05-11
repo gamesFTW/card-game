@@ -134,7 +134,7 @@ public class ReceiverFromServer : MonoBehaviour
     public void OnPlayCardAction(ServerActions.PlayCardAction action)
     {
         cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped, action.newHp);
-        cardManger.UntapCards(action.playerId, action.manaCardsTapped);
+        cardManger.TapCards(action.playerId, action.manaCardsTapped);
     }
 
     public void OnPlayCardAsManaAction(ServerActions.PlayCardAsManaAction action)
