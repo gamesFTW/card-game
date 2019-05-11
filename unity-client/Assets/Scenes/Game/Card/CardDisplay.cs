@@ -86,14 +86,19 @@ public class CardDisplay : MonoBehaviour
 
     public void Tap()
     {
-        cardData.tapped = true;
-        this.transform.Rotate(0, 0, -90);
+        if (!cardData.tapped)
+        {
+            cardData.tapped = true;
+            this.transform.Rotate(0, 0, -90);
+        }
     }
 
     public void Untap()
     {
-        cardData.tapped = false;
-        this.transform.Rotate(0, 0, 90);
+        if (cardData.tapped) { 
+            cardData.tapped = false;
+            this.transform.Rotate(0, 0, 90);
+        }
     }
 
     public void ZoomIn ()

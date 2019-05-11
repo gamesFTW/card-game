@@ -117,13 +117,7 @@ class Card extends Entity {
       ));
 
     if (newHp <= 0) {
-      if (this.state.alive === false) {
-        throw new Error('What Is Dead May Never Die.');
-      }
-
-      this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_DIED, {alive: false, id: this.state.id})
-      );
+      this.killCard();
     }
   }
 
@@ -176,6 +170,20 @@ class Card extends Entity {
       CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
       {currentMovingPoints: this.state.movingPoints, id: this.state.id}
     ));
+  }
+
+  private killCard (): void {
+    if (this.state.alive === false) {
+      throw new Error('What Is Dead May Never Die.');
+    }
+
+    if (this.tapped) {
+      this.untap();
+    }
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_DIED, {alive: false, id: this.state.id})
+    );
   }
 }
 
