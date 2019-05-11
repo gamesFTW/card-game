@@ -34,6 +34,7 @@ public class CardDisplay : MonoBehaviour
 
     private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
     private bool IsSelected = false;
+    private bool IsZoomed = false;
 
     private int currentMouseButton;
 
@@ -73,6 +74,8 @@ public class CardDisplay : MonoBehaviour
     void Update()
     {
         CheckRightMouseDown();
+
+        UpdateZIndex();
     }
 
     public void FaceUp() {
@@ -105,13 +108,15 @@ public class CardDisplay : MonoBehaviour
     public void ZoomIn()
     {
         this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
-        this.transform.position += new Vector3(0, 0, -1);
+        //this.transform.localPosition += new Vector3(0, 0, -10);
+        IsZoomed = true;
     }
 
     public void ZoomOut()
     {
         this.transform.localScale = new Vector3(1, 1, 1);
-        this.transform.position -= new Vector3(0, 0, -1);
+        //this.transform.localPosition -= new Vector3(0, 0, -10);
+        IsZoomed = false;
     }
 
     public void Kill()
@@ -207,5 +212,18 @@ public class CardDisplay : MonoBehaviour
         Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
 
         artwork.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    public void UpdateZIndex()
+    {
+        Vector3 position = transform.localPosition;
+        float z = (float)(position.x * 0.001);
+
+        if (IsZoomed)
+        {
+            z = -20;
+        }
+
+        this.transform.localPosition = new Vector3(position.x, position.y, z);
     }
 }
