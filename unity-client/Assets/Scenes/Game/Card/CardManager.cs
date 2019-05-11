@@ -125,6 +125,7 @@ public class CardManager : MonoBehaviour
         {
             cardTransform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
             boardCreator.KillUnit(cardDisplay);
+            cardDisplay.SelectedHighlightOff();
         }
     }
 }
