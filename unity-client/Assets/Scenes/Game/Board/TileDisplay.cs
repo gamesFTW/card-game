@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnibusEvent;
-using UnityEditor.Presets;
 
 public class TileDisplay : MonoBehaviour
 {
@@ -8,17 +7,17 @@ public class TileDisplay : MonoBehaviour
     public static readonly string TILE_MOUSE_ENTER = "TILE_MOUSE_ENTER";
     public static readonly string TILE_MOUSE_EXIT = "TILE_MOUSE_EXIT";
 
-    public Preset SelectedHighlightGlow;
-    public Preset OverHighlightGlow;
-
     public int x;
     public int y;
 
-    private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
     private bool IsSelected = false;
+    private GameObject overGlowObject;
+    private GameObject selectedGlowObject;
 
     void Start()
     {
+        this.overGlowObject = this.transform.Find("OverGlow").gameObject;
+        this.selectedGlowObject = this.transform.Find("SelectedGlow").gameObject;
     }
 
     void Update()
@@ -46,21 +45,21 @@ public class TileDisplay : MonoBehaviour
     public void SelectedHighlightOn()
     {
         IsSelected = true;
-        SelectedHighlightGlow.ApplyTo(spriteGlowEffect);
+        selectedGlowObject.SetActive(true);
+        this.overGlowObject.SetActive(false);
     }
 
     public void SelectedHighlightOff()
     {
         IsSelected = false;
-        Destroy(spriteGlowEffect);
+        selectedGlowObject.SetActive(false);
     }
 
     public void HighlightOn()
     {
         if (!IsSelected)
         {
-            spriteGlowEffect = gameObject.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-            OverHighlightGlow.ApplyTo(spriteGlowEffect);
+            this.overGlowObject.SetActive(true);
         }
     }
 
@@ -68,7 +67,7 @@ public class TileDisplay : MonoBehaviour
     {
         if (!IsSelected)
         {
-            Destroy(spriteGlowEffect);
+            this.overGlowObject.SetActive(false);
         }
     }
 }
