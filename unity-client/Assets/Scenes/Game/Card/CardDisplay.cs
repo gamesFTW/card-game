@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnibusEvent;
-using UnityEditor.Presets;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -23,20 +19,19 @@ public class CardDisplay : MonoBehaviour
     public TextMeshPro maxHpText;
     public TextMeshPro currentMovingPoints;
 
-    public Preset SelectedHighlightGlow;
-    public Preset OverHighlightGlow;
-
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
     public static readonly string CARD_DIED = "CARD_DIED";
 
-    private SpriteGlow.SpriteGlowEffect spriteGlowEffect;
     private bool IsSelected = false;
     private bool IsZoomed = false;
 
     private int currentMouseButton;
+
+    private GameObject overGlowObject;
+    private GameObject selectedGlowObject;
 
     public int CurrentHp
     {
@@ -69,6 +64,9 @@ public class CardDisplay : MonoBehaviour
         currentMovingPoints.text = cardData.currentMovingPoints.ToString();
 
         StartCoroutine(LoadSprite());
+
+        this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
+        this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
     }
 
     void Update()
@@ -159,30 +157,21 @@ public class CardDisplay : MonoBehaviour
     public void SelectedHighlightOn()
     {
         IsSelected = true;
-        
-        if (!spriteGlowEffect)
-        {
-            GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
-            spriteGlowEffect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-        }
-
-        SelectedHighlightGlow.ApplyTo(spriteGlowEffect);
+        this.selectedGlowObject.SetActive(true);
+        this.overGlowObject.SetActive(false);
     }
 
     public void SelectedHighlightOff()
     {
         IsSelected = false;
-        Destroy(spriteGlowEffect);
+        this.selectedGlowObject.SetActive(false);
     }
 
     public void OverHighlightOn()
     {
         if (!IsSelected)
         {
-            GameObject go = transform.Find("Front").Find("CardTemplate").gameObject;
-
-            spriteGlowEffect = go.AddComponent(typeof(SpriteGlow.SpriteGlowEffect)) as SpriteGlow.SpriteGlowEffect;
-            OverHighlightGlow.ApplyTo(spriteGlowEffect);
+            this.overGlowObject.SetActive(true);
         }
     }
 
@@ -190,7 +179,7 @@ public class CardDisplay : MonoBehaviour
     {
         if (!IsSelected)
         {
-            Destroy(spriteGlowEffect);
+            this.overGlowObject.SetActive(false);
         }
     }
 
