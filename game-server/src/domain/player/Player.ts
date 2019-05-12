@@ -133,6 +133,11 @@ class Player extends Entity {
   public moveCard (card: Card, position: Point, board: Board): void {
     this.checkIfItHisTurn();
 
+    const isCardInTable = this.checkCardIn(card, CardStack.TABLE);
+    if (!isCardInTable) {
+      throw new Error(`Card ${card.id} not located in table of player ${this.id}`);
+    }
+
     board.moveUnit(card, position);
 
     card.move(1);
