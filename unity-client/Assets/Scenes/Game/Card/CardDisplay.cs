@@ -159,14 +159,23 @@ public class CardDisplay : MonoBehaviour
         IsSelected = true;
         this.selectedGlowObject.SetActive(true);
         this.overGlowObject.SetActive(false);
-        this.UnitDisplay.DisableTeamColor();
+
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.DisableTeamColor();
+        }
     }
 
     public void SelectedHighlightOff()
     {
         IsSelected = false;
         this.selectedGlowObject.SetActive(false);
-        this.UnitDisplay.EnableTeamColor();
+
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.EnableTeamColor();
+        }
+
     }
 
     public void OverHighlightOn()

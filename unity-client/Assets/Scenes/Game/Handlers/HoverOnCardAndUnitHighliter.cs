@@ -25,11 +25,13 @@ public class HoverOnCardAndUnitHighliter : MonoBehaviour
     private void OnUnitBoardMouseEnter(UnitDisplay unit)
     {
         unit.CardDisplay.OverHighlightOn();
+        unit.CardDisplay.ZoomIn();
     }
 
     private void OnUnitBoardMouseExit(UnitDisplay unit)
     {
         unit.CardDisplay.OverHighlightOff();
+        unit.CardDisplay.ZoomOut();
     }
 
     private void OnCardMouseEnter(CardDisplay card)
