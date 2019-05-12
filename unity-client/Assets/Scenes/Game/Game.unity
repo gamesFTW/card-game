@@ -1965,7 +1965,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Width: 9
-  Height: 8
+  Height: 9
   TilePrefab: {fileID: 884036361225012054, guid: 9d2f5f5ed3bca3f4c8fafd6d08ba263f,
     type: 3}
   UnitPrefab: {fileID: 7399311723132172013, guid: fc8d50e54a9244a4bb45d13c27d8fd8a,
