@@ -115,10 +115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3e6e27669bdf943ab075a47798dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SelectedHighlightGlow: {fileID: 2655988077585873504, guid: 9508ea35afba7b441a42a87af38cf9bf,
-    type: 2}
-  OverHighlightGlow: {fileID: 2655988077585873504, guid: c7b5a287862734c708cfceb244063ba4,
-    type: 2}
   x: 0
   y: 0
 --- !u!222 &3101436907010750809
@@ -233,8 +229,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -484781769
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 727a739feefbc0144bd6d0d9070fd66e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -524,8 +520,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -484781769
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f88e85b4114c82142bb55e52b572c5f1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

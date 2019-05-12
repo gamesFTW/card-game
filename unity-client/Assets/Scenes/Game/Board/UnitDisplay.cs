@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor.Presets;
 using System.Collections;
 
 public class UnitDisplay : MonoBehaviour
@@ -18,16 +17,40 @@ public class UnitDisplay : MonoBehaviour
 
     private CardData cardData;
 
+    private GameObject blueGlow;
+    private GameObject redGlow;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.blueGlow = this.transform.Find("BlueGlow").gameObject;
+        this.redGlow = this.transform.Find("RedGlow").gameObject;
+
+        this.EnableTeamColor();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void EnableTeamColor()
+    {
+        if (this.cardData.ownerId == GameState.mainPlayerId)
+        {
+            blueGlow.SetActive(true);
+        }
+        else
+        {
+            redGlow.SetActive(true);
+        }
+    }
+
+    public void DisableTeamColor()
+    {
+        blueGlow.SetActive(false);
+        redGlow.SetActive(false);
     }
 
     public IEnumerator LoadSprite()

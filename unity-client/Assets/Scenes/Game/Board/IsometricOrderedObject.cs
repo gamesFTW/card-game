@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class IsometricOrderedObject: MonoBehaviour
 {
-    private SpriteRenderer spriteRnd;
+    private Renderer spriteRnd;
 
     void Start()
     {
-        spriteRnd = GetComponent<SpriteRenderer>();
+        spriteRnd = GetComponent<Renderer>();
     }
 
     void Update()

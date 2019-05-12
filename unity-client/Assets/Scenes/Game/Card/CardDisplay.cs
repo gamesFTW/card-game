@@ -159,12 +159,14 @@ public class CardDisplay : MonoBehaviour
         IsSelected = true;
         this.selectedGlowObject.SetActive(true);
         this.overGlowObject.SetActive(false);
+        this.UnitDisplay.DisableTeamColor();
     }
 
     public void SelectedHighlightOff()
     {
         IsSelected = false;
         this.selectedGlowObject.SetActive(false);
+        this.UnitDisplay.EnableTeamColor();
     }
 
     public void OverHighlightOn()
@@ -172,6 +174,7 @@ public class CardDisplay : MonoBehaviour
         if (!IsSelected)
         {
             this.overGlowObject.SetActive(true);
+            this.UnitDisplay.DisableTeamColor();
         }
     }
 
@@ -180,6 +183,7 @@ public class CardDisplay : MonoBehaviour
         if (!IsSelected)
         {
             this.overGlowObject.SetActive(false);
+            this.UnitDisplay.EnableTeamColor();
         }
     }
 
