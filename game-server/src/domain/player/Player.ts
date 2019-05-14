@@ -186,11 +186,11 @@ class Player extends Entity {
   }
 
   private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
-    let y = isFirstPlayer ? 1 : GameConstants.BOARD_HEIGHT;
-    let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2), y);
+    const y = isFirstPlayer ? 1 : GameConstants.BOARD_HEIGHT - 1;
+    let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2) + 1, y);
 
-    let hero = heroes[0];
 
+    const hero = heroes[0];
     board.addUnitOnBoard(hero, position);
 
     let {fromStack: deck, toStack: table} = this.changeCardStack(CardStack.DECK, CardStack.TABLE, hero.id);
@@ -201,6 +201,23 @@ class Player extends Entity {
     ));
 
     hero.prepareAtStartOfGame();
+
+    // second hero
+    if (heroes.length > 1) {
+      const hero2 = heroes[1];
+      let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2) - 1, y);
+
+      board.addUnitOnBoard(hero2, position);
+
+      let {fromStack: deck, toStack: table} = this.changeCardStack(CardStack.DECK, CardStack.TABLE, hero2.id);
+  
+      this.applyEvent(new Event<PlayerData>(
+        PlayerEventType.CARD_PLAYED,
+        {table, deck}
+      ));
+  
+      hero2.prepareAtStartOfGame();
+    }
   }
 
   private drawStartingHand (isFirstPlayer: boolean): void {
