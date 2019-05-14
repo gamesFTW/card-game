@@ -25,8 +25,8 @@ playerController.post('/playCard', async (ctx) => {
   // TODO: его нужно доставать из сессии
   let playerId = ctx.request.body.playerId as EntityId;
   let cardId = ctx.request.body.cardId as EntityId;
-  let x = ctx.request.body.x;
-  let y = ctx.request.body.y;
+  let x = Number(ctx.request.body.x);
+  let y = Number(ctx.request.body.y);
 
   let position = new Point(x, y);
 
@@ -41,8 +41,8 @@ playerController.post('/moveCard', async (ctx) => {
   // TODO: его нужно доставать из сессии
   let playerId = ctx.request.body.playerId as EntityId;
   let cardId = ctx.request.body.cardId as EntityId;
-  let x = ctx.request.body.x;
-  let y = ctx.request.body.y;
+  let x = Number(ctx.request.body.x);
+  let y = Number(ctx.request.body.y);
 
   let position = new Point(x, y);
 
