@@ -25,6 +25,7 @@ interface AttackCardParams {
 interface CardChanges {
   id?: string;
   isTapped?: boolean;
+  isUntapped?: boolean;
   newHp?: number;
   killed?: boolean;
 }
@@ -69,11 +70,13 @@ class AttackCardUseCase extends UseCase {
 
   protected addEventListeners (): void {
     this.entities.attackerCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackerCardTapped);
+    this.entities.attackerCard.addEventListener(CardEventType.CARD_UNTAPPED, this.onAttackerCardUntapped);
     this.entities.attackerCard.addEventListener(CardEventType.CARD_HEALED, this.onAttackerCardHpChanged);
     this.entities.attackerCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackerCardHpChanged);
     this.entities.attackerCard.addEventListener(CardEventType.CARD_DIED, this.onAttackerCardDied);
 
     this.entities.attackedCard.addEventListener(CardEventType.CARD_TAPPED, this.onAttackedCardTapped);
+    this.entities.attackedCard.addEventListener(CardEventType.CARD_UNTAPPED, this.onAttackedCardUntapped);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_HEALED, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_DIED, this.onAttackedCardDied);
@@ -82,6 +85,7 @@ class AttackCardUseCase extends UseCase {
       if (card.id !== this.entities.attackedCard.id) {
         card.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onCardHpChanged);
         card.addEventListener(CardEventType.CARD_DIED, this.onCardDied);
+        card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
       }
     }
   }
@@ -116,6 +120,11 @@ class AttackCardUseCase extends UseCase {
   }
 
   @boundMethod
+  private onAttackerCardUntapped (event: Event<CardData>): void {
+    this.action.attackerCard.isUntapped = true;
+  }
+
+  @boundMethod
   private onAttackerCardDied (event: Event<CardData>): void {
     this.action.attackerCard.killed = !event.data.alive;
   }
@@ -131,6 +140,11 @@ class AttackCardUseCase extends UseCase {
   }
 
   @boundMethod
+  private onAttackedCardUntapped (event: Event<CardData>): void {
+    this.action.attackedCard.isUntapped = true;
+  }
+
+  @boundMethod
   private onAttackedCardDied (event: Event<CardData>): void {
     this.action.attackedCard.killed = !event.data.alive;
   }
@@ -140,6 +154,13 @@ class AttackCardUseCase extends UseCase {
     let cardChanges = this.getOrCreateCardChangesById(event.data.id);
 
     cardChanges.newHp = event.data.currentHp;
+  }
+
+  @boundMethod
+  private onCardUntapped (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.isUntapped = true;
   }
 
   @boundMethod

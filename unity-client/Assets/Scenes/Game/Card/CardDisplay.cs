@@ -117,6 +117,9 @@ public class CardDisplay : MonoBehaviour
     public void Kill()
     {
         Unibus.Dispatch(CARD_DIED, this);
+        this.ZoomOut();
+        this.SelectedHighlightOff();
+        this.OverHighlightOff();
     }
 
     private void FillDescription()

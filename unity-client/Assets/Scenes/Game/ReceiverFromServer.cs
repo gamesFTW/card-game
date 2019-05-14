@@ -75,6 +75,7 @@ namespace ServerActions
     {
         public string id;
         public bool isTapped;
+        public bool isUntapped;
         public int newHp;
         public bool killed;
     }

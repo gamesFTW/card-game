@@ -119,6 +119,11 @@ public class CardManager : MonoBehaviour
         {
             cardDisplay.Tap();
         }
+        // Это не баг, что сразу и тап и антап. Потому что в дальнейшем должна быть анимация тапа, а потом антапа.
+        if (card.isUntapped)
+        {
+            cardDisplay.Untap();
+        }
 
         cardDisplay.CurrentHp = card.newHp;
 
@@ -133,7 +138,5 @@ public class CardManager : MonoBehaviour
         cardDisplay.Kill();
         cardDisplay.transform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
         boardCreator.KillUnit(cardDisplay);
-        cardDisplay.SelectedHighlightOff();
-        cardDisplay.Untap();
     }
 }
