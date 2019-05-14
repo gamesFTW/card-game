@@ -21,6 +21,32 @@ public class CardData
     // Простите, но слишком долго делать по другому.
     // По правильному нужно хранить стеки со ссылками на карты.
     public string ownerId;
+
+    public Abilities abilities;
+}
+
+[Serializable]
+public class Abilities
+{
+    public RangeAbility range;
+    public Boolean firstStrike;
+    public ArmoredAbility armored;
+    public Boolean vampiric;
+    public Boolean noEnemyRetaliation;
+    public Boolean piercing;
+}
+
+[Serializable]
+public class RangeAbility
+{
+    public int range;
+    public Boolean blockedInBeginningOfTurn;
+}
+
+[Serializable]
+public class ArmoredAbility
+{
+    public int armor;
 }
 
 [Serializable]

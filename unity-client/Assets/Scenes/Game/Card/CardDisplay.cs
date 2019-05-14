@@ -67,6 +67,8 @@ public class CardDisplay : MonoBehaviour
 
         this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
         this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
+
+        this.FillDescription();
     }
 
     void Update()
@@ -88,24 +90,19 @@ public class CardDisplay : MonoBehaviour
 
     public void Tap()
     {
-        if (!cardData.tapped)
-        {
-            cardData.tapped = true;
-            this.transform.Rotate(0, 0, -90);
-        }
+        cardData.tapped = true;
+        this.transform.Rotate(0, 0, -90);
     }
 
     public void Untap()
     {
-        if (cardData.tapped) { 
-            cardData.tapped = false;
-            this.transform.Rotate(0, 0, 90);
-        }
+        cardData.tapped = false;
+        this.transform.Rotate(0, 0, 90);
     }
 
     public void ZoomIn()
     {
-        this.transform.localScale = new Vector3(1.5F, 1.5F, 1.5F);
+        this.transform.localScale = new Vector3(2F, 2F, 2F);
         //this.transform.localPosition += new Vector3(0, 0, -10);
         IsZoomed = true;
     }
@@ -120,6 +117,37 @@ public class CardDisplay : MonoBehaviour
     public void Kill()
     {
         Unibus.Dispatch(CARD_DIED, this);
+    }
+
+    private void FillDescription()
+    {
+        string descriptionText = "";
+        if (this.cardData.abilities.range != null)
+        {
+            descriptionText += "Range " + this.cardData.abilities.range.range + "\n";
+        }
+        if (this.cardData.abilities.firstStrike)
+        {
+            descriptionText += "First strike\n";
+        }
+        if (this.cardData.abilities.armored != null)
+        {
+            descriptionText += "Armored " + this.cardData.abilities.armored.armor + "\n";
+        }
+        if (this.cardData.abilities.vampiric)
+        {
+            descriptionText += "Vampiric\n";
+        }
+        if (this.cardData.abilities.noEnemyRetaliation)
+        {
+            descriptionText += "No enemy retaliation\n";
+        }
+        if (this.cardData.abilities.piercing)
+        {
+            descriptionText += "Piercing\n";
+        }
+
+        this.descriptionText.text = descriptionText;
     }
 
     void CheckRightMouseDown()

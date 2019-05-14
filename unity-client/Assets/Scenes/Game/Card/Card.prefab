@@ -76,6 +76,16 @@ MonoBehaviour:
     y: 0
     image: 
     ownerId: 
+    abilities:
+      range:
+        range: 0
+        blockedInBeginningOfTurn: 0
+      firstStrike: 0
+      armored:
+        armor: 0
+      vampiric: 0
+      noEnemyRetaliation: 0
+      piercing: 0
   artwork: {fileID: 4150893717027933245}
   nameText: {fileID: 7156934267358142637}
   descriptionText: {fileID: 1238309615793919919}
@@ -2209,13 +2219,13 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_textAlignment: 258
   m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
