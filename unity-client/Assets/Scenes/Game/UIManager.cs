@@ -7,6 +7,7 @@ using LateExe;
 public class UIManager : MonoBehaviour
 {
     public Text errorText;
+    public Text changeTurnText;
 
     private Executer executer;
     private InvokeId taskId;
@@ -19,6 +20,10 @@ public class UIManager : MonoBehaviour
         Unibus.Subscribe<string>(HttpRequest.HTTP_ERROR, OnHttpError);
 
         this.executer = new Executer(this);
+
+        changeTurnText.GetComponent<CanvasRenderer>().SetAlpha(0);
+
+        Unibus.Subscribe<string>(ReceiverFromServer.TURN_ENDED, OnTurnEnded);
     }
 
     void Update()
@@ -51,6 +56,25 @@ public class UIManager : MonoBehaviour
         this.taskId = this.executer.DelayExecute(10, x => {
             colorToFadeTo = new Color(1f, 1f, 1f, 0);
             errorText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
+        });
+    }
+
+    private void OnTurnEnded (string playerId)
+    {
+        if (GameState.isMainPlayerTurn)
+        {
+            changeTurnText.text = "Your turn";
+        } else
+        {
+            changeTurnText.text = "Opponent turn";
+        }
+
+        var colorToFadeTo = new Color(1f, 1f, 1f, 1);
+        changeTurnText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
+
+        this.taskId = this.executer.DelayExecute(1, x => {
+            colorToFadeTo = new Color(1f, 1f, 1f, 0);
+            changeTurnText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
         });
     }
 }

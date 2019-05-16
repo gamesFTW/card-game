@@ -8,4 +8,9 @@
     public static string enemyOfMainPlayerId;
 
     public static string playerIdWhoMakesMove;
+
+    public static bool isMainPlayerTurn
+    {
+        get { return GameState.playerIdWhoMakesMove == GameState.mainPlayerId; }
+    }
 }

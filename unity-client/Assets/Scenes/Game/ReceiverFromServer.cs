@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using Newtonsoft.Json;
+using UnibusEvent;
 
 [Serializable]
 public class Point
@@ -83,6 +84,8 @@ namespace ServerActions
 
 public class ReceiverFromServer : MonoBehaviour
 {
+    public static readonly string TURN_ENDED = "TURN_ENDED";
+
     private CardManager cardManger;
 
     void Awake()
@@ -130,6 +133,8 @@ public class ReceiverFromServer : MonoBehaviour
         cardManger.UpdateMovingPoints(action.cardsMovingPointsUpdated);
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
+
+        Unibus.Dispatch(TURN_ENDED, action.startedPlayerId);
     }
 
     public void OnPlayCardAction(ServerActions.PlayCardAction action)
