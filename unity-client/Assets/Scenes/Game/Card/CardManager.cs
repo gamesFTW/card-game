@@ -125,7 +125,7 @@ public class CardManager : MonoBehaviour
             cardDisplay.Untap();
         }
 
-        cardDisplay.CurrentHp = card.newHp;
+        cardDisplay.CurrentHp = (int)card.newHp;
 
         if (card.killed)
         {
