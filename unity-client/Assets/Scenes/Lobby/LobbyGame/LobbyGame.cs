@@ -7,7 +7,8 @@ public class LobbyGame : MonoBehaviour
 {
     public static readonly string DETELE_GAME = "DETELE_GAME";
 
-    public Text deckNamesText;
+    public Text deckNamesText1;
+    public Text deckNamesText2;
     public InputField gameIdText;
     public Button playAs1PlayerButton;
     public Button playAs2PlayerButton;
@@ -23,7 +24,8 @@ public class LobbyGame : MonoBehaviour
     void Start()
     {
         gameIdText.text = lobbyGameId;
-        deckNamesText.text = deckName1 + " vs "+ deckName2;
+        deckNamesText1.text = deckName1;
+        deckNamesText2.text = deckName2;
 
         playAs1PlayerButton.onClick.AddListener(OnPlayAs1PlayerButtonClick);
         playAs2PlayerButton.onClick.AddListener(OnPlayAs2PlayerButtonClick);
