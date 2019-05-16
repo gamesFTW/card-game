@@ -63,14 +63,14 @@ class Game extends Entity {
   ): void {
     endingTurnPlayer.endTurn(endingTurnPlayerManaPoolCards, endingTurnPlayerTableCards);
 
-    RangeService.applyBlockForRangeUnits(endingTurnPlayerTableCards, endingTurnPlayerOpponentTableCards, board);
-
     this.applyEvent(new Event<GameData>(
       GameEventType.TURN_ENDED,
       {currentPlayersTurn: endingTurnPlayerOpponent.id, currentTurn: this.state.currentTurn + 1}
     ));
 
     endingTurnPlayerOpponent.startTurn();
+
+    RangeService.applyBlockForRangeUnits(endingTurnPlayerOpponentTableCards, endingTurnPlayerTableCards, board);
   }
 
   public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {
