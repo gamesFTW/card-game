@@ -232,17 +232,19 @@ class Player extends Entity {
 
   // Важные методы. Возможно могут стать публичными.
   private drawCard (): void {
-    let newDeck = lodash.clone(this.state.deck);
-    let newHand = this.state.hand ? lodash.clone(this.state.hand) : [];
+    if (this.state.deck.length > 0) {
+      let newDeck = lodash.clone(this.state.deck);
+      let newHand = this.state.hand ? lodash.clone(this.state.hand) : [];
 
-    let drawnCardId = newDeck.shift();
-    newHand.push(drawnCardId);
+      let drawnCardId = newDeck.shift();
+      newHand.push(drawnCardId);
 
-    this.applyEvent(new Event<PlayerData, PlayerDrawnCardData>(
-      PlayerEventType.CARD_DRAWN,
-      {deck: newDeck, hand: newHand},
-      {drawnCard: drawnCardId}
-    ));
+      this.applyEvent(new Event<PlayerData, PlayerDrawnCardData>(
+        PlayerEventType.CARD_DRAWN,
+        {deck: newDeck, hand: newHand},
+        {drawnCard: drawnCardId}
+      ));
+    }
   }
 
   private shuffleDeck (): void {
