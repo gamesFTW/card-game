@@ -34,6 +34,7 @@ class MoveCardUseCase extends UseCase {
   protected entities: {
     game?: Game;
     player?: Player,
+    opponent?: Player,
     card?: Card
     board?: Board
   } = {};
@@ -43,6 +44,8 @@ class MoveCardUseCase extends UseCase {
   protected async readEntities (): Promise<void> {
     this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
     this.entities.player = await Repository.get<Player>(this.params.playerId, Player);
+    let opponentId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
+    this.entities.opponent = await Repository.get<Player>(opponentId, Player);
     this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
     this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
   }
@@ -53,7 +56,7 @@ class MoveCardUseCase extends UseCase {
 
   protected runBusinessLogic (): void {
     this.entities.player.moveCard(
-      this.entities.card, this.params.position, this.entities.board
+      this.entities.card, this.params.position, this.entities.board, this.entities.opponent,
     );
   }
 

@@ -8,7 +8,8 @@ import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
 import { CardEventType, BoardEventType } from '../events';
 import { Player, CardStack } from '../player/Player';
-import { calcDistance } from './Path/Path.helpers';
+import { calcDistance, canGoInRange } from './Path/Path.helpers';
+import { pathToPoints, findPath } from './Path/Path';
 
 class Board extends Entity {
   protected state: BoardState;
@@ -118,16 +119,9 @@ class Board extends Entity {
   }
 
   public moveUnit (card: Card, toPosition: Point): void {
-    this.checkPositionForVacancy(toPosition);
+    const fromPosition = this.getPositionByUnit(card);
 
-    let fromPosition = this.getPositionByUnit(card);
-
-    if (!this.checkPositionsAdjacency(fromPosition, toPosition)) {
-      throw new Error(`Card ${card.id} is not adjacent to ${toPosition}`);
-    }
-
-    let newUnits = lodash.cloneDeep(this.state.units);
-
+    const newUnits = lodash.cloneDeep(this.state.units);
     newUnits[fromPosition.x][fromPosition.y] = null;
     newUnits[toPosition.x][toPosition.y] = card.id;
 
@@ -135,6 +129,16 @@ class Board extends Entity {
       BoardEventType.CARD_MOVED,
       { units: newUnits }
     ));
+    
+  }
+
+  public getPathOfUnitMove (card: Card, toPosition: Point, opponent: Player): Point[] {
+    this.checkPositionForVacancy(toPosition);
+
+    const fromPosition = this.getPositionByUnit(card);
+
+    const grid = this.getPFGridWithEnemies(opponent);
+    return findPath(fromPosition, toPosition, grid);
   }
 
   public checkIsPositionAdjacentToCards (position: Point, cards: Card[]): boolean {
@@ -156,16 +160,16 @@ class Board extends Entity {
   }
 
   private getPFGrid (): Grid {
-    return new Grid(this.state.width, this.state.height);
+    return new Grid(this.state.width + 1, this.state.height + 1);
   }
 
-  private getPFGridWithEnemies (player: Player): Grid {
-    const grid = new Grid(this.state.width, this.state.height);
+  private getPFGridWithEnemies (opponent: Player): Grid {
+    const grid = this.getPFGrid();
 
     for (let x in this.state.units) {
       for (let y in this.state.units[x]) {
         let cardId = this.state.units[x][y];
-        if (player.checkCardIdIn(cardId, CardStack.TABLE)) {
+        if (opponent.checkCardIdIn(cardId, CardStack.TABLE)) {
           grid.setWalkableAt(Number(x), Number(y), false);
         }
       }
