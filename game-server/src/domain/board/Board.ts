@@ -152,8 +152,7 @@ class Board extends Entity {
   }
 
   public getDistanceBetweenPositions (position1: Point, position2: Point): number {
-    let grid = this.getPFGrid();
-    return calcDistance(position1, position2, grid);
+    return calcDistance(position1, position2);
   }
 
   private getPFGrid (): Grid {

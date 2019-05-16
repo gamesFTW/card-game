@@ -15,9 +15,8 @@ function canGoInRange (from: Point, to: Point, range: number, grid: Grid): boole
   return false;
 }
 
-function calcDistance (from: Point, to: Point, grid: Grid): number {
-  const path = findPath(from, to, grid);
-  return path.length - 1;
+function calcDistance (from: Point, to: Point): number {
+  return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
 }
 
 export {canGoInRange, calcDistance};
