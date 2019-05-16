@@ -72,7 +72,7 @@ public class UIManager : MonoBehaviour
         var colorToFadeTo = new Color(1f, 1f, 1f, 1);
         changeTurnText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
 
-        this.taskId = this.executer.DelayExecute(1, x => {
+        this.executer.DelayExecute(1, x => {
             colorToFadeTo = new Color(1f, 1f, 1f, 0);
             changeTurnText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
         });

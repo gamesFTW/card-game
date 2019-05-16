@@ -54,10 +54,10 @@ class RangeAttackService {
     const attackedCardPosition = board.getPositionByUnit(attackedCard);
 
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
+    const range = path.length - 1;
+    const attackerRange = attackerCard.abilities.range.range;
 
-    const range = attackerCard.abilities.range.range;
-
-    if (path.length > range) {
+    if (range > attackerRange) {
       throw new Error(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
     }
 
@@ -66,8 +66,12 @@ class RangeAttackService {
       attackedPlayerTableCardsMap[card.id] = card;
     }
 
+    let betweenPath = path;
+    betweenPath.shift();
+    betweenPath.pop();
+
     let blockersOfRangeAttack = [];
-    for (let point of path) {
+    for (let point of betweenPath) {
       const cardId = board.getCardIdByPosition(point);
 
       if (attackedPlayerTableCardsMap[cardId]) {
@@ -76,7 +80,7 @@ class RangeAttackService {
     }
 
     if (blockersOfRangeAttack.length > 0) {
-      throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack.join(', ')}`);
+      throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack.map(c => c.id).join(', ')}`);
     } else {
       return true;
     }

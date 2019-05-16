@@ -210,12 +210,12 @@ class Player extends Entity {
       board.addUnitOnBoard(hero2, position);
 
       let {fromStack: deck, toStack: table} = this.changeCardStack(CardStack.DECK, CardStack.TABLE, hero2.id);
-  
+
       this.applyEvent(new Event<PlayerData>(
         PlayerEventType.CARD_PLAYED,
         {table, deck}
       ));
-  
+
       hero2.prepareAtStartOfGame();
     }
   }
