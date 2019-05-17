@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnibusEvent;
+using DG.Tweening;
 
 public class PlayerHandDisplay : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class PlayerHandDisplay : MonoBehaviour
         {
             card.ZoomIn(2f);
             card.transform.position += new Vector3(0, 3.4F, 0);
+            //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
         }
     }
 
@@ -25,6 +27,7 @@ public class PlayerHandDisplay : MonoBehaviour
         {
             card.ZoomOut();
             card.transform.position -= new Vector3(0, 3.4F, 0);
+            //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
         }
     }
 }

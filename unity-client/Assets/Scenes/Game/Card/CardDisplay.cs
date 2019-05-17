@@ -2,6 +2,7 @@
 using TMPro;
 using UnibusEvent;
 using UnityEngine;
+using DG.Tweening;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -100,13 +101,13 @@ public class CardDisplay : MonoBehaviour
 
     public void ZoomIn(float zoom)
     {
-        this.transform.localScale = new Vector3(zoom, zoom, zoom);
+        this.transform.DOScale(new Vector3(zoom, zoom, zoom), 0.2f);
         this.IsZoomed = true;
     }
 
     public void ZoomOut()
     {
-        this.transform.localScale = new Vector3(1, 1, 1);
+        this.transform.DOScale(new Vector3(1, 1, 1), 0.2f);
         this.IsZoomed = false;
     }
 
