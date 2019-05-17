@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnibusEvent;
 using System;
+using DG.Tweening;
 
 public class BoardCreator : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class BoardCreator : MonoBehaviour
     {
         UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
 
-        unitDisplay.transform.localPosition = PointerToIcometric(position, tileWidth, tileHeight);
+        unitDisplay.transform.DOLocalMove(PointerToIcometric(position, tileWidth, tileHeight), 0.5f);
 
         Point oldPosition = GetUnitsPosition(unitDisplay);
 
