@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnibusEvent;
+using UnityEngine;
 
-public class PlayerHandDisplay : MonoBehaviour
+public class StackDisplayWithZoomIn : MonoBehaviour
 {
+    public static float CARD_ZOOM = 3f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,8 +18,7 @@ public class PlayerHandDisplay : MonoBehaviour
     {
         if (card.transform.IsChildOf(this.transform))
         {
-            card.ZoomIn(2f);
-            card.transform.position += new Vector3(0, 3.4F, 0);
+            card.ZoomIn(StackDisplayWithZoomIn.CARD_ZOOM);
         }
     }
 
@@ -24,7 +27,6 @@ public class PlayerHandDisplay : MonoBehaviour
         if (card.transform.IsChildOf(this.transform))
         {
             card.ZoomOut();
-            card.transform.position -= new Vector3(0, 3.4F, 0);
         }
     }
 }

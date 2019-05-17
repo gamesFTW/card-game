@@ -28,8 +28,6 @@ public class CardDisplay : MonoBehaviour
     private bool IsSelected = false;
     private bool IsZoomed = false;
 
-    private int currentMouseButton;
-
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
 
@@ -100,18 +98,16 @@ public class CardDisplay : MonoBehaviour
         this.transform.Rotate(0, 0, 90);
     }
 
-    public void ZoomIn()
+    public void ZoomIn(float zoom)
     {
-        this.transform.localScale = new Vector3(2F, 2F, 2F);
-        //this.transform.localPosition += new Vector3(0, 0, -10);
-        IsZoomed = true;
+        this.transform.localScale = new Vector3(zoom, zoom, zoom);
+        this.IsZoomed = true;
     }
 
     public void ZoomOut()
     {
         this.transform.localScale = new Vector3(1, 1, 1);
-        //this.transform.localPosition -= new Vector3(0, 0, -10);
-        IsZoomed = false;
+        this.IsZoomed = false;
     }
 
     public void Kill()
@@ -175,13 +171,11 @@ public class CardDisplay : MonoBehaviour
 
     void OnMouseEnter()
     {
-        this.ZoomIn();
         Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     void OnMouseExit()
     {
-        this.ZoomOut();
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
     
