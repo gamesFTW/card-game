@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class UnitDisplay : MonoBehaviour
 {
     public Sprite sprite;
     public CardDisplay CardDisplay;
+
+    private Tween shakeTween;
 
     public CardData CardData
     {
@@ -62,5 +65,20 @@ public class UnitDisplay : MonoBehaviour
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = sprite;
+    }
+
+    public void Shake()
+    {
+        bool isNeedShake = true;
+
+        if (this.shakeTween != null && this.shakeTween.IsPlaying())
+        {
+            isNeedShake = false;
+        }
+
+        if (isNeedShake)
+        {
+            shakeTween = this.transform.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), 10, 90);
+        }
     }
 }

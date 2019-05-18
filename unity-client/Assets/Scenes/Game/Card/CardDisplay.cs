@@ -38,6 +38,7 @@ public class CardDisplay : MonoBehaviour
         set {
             cardData.currentHp = value;
             currentHpText.text = value.ToString();
+            this.Shake();
         }
     }
 
@@ -91,12 +92,16 @@ public class CardDisplay : MonoBehaviour
     {
         cardData.tapped = true;
         this.transform.Rotate(0, 0, -90);
+
+        this.Shake();
     }
 
     public void Untap()
     {
         cardData.tapped = false;
         this.transform.Rotate(0, 0, 90);
+
+        this.Shake();
     }
 
     public void ZoomIn(float zoom)
@@ -253,5 +258,13 @@ public class CardDisplay : MonoBehaviour
         }
 
         this.transform.localPosition = new Vector3(position.x, position.y, z);
+    }
+
+    public void Shake()
+    {
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.Shake();
+        }
     }
 }
