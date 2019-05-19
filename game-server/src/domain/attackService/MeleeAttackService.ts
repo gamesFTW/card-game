@@ -36,6 +36,10 @@ class MeleeAttackService {
       this.attackWithFirstStrike(attackerCard, attackedCard);
     }
 
+    if (attackerCard.abilities.piercing) {
+      this.makePiercingAttack(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board, attackedPlayerTableCards);
+    }
+
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
       board.removeUnitFromBoard(attackedCard);
@@ -44,10 +48,6 @@ class MeleeAttackService {
     if (!attackerCard.alive) {
       attackerPlayer.endOfCardDeath(attackerCard);
       board.removeUnitFromBoard(attackerCard);
-    }
-
-    if (attackerCard.abilities.piercing) {
-      this.makePiercingAttack(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board, attackedPlayerTableCards);
     }
   }
 
