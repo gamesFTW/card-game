@@ -10,7 +10,6 @@ interface CardCreationData {
   maxHp: number;
   damage: number;
   manaCost: number;
-  movingPoints: number;
   abilities?: Abilities;
 }
 
