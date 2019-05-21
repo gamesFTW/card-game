@@ -6,7 +6,7 @@ import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
-import { CardEventType } from '../../domain/events';
+import { CardEventType, CardMovedExtra } from '../../domain/events';
 import { UseCase } from '../../infr/UseCase';
 import { Point } from '../../infr/Point';
 import { Board } from '../../domain/board/Board';
@@ -23,6 +23,7 @@ interface MoveCardAction {
   cardId?: EntityId;
   playerId?: EntityId;
   position?: Point;
+  path?: Point[];
   currentMovingPoints?: number;
 }
 
@@ -67,8 +68,9 @@ class MoveCardUseCase extends UseCase {
   }
 
   @boundMethod
-  private onCardMoved (event: Event<CardData>): void {
+  private onCardMoved (event: Event<CardData, CardMovedExtra>): void {
     this.action.currentMovingPoints = event.data.currentMovingPoints;
+    this.action.path = event.extra.path;
   }
 }
 

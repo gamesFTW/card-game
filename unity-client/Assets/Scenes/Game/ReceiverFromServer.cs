@@ -60,6 +60,7 @@ namespace ServerActions
         public string cardId;
         public string playerId;
         public Point position;
+        public Point[] path;
         public int currentMovingPoints;
     }
 
@@ -150,7 +151,7 @@ public class ReceiverFromServer : MonoBehaviour
 
     public void OnMoveCardAction(ServerActions.MoveCardAction action)
     {
-        cardManger.MoveCard(action.playerId, action.cardId, action.position, action.currentMovingPoints);
+        cardManger.MoveCard(action.playerId, action.cardId, action.position, action.currentMovingPoints, action.path);
     }
 
     public void OnCardAttackedAction(ServerActions.CardAttackedAction action)

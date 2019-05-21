@@ -1,4 +1,5 @@
 import {EntityId} from '../infr/Entity';
+import {Point} from '../infr/Point';
 
 enum PlayerEventType {
   PLAYER_CREATED = 'Player:PlayerCreated',
@@ -13,6 +14,10 @@ enum PlayerEventType {
 
 interface CardDiedExtra {
   diedCardId: string;
+}
+
+interface CardMovedExtra {
+  path: Point[];
 }
 
 interface PlayerDrawnCardData {
@@ -49,4 +54,13 @@ enum BoardEventType {
   CARD_REMOVED = 'Board:CardRemoved'
 }
 
-export {PlayerEventType, GameEventType, CardEventType, BoardEventType, CardDiedExtra, PlayerDrawnCardData, PlayerPlayCardAsManaData};
+export {
+  PlayerEventType,
+  GameEventType,
+  CardEventType,
+  BoardEventType,
+  CardDiedExtra,
+  CardMovedExtra,
+  PlayerDrawnCardData,
+  PlayerPlayCardAsManaData,
+};

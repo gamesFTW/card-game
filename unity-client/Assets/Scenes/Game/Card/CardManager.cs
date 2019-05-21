@@ -101,7 +101,7 @@ public class CardManager : MonoBehaviour
         cardDisplay.ZoomOut();
     }
 
-    public void MoveCard(string playerId, string cardId, Point position, int currentMovingPoints)
+    public void MoveCard(string playerId, string cardId, Point position, int currentMovingPoints, Point[] path)
     {
         var cardTransform = cardIdToCards[cardId];
 
@@ -109,7 +109,7 @@ public class CardManager : MonoBehaviour
 
         cardDisplay.CurrentMovingPoints = currentMovingPoints;
 
-        boardCreator.MoveUnit(cardDisplay, position);
+        boardCreator.MoveUnit(cardDisplay, position, path);
     }
 
     public void CardWasInBattle(ServerActions.CardAfterBattle card)

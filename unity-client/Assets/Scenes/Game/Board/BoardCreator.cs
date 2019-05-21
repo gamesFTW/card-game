@@ -36,11 +36,17 @@ public class BoardCreator : MonoBehaviour
         Units[position.x, position.y] = unit as GameObject;
     }
 
-    public void MoveUnit(CardDisplay cardDisplay, Point position)
+    public void MoveUnit(CardDisplay cardDisplay, Point position, Point[] path)
     {
         UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
 
-        unitDisplay.transform.DOLocalMove(PointerToIcometric(position, tileWidth, tileHeight), 0.5f);
+        Sequence moveSequence = DOTween.Sequence();
+        foreach(var point in path) {
+            moveSequence.Append(
+                unitDisplay.transform.DOLocalMove(PointerToIcometric(point, tileWidth, tileHeight), 0.5f)
+            );
+        }
+
 
         Point oldPosition = GetUnitsPosition(unitDisplay);
 
