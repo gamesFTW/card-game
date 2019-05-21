@@ -151,6 +151,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Piercing\n";
         }
+        if (this.cardData.abilities.speed != null)
+        {
+            descriptionText += "Speed " + this.cardData.abilities.speed.speed + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

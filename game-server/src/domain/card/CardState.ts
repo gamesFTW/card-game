@@ -13,6 +13,9 @@ interface Abilities {
   vampiric?: boolean;
   noEnemyRetaliation?: boolean;
   piercing?: boolean;
+  speed?: {
+    speed: number;
+  };
 }
 
 interface CardData {
@@ -25,7 +28,6 @@ interface CardData {
   alive?: boolean;
   tapped?: boolean;
   manaCost?: number;
-  movingPoints?: number;
   currentMovingPoints?: number;
   abilities?: Abilities;
   image?: string;
@@ -40,7 +42,6 @@ class CardState extends EntityState implements CardData {
   public damage: number;
   public alive: boolean = false;
   public tapped: boolean = false;
-  public movingPoints: number;
   public currentMovingPoints: number;
   public manaCost: number;
   public abilities: Abilities;

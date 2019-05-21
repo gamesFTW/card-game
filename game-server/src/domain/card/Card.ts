@@ -10,11 +10,12 @@ interface CardCreationData {
   maxHp: number;
   damage: number;
   manaCost: number;
-  movingPoints: number;
   abilities?: Abilities;
 }
 
 class Card extends Entity {
+  private static DEFAULT_MOVING_POINTS: number = 3;
+
   protected state: CardState;
 
   get hero (): boolean { return this.state.hero; }
@@ -166,9 +167,17 @@ class Card extends Entity {
   }
 
   private addDefaultMovingPoints (): void {
+    let movingPoints;
+
+    if (this.abilities.speed) {
+      movingPoints = this.abilities.speed.speed;
+    } else {
+      movingPoints = Card.DEFAULT_MOVING_POINTS;
+    }
+
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
-      {currentMovingPoints: this.state.movingPoints, id: this.state.id}
+      {currentMovingPoints: movingPoints, id: this.state.id}
     ));
   }
 

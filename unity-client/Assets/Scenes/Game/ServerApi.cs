@@ -34,6 +34,7 @@ public class Abilities
     public Boolean vampiric;
     public Boolean noEnemyRetaliation;
     public Boolean piercing;
+    public SpeedAbility speed;
 }
 
 [Serializable]
@@ -47,6 +48,12 @@ public class RangeAbility
 public class ArmoredAbility
 {
     public int armor;
+}
+
+[Serializable]
+public class SpeedAbility
+{
+    public int speed;
 }
 
 [Serializable]
