@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using UnityEngine;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-//[Serializable]
-//public class SocketData<Action>
-//{
-//    public Action[] actions;
-//}
+[Serializable]
+public class SocketData<Action>
+{
+    public Action[] actions;
+}
 
-//[Serializable]
-//public class SocketAction
-//{
-//    public string type;
-//}
+[Serializable]
+public class SocketAction
+{
+    public string type;
+}
+
 
 public class SocketIOClient : MonoBehaviour
 {

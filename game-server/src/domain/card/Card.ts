@@ -2,8 +2,9 @@ import { Entity, EntityId } from '../../infr/Entity';
 
 import { Event } from '../../infr/Event';
 import { Abilities, CardData, CardState } from './CardState';
-import { CardEventType } from '../events';
+import { CardEventType, CardMovedExtra } from '../events';
 import * as lodash from 'lodash';
+import { Point } from '../../infr/Point';
 
 interface CardCreationData {
   name: string;
@@ -84,16 +85,17 @@ class Card extends Entity {
     this.addDefaultMovingPoints();
   }
 
-  public move (movingPoints: number): void {
+  public move (movingPoints: number, path: Point[]): void {
     if (movingPoints > this.state.currentMovingPoints) {
       throw new Error(`Card ${this.state.id} dont have moving points`);
     }
 
-    let newCurrentMovingPoints = this.state.currentMovingPoints - movingPoints;
+    let currentMovingPoints = this.state.currentMovingPoints - movingPoints;
 
-    this.applyEvent(new Event<CardData>(
+    this.applyEvent(new Event<CardData, CardMovedExtra>(
       CardEventType.CARD_MOVED,
-      {currentMovingPoints: newCurrentMovingPoints, id: this.state.id}
+      {currentMovingPoints, id: this.state.id},
+      {path}
     ));
   }
 

@@ -141,7 +141,7 @@ class Player extends Entity {
     const movePoints = path.length - 1;
     board.moveUnit(card, position);
 
-    card.move(movePoints);
+    card.move(movePoints, path);
   }
 
   // TODO: это очень не правильно, данный метод находится не на своем уровне абстракции
