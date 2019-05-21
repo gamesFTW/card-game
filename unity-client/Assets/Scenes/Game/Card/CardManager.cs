@@ -90,12 +90,15 @@ public class CardManager : MonoBehaviour
 
         cardTransform.SetParent(this.playerStacks[playerId].manaPool, false);
 
+        CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
         if (taped)
         {
-            cardTransform.GetComponent<CardDisplay>().Tap();
+            cardDisplay.Tap();
         }
 
-        cardTransform.GetComponent<CardDisplay>().FaceDown();
+        cardDisplay.FaceDown();
+        cardDisplay.ZoomOut();
     }
 
     public void MoveCard(string playerId, string cardId, Point position, int currentMovingPoints)
