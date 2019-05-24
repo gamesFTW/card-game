@@ -28,6 +28,7 @@ interface CardChanges {
   isUntapped?: boolean;
   newHp?: number;
   killed?: boolean;
+  currentMovingPoints?: number;
 }
 
 interface CardAttackedAction {
@@ -112,6 +113,7 @@ class AttackCardUseCase extends UseCase {
   @boundMethod
   private onAttackerCardTapped (event: Event<CardData>): void {
     this.action.attackerCard.isTapped = true;
+    this.action.attackerCard.currentMovingPoints = event.data.currentMovingPoints;
   }
 
   @boundMethod
@@ -132,6 +134,7 @@ class AttackCardUseCase extends UseCase {
   @boundMethod
   private onAttackedCardTapped (event: Event<CardData>): void {
     this.action.attackedCard.isTapped = true;
+    this.action.attackedCard.currentMovingPoints = event.data.currentMovingPoints;
   }
 
   @boundMethod

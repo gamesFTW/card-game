@@ -137,6 +137,11 @@ public class CardManager : MonoBehaviour
         {
             KillUnit(cardDisplay);
         }
+
+        if (card.currentMovingPoints != null)
+        {
+            cardDisplay.CurrentMovingPoints = (int)card.currentMovingPoints;
+        }
     }
 
     private void KillUnit(CardDisplay cardDisplay)
