@@ -5,9 +5,8 @@ import { Point } from '../../infr/Point';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
-      attackerCard: Card, attackedCard: Card,
-      attackerPlayer: Player, attackedPlayer: Player,
-      board: Board, attackedPlayerTableCards: Card[]): void {
+      attackerCard: Card, attackedCard: Card, attackerPlayer: Player, attackedPlayer: Player,
+      board: Board, attackerPlayerTableCards: Card[], attackedPlayerTableCards: Card[]): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -28,12 +27,20 @@ class MeleeAttackService {
     let isAttackedCardHaveFirstStrike = !!(attackedCard.abilities.firstStrike);
     let isAttackedCardRetaliation = this.calcRetaliation(attackerCard, attackedCard);
 
+    let isAttackerFlankAttacked = false;
+    if (attackerCard.abilities.flanking) {
+      isAttackerFlankAttacked = this.checkIsAttackerFlankAttacked(attackerCard, attackedCard, board, attackerPlayerTableCards);
+    }
+
+    let attackerDmg = this.calcDamage(attackerCard, attackedCard, isAttackerFlankAttacked);
+    let attackedDmg = this.calcDamage(attackedCard, attackerCard);
+
     if (isAttackerCardHaveFirstStrike && isAttackedCardHaveFirstStrike ||
       !isAttackerCardHaveFirstStrike && !isAttackedCardHaveFirstStrike ||
       !isAttackedCardRetaliation) {
-      this.attackWithoutFirstStrike(attackerCard, attackedCard);
+      this.attackWithoutFirstStrike(attackerCard, attackedCard, attackerDmg, attackedDmg);
     } else {
-      this.attackWithFirstStrike(attackerCard, attackedCard);
+      this.attackWithFirstStrike(attackerCard, attackedCard, attackerDmg, attackedDmg);
     }
 
     if (attackerCard.abilities.piercing) {
@@ -51,10 +58,7 @@ class MeleeAttackService {
     }
   }
 
-  private static attackWithoutFirstStrike (attackerCard: Card, attackedCard: Card): void {
-    let attackerDmg = this.calcDamage(attackerCard, attackedCard);
-    let attackedDmg = this.calcDamage(attackedCard, attackerCard);
-
+  private static attackWithoutFirstStrike (attackerCard: Card, attackedCard: Card, attackerDmg: number, attackedDmg: number): void {
     let isAttackedCardRetaliation = this.calcRetaliation(attackerCard, attackedCard);
 
     this.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
@@ -71,15 +75,15 @@ class MeleeAttackService {
   }
 
   // Напоминаю, что в этом методе isAttackedCardRetaliation не может быть false
-  private static attackWithFirstStrike (attackerCard: Card, attackedCard: Card): void {
+  private static attackWithFirstStrike (attackerCard: Card, attackedCard: Card, attackerDmg: number, attackedDmg: number): void {
     let isAttackerCardHaveFirstStrike = !!(attackerCard.abilities.firstStrike);
     let isAttackedCardHaveFirstStrike = !!(attackedCard.abilities.firstStrike);
 
     let firstAttacker = isAttackerCardHaveFirstStrike ? attackerCard : attackedCard;
     let secondAttacker = isAttackedCardHaveFirstStrike ? attackerCard : attackedCard;
 
-    let firstAttackerDmg = this.calcDamage(firstAttacker, secondAttacker);
-    let secondAttackerDmg = this.calcDamage(secondAttacker, firstAttacker);
+    let firstAttackerDmg = isAttackerCardHaveFirstStrike ? attackerDmg : attackedDmg;
+    let secondAttackerDmg = isAttackedCardHaveFirstStrike ? attackerDmg : attackedDmg;
 
     this.checkForVampiricAndDrainHP(firstAttacker, secondAttacker, firstAttackerDmg);
     secondAttacker.takeDamage(firstAttackerDmg);
@@ -95,14 +99,7 @@ class MeleeAttackService {
     attackerCard: Card, attackedCard: Card,
     attackerPlayer: Player, attackedPlayer: Player,
     board: Board, attackedPlayerTableCards: Card[]): void {
-    let attackerCardPosition: Point = board.getPositionByUnit(attackerCard);
-    let attackedCardPosition: Point = board.getPositionByUnit(attackedCard);
-
-    let piercingCandidateX = attackedCardPosition.x + (attackedCardPosition.x - attackerCardPosition.x);
-    let piercingCandidateY = attackedCardPosition.y + (attackedCardPosition.y - attackerCardPosition.y);
-
-    let piercingCandidatePosition: Point = new Point(piercingCandidateX, piercingCandidateY);
-    let piercingTargetCardId = board.getCardIdByPosition(piercingCandidatePosition);
+    let piercingTargetCardId = board.getCardIdBehindSecondCard(attackerCard, attackedCard);
 
     if (piercingTargetCardId) {
       let piercingTargetCard: Card;
@@ -126,8 +123,13 @@ class MeleeAttackService {
   }
 
   // tslint:disable-next-line:member-ordering
-  public static calcDamage (attackerCard: Card, attackedCard: Card): number {
-    let attackerDmg = attackerCard.damage - attackedCard.armor;
+  public static calcDamage (attackerCard: Card, attackedCard: Card, isAttackerFlankAttacked: boolean = false): number {
+    let attackerFlankingBonus = 0;
+    if (isAttackerFlankAttacked) {
+      attackerFlankingBonus = attackerCard.abilities.flanking.damage;
+    }
+
+    let attackerDmg = (attackerCard.damage + attackerFlankingBonus) - attackedCard.armor;
 
     attackerDmg = attackerDmg >= 0 ? attackerDmg : 0;
 
@@ -152,6 +154,25 @@ class MeleeAttackService {
       attackerCardVampiricPower : attackedCard.currentHp;
 
     attackerCard.overheal(attackerCardVampiredHP);
+  }
+
+  private static checkIsAttackerFlankAttacked (attackerCard: Card, attackedCard: Card, board: Board, attackerPlayerTableCards: Card[]): boolean {
+    let flankerSupportCardId = board.getCardIdBehindSecondCard(attackerCard, attackedCard);
+
+    if (flankerSupportCardId) {
+      let flankerSupportCard: Card;
+      for (let card of attackerPlayerTableCards) {
+        if (card.id === flankerSupportCardId) {
+          flankerSupportCard = card;
+        }
+      }
+
+      if (flankerSupportCard) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 

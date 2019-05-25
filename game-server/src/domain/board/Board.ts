@@ -129,7 +129,6 @@ class Board extends Entity {
       BoardEventType.CARD_MOVED,
       { units: newUnits }
     ));
-    
   }
 
   public getPathOfUnitMove (card: Card, toPosition: Point, opponent: Player): Point[] {
@@ -157,6 +156,17 @@ class Board extends Entity {
 
   public getDistanceBetweenPositions (position1: Point, position2: Point): number {
     return calcDistance(position1, position2);
+  }
+
+  public getCardIdBehindSecondCard (firstCard: Card, secondCard: Card): string {
+    let firstCardPosition: Point = this.getPositionByUnit(firstCard);
+    let secondCardPosition: Point = this.getPositionByUnit(secondCard);
+
+    let candidateX = secondCardPosition.x + (secondCardPosition.x - firstCardPosition.x);
+    let candidateY = secondCardPosition.y + (secondCardPosition.y - firstCardPosition.y);
+
+    let candidatePosition: Point = new Point(candidateX, candidateY);
+    return this.getCardIdByPosition(candidatePosition);
   }
 
   private getPFGrid (): Grid {

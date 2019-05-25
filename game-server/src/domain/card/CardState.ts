@@ -16,6 +16,9 @@ interface Abilities {
   speed?: {
     speed: number;
   };
+  flanking?: {
+    damage: number;
+  };
 }
 
 interface CardData {

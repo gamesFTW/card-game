@@ -53,6 +53,7 @@ class AttackCardUseCase extends UseCase {
     attackerCard?: Card,
     attackedCard?: Card,
     board?: Board,
+    attackerPlayerTableCards?: Card[],
     attackedPlayerTableCards?: Card[],
   } = {};
 
@@ -66,6 +67,7 @@ class AttackCardUseCase extends UseCase {
     this.entities.attackedPlayer = await Repository.get<Player>(attackedPlayerId, Player);
     this.entities.attackerCard = await Repository.get<Card>(this.params.attackerCardId, Card);
     this.entities.attackedCard = await Repository.get<Card>(this.params.attackedCardId, Card);
+    this.entities.attackerPlayerTableCards = await Repository.getMany<Card>(this.entities.attackerPlayer.table, Card);
     this.entities.attackedPlayerTableCards = await Repository.getMany<Card>(this.entities.attackedPlayer.table, Card);
   }
 
@@ -94,13 +96,13 @@ class AttackCardUseCase extends UseCase {
   protected runBusinessLogic (): void {
     if (this.params.isRangeAttack) {
       RangeAttackService.rangeAttackUnit(
-        this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
-        this.entities.attackedPlayer, this.entities.board, this.entities.attackedPlayerTableCards
+        this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer, this.entities.attackedPlayer,
+        this.entities.board, this.entities.attackedPlayerTableCards
       );
     } else {
       MeleeAttackService.meleeAttackUnit(
-        this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer,
-        this.entities.attackedPlayer, this.entities.board, this.entities.attackedPlayerTableCards
+        this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer, this.entities.attackedPlayer,
+        this.entities.board, this.entities.attackerPlayerTableCards, this.entities.attackedPlayerTableCards
       );
     }
   }

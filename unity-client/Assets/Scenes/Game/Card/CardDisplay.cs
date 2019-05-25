@@ -171,6 +171,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Speed " + this.cardData.abilities.speed.speed + "\n";
         }
+        if (this.cardData.abilities.flanking != null)
+        {
+            descriptionText += "Flanking " + this.cardData.abilities.flanking.damage + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

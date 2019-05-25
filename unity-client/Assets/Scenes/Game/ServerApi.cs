@@ -35,6 +35,7 @@ public class Abilities
     public Boolean noEnemyRetaliation;
     public Boolean piercing;
     public SpeedAbility speed;
+    public FlankingAbility flanking;
 }
 
 [Serializable]
@@ -54,6 +55,12 @@ public class ArmoredAbility
 public class SpeedAbility
 {
     public int speed;
+}
+
+[Serializable]
+public class FlankingAbility
+{
+    public int damage;
 }
 
 [Serializable]
