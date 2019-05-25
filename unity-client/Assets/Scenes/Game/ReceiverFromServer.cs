@@ -80,6 +80,7 @@ namespace ServerActions
         public bool isUntapped;
         public int? newHp;
         public bool killed;
+        public int? currentMovingPoints;
     }
 }
 
