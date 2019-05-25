@@ -148,7 +148,6 @@ public class CardCreator : MonoBehaviour {
         cardIdToCards.Add(cardData.id, newCard);
 
         newCardPlaceholder.SetParent(stack, false);
-        newCard.SetParent(stack, false);
 
         CardDisplay cardDisplay = newCard.GetComponent<CardDisplay>();
         cardDisplay.Placeholder = newCardPlaceholder;

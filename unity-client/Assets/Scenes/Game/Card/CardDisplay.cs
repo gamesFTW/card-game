@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class CardDisplay : MonoBehaviour
 {
-	public UnitDisplay UnitDisplay;
+    public UnitDisplay UnitDisplay;
 	public CardData cardData;
 
     public Transform Placeholder;
@@ -22,6 +22,8 @@ public class CardDisplay : MonoBehaviour
     public TextMeshPro maxHpText;
     public TextMeshPro currentMovingPoints;
 
+    public bool isMovedAtInitialPosition = false;
+
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
@@ -30,7 +32,6 @@ public class CardDisplay : MonoBehaviour
 
     private bool IsSelected = false;
     private bool IsZoomed = false;
-    private bool isMovedFirstOnce = false;
     private Vector3 scale;
 
     private GameObject overGlowObject;
@@ -82,16 +83,14 @@ public class CardDisplay : MonoBehaviour
         UpdateZIndex();
     }
 
-    public void Move(Vector3 position, Vector3 scale) {
+    public void MoveAtInitialPosition(Vector3 position, Vector3 scale) {
+        this.Move(position, scale, 0);
+
+        isMovedAtInitialPosition = true;
+    }
+
+    public void Move(Vector3 position, Vector3 scale, float time = 1) {
         this.scale = scale;
-
-        float time = 1;
-
-        if (!this.isMovedFirstOnce)
-        {
-            time = 0;
-            this.isMovedFirstOnce = true;
-        }
 
         this.transform.DOScale(scale, time);
         this.transform.DOMove(position, time);

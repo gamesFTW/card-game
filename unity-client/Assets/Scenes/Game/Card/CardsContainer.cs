@@ -24,7 +24,15 @@ public class CardsContainer : MonoBehaviour
                 var position = new Vector3(placeholder.position.x, placeholder.position.y, cardDisplay.transform.position.z);
                 var scale = placeholder.parent.localScale;
 
-                cardDisplay.Move(position, scale);
+                if (cardDisplay.isMovedAtInitialPosition)
+                {
+                    cardDisplay.Move(position, scale);
+                } else
+                {
+                    cardDisplay.transform.SetParent(this.transform, false);
+                    cardDisplay.MoveAtInitialPosition(position, scale);
+                }
+
                 placeholder.hasChanged = false;
             }
         }
@@ -32,8 +40,6 @@ public class CardsContainer : MonoBehaviour
 
     public void AddCard (CardDisplay cardDisplay)
     {
-        cardDisplay.transform.SetParent(this.transform, false);
-
         cards.Add(cardDisplay);
     }
 }
