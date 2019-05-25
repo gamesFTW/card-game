@@ -26,12 +26,13 @@ public class CardManager : MonoBehaviour
         {
             var cardId = cardsIds[i];
             var cardTransform = cardIdToCards[cardId];
+            CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
-            cardTransform.SetParent(this.playerStacks[playerId].hand, false);
+            cardDisplay.Placeholder.SetParent(this.playerStacks[playerId].hand, false);
 
             if (playerId == GameState.mainPlayerId)
             {
-                cardTransform.GetComponent<CardDisplay>().FaceUp();
+                cardDisplay.FaceUp();
             }
         }
     }
@@ -67,10 +68,9 @@ public class CardManager : MonoBehaviour
     public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];
-
-        cardTransform.SetParent(this.playerStacks[playerId].table, false);
-
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        cardDisplay.Placeholder.SetParent(this.playerStacks[playerId].table, false);
 
         if (taped)
         {
@@ -87,10 +87,9 @@ public class CardManager : MonoBehaviour
     public void PlayCardAsMana(string playerId, string cardId, bool taped)
     {
         var cardTransform = cardIdToCards[cardId];
-
-        cardTransform.SetParent(this.playerStacks[playerId].manaPool, false);
-
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        cardDisplay.Placeholder.SetParent(this.playerStacks[playerId].manaPool, false);
 
         if (taped)
         {
@@ -142,7 +141,7 @@ public class CardManager : MonoBehaviour
     private void KillUnit(CardDisplay cardDisplay)
     {
         cardDisplay.Kill();
-        cardDisplay.transform.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
+        cardDisplay.Placeholder.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
         boardCreator.KillUnit(cardDisplay);
     }
 }

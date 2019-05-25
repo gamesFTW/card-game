@@ -13,7 +13,7 @@ public class PlayerHandDisplay : MonoBehaviour
 
     private void OnCardMouseEnter(CardDisplay card)
     {
-        if (card.transform.IsChildOf(this.transform))
+        if (card.Placeholder.IsChildOf(this.transform))
         {
             card.ZoomIn(2f);
             card.transform.position += new Vector3(0, 3.4F, 0);
@@ -23,7 +23,7 @@ public class PlayerHandDisplay : MonoBehaviour
 
     private void OnCardMouseExit(CardDisplay card)
     {
-        if (card.transform.IsChildOf(this.transform))
+        if (card.Placeholder.IsChildOf(this.transform))
         {
             card.ZoomOut();
             card.transform.position -= new Vector3(0, 3.4F, 0);

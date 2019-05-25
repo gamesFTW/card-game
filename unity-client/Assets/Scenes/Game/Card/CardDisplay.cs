@@ -9,7 +9,9 @@ public class CardDisplay : MonoBehaviour
 	public UnitDisplay UnitDisplay;
 	public CardData cardData;
 
-	public GameObject artwork;
+    public Transform Placeholder;
+
+    public GameObject artwork;
 
 	public TextMeshPro nameText;
 	public TextMeshPro descriptionText;
@@ -28,6 +30,8 @@ public class CardDisplay : MonoBehaviour
 
     private bool IsSelected = false;
     private bool IsZoomed = false;
+    private bool isMovedFirstOnce = false;
+    private Vector3 scale;
 
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
@@ -78,6 +82,21 @@ public class CardDisplay : MonoBehaviour
         UpdateZIndex();
     }
 
+    public void Move(Vector3 position, Vector3 scale) {
+        this.scale = scale;
+
+        float time = 1;
+
+        if (!this.isMovedFirstOnce)
+        {
+            time = 0;
+            this.isMovedFirstOnce = true;
+        }
+
+        this.transform.DOScale(scale, time);
+        this.transform.DOMove(position, time);
+    }
+
     public void FaceUp() {
         this.transform.Find("Back").gameObject.SetActive(false);
         this.transform.Find("Front").gameObject.SetActive(true);
@@ -91,7 +110,7 @@ public class CardDisplay : MonoBehaviour
     public void Tap()
     {
         cardData.tapped = true;
-        this.transform.Rotate(0, 0, -90);
+        this.transform.DORotate(new Vector3(0, 0, -90), 1);
 
         this.Shake();
     }
@@ -99,20 +118,18 @@ public class CardDisplay : MonoBehaviour
     public void Untap()
     {
         cardData.tapped = false;
-        this.transform.Rotate(0, 0, 90);
-
-        this.Shake();
+        this.transform.DORotate(new Vector3(0, 0, 0), 1);
     }
 
     public void ZoomIn(float zoom)
     {
-        this.transform.DOScale(new Vector3(zoom, zoom, zoom), 0.2f);
+        this.transform.DOScale(new Vector3(this.scale.x * zoom, this.scale.y * zoom, this.scale.z * zoom), 0.2f);
         this.IsZoomed = true;
     }
 
     public void ZoomOut()
     {
-        this.transform.DOScale(new Vector3(1, 1, 1), 0.2f);
+        this.transform.DOScale(this.scale, 0.2f);
         this.IsZoomed = false;
     }
 

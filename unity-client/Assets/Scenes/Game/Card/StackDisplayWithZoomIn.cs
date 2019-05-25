@@ -16,7 +16,7 @@ public class StackDisplayWithZoomIn : MonoBehaviour
 
     private void OnCardMouseEnter(CardDisplay card)
     {
-        if (card.transform.IsChildOf(this.transform))
+        if (card.Placeholder.IsChildOf(this.transform))
         {
             card.ZoomIn(StackDisplayWithZoomIn.CARD_ZOOM);
         }
@@ -24,7 +24,7 @@ public class StackDisplayWithZoomIn : MonoBehaviour
 
     private void OnCardMouseExit(CardDisplay card)
     {
-        if (card.transform.IsChildOf(this.transform))
+        if (card.Placeholder.IsChildOf(this.transform))
         {
             card.ZoomOut();
         }

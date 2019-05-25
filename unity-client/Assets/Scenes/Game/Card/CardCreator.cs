@@ -16,6 +16,7 @@ public class CardCreator : MonoBehaviour {
     public bool firstTimeDataRecived = false;
 
     public Transform CardPrefab;
+    public Transform CardPlaceholderPrefab;
 
     public Transform PlayerDeck;
     public Transform PlayerHand;
@@ -30,14 +31,20 @@ public class CardCreator : MonoBehaviour {
     public Transform OpponentGraveyard;
 
     private BoardCreator boardCreator;
+    private CardsContainer cardsContainer;
 
     public Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
 
     public Dictionary<string, PlayerTransformsStacks> playersTransformsStacks = new Dictionary<string, PlayerTransformsStacks>();
 
-    public void Start ()
+    public void Awake()
     {
         boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
+        cardsContainer = this.transform.Find("CardsContainer").GetComponent<CardsContainer>();
+    }
+
+    public void Start ()
+    {
     }
 
     public async Task CreateCards()
@@ -137,11 +144,16 @@ public class CardCreator : MonoBehaviour {
     private void CreateCardIn(CardData cardData, string playerId, Transform stack)
     {
         Transform newCard = (Transform)Instantiate(CardPrefab, new Vector2(0, 0), new Quaternion());
+        Transform newCardPlaceholder = (Transform)Instantiate(CardPlaceholderPrefab, new Vector2(0, 0), new Quaternion());
         cardIdToCards.Add(cardData.id, newCard);
 
-        newCard.transform.SetParent(stack, false);
+        newCardPlaceholder.SetParent(stack, false);
+        newCard.SetParent(stack, false);
 
         CardDisplay cardDisplay = newCard.GetComponent<CardDisplay>();
+        cardDisplay.Placeholder = newCardPlaceholder;
+
+        cardsContainer.AddCard(cardDisplay);
 
         cardData.ownerId = playerId;
         cardDisplay.cardData = cardData;
