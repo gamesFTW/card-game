@@ -112,13 +112,15 @@ class MeleeAttackService {
         }
       }
 
-      let attackerDmg = this.calcDamage(attackerCard, piercingTargetCard);
+      if (piercingTargetCard) {
+        let attackerDmg = this.calcDamage(attackerCard, piercingTargetCard);
 
-      piercingTargetCard.takeDamage(attackerDmg);
+        piercingTargetCard.takeDamage(attackerDmg);
 
-      if (!piercingTargetCard.alive) {
-        attackedPlayer.endOfCardDeath(piercingTargetCard);
-        board.removeUnitFromBoard(piercingTargetCard);
+        if (!piercingTargetCard.alive) {
+          attackedPlayer.endOfCardDeath(piercingTargetCard);
+          board.removeUnitFromBoard(piercingTargetCard);
+        }
       }
     }
   }

@@ -56,7 +56,7 @@ class Card extends Entity {
       throw new Error(`Card ${this.id} already tapped`);
     } else {
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_TAPPED, 
+        CardEventType.CARD_TAPPED,
         {tapped: true, id: this.state.id, currentMovingPoints: 0}
       ));
     }
