@@ -147,6 +147,33 @@ class Player extends Entity {
     card.move(movePoints, path);
   }
 
+  public healCard (healerCard: Card, healedCard:Card, board: Board, opponent: Player): void {
+    this.checkIfItHisTurn();
+
+    const isHealerCardInTable = this.checkCardIn(healerCard, CardStack.TABLE);
+    if (!isHealerCardInTable) {
+      throw new Error(`Card ${healerCard.id} not located in table of player ${this.id}`);
+    }
+    const isHealedCardInTable = this.checkCardIn(healedCard, CardStack.TABLE) || opponent.checkCardIn(healedCard, CardStack.TABLE);
+    if (!isHealedCardInTable) {
+      throw new Error(`Card ${healedCard.id} not located in table of player ${this.id} or ${opponent.id}`);
+    }
+
+    healerCard.heal();
+    // distance
+    const healedUnitPosition = board.getPositionByUnit(healedCard);
+    const healerUnitPosition = board.getPositionByUnit(healerCard);
+
+    const distance = board.getDistanceBetweenPositions(healedUnitPosition, healerUnitPosition);
+    const range = healerCard.abilities.healing.range;
+    if (distance > range) {
+      throw new Error(`Card ${healerCard.id} to far away from ${healedCard.id} (${distance} tiles), should be not more then ${range}`);
+    }
+
+    const hpHeal = healerCard.abilities.healing.heal;
+    healedCard.healed(hpHeal);
+  }
+
   // TODO: это очень не правильно, данный метод находится не на своем уровне абстракции
   // Нужно создать глобальную шину и делать такое через эвенты и этот метод должен быть приватным
   public endOfCardDeath (card: Card): void {

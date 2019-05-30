@@ -93,7 +93,7 @@ class Card extends Entity {
 
   public move (movingPoints: number, path: Point[]): void {
     if (movingPoints > this.state.currentMovingPoints) {
-      throw new DomainError(`Card ${this.state.id} dont have moving points`);
+      throw new DomainError(`Card ${this.state.id} doesn't have moving points`);
     }
 
     let currentMovingPoints = this.state.currentMovingPoints - movingPoints;
@@ -128,7 +128,14 @@ class Card extends Entity {
     }
   }
 
-  public heal (heal: number): void {
+  public heal (): void {
+    if (!this.abilities.healing) {
+      throw new Error(`Card ${this.state.id} doesn't have heal ability`);
+    }
+    this.tap();
+  }
+
+  public healed (heal: number): void {
     let newHp = this.state.currentHp + heal;
 
     newHp = newHp <= this.state.maxHp ? newHp : this.state.maxHp;
@@ -138,7 +145,7 @@ class Card extends Entity {
     ));
   }
 
-  public overheal (heal: number): void {
+  public overhealed (heal: number): void {
     let newHp = this.state.currentHp + heal;
 
     this.applyEvent(new Event<CardData>(

@@ -1,6 +1,9 @@
 import { Event } from '../../infr/Event';
 import { EntityId, EntityState } from '../../infr/Entity';
 
+/*
+  URL to make a JSON scheme http://lbovet.github.io/typson-demo/
+*/
 interface Abilities {
   range?: {
     range: number;
@@ -23,6 +26,10 @@ interface Abilities {
     range: number;
   };
   ricochet?: boolean;
+  healing?: {
+    range: number;
+    heal: number;
+  };
 }
 
 interface CardData {

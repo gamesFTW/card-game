@@ -145,7 +145,7 @@ class MeleeAttackService {
     let attackerCardVampiredHP = attackedCard.currentHp >= attackerCardVampiricPower ?
       attackerCardVampiricPower : attackedCard.currentHp;
 
-    attackerCard.overheal(attackerCardVampiredHP);
+    attackerCard.overhealed(attackerCardVampiredHP);
   }
 
   private static checkIsAttackerFlankAttacked (attackerCard: Card, attackedCard: Card, board: Board, attackerPlayerTableCards: Card[]): boolean {
