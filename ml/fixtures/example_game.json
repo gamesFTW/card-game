@@ -1,0 +1,1184 @@
+{
+    "game": {
+        "currentTurn": 1,
+        "id": "v6sywzzngkg8bdeye0afxvmg6is4df",
+        "player1Id": "0p4agfhf13punpgoezkqe0de02nxbg",
+        "player2Id": "eyu0410n9okocqxi7i36eebhxgpshd",
+        "currentPlayersTurn": "0p4agfhf13punpgoezkqe0de02nxbg",
+        "boardId": "vx2iluh6606t0r7lqjdcgsauci0b9w"
+    },
+    "player1": {
+        "deck": [
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "edvpkb8420qs8rqinjxe2ijjik3epb",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "ie1w24d4wn5ygsbz1ixbpuxne0odpz",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "dr8rkzdq6j28gpfwapgl9fknfb8jfw",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "06pfrps82fkggx2l5y1cpe0zwru4hy",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "joe1nvx4bslj5kjobsahpr4fqge25y",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "46gtkvymjjauzllpe8x2qgdxy4t51d",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "thsr5xzzthmkcdw09w40f81cw2297r",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "8cbskvjoswqf92bmx6idb7stdtjntw",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            }
+        ],
+        "hand": [
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "ivj38ozj69vcgoggt3yhnk3r3bfeqk",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "urhtusouqxlkutyh5mbdequsq3shv6",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "vhec1wa33wapz56yuwjr82s6wx8mld",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "n2g2ki5uvrcsnsc6fz55bpp4a0zn6o",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "2dnfi1kfzkds1xbmii4ekwovb0fnf7",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "33ure52n9ymvrn996ktl3jcgrlfog2",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "kzabr0wf6grlp7bts4mh3v5lf8j3z5",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Врагне отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "8zgsiam528yowvh8ywix0ck8jzbw08",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            }
+        ],
+        "manaPool": [],
+        "table": [
+            {
+                "alive": true,
+                "tapped": false,
+                "id": "cf4zpfpezz8johugkakufkgmr0l9j4",
+                "abilities": {
+                    "speed": {
+                        "speed": 4
+                    }
+                },
+                "_id": "LKBgTSp54MhdvQF8G",
+                "counter": 1,
+                "type": "creature",
+                "text": "Снижение лечения 1.\n\nСкорость 4.\n\nВ начале каждого хода положите на Героя Ускорителя 1 каутер, но не более 1.\n\nУберите каунтер: добавьте 1 \nпередвижения любому другому юниту, до конца хода.",
+                "date": "2016-09-08T19:52:50.335Z",
+                "hero": true,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BRsv2rvNMtHrzCGEK",
+                "tags": [
+                    "melee",
+                    "_race_barbarians",
+                    "fast"
+                ],
+                "name": "Accelerator",
+                "maxHp": 6,
+                "damage": 1,
+                "manaCost": 0,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BRsv2rvNMtHrzCGEK/hero-speed.png",
+                "currentMovingPoints": 4,
+                "currentHp": 6,
+                "x": 6,
+                "y": 2
+            },
+            {
+                "alive": true,
+                "tapped": false,
+                "id": "2cob4e6kv4rjpltv8nxro9sfo5gud6",
+                "abilities": {
+                    "range": {
+                        "range": 6
+                    },
+                    "speed": {
+                        "speed": 2
+                    }
+                },
+                "_id": "ptaxT6p7HiBcHQaTp",
+                "counter": 0,
+                "type": "creature",
+                "text": "Снижение лечения 1.\n\nДальнобойный 6.\nНе отвечает.\nСкорость 2.\n\nВ апкипе положите 1 каунтер, не больше 2.\n\n↷, снимите 2 каунтера: получите карту.",
+                "date": "2017-07-10T20:06:48.881Z",
+                "hero": true,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "FHwEJmQ7ei6zst5wH",
+                "tags": [
+                    "range",
+                    "draw",
+                    "__needimage",
+                    "_race_nature",
+                    "slow"
+                ],
+                "name": "Horned",
+                "maxHp": 5,
+                "damage": 1,
+                "manaCost": 0,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/FHwEJmQ7ei6zst5wH/creature-sniper-crossbow2.png",
+                "currentMovingPoints": 2,
+                "currentHp": 5,
+                "x": 4,
+                "y": 2
+            }
+        ],
+        "graveyard": [],
+        "status": "MakesMove",
+        "id": "0p4agfhf13punpgoezkqe0de02nxbg"
+    },
+    "player2": {
+        "deck": [
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "a2t5d1bwl9vnipu08bcp1q6rjx9z29",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "2yffzn43uwhwlyzo04spe0hik5i67q",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "7xbqkeg8lxumftipc6yrqu36dp3fyh",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "s9izeb70kex9fq0w4t90v9u734bdlj",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "pa1ktbeil0urt8dgyj5closnh2lugg",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "fsn0tq2wsuvsnaqm3b4cvtobjlc9lp",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "wcoi005oyyog5x3rlheyhny1vk3sch",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            }
+        ],
+        "hand": [
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "urz09lq2pob21tg3skl27wrt61rn15",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "8p8u6efk1l2zflx189964ai20vvfa5",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "5fr6wr12s5ykzg2jxv6l2vc3ieedjm",
+                "abilities": {},
+                "_id": "pAEWAXS6ir4Y4sPk7",
+                "counter": 0,
+                "type": "creature",
+                "text": "Фланкирование 1.\n",
+                "date": "2016-08-15T21:47:26.332Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "4xWZM5dzDChHaWZJh",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "flanking",
+                    "__goodbalance",
+                    "penetration",
+                    "_race_barbarians"
+                ],
+                "name": "Flanker",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/4xWZM5dzDChHaWZJh/creature-mele-hummer1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "mqnr1dzjs84txtp4vxvygilsdro2ez",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "v1h35izfw98r5kpl6rpu6lo7vfhvqo",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "uut4fvjc70pibyjcebl1q85erwudty",
+                "abilities": {
+                    "firstStrike": true
+                },
+                "_id": "fa8xswzRzLNAt8J6J",
+                "counter": 0,
+                "type": "creature",
+                "text": "Первый удар.",
+                "date": "2016-08-15T21:47:25.860Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "yB4FGt9BRQGyQYC8j",
+                "tags": [
+                    "melee",
+                    "_type_fighter",
+                    "firststrike",
+                    "_race_kingdom"
+                ],
+                "name": "Duelist",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/yB4FGt9BRQGyQYC8j/creature-mele-axe1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "hgr5fpva5yg8sl4h346vxy8xbxt3ka",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "0523hio3qw10wcgstm8cqmtv7bt4vc",
+                "abilities": {
+                    "vampiric": true,
+                    "noEnemyRetaliation": true
+                },
+                "_id": "7dPfe4uqH72KM22JW",
+                "counter": 0,
+                "type": "creature",
+                "text": "Враг не отвечает.\n\nКогда вампир сам атакует, он вылечивает себе 1 жизнь.",
+                "date": "2017-02-12T22:30:28.849Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "oGDMvgXMaBj5LXYMs",
+                "tags": [
+                    "vampiric",
+                    "melee",
+                    "_race_undeads"
+                ],
+                "name": "Vampire",
+                "maxHp": 3,
+                "damage": 1,
+                "manaCost": 3,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/oGDMvgXMaBj5LXYMs/creature-zombie1.png"
+            },
+            {
+                "alive": false,
+                "tapped": false,
+                "id": "3awtle6r1jkllcch6c9iepaltjm60d",
+                "abilities": {
+                    "range": {
+                        "range": 4
+                    }
+                },
+                "_id": "HejutxLGuiKKK8xQK",
+                "counter": 0,
+                "type": "creature",
+                "text": "Дальнобойный 4.\n",
+                "date": "2016-08-17T18:37:50.232Z",
+                "hero": false,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BNQH3ahgcZYLzeuCk",
+                "tags": [
+                    "range",
+                    "penetration",
+                    "melee",
+                    "meleerange",
+                    "__goodbalance",
+                    "_type_rangeshort",
+                    "_race_nature"
+                ],
+                "name": "Ranger",
+                "maxHp": 2,
+                "damage": 1,
+                "manaCost": 2,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BNQH3ahgcZYLzeuCk/creature-range-hunter1.png"
+            }
+        ],
+        "manaPool": [],
+        "table": [
+            {
+                "alive": true,
+                "tapped": false,
+                "id": "x1fn8b0az5egseo2m7arz2olk40ah8",
+                "abilities": {
+                    "speed": {
+                        "speed": 4
+                    }
+                },
+                "_id": "LKBgTSp54MhdvQF8G",
+                "counter": 1,
+                "type": "creature",
+                "text": "Снижение лечения 1.\n\nСкорость 4.\n\nВ начале каждого хода положите на Героя Ускорителя 1 каутер, но не более 1.\n\nУберите каунтер: добавьте 1 \nпередвижения любому другому юниту, до конца хода.",
+                "date": "2016-09-08T19:52:50.335Z",
+                "hero": true,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "BRsv2rvNMtHrzCGEK",
+                "tags": [
+                    "melee",
+                    "_race_barbarians",
+                    "fast"
+                ],
+                "name": "Accelerator",
+                "maxHp": 6,
+                "damage": 1,
+                "manaCost": 0,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/BRsv2rvNMtHrzCGEK/hero-speed.png",
+                "currentMovingPoints": 4,
+                "currentHp": 6,
+                "x": 6,
+                "y": 8
+            },
+            {
+                "alive": true,
+                "tapped": false,
+                "id": "o9a3b9co696rjzfku6qfe9lqv93smf",
+                "abilities": {
+                    "range": {
+                        "range": 6
+                    },
+                    "speed": {
+                        "speed": 2
+                    }
+                },
+                "_id": "ptaxT6p7HiBcHQaTp",
+                "counter": 0,
+                "type": "crature",
+                "text": "Снижение лечения 1.\n\nДальнобойный 6.\nНе отвечает.\nСкорость 2.\n\nВ апкипе положите 1 каунтер, не больше 2.\n\n↷, снимите 2 каунтера: получите карту.",
+                "date": "2017-07-10T20:06:48.881Z",
+                "hero": true,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "FHwEJmQ7ei6zst5wH",
+                "tags": [
+                    "range",
+                    "draw",
+                    "__needimage",
+                    "_race_nature",
+                    "slow"
+                ],
+                "name": "Horned",
+                "maxHp": 5,
+                "damage": 1,
+                "manaCost": 0,
+                "movingPoints": 3,
+                "image": "/cfs/files/Images/FHwEJmQ7ei6zst5wH/creature-sniper-crossbow2.png",
+                "currentMovingPoints": 2,
+                "currentHp": 5,
+                "x": 4,
+                "y": 8
+            }
+        ],
+        "graveyard": [],
+        "status": "WaitingForTurn",
+        "id": "eyu0410n9okocqxi7i36eebhxgpshd"
+    }
+}
