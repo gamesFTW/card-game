@@ -17,7 +17,8 @@ interface CardDiedExtra {
 }
 
 interface CardMovedExtra {
-  path: Point[];
+  path?: Point[];
+  toPosition?: Point;
 }
 
 interface PlayerDrawnCardData {

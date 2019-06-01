@@ -36,6 +36,7 @@ public class Abilities
     public Boolean piercing;
     public SpeedAbility speed;
     public FlankingAbility flanking;
+    public PushAbility push;
 }
 
 [Serializable]
@@ -61,6 +62,12 @@ public class SpeedAbility
 public class FlankingAbility
 {
     public int damage;
+}
+
+[Serializable]
+public class PushAbility
+{
+    public int range;
 }
 
 [Serializable]
@@ -164,7 +171,8 @@ public class ServerApi
             playerId = GameState.mainPlayerId,
             action.attackerCardId,
             action.attackedCardId,
-            action.isRangeAttack
+            action.isRangeAttack,
+            action.abilitiesParams
         };
 
         await HttpRequest.Post(Config.GAME_SERVER_URL + "attackCard", values);

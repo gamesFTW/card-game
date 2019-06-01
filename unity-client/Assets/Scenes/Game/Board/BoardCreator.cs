@@ -47,11 +47,16 @@ public class BoardCreator : MonoBehaviour
             );
         }
 
+        this.UpdatePositions(unitDisplay, position);
+    }
 
-        Point oldPosition = GetUnitsPosition(unitDisplay);
+    public void PushUnit(CardDisplay cardDisplay, Point position)
+    {
+        UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
 
-        Units[oldPosition.x, oldPosition.y] = null;
-        Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
+        unitDisplay.transform.DOLocalJump(PointerToIcometric(position, tileWidth, tileHeight), 0.5f, 1, 0.5f);
+
+        this.UpdatePositions(unitDisplay, position);
     }
 
     public void KillUnit(CardDisplay cardDisplay)
@@ -87,6 +92,14 @@ public class BoardCreator : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void UpdatePositions(UnitDisplay unitDisplay, Point position)
+    {
+        Point oldPosition = GetUnitsPosition(unitDisplay);
+
+        Units[oldPosition.x, oldPosition.y] = null;
+        Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
     }
 
     private void Awake()

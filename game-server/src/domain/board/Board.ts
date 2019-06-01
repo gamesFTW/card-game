@@ -6,7 +6,7 @@ import { Point } from '../../infr/Point';
 import { Entity, EntityId } from '../../infr/Entity';
 import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
-import { CardEventType, BoardEventType } from '../events';
+import { CardEventType, BoardEventType, CardMovedExtra } from '../events';
 import { Player, CardStack } from '../player/Player';
 import { calcDistance, canGoInRange } from './Path/Path.helpers';
 import { pathToPoints, findPath } from './Path/Path';
@@ -119,15 +119,18 @@ class Board extends Entity {
   }
 
   public moveUnit (card: Card, toPosition: Point): void {
+    this.checkPositionForVacancy(toPosition);
+
     const fromPosition = this.getPositionByUnit(card);
 
     const newUnits = lodash.cloneDeep(this.state.units);
     newUnits[fromPosition.x][fromPosition.y] = null;
     newUnits[toPosition.x][toPosition.y] = card.id;
 
-    this.applyEvent(new Event<BoardData>(
+    this.applyEvent(new Event<BoardData, CardMovedExtra>(
       BoardEventType.CARD_MOVED,
-      { units: newUnits }
+      { units: newUnits },
+      { toPosition: toPosition }
     ));
   }
 

@@ -146,7 +146,7 @@ class Player extends Entity {
 
   // TODO: это очень не правильно, данный метод находится не на своем уровне абстракции
   // Нужно создать глобальную шину и делать такое через эвенты и этот метод должен быть приватным
-  public endOfCardDeath(card: Card): void {
+  public endOfCardDeath (card: Card): void {
     let { fromStack: table, toStack: graveyard } = this.changeCardStack(CardStack.TABLE, CardStack.GRAVEYARD, card.id);
 
     this.applyEvent(new Event<PlayerData>(
@@ -168,7 +168,7 @@ class Player extends Entity {
 
   // TODO: Метод не на том уровне абстракции?
   // Сделать геттером!
-  public checkIfItHisTurn(): void {
+  public checkIfItHisTurn (): void {
     if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
       throw new Error(`Its not a turn of player: ${this.id}.`);
     }
@@ -177,7 +177,7 @@ class Player extends Entity {
   // Стартовые методы
 
   // TODO: Метод не на том уровне абстракции?
-  private createCards(cardsCreationData: Array<CardCreationData>): Array<Card> {
+  private createCards (cardsCreationData: Array<CardCreationData>): Array<Card> {
     return cardsCreationData.map((cardCreationData) => {
       let card = new Card();
       card.create(cardCreationData);
@@ -186,7 +186,7 @@ class Player extends Entity {
     });
   }
 
-  private placeHeroes(heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
+  private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
     const y = isFirstPlayer ? 2 : GameConstants.BOARD_HEIGHT - 1;
     let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2) + 1, y);
 
@@ -221,7 +221,7 @@ class Player extends Entity {
     }
   }
 
-  private drawStartingHand(isFirstPlayer: boolean): void {
+  private drawStartingHand (isFirstPlayer: boolean): void {
     let drawCardNumber = isFirstPlayer ?
       GameConstants.STARTING_HAND - GameConstants.HANDICAP :
       GameConstants.STARTING_HAND;
@@ -232,7 +232,7 @@ class Player extends Entity {
   }
 
   // Важные методы. Возможно могут стать публичными.
-  private drawCard(): void {
+  private drawCard (): void {
     if (this.state.deck.length > 0) {
       let newDeck = lodash.clone(this.state.deck);
       let newHand = this.state.hand ? lodash.clone(this.state.hand) : [];
@@ -248,7 +248,7 @@ class Player extends Entity {
     }
   }
 
-  private shuffleDeck(): void {
+  private shuffleDeck (): void {
     let shuffledDeck = lodash.shuffle(this.state.deck);
 
     this.applyEvent(new Event<PlayerData>(
@@ -256,7 +256,7 @@ class Player extends Entity {
     ));
   }
 
-  private tapMana(manaNumber: number, manaPoolCards: Array<Card>): void {
+  private tapMana (manaNumber: number, manaPoolCards: Array<Card>): void {
     let untappedManaPoolCards = manaPoolCards.filter(card => !card.tapped);
 
     if (manaNumber > untappedManaPoolCards.length) {
@@ -269,7 +269,7 @@ class Player extends Entity {
   }
 
   // Мелкие методы, части публичных и важных приватных.
-  private untapCardsAtEndOfTurn(manaPoolCards: Array<Card>, tableCards: Array<Card>): void {
+  private untapCardsAtEndOfTurn (manaPoolCards: Array<Card>, tableCards: Array<Card>): void {
     let tappedManaPoolCards = manaPoolCards.filter(card => card.tapped);
     let manaPoolCardsToUntap = tappedManaPoolCards.slice(0, GameConstants.CARDS_PER_TURN);
 
@@ -277,7 +277,7 @@ class Player extends Entity {
     manaPoolCardsToUntap.forEach((card) => card.untap());
   }
 
-  private placeCardOnBoard(card: Card, board: Board, position: Point): void {
+  private placeCardOnBoard (card: Card, board: Board, position: Point): void {
     board.addUnitOnBoard(card, position);
 
     let { fromStack: hand, toStack: table } = this.changeCardStack(CardStack.HAND, CardStack.TABLE, card.id);
@@ -288,7 +288,7 @@ class Player extends Entity {
     ));
   }
 
-  private assertPositionNearAtHeroOnDistance(position: Point, distance: number, tableCards: Card[], board: Board): boolean {
+  private assertPositionNearAtHeroOnDistance (position: Point, distance: number, tableCards: Card[], board: Board): boolean {
     for (let card of tableCards) {
       if (card.hero) {
         const heroPosition = board.getPositionByUnit(card);
@@ -303,15 +303,15 @@ class Player extends Entity {
   }
 
   // Хелперы
-  private checkCardInStack(card: Card, stack: Array<EntityId>): boolean {
+  private checkCardInStack (card: Card, stack: Array<EntityId>): boolean {
     return this.checkCardIdInStack(card.id, stack);
   }
 
-  private checkCardIdInStack(cardId: EntityId, stack: Array<EntityId>): boolean {
+  private checkCardIdInStack (cardId: EntityId, stack: Array<EntityId>): boolean {
     return stack.includes(cardId);
   }
 
-  private changeCardStack(fromStackName: CardStack, toStackName: CardStack, cardId: EntityId)
+  private changeCardStack (fromStackName: CardStack, toStackName: CardStack, cardId: EntityId)
     : { fromStack: Array<EntityId>, toStack: Array<EntityId> } {
     let fromStack: Array<EntityId> = this.getStackByName(fromStackName);
     let toStack: Array<EntityId> = this.getStackByName(toStackName);
@@ -333,7 +333,7 @@ class Player extends Entity {
     return { fromStack: newFromStack, toStack: newToStack };
   }
 
-  private getStackByName(stackName: CardStack): Array<EntityId> {
+  private getStackByName (stackName: CardStack): Array<EntityId> {
     let stack;
     if (stackName === CardStack.DECK) {
       stack = this.state.deck;

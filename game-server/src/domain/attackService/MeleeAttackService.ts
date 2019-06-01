@@ -3,10 +3,14 @@ import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { Point } from '../../infr/Point';
 
+interface AbilitiesParams {
+  attackedPushAttackedAt: Point;
+}
+
 class MeleeAttackService {
   public static meleeAttackUnit (
       attackerCard: Card, attackedCard: Card, attackerPlayer: Player, attackedPlayer: Player,
-      board: Board, attackerPlayerTableCards: Card[], attackedPlayerTableCards: Card[]): void {
+      board: Board, attackerPlayerTableCards: Card[], attackedPlayerTableCards: Card[], abilitiesParams: AbilitiesParams): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -45,6 +49,10 @@ class MeleeAttackService {
 
     if (attackerCard.abilities.piercing) {
       this.makePiercingAttack(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board, attackedPlayerTableCards);
+    }
+
+    if (attackerCard.abilities.push && abilitiesParams.attackedPushAttackedAt) {
+      this.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.attackedPushAttackedAt);
     }
 
     if (!attackedCard.alive) {
@@ -174,6 +182,21 @@ class MeleeAttackService {
 
     return false;
   }
+
+  private static pushAttackedCard (attackerCard: Card, attackedCard: Card, board: Board, pushPosition: Point): void {
+    let attackedCardPosition = board.getPositionByUnit(attackedCard);
+
+    let distanceX = attackedCardPosition.x - pushPosition.x;
+    let distanceY = attackedCardPosition.y - pushPosition.y;
+
+    let pushDistance = Math.abs(distanceX) + Math.abs(distanceY);
+
+    if (pushDistance > attackerCard.abilities.push.range) {
+      throw new Error(`Card ${attackerCard.id} cant push ${attackedCard.id} at x: ${pushPosition.x} y: ${pushPosition.y}`);
+    }
+
+    board.moveUnit(attackedCard, pushPosition);
+  }
 }
 
-export {MeleeAttackService};
+export {MeleeAttackService, AbilitiesParams};

@@ -19,6 +19,9 @@ interface Abilities {
   flanking?: {
     damage: number;
   };
+  push?: {
+    range: number;
+  };
 }
 
 interface CardData {

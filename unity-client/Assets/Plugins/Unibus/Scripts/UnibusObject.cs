@@ -86,9 +86,11 @@ namespace UnibusEvent
 
             if (observerDictionary.ContainsKey(key))
             {
-                foreach (var caller in observerDictionary[key].Values)
+                List<int> keys = new List<int>(observerDictionary[key].Keys);
+
+                foreach (var k in keys)
                 {
-                    caller(action);
+                    observerDictionary[key][k](action);
                 }
             }
             else

@@ -141,6 +141,11 @@ public class CardManager : MonoBehaviour
         {
             cardDisplay.CurrentMovingPoints = (int)card.currentMovingPoints;
         }
+
+        if (card.pushedTo != null)
+        {
+            boardCreator.PushUnit(cardDisplay, card.pushedTo);
+        }
     }
 
     private void KillUnit(CardDisplay cardDisplay)

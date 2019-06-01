@@ -165,7 +165,7 @@ public class CardDisplay : MonoBehaviour
         }
         if (this.cardData.abilities.piercing)
         {
-            descriptionText += "Piercing\n";
+            descriptionText += "Cleave\n";
         }
         if (this.cardData.abilities.speed != null)
         {
@@ -174,6 +174,10 @@ public class CardDisplay : MonoBehaviour
         if (this.cardData.abilities.flanking != null)
         {
             descriptionText += "Flanking " + this.cardData.abilities.flanking.damage + "\n";
+        }
+        if (this.cardData.abilities.push != null)
+        {
+            descriptionText += "Push " + this.cardData.abilities.push.range + "\n";
         }
 
         this.descriptionText.text = descriptionText;
@@ -187,7 +191,7 @@ public class CardDisplay : MonoBehaviour
             Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
 
             RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
-            if (hit.collider.gameObject == this.gameObject)
+            if (hit && hit.collider.gameObject == this.gameObject)
             {
                 OnRightMouseClicked();
             }

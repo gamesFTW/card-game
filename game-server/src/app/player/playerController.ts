@@ -5,6 +5,7 @@ import { AttackCardUseCase } from './AttackCardUseCase';
 import { PlayCardAsManaUseCase } from './PlayCardAsManaUseCase';
 import { PlayCardUseCase } from './PlayCardUseCase';
 import { MoveCardUseCase } from './MoveCardUseCase';
+import { AbilitiesParams } from '../../domain/attackService/MeleeAttackService';
 
 const playerController = new Router();
 
@@ -59,9 +60,10 @@ playerController.post('/attackCard', async (ctx) => {
   let attackerCardId = ctx.request.body.attackerCardId as EntityId;
   let attackedCardId = ctx.request.body.attackedCardId as EntityId;
   let isRangeAttack = ctx.request.body.isRangeAttack as boolean;
+  let abilitiesParams = ctx.request.body.abilitiesParams as AbilitiesParams;
 
   let attackCard = new AttackCardUseCase();
-  await attackCard.execute({gameId, attackerPlayerId, attackerCardId, attackedCardId, isRangeAttack});
+  await attackCard.execute({gameId, attackerPlayerId, attackerCardId, attackedCardId, isRangeAttack, abilitiesParams});
 
   ctx.body = `Ok`;
 });

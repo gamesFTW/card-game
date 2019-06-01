@@ -2,8 +2,8 @@ import { Player } from '../../domain/player/Player';
 import { Repository } from '../../infr/repositories/Repository';
 import { Board } from '../../domain/board/Board';
 import { Game } from '../../domain/game/Game';
-import { CardEventType } from '../../domain/events';
-import { MeleeAttackService } from '../../domain/attackService/MeleeAttackService';
+import { BoardEventType, CardEventType, CardMovedExtra } from '../../domain/events';
+import { AbilitiesParams, MeleeAttackService } from '../../domain/attackService/MeleeAttackService';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
@@ -11,6 +11,7 @@ import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
 import { UseCase } from '../../infr/UseCase';
 import { RangeAttackService } from '../../domain/attackService/RangeAttackService';
+import { Point } from '../../infr/Point';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 
@@ -20,6 +21,7 @@ interface AttackCardParams {
   attackerCardId: EntityId;
   attackedCardId: EntityId;
   isRangeAttack: boolean;
+  abilitiesParams: AbilitiesParams;
 }
 
 interface CardChanges {
@@ -29,6 +31,7 @@ interface CardChanges {
   newHp?: number;
   killed?: boolean;
   currentMovingPoints?: number;
+  pushedTo?: Point;
 }
 
 interface CardAttackedAction {
@@ -83,6 +86,7 @@ class AttackCardUseCase extends UseCase {
     this.entities.attackedCard.addEventListener(CardEventType.CARD_HEALED, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onAttackedCardHpChanged);
     this.entities.attackedCard.addEventListener(CardEventType.CARD_DIED, this.onAttackedCardDied);
+    this.entities.board.addEventListener(BoardEventType.CARD_MOVED, this.onAttackedCardMoved);
 
     for (let card of this.entities.attackedPlayerTableCards) {
       if (card.id !== this.entities.attackedCard.id) {
@@ -102,7 +106,7 @@ class AttackCardUseCase extends UseCase {
     } else {
       MeleeAttackService.meleeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer, this.entities.attackedPlayer,
-        this.entities.board, this.entities.attackerPlayerTableCards, this.entities.attackedPlayerTableCards
+        this.entities.board, this.entities.attackerPlayerTableCards, this.entities.attackedPlayerTableCards, this.params.abilitiesParams
       );
     }
   }
@@ -152,6 +156,11 @@ class AttackCardUseCase extends UseCase {
   @boundMethod
   private onAttackedCardDied (event: Event<CardData>): void {
     this.action.attackedCard.killed = !event.data.alive;
+  }
+
+  @boundMethod
+  private onAttackedCardMoved (event: Event<CardData, CardMovedExtra>): void {
+    this.action.attackedCard.pushedTo = event.extra.toPosition;
   }
 
   @boundMethod

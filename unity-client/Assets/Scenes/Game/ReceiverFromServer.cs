@@ -81,6 +81,7 @@ namespace ServerActions
         public int? newHp;
         public bool killed;
         public int? currentMovingPoints;
+        public Point pushedTo;
     }
 }
 
