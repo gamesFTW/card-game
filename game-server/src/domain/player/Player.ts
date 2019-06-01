@@ -29,15 +29,15 @@ interface PlayerCreationData {
 class Player extends Entity {
   protected state: PlayerState;
 
-  get manaPool(): Array<EntityId> { return this.state.manaPool; }
-  get table(): Array<EntityId> { return this.state.table; }
+  get manaPool (): Array<EntityId> { return this.state.manaPool; }
+  get table (): Array<EntityId> { return this.state.table; }
 
-  constructor(events: Array<Event<PlayerData>> = []) {
+  constructor (events: Array<Event<PlayerData>> = []) {
     super();
     this.state = new PlayerState(events);
   }
 
-  public create(playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean): Array<Card> {
+  public create (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean): Array<Card> {
     let id = this.generateId();
 
     // TODO сделать проверку на минимальное количество стартовых карт.
@@ -60,18 +60,19 @@ class Player extends Entity {
     this.shuffleDeck();
     this.placeHeroes(heroes, board, isFirstPlayer);
     this.drawStartingHand(isFirstPlayer);
+    this.convertStartingMana(isFirstPlayer);
 
     return allCards;
   }
 
-  public startTurn(): void {
+  public startTurn (): void {
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.TURN_STARTED,
       { status: PlayerStatus.MAKES_MOVE }
     ));
   }
 
-  public endTurn(manaPool: Array<Card>, table: Array<Card>): void {
+  public endTurn (manaPool: Array<Card>, table: Array<Card>): void {
     this.checkIfItHisTurn();
 
     this.untapCardsAtEndOfTurn(manaPool, table);
@@ -83,7 +84,7 @@ class Player extends Entity {
     ));
   }
 
-  public playCardAsMana(card: Card): void {
+  public playCardAsMana (card: Card): void {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
@@ -101,7 +102,7 @@ class Player extends Entity {
     card.tap();
   }
 
-  public playCard(
+  public playCard (
     card: Card, manaPoolCards: Array<Card>, tableCards: Array<Card>,
     position: Point, board: Board, enemyPlayerTableCards: Card[]
   ): void {
@@ -156,12 +157,12 @@ class Player extends Entity {
   }
 
   // TODO: Метод не на том уровне абстракции?
-  public checkCardIn(card: Card, stackName: CardStack): boolean {
+  public checkCardIn (card: Card, stackName: CardStack): boolean {
     let stack = this.getStackByName(stackName);
     return this.checkCardInStack(card, stack);
   }
 
-  public checkCardIdIn(cardId: EntityId, stackName: CardStack): boolean {
+  public checkCardIdIn (cardId: EntityId, stackName: CardStack): boolean {
     let stack = this.getStackByName(stackName);
     return this.checkCardIdInStack(cardId, stack);
   }
@@ -189,7 +190,6 @@ class Player extends Entity {
   private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
     const y = isFirstPlayer ? 2 : GameConstants.BOARD_HEIGHT - 1;
     let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2) + 1, y);
-
 
     const hero = heroes[0];
     board.addUnitOnBoard(hero, position);
@@ -223,11 +223,29 @@ class Player extends Entity {
 
   private drawStartingHand (isFirstPlayer: boolean): void {
     let drawCardNumber = isFirstPlayer ?
-      GameConstants.STARTING_HAND - GameConstants.HANDICAP :
+      GameConstants.STARTING_HAND - GameConstants.STARTING_HAND_HANDICAP :
       GameConstants.STARTING_HAND;
 
     for (let i = 1; i <= drawCardNumber; i++) {
       this.drawCard();
+    }
+  }
+
+  private convertStartingMana (isFirstPlayer: boolean): void {
+    let manaCardNumber = isFirstPlayer ?
+      GameConstants.STARTING_MANA :
+      GameConstants.STARTING_MANA + GameConstants.STARTING_MANA_HANDICAP;
+
+    for (let i = 1; i <= manaCardNumber; i++) {
+      let card = this.state.hand[i];
+
+      let { fromStack: hand, toStack: manaPool } = this.changeCardStack(CardStack.HAND, CardStack.MANA_POOL, card);
+
+      this.applyEvent(new Event<PlayerData, PlayerPlayCardAsManaData>(
+        PlayerEventType.CARD_PLAYED_AS_MANA,
+        { manaPool, hand },
+        { playedAsManaCard: card }
+      ));
     }
   }
 

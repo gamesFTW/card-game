@@ -1,9 +1,11 @@
 let GameConstants = {
   STARTING_HAND: 9,
-  HANDICAP: 1,
+  STARTING_HAND_HANDICAP: 1,
   CARDS_PER_TURN: 3,
   BOARD_WIDTH: 9,
-  BOARD_HEIGHT: 9
+  BOARD_HEIGHT: 9,
+  STARTING_MANA: 3,
+  STARTING_MANA_HANDICAP: 1
 };
 
 export {GameConstants};
