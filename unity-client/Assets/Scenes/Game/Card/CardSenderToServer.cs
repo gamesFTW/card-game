@@ -25,7 +25,8 @@ public class AttackCardAction
 
 public class AbilitiesParams
 {
-    public Point attackedPushAttackedAt;
+    public Point pushAt;
+    public string ricochetTargetCardId;
 }
 
 public class CardSenderToServer : MonoBehaviour

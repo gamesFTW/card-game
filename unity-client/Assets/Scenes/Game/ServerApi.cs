@@ -20,6 +20,7 @@ public class CardData
     public string image;
     // Простите, но слишком долго делать по другому.
     // По правильному нужно хранить стеки со ссылками на карты.
+    // TODO: Перенести это хотя бы в Card. И больше так не делать.
     public string ownerId;
 
     public Abilities abilities;
@@ -37,6 +38,7 @@ public class Abilities
     public SpeedAbility speed;
     public FlankingAbility flanking;
     public PushAbility push;
+    public Boolean ricochet;
 }
 
 [Serializable]

@@ -67,9 +67,9 @@ namespace ServerActions
     [Serializable]
     public class CardAttackedAction
     {
-        public CardAfterBattle attackerCard;
-        public CardAfterBattle attackedCard;
-        public CardAfterBattle[] otherCards;
+        public string attackerCardId;
+        public string attackedCardId;
+        public CardAfterBattle[] cardChanges;
     }
 
     [Serializable]
@@ -158,10 +158,7 @@ public class ReceiverFromServer : MonoBehaviour
 
     public void OnCardAttackedAction(ServerActions.CardAttackedAction action)
     {
-        cardManger.CardWasInBattle(action.attackerCard);
-        cardManger.CardWasInBattle(action.attackedCard);
-
-        foreach (ServerActions.CardAfterBattle card in action.otherCards)
+        foreach (ServerActions.CardAfterBattle card in action.cardChanges)
         {
             cardManger.CardWasInBattle(card);
         }

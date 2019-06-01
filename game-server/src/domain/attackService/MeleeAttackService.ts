@@ -2,10 +2,7 @@ import { Player, CardStack } from '../player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { Point } from '../../infr/Point';
-
-interface AbilitiesParams {
-  attackedPushAttackedAt: Point;
-}
+import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
@@ -51,8 +48,8 @@ class MeleeAttackService {
       this.makePiercingAttack(attackerCard, attackedCard, attackerPlayer, attackedPlayer, board, attackedPlayerTableCards);
     }
 
-    if (attackerCard.abilities.push && abilitiesParams.attackedPushAttackedAt) {
-      this.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.attackedPushAttackedAt);
+    if (attackerCard.abilities.push && abilitiesParams.pushAt) {
+      this.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt);
     }
 
     if (!attackedCard.alive) {
@@ -199,4 +196,4 @@ class MeleeAttackService {
   }
 }
 
-export {MeleeAttackService, AbilitiesParams};
+export {MeleeAttackService};

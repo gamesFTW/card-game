@@ -11,6 +11,7 @@ public class PlayerActionsOnBoard : MonoBehaviour
     public NoSelectionsState noSelectionsState;
     public OwnUnitSelectedState ownUnitSelectedState;
     public SelectingPushTargetState selectingPushTargetState;
+    public SelectingRicochetTargetState selectingRicochetTargetState;
 
     public ClickOutOfBoardEmmiter clickOutOfBoardEmmiter;
 
@@ -29,6 +30,7 @@ public class PlayerActionsOnBoard : MonoBehaviour
         noSelectionsState = new NoSelectionsState(this);
         ownUnitSelectedState = new OwnUnitSelectedState(this);
         selectingPushTargetState = new SelectingPushTargetState(this);
+        selectingRicochetTargetState = new SelectingRicochetTargetState(this);
 
         noSelectionsState.Enable();
     }
@@ -39,7 +41,7 @@ public class PlayerActionsOnBoard : MonoBehaviour
         clickOutOfBoardEmmiter.CheckClickOutOfAnyCard();
     }
 
-    public void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit, Point pushPoint = null)
+    public void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit, Point pushPoint = null, UnitDisplay ricochetTarget = null)
     {
         bool isCardsAdjacent = this.boardCreator.CheckCardsAdjacency(attackerUnit.gameObject, attackedUnit.gameObject);
         bool isRangeAttack = !isCardsAdjacent;
@@ -51,12 +53,21 @@ public class PlayerActionsOnBoard : MonoBehaviour
             isRangeAttack = isRangeAttack
         };
 
+        AbilitiesParams abilitiesParams = new AbilitiesParams {};
+
         if (pushPoint != null)
         {
-            AbilitiesParams abilitiesParams = new AbilitiesParams { attackedPushAttackedAt = pushPoint };
+            abilitiesParams.pushAt = pushPoint;
 
             attackCardAction.abilitiesParams = abilitiesParams;
         }
+
+        if (ricochetTarget != null)
+        {
+            abilitiesParams.ricochetTargetCardId = ricochetTarget.CardData.id;
+        }
+
+        attackCardAction.abilitiesParams = abilitiesParams;
 
         Unibus.Dispatch<AttackCardAction>(PlayerActionsOnBoard.CARD_ATTACK, attackCardAction);
     }
@@ -127,6 +138,56 @@ public class ClickOutOfBoardEmmiter
 }
 
 
+public abstract class SelectingState
+{
+    protected PlayerActionsOnBoard playerActionsOnBoard;
+
+    public SelectingState(PlayerActionsOnBoard playerActionsOnBoard)
+    {
+        this.playerActionsOnBoard = playerActionsOnBoard;
+    }
+
+    protected void Enable()
+    {
+        this.playerActionsOnBoard.clickOutOfBoardEmmiter.Reset();
+        Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
+        Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
+    }
+
+    protected abstract void Disable();
+
+    protected abstract void EnableNoSelectionsState();
+
+    private void OnClickOutOfBoard(string clickEvent)
+    {
+        this.EnableNoSelectionsState();
+    }
+
+    private void OnRightClick(string clickEvent)
+    {
+        this.EnableNoSelectionsState();
+    }
+
+    protected void Unselect(UnitDisplay selectedUnit)
+    {
+        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
+        tile.GetComponent<TileDisplay>().SelectedHighlightOff();
+
+        selectedUnit.CardDisplay.SelectedHighlightOff();
+    }
+
+    protected void Select(UnitDisplay selectedUnit)
+    {
+        // Сделать чтобы tile слушал события selectedUnit и сам переключался.
+        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
+        tile.GetComponent<TileDisplay>().SelectedHighlightOn();
+
+        selectedUnit.CardDisplay.SelectedHighlightOn();
+    }
+}
+
+
+
 
 public class NoSelectionsState
 {
@@ -159,47 +220,41 @@ public class NoSelectionsState
 
 
 
-public class OwnUnitSelectedState
+public class OwnUnitSelectedState : SelectingState
 {
-    private PlayerActionsOnBoard playerActionsOnBoard;
-
     private bool MouseOnTile = false;
     private UnitDisplay selectedUnit;
 
-    public OwnUnitSelectedState(PlayerActionsOnBoard playerActionsOnBoard)
-    {
-        this.playerActionsOnBoard = playerActionsOnBoard;
-    }
+    public OwnUnitSelectedState(PlayerActionsOnBoard playerActionsOnBoard) : base(playerActionsOnBoard) { }
 
     public void Enable(UnitDisplay selectedUnit)
     {
+        this.Enable();
+
+        this.selectedUnit = selectedUnit;
+
         this.Select(selectedUnit);
-        this.playerActionsOnBoard.clickOutOfBoardEmmiter.Reset();
-        Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
-        Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
+
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
 
-    private void Disable()
+    protected override void Disable()
     {
-        Unibus.Unsubscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
-        Unibus.Unsubscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
-        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
 
-    private void EnableNoSelectionsState()
+    protected override void EnableNoSelectionsState()
     {
-        this.UnselectSelected();
+        this.Unselect(this.selectedUnit);
         Disable();
         this.playerActionsOnBoard.noSelectionsState.Enable();
     }
 
     private void EnableOwnUnitSelectedState(UnitDisplay unitDisplay)
     {
-        this.UnselectSelected();
+        this.Unselect(this.selectedUnit);
         this.Disable();
         this.playerActionsOnBoard.ownUnitSelectedState.Enable(unitDisplay);
     }
@@ -210,14 +265,10 @@ public class OwnUnitSelectedState
         this.playerActionsOnBoard.selectingPushTargetState.Enable(this.selectedUnit, unitDisplay);
     }
 
-    private void OnClickOutOfBoard(string clickEvent)
+    private void EnableSelectingRicochetTargetState(UnitDisplay unitDisplay)
     {
-        this.EnableNoSelectionsState();
-    }
-
-    private void OnRightClick(string clickEvent)
-    {
-        this.EnableNoSelectionsState();
+        this.Disable();
+        this.playerActionsOnBoard.selectingRicochetTargetState.Enable(this.selectedUnit, unitDisplay);
     }
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
@@ -231,6 +282,10 @@ public class OwnUnitSelectedState
             if (this.selectedUnit.CardData.abilities.push != null)
             {
                 this.EnableSelectingPushTargetState(clickedUnitDisplay);
+            }
+            else if (this.selectedUnit.CardData.abilities.ricochet)
+            {
+                this.EnableSelectingRicochetTargetState(clickedUnitDisplay);
             }
             else
             {
@@ -247,62 +302,34 @@ public class OwnUnitSelectedState
 
         this.EnableNoSelectionsState();
     }
-
-    private void Select(UnitDisplay selectedUnit)
-    {
-        this.selectedUnit = selectedUnit;
-
-        // Сделать чтобы tile слушал события selectedUnit и сам переключался.
-        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
-        tile.GetComponent<TileDisplay>().SelectedHighlightOn();
-
-        selectedUnit.CardDisplay.SelectedHighlightOn();
-    }
-
-    private void UnselectSelected()
-    {
-        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(this.selectedUnit.gameObject);
-        tile.GetComponent<TileDisplay>().SelectedHighlightOff();
-
-        this.selectedUnit.CardDisplay.SelectedHighlightOff();
-    }
 }
 
 
 
-public class SelectingPushTargetState
+public class SelectingPushTargetState : SelectingState
 {
-    private PlayerActionsOnBoard playerActionsOnBoard;
-
     private UnitDisplay attackerSelectedUnit;
     private UnitDisplay attackedSelectedUnit;
 
-    public SelectingPushTargetState(PlayerActionsOnBoard playerActionsOnBoard)
-    {
-        this.playerActionsOnBoard = playerActionsOnBoard;
-    }
+    public SelectingPushTargetState(PlayerActionsOnBoard playerActionsOnBoard) : base(playerActionsOnBoard) { }
 
     public void Enable(UnitDisplay attackerSelectedUnit, UnitDisplay attackedSelectedUnit)
     {
+        this.Enable();
         this.attackerSelectedUnit = attackerSelectedUnit;
         this.attackedSelectedUnit = attackedSelectedUnit;
 
-        this.playerActionsOnBoard.clickOutOfBoardEmmiter.Reset();
-        Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
-        Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
 
         this.Select(attackedSelectedUnit);
     }
 
-    private void Disable()
+    protected override void Disable()
     {
-        Unibus.Unsubscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
-        Unibus.Unsubscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
 
-    private void EnableNoSelectionsState()
+    protected override void EnableNoSelectionsState()
     {
         this.Unselect(this.attackerSelectedUnit);
         this.Unselect(this.attackedSelectedUnit);
@@ -317,31 +344,48 @@ public class SelectingPushTargetState
 
         this.EnableNoSelectionsState();
     }
+}
 
-    private void OnClickOutOfBoard(string clickEvent)
+
+
+public class SelectingRicochetTargetState : SelectingState
+{
+    private UnitDisplay attackerSelectedUnit;
+    private UnitDisplay attackedSelectedUnit;
+
+    public SelectingRicochetTargetState(PlayerActionsOnBoard playerActionsOnBoard) : base(playerActionsOnBoard) { }
+
+    public void Enable(UnitDisplay attackerSelectedUnit, UnitDisplay attackedSelectedUnit)
     {
-        this.EnableNoSelectionsState();
+        this.Enable();
+        this.attackerSelectedUnit = attackerSelectedUnit;
+        this.attackedSelectedUnit = attackedSelectedUnit;
+
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
+
+        this.Select(attackedSelectedUnit);
     }
 
-    private void OnRightClick(string clickEvent)
+    protected override void Disable()
     {
-        this.EnableNoSelectionsState();
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
     }
 
-    private void Select(UnitDisplay selectedUnit)
+    protected override void EnableNoSelectionsState()
     {
-        // Сделать чтобы tile слушал события selectedUnit и сам переключался.
-        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
-        tile.GetComponent<TileDisplay>().SelectedHighlightOn();
+        this.Unselect(this.attackerSelectedUnit);
+        this.Unselect(this.attackedSelectedUnit);
 
-        selectedUnit.CardDisplay.SelectedHighlightOn();
+        this.Disable();
+        this.playerActionsOnBoard.noSelectionsState.Enable();
     }
 
-    private void Unselect(UnitDisplay selectedUnit)
+    private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
-        tile.GetComponent<TileDisplay>().SelectedHighlightOff();
-
-        selectedUnit.CardDisplay.SelectedHighlightOff();
+        if (clickedUnitDisplay.CardData.ownerId != GameState.mainPlayerId)
+        {
+            this.playerActionsOnBoard.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, null, clickedUnitDisplay);
+            this.EnableNoSelectionsState();
+        }
     }
 }

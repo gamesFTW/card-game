@@ -6,7 +6,7 @@ import { Point } from '../../infr/Point';
 import { Entity, EntityId } from '../../infr/Entity';
 import { EntityPositions, BoardData, BoardState } from './BoardState';
 import { Event } from '../../infr/Event';
-import { CardEventType, BoardEventType, CardMovedExtra } from '../events';
+import { CardEventType, BoardEventType, CardMovedExtra, BoardCardMovedExtra } from '../events';
 import { Player, CardStack } from '../player/Player';
 import { calcDistance, canGoInRange } from './Path/Path.helpers';
 import { pathToPoints, findPath } from './Path/Path';
@@ -127,10 +127,10 @@ class Board extends Entity {
     newUnits[fromPosition.x][fromPosition.y] = null;
     newUnits[toPosition.x][toPosition.y] = card.id;
 
-    this.applyEvent(new Event<BoardData, CardMovedExtra>(
+    this.applyEvent(new Event<BoardData, BoardCardMovedExtra>(
       BoardEventType.CARD_MOVED,
       { units: newUnits },
-      { toPosition: toPosition }
+      { toPosition: toPosition, movedCardId: card.id }
     ));
   }
 

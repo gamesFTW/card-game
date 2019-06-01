@@ -1,11 +1,10 @@
 import * as Router from 'koa-router';
 import { EntityId } from '../../infr/Entity';
 import { Point } from '../../infr/Point';
-import { AttackCardUseCase } from './AttackCardUseCase';
+import { AbilitiesParams, AttackCardUseCase } from './AttackCardUseCase';
 import { PlayCardAsManaUseCase } from './PlayCardAsManaUseCase';
 import { PlayCardUseCase } from './PlayCardUseCase';
 import { MoveCardUseCase } from './MoveCardUseCase';
-import { AbilitiesParams } from '../../domain/attackService/MeleeAttackService';
 
 const playerController = new Router();
 

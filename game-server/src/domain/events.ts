@@ -18,7 +18,11 @@ interface CardDiedExtra {
 
 interface CardMovedExtra {
   path?: Point[];
+}
+
+interface BoardCardMovedExtra {
   toPosition?: Point;
+  movedCardId?: EntityId;
 }
 
 interface PlayerDrawnCardData {
@@ -64,4 +68,5 @@ export {
   CardMovedExtra,
   PlayerDrawnCardData,
   PlayerPlayCardAsManaData,
+  BoardCardMovedExtra
 };

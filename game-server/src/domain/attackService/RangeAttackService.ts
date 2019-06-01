@@ -5,12 +5,14 @@ import { MeleeAttackService } from './MeleeAttackService';
 import { RangeService } from '../abilities/RangeService';
 import { Point } from '../../infr/Point';
 import Bresenham from './Bresenham';
+import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
+import { EntityId } from '../../infr/Entity';
 
 class RangeAttackService {
   public static rangeAttackUnit (
     attackerCard: Card, attackedCard: Card,
     attackerPlayer: Player, attackedPlayer: Player,
-    board: Board, attackedPlayerTableCards: Card[]): void {
+    board: Board, attackedPlayerTableCards: Card[], abilitiesParams: AbilitiesParams): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -41,6 +43,10 @@ class RangeAttackService {
     let attackerDmg = MeleeAttackService.calcDamage(attackerCard, attackedCard);
 
     attackedCard.takeDamage(attackerDmg);
+
+    if (attackerCard.abilities.ricochet && abilitiesParams.ricochetTargetCardId) {
+      this.ricochet(attackerCard, attackedCard, attackedPlayerTableCards, attackedPlayer, board, abilitiesParams.ricochetTargetCardId);
+    }
 
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
@@ -83,6 +89,34 @@ class RangeAttackService {
       throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack.map(c => c.id).join(', ')}`);
     } else {
       return true;
+    }
+  }
+
+  private static ricochet (
+      attackerCard: Card, attackedCard: Card, attackedPlayerTableCards: Card[],
+      attackedPlayer: Player, board: Board, ricochetedAt: EntityId
+    ): void {
+    let ricochetTargetCard;
+
+    for (let card of attackedPlayerTableCards) {
+      if (card.id === ricochetedAt) {
+        ricochetTargetCard = card;
+      }
+    }
+
+    let isAttackedAndRicochetTargetAdjacent = board.checkUnitsAdjacency(ricochetTargetCard, attackedCard);
+
+    if (!isAttackedAndRicochetTargetAdjacent) {
+      throw new Error(`Card ${attackedCard.id} and ${ricochetedAt} is not adjacent.`);
+    }
+
+    let attackerDmg = MeleeAttackService.calcDamage(attackerCard, ricochetTargetCard);
+
+    ricochetTargetCard.takeDamage(attackerDmg);
+
+    if (!ricochetTargetCard.alive) {
+      attackedPlayer.endOfCardDeath(ricochetTargetCard);
+      board.removeUnitFromBoard(ricochetTargetCard);
     }
   }
 }

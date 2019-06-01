@@ -1,15 +1,14 @@
 import { Player } from '../../domain/player/Player';
-import { Repository } from '../../infr/repositories/Repository';
 import { Game } from '../../domain/game/Game';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
-import {CardEventType, PlayerDrawnCardData, PlayerEventType} from '../../domain/events';
-import {GameData} from '../../domain/game/GameState';
+import { CardEventType, PlayerDrawnCardData, PlayerEventType } from '../../domain/events';
+import { GameData } from '../../domain/game/GameState';
 import { UseCase } from '../../infr/UseCase';
-import {Board} from '../../domain/board/Board';
+import { Board } from '../../domain/board/Board';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 interface EndTurnParams {
@@ -48,19 +47,19 @@ class EndTurnUseCase extends UseCase {
   protected params: EndTurnParams;
 
   protected async readEntities (): Promise<void> {
-    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
+    this.entities.game = await this.repository.get<Game>(this.params.gameId, Game);
 
     let endingTurnPlayerOpponentId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
 
-    this.entities.endingTurnPlayer = await Repository.get<Player>(this.params.endingTurnPlayerId, Player);
-    this.entities.endingTurnPlayerOpponent = await Repository.get<Player>(endingTurnPlayerOpponentId, Player);
+    this.entities.endingTurnPlayer = await this.repository.get<Player>(this.params.endingTurnPlayerId, Player);
+    this.entities.endingTurnPlayerOpponent = await this.repository.get<Player>(endingTurnPlayerOpponentId, Player);
 
-    this.entities.endingTurnPlayerManaPoolCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.manaPool, Card);
-    this.entities.endingTurnPlayerTableCards = await Repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
+    this.entities.endingTurnPlayerManaPoolCards = await this.repository.getMany <Card>(this.entities.endingTurnPlayer.manaPool, Card);
+    this.entities.endingTurnPlayerTableCards = await this.repository.getMany <Card>(this.entities.endingTurnPlayer.table, Card);
 
-    this.entities.endingTurnPlayerOpponentTableCards = await Repository.getMany<Card>(this.entities.endingTurnPlayerOpponent.table, Card);
+    this.entities.endingTurnPlayerOpponentTableCards = await this.repository.getMany<Card>(this.entities.endingTurnPlayerOpponent.table, Card);
 
-    this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
+    this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
   }
 
   protected addEventListeners (): void {

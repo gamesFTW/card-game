@@ -1,5 +1,4 @@
 import { Player } from '../../domain/player/Player';
-import { Repository } from '../../infr/repositories/Repository';
 import { Game } from '../../domain/game/Game';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
@@ -36,9 +35,9 @@ class PlayCardAsManaUseCase extends UseCase {
   protected params: PlayCardAsManaParams;
 
   protected async readEntities (): Promise<void> {
-    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
-    this.entities.player = await Repository.get<Player>(this.params.playerId, Player);
-    this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
+    this.entities.game = await this.repository.get<Game>(this.params.gameId, Game);
+    this.entities.player = await this.repository.get<Player>(this.params.playerId, Player);
+    this.entities.card = await this.repository.get<Card>(this.params.cardId, Card);
   }
 
   protected addEventListeners (): void {

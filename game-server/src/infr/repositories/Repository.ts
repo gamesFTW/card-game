@@ -11,8 +11,10 @@ class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
-  static async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
-    let entities = Repository.prepareEntities(param);
+  private cache: {[key: string]: any} = {} as {[key: string]: any};
+
+  async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
+    let entities = this.prepareEntities(param);
     let events: Array<Event>;
 
     // TODO нужно помечать события как сохраненные и как запаблишиные.
@@ -20,14 +22,20 @@ class Repository {
     if (config.DEV) {
       events = await DevRepository.save(entities);
     } else {
-      events = await Repository.saveInternal(entities);
+      events = await this.saveInternal(entities);
     }
 
-    await Repository.dispatchEvents(events);
+    this.cache = {};
+
+    await this.dispatchEvents(events);
     return events;
   }
 
-  static async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
+  async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
+    if (this.cache[id]) {
+      return this.cache[id] as EntityClass;
+    }
+
     let stream = null;
 
     try {
@@ -39,32 +47,34 @@ class Repository {
       throw new Error(`Cant find id: ${id} while creating ${ClassConstructor.name}`);
     }
 
-    return Repository.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
+    let entity = this.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
+    this.cache[id] = entity;
+    return entity;
   }
 
-  static async getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any):
+  async getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any):
     Promise<Array<EntityClass>> {
     return await Promise.all(entityIds.map(entityId => {
-      return Repository.get(entityId, ClassConstructor);
+      return this.get(entityId, ClassConstructor);
     })) as Array<EntityClass>;
   }
 
   // Приватность означает, что эти методы может вызывать только Repository.
-  private static prepareEntities (param: Entity | Array<Entity | Array<Entity>>): Array<Entity> {
+  private prepareEntities (param: Entity | Array<Entity | Array<Entity>>): Array<Entity> {
     let params = lodash.isArray(param) ? param : [param];
     return lodash.flatten(params);
   }
 
-  private static async saveInternal (entities: Array<Entity>): Promise<Array<Event>> {
-    let eventsArray = await Promise.all(entities.map(Repository.saveOne));
+  private async saveInternal (entities: Array<Entity>): Promise<Array<Event>> {
+    let eventsArray = await Promise.all(entities.map(this.saveOne));
     return lodash.flatten(eventsArray);
   }
 
-  private static async dispatchEvents (events: Array<Event>): Promise<void> {
+  private async dispatchEvents (events: Array<Event>): Promise<void> {
     events.forEach((event: Event) => mq.publish(event));
   }
 
-  private static async saveOne (entity: Entity): Promise<Array<Event>> {
+  private async saveOne (entity: Entity): Promise<Array<Event>> {
     let stream = await eventStore.getEventStream({
       aggregateId: entity.id,
       aggregate: entity.constructor.name
@@ -83,7 +93,7 @@ class Repository {
     return events;
   }
 
-  private static createEntityByEvents<EntityClass> (
+  private createEntityByEvents<EntityClass> (
       streamEvents: Array <eventstore.Event>, ClassConstructor: any
   ): EntityClass {
     let events = streamEvents.map((eventstoreEvent: eventstore.Event) => {

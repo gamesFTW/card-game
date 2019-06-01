@@ -22,6 +22,7 @@ interface Abilities {
   push?: {
     range: number;
   };
+  ricochet?: boolean;
 }
 
 interface CardData {

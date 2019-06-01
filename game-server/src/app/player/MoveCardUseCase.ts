@@ -1,5 +1,4 @@
 import { Player } from '../../domain/player/Player';
-import { Repository } from '../../infr/repositories/Repository';
 import { Game } from '../../domain/game/Game';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
@@ -43,12 +42,12 @@ class MoveCardUseCase extends UseCase {
   protected params: MoveCardParams;
 
   protected async readEntities (): Promise<void> {
-    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
-    this.entities.player = await Repository.get<Player>(this.params.playerId, Player);
+    this.entities.game = await this.repository.get<Game>(this.params.gameId, Game);
+    this.entities.player = await this.repository.get<Player>(this.params.playerId, Player);
     let opponentId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
-    this.entities.opponent = await Repository.get<Player>(opponentId, Player);
-    this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
-    this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
+    this.entities.opponent = await this.repository.get<Player>(opponentId, Player);
+    this.entities.card = await this.repository.get<Card>(this.params.cardId, Card);
+    this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
   }
 
   protected addEventListeners (): void {

@@ -3,16 +3,16 @@
 import { Card } from '../../domain/card/Card';
 import { Player } from '../../domain/player/Player';
 import { EntityId } from '../../infr/Entity';
-import { Repository } from '../../infr/repositories/Repository';
 import { Board } from '../../domain/board/Board';
+import { Repository } from '../../infr/repositories/Repository';
 
-let getCards = async (array: Array<EntityId>, board: Board) => {
+let getCards = async (array: Array<EntityId>, board: Board, repository: Repository) => {
   if (array.length === 0) {
     return [];
   }
 
   return await Promise.all(array.map(async (cardId: EntityId) => {
-    let card = Object(await Repository.get<Card>(cardId, Card)).state;
+    let card = Object(await repository.get<Card>(cardId, Card)).state;
     let position = board.getPositionByUnit(card);
 
     if (position) {
@@ -24,13 +24,13 @@ let getCards = async (array: Array<EntityId>, board: Board) => {
   }));
 };
 
-let mapPlayer = async (player: Player, board: Board): Promise<any> => {
+let mapPlayer = async (player: Player, board: Board, repository: Repository): Promise<any> => {
   let playerResponse = Object.assign({}, Object(player).state);
-  playerResponse.deck = await getCards(playerResponse.deck, board);
-  playerResponse.hand = await getCards(playerResponse.hand, board);
-  playerResponse.manaPool = await getCards(playerResponse.manaPool, board);
-  playerResponse.table = await getCards(playerResponse.table, board);
-  playerResponse.graveyard = await getCards(playerResponse.graveyard, board);
+  playerResponse.deck = await getCards(playerResponse.deck, board, repository);
+  playerResponse.hand = await getCards(playerResponse.hand, board, repository);
+  playerResponse.manaPool = await getCards(playerResponse.manaPool, board, repository);
+  playerResponse.table = await getCards(playerResponse.table, board, repository);
+  playerResponse.graveyard = await getCards(playerResponse.graveyard, board, repository);
 
   return playerResponse;
 };

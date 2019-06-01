@@ -1,5 +1,4 @@
 import { Player } from '../../domain/player/Player';
-import { Repository } from '../../infr/repositories/Repository';
 import { Game } from '../../domain/game/Game';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
@@ -47,16 +46,16 @@ class PlayCardUseCase extends UseCase {
   protected params: PlayCardParams;
 
   protected async readEntities (): Promise<void> {
-    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
-    this.entities.player = await Repository.get<Player>(this.params.playerId, Player);
-    this.entities.card = await Repository.get<Card>(this.params.cardId, Card);
-    this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
-    this.entities.playerManaPoolCards = await Repository.getMany <Card>(this.entities.player.manaPool, Card);
-    this.entities.playerTableCards = await Repository.getMany <Card>(this.entities.player.table, Card);
+    this.entities.game = await this.repository.get<Game>(this.params.gameId, Game);
+    this.entities.player = await this.repository.get<Player>(this.params.playerId, Player);
+    this.entities.card = await this.repository.get<Card>(this.params.cardId, Card);
+    this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
+    this.entities.playerManaPoolCards = await this.repository.getMany <Card>(this.entities.player.manaPool, Card);
+    this.entities.playerTableCards = await this.repository.getMany <Card>(this.entities.player.table, Card);
 
     let enemyId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
-    let enemy = await Repository.get<Player>(enemyId, Player);
-    this.entities.enemyPlayerTableCards = await Repository.getMany<Card>(enemy.table, Card);
+    let enemy = await this.repository.get<Player>(enemyId, Player);
+    this.entities.enemyPlayerTableCards = await this.repository.getMany<Card>(enemy.table, Card);
   }
 
   protected addEventListeners (): void {

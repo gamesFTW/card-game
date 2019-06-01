@@ -179,6 +179,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Push " + this.cardData.abilities.push.range + "\n";
         }
+        if (this.cardData.abilities.ricochet)
+        {
+            descriptionText += "Ricochet\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

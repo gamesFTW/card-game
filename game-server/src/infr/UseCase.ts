@@ -7,9 +7,12 @@ abstract class UseCase {
   protected params: any;
   protected action: any;
   protected entities: any;
+  protected repository: Repository;
 
   public async execute (params: any): Promise<void> {
     this.params = params;
+
+    this.repository = new Repository();
 
     await this.readEntities();
     this.addEventListeners();
@@ -32,7 +35,7 @@ abstract class UseCase {
 
   private async saveEntities (): Promise<void> {
     let entities = map(this.entities, (e: Entity) => e);
-    await Repository.save(entities);
+    await this.repository.save(entities);
   }
 }
 
