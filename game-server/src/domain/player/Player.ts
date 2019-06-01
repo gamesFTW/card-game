@@ -7,6 +7,7 @@ import { PlayerDrawnCardData, PlayerEventType, PlayerPlayCardAsManaData } from '
 import { Board } from '../board/Board';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerData, PlayerState } from './PlayerState';
+import { Area } from '../area/Area';
 
 enum CardStack {
   DECK = 'deck',
@@ -131,16 +132,16 @@ class Player extends Entity {
     card.tap();
   }
 
-  public moveCard (card: Card, position: Point, board: Board, opponent: Player): void {
+  public moveCard (card: Card, position: Point, board: Board, opponent: Player, areas: Area[]): void {
     this.checkIfItHisTurn();
 
     const isCardInTable = this.checkCardIn(card, CardStack.TABLE);
     if (!isCardInTable) {
       throw new Error(`Card ${card.id} not located in table of player ${this.id}`);
     }
-    const path = board.getPathOfUnitMove(card, position, opponent);
+    const path = board.getPathOfUnitMove(card, position, opponent, areas);
     const movePoints = path.length - 1;
-    board.moveUnit(card, position);
+    board.moveUnit(card, position, areas);
 
     card.move(movePoints, path);
   }
@@ -309,7 +310,7 @@ class Player extends Entity {
   private assertPositionNearAtHeroOnDistance (position: Point, distance: number, tableCards: Card[], board: Board): boolean {
     for (let card of tableCards) {
       if (card.hero) {
-        const heroPosition = board.getPositionByUnit(card);
+        const heroPosition = board.getPositionByBoardObject(card);
         const distanceBetweenPoints = board.getDistanceBetweenPositions(position, heroPosition);
 
         if (distanceBetweenPoints <= distance) {

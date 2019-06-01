@@ -9,15 +9,14 @@ import * as cors from 'koa2-cors';
 import * as koaStatic from 'koa-static';
 
 import { eventStore } from './infr/eventStore';
-import { cardController } from './app/card/cardController';
-import { gameController } from './app/game/gameController';
-import { playerController } from './app/player/playerController';
-import { staticContorller } from './app/static/StaticController';
-import { debugController } from './app/_debug/debugController';
 
 import { godOfSockets } from './infr/GodOfSockets';
 import { lobbyService } from './app/lobbyService';
 import config from './config';
+import { gameController } from './http/gameController/gameController';
+import { playerController } from './http/playerController';
+import { debugController } from './http/_debug/debugController';
+import { staticContorller } from './http/staticController';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -55,13 +54,11 @@ async function main (): Promise<void> {
   const gameIds = await lobbyService.getAllGames();
   gameIds.forEach(id => godOfSockets.registerNamespace(id));
 
-  app.use(cardController.routes());
   app.use(gameController.routes());
   app.use(playerController.routes());
   app.use(debugController.routes());
   app.use(staticContorller.routes());
 
-  app.use(cardController.allowedMethods());
   app.use(gameController.allowedMethods());
   app.use(playerController.allowedMethods());
   app.use(debugController.allowedMethods());

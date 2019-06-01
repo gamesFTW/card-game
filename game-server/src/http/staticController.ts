@@ -9,7 +9,6 @@ const staticContorller = new Router();
 
 staticContorller.get('/', async (ctx) => {
   // Temporary data
-  
   ctx.body = await readFile(join(process.cwd(), 'client', 'index.html'), 'utf-8');
 });
 

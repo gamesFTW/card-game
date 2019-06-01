@@ -1,14 +1,18 @@
+import * as lodash from 'lodash';
+
 import { Event } from '../../infr/Event';
 import { Entity, EntityId } from '../../infr/Entity';
 
 import { GameData, GameState } from './GameState';
 import { Player, PlayerCreationData } from '../player/Player';
-import { Card, CardCreationData } from '../card/Card';
-import * as lodash from 'lodash';
+import { Card } from '../card/Card';
 import { GameEventType } from '../events';
 import { Board } from '../board/Board';
 import { GameConstants } from './GameConstants';
 import { RangeService } from '../abilities/RangeService';
+import { Area } from '../area/Area';
+import { AreaType } from '../area/AreaState';
+import { Point } from '../../infr/Point';
 
 class Game extends Entity {
   protected state: GameState;
@@ -24,7 +28,7 @@ class Game extends Entity {
   }
 
   public create (playerACreationData: PlayerCreationData, playerBCreationData: PlayerCreationData): {
-    player1: Player, player2: Player, player1Cards: Array<Card>, player2Cards: Array<Card>, board: Board
+    player1: Player, player2: Player, player1Cards: Array<Card>, player2Cards: Array<Card>, board: Board, areas: Area[]
   } {
     let id = this.generateId();
 
@@ -36,6 +40,8 @@ class Game extends Entity {
 
     let {player: player1, cards: player1Cards} = this.createPlayer(playersCreationData[0], board, true);
     let {player: player2, cards: player2Cards} = this.createPlayer(playersCreationData[1], board, false);
+
+    let areas = this.generateStartingAreas(board);
 
     this.applyEvent(new Event<GameData>(
       GameEventType.GAME_CREATED,
@@ -50,7 +56,7 @@ class Game extends Entity {
 
     player1.startTurn();
 
-    return {player1, player2, player1Cards, player2Cards, board};
+    return {player1, player2, player1Cards, player2Cards, board, areas};
   }
 
   public endTurn (
@@ -83,6 +89,35 @@ class Game extends Entity {
     let cards = player.create(playerCreationData, board, isFirstPlayer);
 
     return {player, cards};
+  }
+
+  private generateStartingAreas (board: Board): Area[] {
+    let points = [];
+    for (let x = 1; x <= 9; x++) {
+      for (let y = 3; y <= 7; y++) {
+        points.push((new Point(x, y)));
+      }
+    }
+
+    points = lodash.sample(points, 12);
+
+    let areas = [];
+    for (let point of points) {
+      let areaTypes = [AreaType.MOUNTAIN, AreaType.WIND_WALL, AreaType.LAKE];
+      let area = this.createArea(board, lodash.sample(areaTypes), point);
+      areas.push(area);
+    }
+
+    return areas;
+  }
+
+  private createArea (board: Board, type: AreaType, position: Point): Area {
+    let area = new Area();
+    area.create({type});
+
+    board.addAreaOnBoard(area, position);
+
+    return area;
   }
 }
 

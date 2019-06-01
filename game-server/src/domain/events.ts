@@ -54,9 +54,13 @@ enum CardEventType {
 
 enum BoardEventType {
   BOARD_CREATED = 'Board:BoardCreated',
-  CARD_ADDED_TO_BOARD = 'Board:CardAddedToBoard',
+  BOARD_OBJECT_ADDED_TO_BOARD = 'Board:BoardObjectAddedToBoard',
   CARD_MOVED = 'Board:CardMoved',
   CARD_REMOVED = 'Board:CardRemoved'
+}
+
+enum AreaEventType {
+  AREA_CREATED = 'Area:AREA_CREATED'
 }
 
 export {
@@ -68,5 +72,6 @@ export {
   CardMovedExtra,
   PlayerDrawnCardData,
   PlayerPlayCardAsManaData,
-  BoardCardMovedExtra
+  BoardCardMovedExtra,
+  AreaEventType
 };

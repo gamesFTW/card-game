@@ -1,10 +1,10 @@
 import * as Router from 'koa-router';
-import { EntityId } from '../../infr/Entity';
-import { Point } from '../../infr/Point';
-import { AbilitiesParams, AttackCardUseCase } from './AttackCardUseCase';
-import { PlayCardAsManaUseCase } from './PlayCardAsManaUseCase';
-import { PlayCardUseCase } from './PlayCardUseCase';
-import { MoveCardUseCase } from './MoveCardUseCase';
+import { EntityId } from '../infr/Entity';
+import { PlayCardAsManaUseCase } from '../app/player/PlayCardAsManaUseCase';
+import { Point } from '../infr/Point';
+import { PlayCardUseCase } from '../app/player/PlayCardUseCase';
+import { MoveCardUseCase } from '../app/player/MoveCardUseCase';
+import { AbilitiesParams, AttackCardUseCase } from '../app/player/AttackCardUseCase';
 
 const playerController = new Router();
 

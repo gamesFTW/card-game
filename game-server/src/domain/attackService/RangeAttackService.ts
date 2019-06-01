@@ -7,12 +7,13 @@ import { Point } from '../../infr/Point';
 import Bresenham from './Bresenham';
 import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
 import { EntityId } from '../../infr/Entity';
+import { Area } from '../area/Area';
 
 class RangeAttackService {
   public static rangeAttackUnit (
     attackerCard: Card, attackedCard: Card,
     attackerPlayer: Player, attackedPlayer: Player,
-    board: Board, attackedPlayerTableCards: Card[], abilitiesParams: AbilitiesParams): void {
+    board: Board, attackedPlayerTableCards: Card[], areas: Area[], abilitiesParams: AbilitiesParams): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -36,7 +37,7 @@ class RangeAttackService {
       throw new Error(`Card ${attackedCard.id} can't range attack because blocked by enemy unit`);
     }
 
-    this.checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards);
+    this.checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards, areas);
 
     attackerCard.tap();
 
@@ -55,9 +56,9 @@ class RangeAttackService {
   }
 
   private static checkCanRangeAttackTo (
-    attackerCard: Card, attackedCard: Card, attackedPlayer: Player, board: Board, attackedPlayerTableCards: Card[]): boolean {
-    const attackerCardPosition = board.getPositionByUnit(attackerCard);
-    const attackedCardPosition = board.getPositionByUnit(attackedCard);
+    attackerCard: Card, attackedCard: Card, attackedPlayer: Player, board: Board, attackedPlayerTableCards: Card[], areas: Area[]): boolean {
+    const attackerCardPosition = board.getPositionByBoardObject(attackerCard);
+    const attackedCardPosition = board.getPositionByBoardObject(attackedCard);
 
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
     const range = path.length - 1;
@@ -67,10 +68,8 @@ class RangeAttackService {
       throw new Error(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
     }
 
-    let attackedPlayerTableCardsMap: any = {};
-    for (let card of attackedPlayerTableCards) {
-      attackedPlayerTableCardsMap[card.id] = card;
-    }
+    let attackedPlayerTableCardsIds = attackedPlayerTableCards.map((card) => card.id);
+    let areasIds = areas.map((area) => area.id);
 
     let betweenPath = path;
     betweenPath.shift();
@@ -78,15 +77,29 @@ class RangeAttackService {
 
     let blockersOfRangeAttack = [];
     for (let point of betweenPath) {
-      const cardId = board.getCardIdByPosition(point);
+      const boardObjectId = board.getBoardObjectIdByPosition(point);
 
-      if (attackedPlayerTableCardsMap[cardId]) {
-        blockersOfRangeAttack.push(attackedPlayerTableCardsMap[cardId]);
+      if (attackedPlayerTableCardsIds.includes(boardObjectId)) {
+        blockersOfRangeAttack.push(boardObjectId);
+      }
+
+      if (areasIds.includes(boardObjectId)) {
+        let area;
+
+        for (let a of areas) {
+          if (a.id === boardObjectId) {
+            area = a;
+          }
+        }
+
+        if (!area.canUnitsShootThoughtIt) {
+          blockersOfRangeAttack.push(boardObjectId);
+        }
       }
     }
 
     if (blockersOfRangeAttack.length > 0) {
-      throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack.map(c => c.id).join(', ')}`);
+      throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack}`);
     } else {
       return true;
     }

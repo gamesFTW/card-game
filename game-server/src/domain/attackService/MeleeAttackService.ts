@@ -3,11 +3,12 @@ import { Card } from '../card/Card';
 import { Board } from '../board/Board';
 import { Point } from '../../infr/Point';
 import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
+import { Area } from '../area/Area';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
       attackerCard: Card, attackedCard: Card, attackerPlayer: Player, attackedPlayer: Player,
-      board: Board, attackerPlayerTableCards: Card[], attackedPlayerTableCards: Card[], abilitiesParams: AbilitiesParams): void {
+      board: Board, attackerPlayerTableCards: Card[], attackedPlayerTableCards: Card[], areas: Area[], abilitiesParams: AbilitiesParams): void {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
@@ -49,7 +50,7 @@ class MeleeAttackService {
     }
 
     if (attackerCard.abilities.push && abilitiesParams.pushAt) {
-      this.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt);
+      this.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt, areas);
     }
 
     if (!attackedCard.alive) {
@@ -180,8 +181,8 @@ class MeleeAttackService {
     return false;
   }
 
-  private static pushAttackedCard (attackerCard: Card, attackedCard: Card, board: Board, pushPosition: Point): void {
-    let attackedCardPosition = board.getPositionByUnit(attackedCard);
+  private static pushAttackedCard (attackerCard: Card, attackedCard: Card, board: Board, pushPosition: Point, areas: Area[]): void {
+    let attackedCardPosition = board.getPositionByBoardObject(attackedCard);
 
     let distanceX = attackedCardPosition.x - pushPosition.x;
     let distanceY = attackedCardPosition.y - pushPosition.y;
@@ -192,7 +193,7 @@ class MeleeAttackService {
       throw new Error(`Card ${attackerCard.id} cant push ${attackedCard.id} at x: ${pushPosition.x} y: ${pushPosition.y}`);
     }
 
-    board.moveUnit(attackedCard, pushPosition);
+    board.moveUnit(attackedCard, pushPosition, areas);
   }
 }
 

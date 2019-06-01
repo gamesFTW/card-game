@@ -95,11 +95,21 @@ public class GameInfoData
 }
 
 [Serializable]
+public class AreaData
+{
+    public string id;
+    public int x;
+    public int y;
+    public string type;
+}
+
+[Serializable]
 public class GameData
 {
     public GameInfoData game;
     public PlayerData player1;
     public PlayerData player2;
+    public AreaData[] areas;
 }
 
 public class ServerApi

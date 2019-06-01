@@ -15,6 +15,7 @@ public class BoardCreator : MonoBehaviour
 
     public GameObject TilePrefab;
     public GameObject UnitPrefab;
+    public GameObject AreaPrefab;
 
     private GameObject[,] Tiles;
     private GameObject[,] Units;
@@ -34,6 +35,17 @@ public class BoardCreator : MonoBehaviour
         cardDisplay.UnitDisplay = unitDisplay;
 
         Units[position.x, position.y] = unit as GameObject;
+    }
+
+    public void CreateArea(AreaData areaData)
+    {
+        GameObject area = Instantiate<GameObject>(AreaPrefab, this.transform);
+        area.transform.SetParent(this.transform);
+        area.transform.localPosition = PointerToIcometric(new Point(areaData.x, areaData.y), tileWidth, tileHeight);
+
+        var areaDispay = area.GetComponent<AreaDisplay>();
+        areaDispay.areaData = areaData;
+        areaDispay.Init();
     }
 
     public void MoveUnit(CardDisplay cardDisplay, Point position, Point[] path)

@@ -11,6 +11,7 @@ import { EntityId } from '../../infr/Entity';
 import { UseCase } from '../../infr/UseCase';
 import { RangeAttackService } from '../../domain/attackService/RangeAttackService';
 import { Point } from '../../infr/Point';
+import { Area } from '../../domain/area/Area';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 
@@ -62,6 +63,7 @@ class AttackCardUseCase extends UseCase {
     board?: Board,
     attackerPlayerTableCards?: Card[],
     attackedPlayerTableCards?: Card[],
+    areas?: Area[],
   } = {};
 
   protected params: AttackCardParams;
@@ -76,6 +78,7 @@ class AttackCardUseCase extends UseCase {
     this.entities.attackedCard = await this.repository.get<Card>(this.params.attackedCardId, Card);
     this.entities.attackerPlayerTableCards = await this.repository.getMany<Card>(this.entities.attackerPlayer.table, Card);
     this.entities.attackedPlayerTableCards = await this.repository.getMany<Card>(this.entities.attackedPlayer.table, Card);
+    this.entities.areas = await this.repository.getMany<Area>(this.entities.board.areas, Area);
   }
 
   protected addEventListeners (): void {
@@ -96,12 +99,13 @@ class AttackCardUseCase extends UseCase {
     if (this.params.isRangeAttack) {
       RangeAttackService.rangeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer, this.entities.attackedPlayer,
-        this.entities.board, this.entities.attackedPlayerTableCards, this.params.abilitiesParams
+        this.entities.board, this.entities.attackedPlayerTableCards, this.entities.areas, this.params.abilitiesParams
       );
     } else {
       MeleeAttackService.meleeAttackUnit(
         this.entities.attackerCard, this.entities.attackedCard, this.entities.attackerPlayer, this.entities.attackedPlayer,
-        this.entities.board, this.entities.attackerPlayerTableCards, this.entities.attackedPlayerTableCards, this.params.abilitiesParams
+        this.entities.board, this.entities.attackerPlayerTableCards,
+        this.entities.attackedPlayerTableCards, this.entities.areas, this.params.abilitiesParams
       );
     }
   }

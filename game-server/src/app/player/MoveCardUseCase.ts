@@ -9,6 +9,7 @@ import { CardEventType, CardMovedExtra } from '../../domain/events';
 import { UseCase } from '../../infr/UseCase';
 import { Point } from '../../infr/Point';
 import { Board } from '../../domain/board/Board';
+import { Area } from '../../domain/area/Area';
 
 interface MoveCardParams {
   gameId: EntityId;
@@ -37,6 +38,7 @@ class MoveCardUseCase extends UseCase {
     opponent?: Player,
     card?: Card
     board?: Board
+    areas?: Area[]
   } = {};
 
   protected params: MoveCardParams;
@@ -48,6 +50,7 @@ class MoveCardUseCase extends UseCase {
     this.entities.opponent = await this.repository.get<Player>(opponentId, Player);
     this.entities.card = await this.repository.get<Card>(this.params.cardId, Card);
     this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
+    this.entities.areas = await this.repository.getMany<Area>(this.entities.board.areas, Area);
   }
 
   protected addEventListeners (): void {
@@ -56,7 +59,7 @@ class MoveCardUseCase extends UseCase {
 
   protected runBusinessLogic (): void {
     this.entities.player.moveCard(
-      this.entities.card, this.params.position, this.entities.board, this.entities.opponent,
+      this.entities.card, this.params.position, this.entities.board, this.entities.opponent, this.entities.areas
     );
   }
 

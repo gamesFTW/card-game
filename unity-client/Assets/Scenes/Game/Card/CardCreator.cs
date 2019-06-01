@@ -110,6 +110,15 @@ public class CardCreator : MonoBehaviour {
             OnGameDataFirstTimeRecived();
         }
 
+        this.CreateAreas(gameData.areas);
+    }
+
+    private void CreateAreas(AreaData[] areas)
+    {
+        foreach (AreaData area in areas)
+        {
+            boardCreator.CreateArea(area);
+        }
     }
 
     private CardData[][] CreateStacksData(GameData gameData)

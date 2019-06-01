@@ -1,10 +1,10 @@
 // Это нужно только для дебага
 
-import { Card } from '../../domain/card/Card';
-import { Player } from '../../domain/player/Player';
-import { EntityId } from '../../infr/Entity';
-import { Board } from '../../domain/board/Board';
-import { Repository } from '../../infr/repositories/Repository';
+import { EntityId } from '../../../infr/Entity';
+import { Board } from '../../../domain/board/Board';
+import { Repository } from '../../../infr/repositories/Repository';
+import { Card } from '../../../domain/card/Card';
+import { Player } from '../../../domain/player/Player';
 
 let getCards = async (array: Array<EntityId>, board: Board, repository: Repository) => {
   if (array.length === 0) {
@@ -13,7 +13,7 @@ let getCards = async (array: Array<EntityId>, board: Board, repository: Reposito
 
   return await Promise.all(array.map(async (cardId: EntityId) => {
     let card = Object(await repository.get<Card>(cardId, Card)).state;
-    let position = board.getPositionByUnit(card);
+    let position = board.getPositionByBoardObject(card);
 
     if (position) {
       card.x = position.x;
@@ -24,7 +24,7 @@ let getCards = async (array: Array<EntityId>, board: Board, repository: Reposito
   }));
 };
 
-let mapPlayer = async (player: Player, board: Board, repository: Repository): Promise<any> => {
+let fillPlayer = async (player: Player, board: Board, repository: Repository): Promise<any> => {
   let playerResponse = Object.assign({}, Object(player).state);
   playerResponse.deck = await getCards(playerResponse.deck, board, repository);
   playerResponse.hand = await getCards(playerResponse.hand, board, repository);
@@ -35,4 +35,4 @@ let mapPlayer = async (player: Player, board: Board, repository: Repository): Pr
   return playerResponse;
 };
 
-export {mapPlayer};
+export {fillPlayer};
