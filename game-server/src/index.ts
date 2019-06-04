@@ -17,6 +17,7 @@ import { gameController } from './http/gameController/gameController';
 import { playerController } from './http/playerController';
 import { debugController } from './http/_debug/debugController';
 import { staticContorller } from './http/staticController';
+import { DomainError } from './infr/DomainError';
 
 async function main (): Promise<void> {
   await eventStore.on('connect');
@@ -45,7 +46,12 @@ async function main (): Promise<void> {
     } catch (error) {
       console.error(chalk.red(error.stack));
 
-      ctx.status = 500;
+      if (error instanceof DomainError) {
+        ctx.status = 500;
+      } else {
+        ctx.status = 520;
+      }
+
       ctx.body = `${error.message}`;
     }
   });

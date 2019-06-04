@@ -11,6 +11,7 @@ import { Player, CardStack } from '../player/Player';
 import { calcDistance } from './Path/Path.helpers';
 import { findPath } from './Path/Path';
 import { Area } from '../area/Area';
+import { DomainError } from '../../infr/DomainError';
 
 type BoardObject = Card|Area;
 
@@ -119,7 +120,7 @@ class Board extends Entity {
     let {x, y} = toPosition;
 
     if (x < 1 || x > this.state.width || y < 1 || y > this.state.height) {
-      throw new Error('Point out of map');
+      throw new DomainError('Point out of map');
     }
 
     this.checkPositionForVacancy(toPosition);
@@ -231,7 +232,7 @@ class Board extends Entity {
     if (boardObjectId) {
       let area = this.getAreaFromAreas(boardObjectId, areas);
       if (!area || !area.canUnitsWalkThoughtIt) {
-        throw new Error(`Tile x: ${x}, y: ${y} is occupied`);
+        throw new DomainError(`Tile x: ${x}, y: ${y} is occupied`);
       }
     }
   }
@@ -240,7 +241,7 @@ class Board extends Entity {
     let {x, y} = toPosition;
 
     if (this.state.boardObjects[x][y]) {
-      throw new Error(`Tile x: ${x}, y: ${y} is occupied`);
+      throw new DomainError(`Tile x: ${x}, y: ${y} is occupied`);
     }
   }
 

@@ -8,6 +8,7 @@ import Bresenham from './Bresenham';
 import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
 import { EntityId } from '../../infr/Entity';
 import { Area } from '../area/Area';
+import { DomainError } from '../../infr/DomainError';
 
 class RangeAttackService {
   public static rangeAttackUnit (
@@ -17,24 +18,24 @@ class RangeAttackService {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
-      throw new Error(`Card ${attackerCard.id} is not in table stack`);
+      throw new DomainError(`Card ${attackerCard.id} is not in table stack`);
     }
 
     if (!attackedPlayer.checkCardIn(attackedCard, CardStack.TABLE)) {
-      throw new Error(`Card ${attackedCard.id} is not in table stack`);
+      throw new DomainError(`Card ${attackedCard.id} is not in table stack`);
     }
 
     if (!attackerCard.abilities.range) {
-      throw new Error(`Card ${attackedCard.id} dont have range ability`);
+      throw new DomainError(`Card ${attackedCard.id} dont have range ability`);
     }
 
     if (attackerCard.abilities.range.blockedInBeginningOfTurn) {
-      throw new Error(`Card ${attackedCard.id} can't range attack because blocked in beginning of turn`);
+      throw new DomainError(`Card ${attackedCard.id} can't range attack because blocked in beginning of turn`);
     }
 
     let isBlocked = RangeService.checkIsBlocked(attackerCard, attackedPlayerTableCards, board);
     if (isBlocked) {
-      throw new Error(`Card ${attackedCard.id} can't range attack because blocked by enemy unit`);
+      throw new DomainError(`Card ${attackedCard.id} can't range attack because blocked by enemy unit`);
     }
 
     this.checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards, areas);
@@ -65,7 +66,7 @@ class RangeAttackService {
     const attackerRange = attackerCard.abilities.range.range;
 
     if (range > attackerRange) {
-      throw new Error(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
+      throw new DomainError(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
     }
 
     let attackedPlayerTableCardsIds = attackedPlayerTableCards.map((card) => card.id);
@@ -99,7 +100,7 @@ class RangeAttackService {
     }
 
     if (blockersOfRangeAttack.length > 0) {
-      throw new Error(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack}`);
+      throw new DomainError(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack}`);
     } else {
       return true;
     }
@@ -120,7 +121,7 @@ class RangeAttackService {
     let isAttackedAndRicochetTargetAdjacent = board.checkUnitsAdjacency(ricochetTargetCard, attackedCard);
 
     if (!isAttackedAndRicochetTargetAdjacent) {
-      throw new Error(`Card ${attackedCard.id} and ${ricochetedAt} is not adjacent.`);
+      throw new DomainError(`Card ${attackedCard.id} and ${ricochetedAt} is not adjacent.`);
     }
 
     let attackerDmg = MeleeAttackService.calcDamage(attackerCard, ricochetTargetCard);

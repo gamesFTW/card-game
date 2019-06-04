@@ -4,6 +4,7 @@ import { Board } from '../board/Board';
 import { Point } from '../../infr/Point';
 import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
 import { Area } from '../area/Area';
+import { DomainError } from '../../infr/DomainError';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
@@ -12,15 +13,15 @@ class MeleeAttackService {
     attackerPlayer.checkIfItHisTurn();
 
     if (!attackerPlayer.checkCardIn(attackerCard, CardStack.TABLE)) {
-      throw new Error(`Card ${attackerCard.id} is not in table stack`);
+      throw new DomainError(`Card ${attackerCard.id} is not in table stack`);
     }
 
     if (!attackedPlayer.checkCardIn(attackedCard, CardStack.TABLE)) {
-      throw new Error(`Card ${attackedCard.id} is not in table stack`);
+      throw new DomainError(`Card ${attackedCard.id} is not in table stack`);
     }
 
     if (!board.checkUnitsAdjacency(attackerCard, attackedCard)) {
-      throw new Error(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
+      throw new DomainError(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
     }
 
     attackerCard.tap();
@@ -190,7 +191,7 @@ class MeleeAttackService {
     let pushDistance = Math.abs(distanceX) + Math.abs(distanceY);
 
     if (pushDistance > attackerCard.abilities.push.range) {
-      throw new Error(`Card ${attackerCard.id} cant push ${attackedCard.id} at x: ${pushPosition.x} y: ${pushPosition.y}`);
+      throw new DomainError(`Card ${attackerCard.id} cant push ${attackedCard.id} at x: ${pushPosition.x} y: ${pushPosition.y}`);
     }
 
     board.moveUnit(attackedCard, pushPosition, areas);

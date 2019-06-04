@@ -5,6 +5,7 @@ import { Abilities, CardData, CardState } from './CardState';
 import { CardEventType, CardMovedExtra } from '../events';
 import * as lodash from 'lodash';
 import { Point } from '../../infr/Point';
+import { DomainError } from '../../infr/DomainError';
 
 interface CardCreationData {
   hero: boolean;
@@ -54,7 +55,7 @@ class Card extends Entity {
 
   public tap (): void {
     if (this.state.tapped) {
-      throw new Error(`Card ${this.id} already tapped`);
+      throw new DomainError(`Card ${this.id} already tapped`);
     } else {
       this.applyEvent(new Event<CardData>(
         CardEventType.CARD_TAPPED,
@@ -69,7 +70,7 @@ class Card extends Entity {
         CardEventType.CARD_UNTAPPED, {tapped: false, id: this.state.id}
       ));
     } else {
-      throw new Error(`Card ${this.id} already untapped`);
+      throw new DomainError(`Card ${this.id} already untapped`);
     }
   }
 
@@ -91,7 +92,7 @@ class Card extends Entity {
 
   public move (movingPoints: number, path: Point[]): void {
     if (movingPoints > this.state.currentMovingPoints) {
-      throw new Error(`Card ${this.state.id} dont have moving points`);
+      throw new DomainError(`Card ${this.state.id} dont have moving points`);
     }
 
     let currentMovingPoints = this.state.currentMovingPoints - movingPoints;
@@ -105,7 +106,7 @@ class Card extends Entity {
 
   // public setAttackTarget (defendingCard: CardData) {
   //   if (this.tapped) {
-  //     throw new Error('Tapped card cant attack.');
+  //     throw new DomainError('Tapped card cant attack.');
   //   }
   //
   //   this.apply(new CardAttackTargetSet(
@@ -187,7 +188,7 @@ class Card extends Entity {
 
   private killCard (): void {
     if (this.state.alive === false) {
-      throw new Error('What Is Dead May Never Die.');
+      throw new DomainError('What Is Dead May Never Die.');
     }
 
     if (this.tapped) {

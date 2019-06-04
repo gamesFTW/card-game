@@ -1,4 +1,5 @@
-import { EntityId, entityState } from '../../infr/Entity';
+import { EntityId } from '../../infr/Entity';
+import { DomainError } from '../../infr/DomainError';
 
 class Tile {
   private cards: Array<EntityId> = [];
@@ -10,7 +11,7 @@ class Tile {
   public removeCard (cardId: EntityId): void {
     let cardIndex = this.cards.indexOf(cardId);
     if (cardIndex < 0) {
-      throw new Error(`Not found card ${cardId} in tile.`);
+      throw new DomainError(`Not found card ${cardId} in tile.`);
     }
     this.cards.splice(cardIndex, 1);
   }

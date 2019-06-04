@@ -8,6 +8,7 @@ import { Board } from '../board/Board';
 import { GameConstants } from '../game/GameConstants';
 import { PlayerData, PlayerState } from './PlayerState';
 import { Area } from '../area/Area';
+import { DomainError } from '../../infr/DomainError';
 
 enum CardStack {
   DECK = 'deck',
@@ -44,7 +45,7 @@ class Player extends Entity {
     // TODO сделать проверку на минимальное количество стартовых карт.
 
     if (playerCreationData.deck.length < GameConstants.STARTING_HAND) {
-      throw new Error(`Player ${this.state.id} have only ${playerCreationData.deck.length} cards in deck. ' +
+      throw new DomainError(`Player ${this.state.id} have only ${playerCreationData.deck.length} cards in deck. ' +
         'It's should be ${GameConstants.STARTING_HAND} or great.`);
     }
 
@@ -89,7 +90,7 @@ class Player extends Entity {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
-      throw new Error(`Card ${card.id} isn't in hand.`);
+      throw new DomainError(`Card ${card.id} isn't in hand.`);
     }
 
     let { fromStack: hand, toStack: manaPool } = this.changeCardStack(CardStack.HAND, CardStack.MANA_POOL, card.id);
@@ -110,18 +111,18 @@ class Player extends Entity {
     this.checkIfItHisTurn();
 
     if (!this.checkCardInStack(card, this.state.hand)) {
-      throw new Error(`Card ${card.id} isn't in hand.`);
+      throw new DomainError(`Card ${card.id} isn't in hand.`);
     }
 
     const isPositionAdjacentToEnemies = board.checkIsPositionAdjacentToCards(position, enemyPlayerTableCards);
     if (isPositionAdjacentToEnemies) {
-      throw new Error(`Card ${card.id} is adjacent to the enemy.`);
+      throw new DomainError(`Card ${card.id} is adjacent to the enemy.`);
     }
 
     const CAST_CREATURE_DISTANCE = 2;
     const isPositionIsNear = this.assertPositionNearAtHeroOnDistance(position, CAST_CREATURE_DISTANCE, tableCards, board);
     if (!isPositionIsNear) {
-      throw new Error(`Cant cast card ${card.id}. It far from heroes.`);
+      throw new DomainError(`Cant cast card ${card.id}. It far from heroes.`);
     }
 
     this.tapMana(card.manaCost, manaPoolCards);
@@ -137,7 +138,7 @@ class Player extends Entity {
 
     const isCardInTable = this.checkCardIn(card, CardStack.TABLE);
     if (!isCardInTable) {
-      throw new Error(`Card ${card.id} not located in table of player ${this.id}`);
+      throw new DomainError(`Card ${card.id} not located in table of player ${this.id}`);
     }
     const path = board.getPathOfUnitMove(card, position, opponent, areas);
     const movePoints = path.length - 1;
@@ -172,7 +173,7 @@ class Player extends Entity {
   // Сделать геттером!
   public checkIfItHisTurn (): void {
     if (this.state.status === PlayerStatus.WAITING_FOR_TURN) {
-      throw new Error(`Its not a turn of player: ${this.id}.`);
+      throw new DomainError(`Its not a turn of player: ${this.id}.`);
     }
   }
 
@@ -279,7 +280,7 @@ class Player extends Entity {
     let untappedManaPoolCards = manaPoolCards.filter(card => !card.tapped);
 
     if (manaNumber > untappedManaPoolCards.length) {
-      throw new Error('We need more mana!');
+      throw new DomainError('We need more mana!');
     }
 
     let manaPoolCardsToTap = untappedManaPoolCards.slice(0, manaNumber);
@@ -339,7 +340,7 @@ class Player extends Entity {
     let indexInArray = newFromStack.indexOf(cardId);
 
     if (indexInArray === -1) {
-      throw new Error(
+      throw new DomainError(
         `There is no card ${cardId} in stack. Cant move card from ${fromStackName} to ${toStackName}.`
       );
     }
