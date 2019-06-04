@@ -8,5 +8,6 @@ export default {
   GAME_URL: 'http://localhost:3000/',
   LOBBY_URL: 'http://localhost:3001/',
   DEV: true,
-  MAIN_EXCHANGE: 'main'
+  MAIN_EXCHANGE: 'main',
+  IN_MEMORY_STORAGE: false
 };

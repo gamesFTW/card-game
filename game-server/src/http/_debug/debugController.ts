@@ -3,8 +3,14 @@ import axios from 'axios';
 import opn = require('opn');
 import config from '../../config';
 import { startingCardsFixture } from './startingCardsFixture';
+import { Repository } from '../../infr/repositories/Repository';
 
 const debugController = new Router();
+
+debugController.post('/clearInMemoryCache', async (ctx) => {
+  Repository.clearInMemoryCache();
+  ctx.body = `Ok`;
+});
 
 debugController.post('/createGameForML', async (ctx) => {
   let response = await axios.post(config.GAME_URL + 'createGame', {

@@ -11,7 +11,13 @@ class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
+  private static inMemoryCache: {[key: string]: any} = {} as {[key: string]: any};
+
   private cache: {[key: string]: any} = {} as {[key: string]: any};
+
+  public static clearInMemoryCache (): void {
+    Repository.inMemoryCache = {};
+  }
 
   async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
     let entities = this.prepareEntities(param);
@@ -19,10 +25,17 @@ class Repository {
 
     // TODO нужно помечать события как сохраненные и как запаблишиные.
 
-    if (config.DEV) {
-      events = await DevRepository.save(entities);
+    if (config.IN_MEMORY_STORAGE) {
+      for (let entity of entities) {
+        Repository.inMemoryCache[entity.id] = entity;
+        events = [];
+      }
     } else {
-      events = await this.saveInternal(entities);
+      if (config.DEV) {
+        events = await DevRepository.save(entities);
+      } else {
+        events = await this.saveInternal(entities);
+      }
     }
 
     this.cache = {};
@@ -32,6 +45,10 @@ class Repository {
   }
 
   async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
+    if (config.IN_MEMORY_STORAGE) {
+      return Repository.inMemoryCache[id] as EntityClass;
+    }
+
     if (this.cache[id]) {
       return this.cache[id] as EntityClass;
     }
