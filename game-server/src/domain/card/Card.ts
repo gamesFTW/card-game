@@ -7,6 +7,7 @@ import * as lodash from 'lodash';
 import { Point } from '../../infr/Point';
 
 interface CardCreationData {
+  hero: boolean;
   name: string;
   maxHp: number;
   damage: number;
