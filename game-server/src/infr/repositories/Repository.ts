@@ -11,7 +11,7 @@ class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
-  private static inMemoryCache: {[key: string]: any} = {} as {[key: string]: any};
+  public static inMemoryCache: {[key: string]: Event[]} = {} as {[key: string]: any};
 
   private cache: {[key: string]: any} = {} as {[key: string]: any};
 
@@ -25,17 +25,11 @@ class Repository {
 
     // TODO нужно помечать события как сохраненные и как запаблишиные.
 
-    if (config.IN_MEMORY_STORAGE) {
-      for (let entity of entities) {
-        Repository.inMemoryCache[entity.id] = entity;
-        events = [];
-      }
+    if (config.DEV) {
+      events = await DevRepository.save(entities);
     } else {
-      if (config.DEV) {
-        events = await DevRepository.save(entities);
-      } else {
-        events = await this.saveInternal(entities);
-      }
+      throw new Error('config.DEV == false is Not implemented now.');
+      // events = await this.saveInternal(entities);
     }
 
     this.cache = {};
@@ -45,26 +39,29 @@ class Repository {
   }
 
   async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
-    if (config.IN_MEMORY_STORAGE) {
-      return Repository.inMemoryCache[id] as EntityClass;
-    }
-
     if (this.cache[id]) {
       return this.cache[id] as EntityClass;
     }
 
-    let stream = null;
+    let entity;
 
-    try {
-      stream = await eventStore.getEventStream({
-        aggregateId: id,
-        aggregate: ClassConstructor.name
-      });
-    } catch (error) {
-      throw new Error(`Cant find id: ${id} while creating ${ClassConstructor.name}`);
+    if (config.IN_MEMORY_STORAGE) {
+      let events = Repository.inMemoryCache[id];
+
+      entity = new ClassConstructor(events);
+    } else {
+      let stream = null;
+      try {
+        stream = await eventStore.getEventStream({
+          aggregateId: id,
+          aggregate: ClassConstructor.name
+        });
+      } catch (error) {
+        throw new Error(`Cant find id: ${id} while creating ${ClassConstructor.name}`);
+      }
+      entity = this.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
     }
 
-    let entity = this.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
     this.cache[id] = entity;
     return entity;
   }
@@ -147,3 +144,4 @@ class Repository {
 }
 
 export {Repository};
+

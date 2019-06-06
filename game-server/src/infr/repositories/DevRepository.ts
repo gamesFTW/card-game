@@ -2,6 +2,8 @@ import { Event } from '../Event';
 import { Entity } from '../Entity';
 import { eventStore } from '../eventStore';
 import * as lodash from 'lodash';
+import config from '../../config';
+import { Repository } from './Repository';
 
 class DevRepository {
   static async save (entities: Array<Entity>): Promise<Array<Event>> {
@@ -32,17 +34,29 @@ class DevRepository {
 
   private static async saveOne (orderedEventWithEntity: {event: Event, entity: Entity}): Promise<void> {
     let {event, entity} = orderedEventWithEntity;
-    let stream = await eventStore.getEventStream({
-      aggregateId: entity.id,
-      aggregate: entity.constructor.name
-    });
 
-    stream.addEvent(event);
+    if (config.IN_MEMORY_STORAGE) {
+      if (!Repository.inMemoryCache[entity.id]) {
+        Repository.inMemoryCache[entity.id] = [];
+      }
+      Repository.inMemoryCache[entity.id].push(event);
+    } else {
+      let stream = await eventStore.getEventStream({
+        aggregateId: entity.id,
+        aggregate: entity.constructor.name
+      });
 
-    await stream.commit();
+      stream.addEvent(event);
+
+      await stream.commit();
+    }
   }
 
   private static async saveDebugEntry (): Promise<void> {
+    if (config.IN_MEMORY_STORAGE) {
+      return;
+    }
+
     let stream = await eventStore.getEventStream({
       aggregateId: 'DEBUG',
       aggregate: 'DEBUG'
