@@ -1,10 +1,7 @@
 #!/usr/bin/python3
-from consts import API_URLS, CREATE_GAME_JSON
+from .consts import API_URLS, CREATE_GAME_JSON
 import requests
 
-
-def what_commands_can_i_do():
-  pass
 
 def move_ceature(game_id, player_id, card_id, x, y):
   r = requests.post(API_URLS["MOVE_CARD"], json = {
