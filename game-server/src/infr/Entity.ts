@@ -18,6 +18,10 @@ class Entity {
     this.listeners[type].push(callback);
   }
 
+  public removeAllEventListeners (): void {
+    this.listeners = {};
+  }
+
   protected applyEvent (event: Event<any>): void {
     event.orderIndex = Event.currentOrderIndex;
     Event.currentOrderIndex ++;

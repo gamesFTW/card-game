@@ -20,9 +20,12 @@ abstract class UseCase {
     this.addClientActions();
     await this.saveEntities();
 
+    this.unsubscribeAllEventListeners();
+
     console.log(this.action);
 
     godOfSockets.sendActions(this.entities.game.id, [this.action]);
+
   }
 
   protected abstract async readEntities (): Promise<void>;
@@ -36,6 +39,21 @@ abstract class UseCase {
   private async saveEntities (): Promise<void> {
     let entities = map(this.entities, (e: Entity) => e);
     await this.repository.save(entities);
+  }
+
+  private unsubscribeAllEventListeners (): void {
+    for (let key in this.entities) {
+      let entityOrEntities = this.entities[key];
+      if (Array.isArray(entityOrEntities)) {
+        let entities = entityOrEntities as Entity[];
+        for (let entity of entities) {
+          entity.removeAllEventListeners();
+        }
+      } else {
+        let entity: Entity = entityOrEntities;
+        entity.removeAllEventListeners();
+      }
+    }
   }
 }
 
