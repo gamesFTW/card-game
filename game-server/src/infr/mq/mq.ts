@@ -11,7 +11,7 @@ let registerMQ = async () => {
   channel.assertExchange(config.MAIN_EXCHANGE, 'topic', {durable: true});
 };
 
-registerMQ();
+// registerMQ();
 
 let mq = {
   publish: (event: Event) => {

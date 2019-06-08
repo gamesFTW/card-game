@@ -5,7 +5,6 @@ import { Point } from '../infr/Point';
 import { PlayCardUseCase } from '../app/player/PlayCardUseCase';
 import { MoveCardUseCase } from '../app/player/MoveCardUseCase';
 import { AbilitiesParams, AttackCardUseCase } from '../app/player/AttackCardUseCase';
-import { positiveNumber } from '../infr/utils';
 
 const playerController = new Router();
 
@@ -42,8 +41,8 @@ playerController.post('/moveCard', async (ctx) => {
   // TODO: его нужно доставать из сессии
   let playerId = ctx.request.body.playerId as EntityId;
   let cardId = ctx.request.body.cardId as EntityId;
-  let x = positiveNumber(ctx.request.body.x);
-  let y = positiveNumber(ctx.request.body.y);
+  let x = Number(ctx.request.body.x);
+  let y = Number(ctx.request.body.y);
 
   let position = new Point(x, y);
 

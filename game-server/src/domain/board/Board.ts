@@ -227,6 +227,14 @@ class Board extends Entity {
   private checkPositionForMovement (toPosition: Point, areas: Area[]): void {
     let {x, y} = toPosition;
 
+    if (x > this.state.width || x <= 0) {
+        throw new DomainError(`Tile x: ${x}, y: ${y} is not on the board`);
+    }
+
+    if (y > this.state.height || y <= 0) {
+        throw new DomainError(`Tile x: ${x}, y: ${y} is not on the board`);
+    }
+
     let boardObjectId = this.state.boardObjects[x][y];
 
     if (boardObjectId) {

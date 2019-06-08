@@ -58,8 +58,8 @@ async function main (): Promise<void> {
   
 
   godOfSockets.autoRegistrateUsers(wsIO);
-  const gameIds = await lobbyService.getAllGames();
-  gameIds.forEach(id => godOfSockets.registerNamespace(id));
+  // const gameIds = await lobbyService.getAllGames();
+  // gameIds.forEach(id => godOfSockets.registerNamespace(id));
 
   app.use(gameController.routes());
   app.use(playerController.routes());

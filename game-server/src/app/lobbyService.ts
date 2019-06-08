@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import {cardPlaceChangePosition} from '../../../client/src/UI/store/cards/actions';
 import config from '../config';
 
 interface Games {

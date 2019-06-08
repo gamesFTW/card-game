@@ -34,7 +34,7 @@ class Repository {
 
     this.cache = {};
 
-    await this.dispatchEvents(events);
+    // await this.dispatchEvents(events);
     return events;
   }
 
