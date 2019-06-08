@@ -2,12 +2,14 @@
     
 import os, subprocess, time, signal
 import gym
+import numpy as np
 from gym import error, spaces
 from gym import utils
 from gym.utils import seeding
 
-from gym_card_game.envs.game_api import game, commands, getters, actions
-from gym_card_game.envs.space.card import CARD_SPACE
+from .game_api import game, commands, getters, actions
+from .space.card import CARD_SPACE
+from .state import map_raw_state_to_observation, map_raw_state_to_state
 
 
 
@@ -22,34 +24,32 @@ class CardGameEnv(gym.Env, utils.EzPickle):
 
     def __init__(self):
         self.observation_space = spaces.Dict({
-            "board": spaces.Box(low=-2, high=2, shape=(9,9)),
+            "board": spaces.Box(low=-2, high=2, shape=(9,9), dtype=np.int),
+            "hero0": CARD_SPACE,
             "hero1": CARD_SPACE,
-            # "opponentHero1": CARD_SPACE,
-            # "hero2": 
-            # "card1":
-            # "card2":
+            "opponentHero0": CARD_SPACE,
+            "opponentHero1": CARD_SPACE,
         })
         self._create_action_space()
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
-        
-    def _render(self, mode="ansii", close=False):
-        ob = map_raw_state_to_observation(self.raw_state, self._player, self._opponent)
+
+    def render(self, mode="ansii", close=False):
+        ob = map_raw_state_to_state(self.raw_state, self._player, self._opponent)
         logger.info(ob["board"])
 
 
     def _create_action_space(self):
         self.action_names = actions.ACTION
-        self.action_spaces = spaces.Discrete(4)
+        self.action_space = spaces.Discrete(4)
 
         self.actions = spaces.Discrete(4)
 
         logger.debug(self.action_space)
 
-
-    def _reset(self):
+    def reset(self):
         game.clear_cache_in_memory()
 
         self._game_id = game.create_game()
@@ -57,21 +57,21 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         self._player = "player1"
         self._opponent = "player2"
         
-        ob = map_raw_state_to_observation(self.raw_state, self._player, self._opponent)
-        return ob
+        self.state = map_raw_state_to_observation(self.observation_space, self.raw_state, self._player, self._opponent)
+        return self.state
 
 
-    def _step(self, direction_code):
+    def step(self, direction_code):
         self.time_to_end_turn()
 
         data = actions.action_move_to_command_data(self.raw_state, direction_code, self._player)
         commands.move_ceature(**data)
         self.get_game()
 
-        ob = map_raw_state_to_observation(self.raw_state, self._player, self._opponent)
+        self.state = map_raw_state_to_observation(self.observation_space, self.raw_state, self._player, self._opponent)
 
         reward = 0
-        return ob, reward, self.is_game_stop(), {}
+        return self.state, reward, self.is_game_stop(), {}
 
     def get_game(self):
          self.raw_state = game.get_game_state(self._game_id)
@@ -88,9 +88,8 @@ class CardGameEnv(gym.Env, utils.EzPickle):
 
         logger.debug("MP of hero {}".format(mp))
         
-
     def is_game_stop(self):
-        return self.raw_state["game"]["currentPlayersTurn"] > 10
+        return self.raw_state["game"]["currentTurn"] > 10
 
 
         

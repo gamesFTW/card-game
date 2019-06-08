@@ -1,17 +1,20 @@
 import numpy as np
 
-from game_api import getters
+from gym.spaces.utils import flatten
+
+from .game_api import getters
+
 
 def map_board(raw_game_state, player, opponent):
     board = np.zeros((9,9), dtype=int)
 
-    for card in raw_game_state[player]['hand']:
+    for card in raw_game_state[player]['table']:
         n = -1
         if card["hero"]:
             n = -2
         board[card["x"], card["y"]] = n
 
-    for card in raw_game_state[opponent]['hand']:
+    for card in raw_game_state[opponent]['table']:
         n = 1
         if card["hero"]:
             n = 2
@@ -19,11 +22,9 @@ def map_board(raw_game_state, player, opponent):
 
     return board
 
-        
-
     
-def map_hero(raw_game_state, player):
-    hero = getters.get_hero(raw_game_state, player)
+def map_hero(raw_game_state, player, n=0):
+    hero = getters.get_hero(raw_game_state, player, n)
     return {
         "hp":  hero["alive"],
         "damage": hero["damage"],
@@ -32,15 +33,20 @@ def map_hero(raw_game_state, player):
         "movingPoints": hero["movingPoints"],
         "range": 1,
         "manaCost": hero["manaCost"],
+        "x": hero["x"],
+        "y": hero["y"],
     }
 
-
-def map_raw_state_to_observation(raw_game_state, player, opponent):
+def map_raw_state_to_state(raw_game_state, player, opponent):
     return {
-        "hero1": map_hero(raw_game_state, player),
+        "hero0": map_hero(raw_game_state, player, 0),
+        "hero1": map_hero(raw_game_state, player, 1),
+        "opponentHero0": map_hero(raw_game_state, opponent, 0),
+        "opponentHero1": map_hero(raw_game_state, opponent, 1),
         "board": map_board(raw_game_state, player, opponent)
-
     }
 
+def map_raw_state_to_observation(observation_space, raw_game_state, player, opponent):
+    return flatten(observation_space, map_raw_state_to_state(raw_game_state, player, opponent))
 
-    
+   
