@@ -36,7 +36,7 @@ class CardGameEnv(gym.Env, utils.EzPickle):
 
     def render(self, mode="ansii", close=False):
         ob = map_raw_state_to_state(self.raw_state, self._player, self._opponent)
-        logger.info(ob["board"])
+        print(ob["board"])
 
 
     def _create_action_space(self):
