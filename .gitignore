@@ -2,3 +2,5 @@
 node_modules
 unity-client/build
 __pycache__
+
+*.h5f
