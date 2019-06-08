@@ -14,5 +14,6 @@ API_URLS = {
 }
 
 
-f = open(os.path.dirname(os.path.realpath(__file__)) + "/fixtures/test-initial-game-data.json", 'r')
-CREATE_GAME_JSON = json.load(f)
+CREATE_GAME_JSON = ''
+with open(os.path.dirname(os.path.realpath(__file__)) + "/fixtures/test-initial-game-data.json", 'r') as f:
+  CREATE_GAME_JSON = json.load(f)

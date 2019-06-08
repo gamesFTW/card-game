@@ -6,7 +6,7 @@ from .game_api import getters
 
 
 def map_board(raw_game_state, player, opponent):
-    board = np.zeros((9,9), dtype=int)
+    board = np.zeros((10,10), dtype=int)
 
     for card in raw_game_state[player]['table']:
         n = -1
@@ -26,11 +26,11 @@ def map_board(raw_game_state, player, opponent):
 def map_hero(raw_game_state, player, n=0):
     hero = getters.get_hero(raw_game_state, player, n)
     return {
-        "hp":  hero["alive"],
+        "currentHp":  hero["currentHp"],
         "damage": hero["damage"],
         "tapped": hero["tapped"], 
         "alive": hero["alive"],
-        "movingPoints": hero["movingPoints"],
+        "currentMovingPoints": hero["currentMovingPoints"],
         "range": 1,
         "manaCost": hero["manaCost"],
         "x": hero["x"],

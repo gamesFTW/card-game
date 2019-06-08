@@ -34,7 +34,7 @@ def get_hero(raw_game_state, player = DEFAULT_PLAYER, hero_n=DEFAULT_HERO_N):
 
 def get_hero_mp(raw_game_state, player = DEFAULT_PLAYER, hero_n=DEFAULT_HERO_N):
     hero = get_hero(raw_game_state, player, hero_n)
-    return hero["movingPoints"]
+    return hero["currentMovingPoints"]
 
 def get_hero_id(raw_game_state, player = DEFAULT_PLAYER, hero_n=DEFAULT_HERO_N):
     hero = get_hero(raw_game_state, player, hero_n)
