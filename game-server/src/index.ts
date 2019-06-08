@@ -33,11 +33,12 @@ async function main (): Promise<void> {
   const wsIO = new IO();
   wsIO.attach(app, false);
 
+
   app.use(async (ctx: any, next: any) => {
     const start = Date.now();
     await next();
     const ms = Date.now() - start;
-    console.log(chalk.green(`${ctx.method} ${ctx.url} - ${ms}ms`));
+    console.log(chalk.green(`[${ctx.method}] ${ctx.url} - ${ms}ms`));
   });
 
   app.use(async (ctx, next) => {
@@ -51,10 +52,10 @@ async function main (): Promise<void> {
       } else {
         ctx.status = 520;
       }
-
       ctx.body = `${error.message}`;
     }
   });
+  
 
   godOfSockets.autoRegistrateUsers(wsIO);
   const gameIds = await lobbyService.getAllGames();

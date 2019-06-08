@@ -35,7 +35,7 @@
     "bull": "^3.4.4",
     "chalk": "^2.4.1",
     "eventstore": "^1.13.3",
-    "koa": "2.4.1",
+    "koa": "2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.3.0",
     "koa-socket-2": "^1.0.17",
