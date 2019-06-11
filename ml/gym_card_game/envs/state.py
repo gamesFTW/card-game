@@ -26,13 +26,13 @@ def map_board(raw_game_state, player, opponent):
 def map_hero(raw_game_state, player, n=0):
     hero = getters.get_hero(raw_game_state, player, n)
     return {
-        "currentHp":  hero["currentHp"],
-        "damage": hero["damage"],
-        "tapped": hero["tapped"], 
-        "alive": hero["alive"],
-        "currentMovingPoints": hero["currentMovingPoints"],
-        "range": 1,
-        "manaCost": hero["manaCost"],
+        # "currentHp":  hero["currentHp"],
+        # "damage": hero["damage"],
+        # "tapped": hero["tapped"], 
+        # "alive": hero["alive"],
+        # "currentMovingPoints": hero["currentMovingPoints"],
+        # "range": 1,
+        # "manaCost": hero["manaCost"],
         "x": hero["x"],
         "y": hero["y"],
     }
@@ -40,9 +40,9 @@ def map_hero(raw_game_state, player, n=0):
 def map_raw_state_to_state(raw_game_state, player, opponent):
     return {
         "hero0": map_hero(raw_game_state, player, 0),
-        "hero1": map_hero(raw_game_state, player, 1),
+        # "hero1": map_hero(raw_game_state, player, 1),
         "opponentHero0": map_hero(raw_game_state, opponent, 0),
-        "opponentHero1": map_hero(raw_game_state, opponent, 1),
+        # "opponentHero1": map_hero(raw_game_state, opponent, 1),
         "board": map_board(raw_game_state, player, opponent)
     }
 

@@ -24,9 +24,9 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         self.observation_space = spaces.Dict({
             "board": spaces.Box(low=-2, high=2, shape=(10,10), dtype=np.int),
             "hero0": CARD_SPACE,
-            "hero1": CARD_SPACE,
+            # "hero1": CARD_SPACE,
             "opponentHero0": CARD_SPACE,
-            "opponentHero1": CARD_SPACE,
+            # "opponentHero1": CARD_SPACE,
         })
         self._create_action_space()
 
@@ -60,6 +60,7 @@ class CardGameEnv(gym.Env, utils.EzPickle):
 
 
     def step(self, direction_code):
+        self.get_game()
         self.time_to_end_turn()
         self.save_pre_game()
 
@@ -69,12 +70,15 @@ class CardGameEnv(gym.Env, utils.EzPickle):
 
         self.state = map_raw_state_to_observation(self.observation_space, self.raw_state, self._player, self._opponent)
 
+        is_done = self.is_game_stop()
+        reward = -1
+
         if isValid:
             reward = calc_reward(self.prev_raw_state, self.raw_state, self._player, self._opponent)
         else:
-            reward = -1
+            is_done = True
 
-        return self.state, reward, self.is_game_stop(), {}
+        return self.state, reward, is_done, {}
 
     def get_game(self):
         self.raw_state = game.get_game_state(self._game_id)
@@ -98,7 +102,7 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         logger.debug("MP of hero {}".format(mp))
         
     def is_game_stop(self):
-        return self.raw_state["game"]["currentTurn"] > 10
+        return self.raw_state["game"]["currentTurn"] > 6
 
 
         
