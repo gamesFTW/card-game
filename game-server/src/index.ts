@@ -19,6 +19,8 @@ import { debugController } from './http/_debug/debugController';
 import { staticContorller } from './http/staticController';
 import { DomainError } from './infr/DomainError';
 
+let DEBUG = true;
+
 async function main (): Promise<void> {
   await eventStore.on('connect');
 
@@ -38,14 +40,14 @@ async function main (): Promise<void> {
     const start = Date.now();
     await next();
     const ms = Date.now() - start;
-    console.log(chalk.green(`[${ctx.method}] ${ctx.url} - ${ms}ms`));
+    DEBUG && console.log(chalk.green(`[${ctx.method}] ${ctx.url} - ${ms}ms`));
   });
 
   app.use(async (ctx, next) => {
     try {
       await next();
     } catch (error) {
-      console.error(chalk.red(error.stack));
+      DEBUG && console.error(chalk.red(error.stack));
 
       if (error instanceof DomainError) {
         ctx.status = 500;

@@ -73,7 +73,6 @@ class GodOfSockets {
     if (this.gameIdToSockets.get(gameId)) {
       this.gameIdToSockets.get(gameId).forEach(socket => {
         const playerId = this.socketToUser.get(socket);
-        console.info(chalk.yellow(`${playerId} <<< ${JSON.stringify(clientEvents)}`));
         socket.emit('event', {actions: clientEvents});
       });
     }
