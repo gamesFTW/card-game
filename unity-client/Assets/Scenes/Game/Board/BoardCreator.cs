@@ -106,6 +106,40 @@ public class BoardCreator : MonoBehaviour
         return false;
     }
 
+    public bool UnitHaveRicochetTargetNearby(UnitDisplay unitDisplay)
+    {
+        Point p = GetUnitsPosition(unitDisplay);
+
+        if (this.CheckForEnemy(p.x + 1, p.y) || this.CheckForEnemy(p.x - 1, p.y) || this.CheckForEnemy(p.x, p.y + 1) || this.CheckForEnemy(p.x, p.y - 1)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CheckForEnemy(int x, int y)
+    {
+        var unit = this.Units[x, y];
+        if (!unit)
+        {
+            return false;
+        }
+
+        var card = unit.GetComponent<UnitDisplay>().CardDisplay;
+        return !card.IsAlly;
+    }
+
+    private bool checkPositionsAdjacency(Point firstPosition, Point secondPosition) {
+        var xDistance = Math.Abs(firstPosition.x - secondPosition.x);
+        var yDistance = Math.Abs(firstPosition.y - secondPosition.y);
+
+        if (xDistance + yDistance< 2) {
+          return true;
+        }
+
+        return false;
+    }
+
     private void UpdatePositions(UnitDisplay unitDisplay, Point position)
     {
         Point oldPosition = GetUnitsPosition(unitDisplay);

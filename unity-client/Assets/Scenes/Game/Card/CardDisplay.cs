@@ -57,6 +57,11 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public bool IsAlly
+    {
+        get { return this.cardData.ownerId == GameState.mainPlayerId; }
+    }
+
     // Use this for initialization
     void Start () 
     {

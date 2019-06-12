@@ -210,7 +210,7 @@ public class NoSelectionsState
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        if (clickedUnitDisplay.CardData.ownerId == GameState.mainPlayerId)
+        if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
             this.Disable();
             this.playerActionsOnBoard.ownUnitSelectedState.Enable(clickedUnitDisplay);
@@ -273,7 +273,7 @@ public class OwnUnitSelectedState : SelectingState
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        if (clickedUnitDisplay.CardData.ownerId == GameState.mainPlayerId)
+        if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
             this.EnableOwnUnitSelectedState(clickedUnitDisplay);
         }
@@ -283,7 +283,7 @@ public class OwnUnitSelectedState : SelectingState
             {
                 this.EnableSelectingPushTargetState(clickedUnitDisplay);
             }
-            else if (this.selectedUnit.CardData.abilities.ricochet)
+            else if (this.selectedUnit.CardData.abilities.ricochet && this.playerActionsOnBoard.boardCreator.UnitHaveRicochetTargetNearby(clickedUnitDisplay))
             {
                 this.EnableSelectingRicochetTargetState(clickedUnitDisplay);
             }
