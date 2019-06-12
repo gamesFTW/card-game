@@ -9,7 +9,8 @@ public class LobbyGame : MonoBehaviour
 
     public Text deckNamesText1;
     public Text deckNamesText2;
-    public InputField gameIdText;
+    public InputField lobbyGameIdText;
+    public InputField gameServerIdText;
     public Button playAs1PlayerButton;
     public Button playAs2PlayerButton;
 
@@ -23,7 +24,8 @@ public class LobbyGame : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameIdText.text = lobbyGameId;
+        lobbyGameIdText.text = lobbyGameId;
+        gameServerIdText.text = gameServerId;
         deckNamesText1.text = deckName1;
         deckNamesText2.text = deckName2;
 

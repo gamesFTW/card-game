@@ -38,10 +38,10 @@ class Game extends Entity {
     // Более красивее было бы сначала создать игроков и потом их зашафлить.
     let playersCreationData = lodash.shuffle([playerACreationData, playerBCreationData]);
 
-    let {player: player1, cards: player1Cards} = this.createPlayer(playersCreationData[0], board, true);
-    let {player: player2, cards: player2Cards} = this.createPlayer(playersCreationData[1], board, false);
-
     let areas = this.generateStartingAreas(board);
+
+    let {player: player1, cards: player1Cards} = this.createPlayer(playersCreationData[0], board, true, areas);
+    let {player: player2, cards: player2Cards} = this.createPlayer(playersCreationData[1], board, false, areas);
 
     this.applyEvent(new Event<GameData>(
       GameEventType.GAME_CREATED,
@@ -83,10 +83,10 @@ class Game extends Entity {
     return playerId === this.state.player1Id ? this.state.player2Id : this.state.player1Id;
   }
 
-  private createPlayer (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean):
+  private createPlayer (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean, areas: Area[]):
       {player: Player, cards: Array<Card>} {
     let player = new Player();
-    let cards = player.create(playerCreationData, board, isFirstPlayer);
+    let cards = player.create(playerCreationData, board, isFirstPlayer, areas);
 
     return {player, cards};
   }

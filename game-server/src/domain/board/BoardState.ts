@@ -7,16 +7,16 @@ interface BoardData {
   id?: EntityId;
   width?: number;
   height?: number;
-  boardObjects?: BoardObjects;
-  areas?: EntityId[];
+  units?: BoardObjects;
+  areas?: BoardObjects;
 }
 
 class BoardState extends EntityState implements BoardData {
   public id: EntityId;
   public width: number;
   public height: number;
-  public boardObjects: BoardObjects;
-  public areas: EntityId[] = [];
+  public units: BoardObjects;
+  public areas: BoardObjects;
 
   public constructor (events: Array<Event>) {
     super();

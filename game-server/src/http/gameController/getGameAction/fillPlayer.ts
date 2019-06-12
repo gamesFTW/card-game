@@ -13,7 +13,7 @@ let getCards = async (array: Array<EntityId>, board: Board, repository: Reposito
 
   return await Promise.all(array.map(async (cardId: EntityId) => {
     let card = Object(await repository.get<Card>(cardId, Card)).state;
-    let position = board.getPositionByBoardObject(card);
+    let position = board.getPositionOfUnit(card);
 
     if (position) {
       card.x = position.x;

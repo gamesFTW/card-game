@@ -16,7 +16,20 @@ import { DomainError } from '../../infr/DomainError';
 type BoardObject = Card|Area;
 
 class Board extends Entity {
-  get areas (): Array<EntityId> { return this.state.areas; }
+  get areas (): Array<EntityId> {
+    let areas = [];
+    for (let x in this.state.areas) {
+      for (let y in this.state.areas[x]) {
+        let areaId = this.state.areas[x][y];
+
+        if (areaId) {
+          areas.push(areaId);
+        }
+      }
+    }
+
+    return areas;
+  }
 
   protected state: BoardState;
 
@@ -29,45 +42,52 @@ class Board extends Entity {
     let id = this.generateId();
 
     let units: BoardObjects = {};
+    let areas: BoardObjects = {};
 
     for (let x = 1; x <= width; x++) {
       units[x] = {};
+      areas[x] = {};
       let unitsX = units[x];
+      let areasX = areas[x];
 
       for (let y = 1; y <= height; y++) {
         unitsX[y] = null;
+        areasX[y] = null;
       }
     }
 
     this.applyEvent(new Event<BoardData>(
-      BoardEventType.BOARD_CREATED, {id, width, height, boardObjects: units}
+      BoardEventType.BOARD_CREATED, {id, width, height, units, areas}
     ));
   }
 
-  public getPositionByBoardObject (boardObject: BoardObject): Point|null {
-    for (let x in this.state.boardObjects) {
-      for (let y in this.state.boardObjects[x]) {
-        let cardId = this.state.boardObjects[x][y];
-        if (cardId === boardObject.id) {
-          return new Point(Number(x), Number(y));
-        }
-      }
-    }
-
-    return null;
+  public getPositionOfUnit (unit: Card): Point|null {
+    return this.getPositionOfBoardObject(unit, this.state.units);
   }
 
-  public getBoardObjectIdByPosition (position: Point): EntityId {
-    if (this.state.boardObjects[position.x] && this.state.boardObjects[position.x][position.y]) {
-      return this.state.boardObjects[position.x][position.y];
+  public getPositionOfArea (area: Area): Point|null {
+    return this.getPositionOfBoardObject(area, this.state.areas);
+  }
+
+  public getUnitIdByPosition (position: Point): EntityId {
+    return this.getBoardObjectIdByPosition(position, this.state.units);
+  }
+
+  public getAreaIdByPosition (position: Point): EntityId {
+    return this.getBoardObjectIdByPosition(position, this.state.areas);
+  }
+
+  public getBoardObjectIdByPosition (position: Point, boardObjects: BoardObjects): EntityId {
+    if (boardObjects[position.x] && boardObjects[position.x][position.y]) {
+      return boardObjects[position.x][position.y];
     }
 
     return null;
   }
 
   public checkUnitsAdjacency (firstCard: Card, secondCard: Card): boolean {
-    let firstCardPoint = this.getPositionByBoardObject(firstCard);
-    let secondCardPoint = this.getPositionByBoardObject(secondCard);
+    let firstCardPoint = this.getPositionOfUnit(firstCard);
+    let secondCardPoint = this.getPositionOfUnit(secondCard);
 
     let xDistance = Math.abs(firstCardPoint.x - secondCardPoint.x);
     let yDistance = Math.abs(firstCardPoint.y - secondCardPoint.y);
@@ -90,79 +110,62 @@ class Board extends Entity {
     return false;
   }
 
-  public addUnitOnBoard (unit: Card, toPosition: Point): void {
-    let newBoardObjects = this.createBoardObjectWith(unit, toPosition);
+  public addUnitOnBoard (unit: Card, toPosition: Point, areas: Area[]): void {
+    this.checkPositionCanBeOccupiedByUnit(toPosition, areas);
+
+    let newBoardObjects = this.createBoardObjectWith(unit, toPosition, this.state.units);
 
     this.applyEvent(new Event<BoardData>(
       BoardEventType.BOARD_OBJECT_ADDED_TO_BOARD,
       {
-        boardObjects: newBoardObjects
+        units: newBoardObjects
       }
     ));
   }
 
   public addAreaOnBoard (area: Area, toPosition: Point): void {
-    let newBoardObjects = this.createBoardObjectWith(area, toPosition);
-
-    let newAreas = lodash.clone(this.state.areas);
-    newAreas.push(area.id);
+    let newBoardObjects = this.createBoardObjectWith(area, toPosition, this.state.areas);
 
     this.applyEvent(new Event<BoardData>(
       BoardEventType.BOARD_OBJECT_ADDED_TO_BOARD,
       {
-        boardObjects: newBoardObjects,
-        areas: newAreas
+        areas: newBoardObjects
       }
     ));
   }
 
-  public createBoardObjectWith (boardObject: BoardObject, toPosition: Point): BoardObjects {
-    let {x, y} = toPosition;
-
-    if (x < 1 || x > this.state.width || y < 1 || y > this.state.height) {
-      throw new DomainError('Point out of map');
-    }
-
-    this.checkPositionForVacancy(toPosition);
-
-    let newBoardObjects = lodash.cloneDeep(this.state.boardObjects);
-    newBoardObjects[x][y] = boardObject.id;
-
-    return newBoardObjects;
-  }
-
   public removeUnitFromBoard (card: Card): void {
-    let position = this.getPositionByBoardObject(card);
-    let newUnits = lodash.cloneDeep(this.state.boardObjects);
+    let position = this.getPositionOfUnit(card);
+    let newUnits = lodash.cloneDeep(this.state.units);
 
     newUnits[position.x][position.y] = null;
 
     this.applyEvent(new Event<BoardData>(
       BoardEventType.CARD_REMOVED,
-      { boardObjects: newUnits }
+      { units: newUnits }
     ));
   }
 
   public moveUnit (card: Card, toPosition: Point, areas: Area[]): void {
-    this.checkPositionForMovement(toPosition, areas);
+    this.checkPositionCanBeOccupiedByUnit(toPosition, areas);
 
-    const fromPosition = this.getPositionByBoardObject(card);
+    const fromPosition = this.getPositionOfUnit(card);
 
-    const newUnits = lodash.cloneDeep(this.state.boardObjects);
+    const newUnits = lodash.cloneDeep(this.state.units);
     newUnits[fromPosition.x][fromPosition.y] = null;
     newUnits[toPosition.x][toPosition.y] = card.id;
 
     this.applyEvent(new Event<BoardData, BoardCardMovedExtra>(
       BoardEventType.CARD_MOVED,
-      { boardObjects: newUnits },
+      { units: newUnits },
       { toPosition: toPosition, movedCardId: card.id }
     ));
   }
 
   public getPathOfUnitMove (card: Card, toPosition: Point, opponent: Player, areas: Area[]): Point[] {
-    this.checkPositionForMovement(toPosition, areas);
+    this.checkPositionCanBeOccupiedByUnit(toPosition, areas);
 
-    const fromPosition = this.getPositionByBoardObject(card);
+    const fromPosition = this.getPositionOfUnit(card);
 
     const grid = this.getPFGridWithEnemies(opponent, areas);
     return findPath(fromPosition, toPosition, grid);
@@ -171,7 +174,7 @@ class Board extends Entity {
   public checkIsPositionAdjacentToCards (position: Point, cards: Card[]): boolean {
     let isAdjacent = false;
     for (let card of cards) {
-      let cardPosition = this.getPositionByBoardObject(card);
+      let cardPosition = this.getPositionOfUnit(card);
       isAdjacent = this.checkPositionsAdjacency(position, cardPosition);
 
       if (isAdjacent) {
@@ -187,14 +190,40 @@ class Board extends Entity {
   }
 
   public getCardIdBehindSecondCard (firstCard: Card, secondCard: Card): string {
-    let firstCardPosition: Point = this.getPositionByBoardObject(firstCard);
-    let secondCardPosition: Point = this.getPositionByBoardObject(secondCard);
+    let firstCardPosition: Point = this.getPositionOfUnit(firstCard);
+    let secondCardPosition: Point = this.getPositionOfUnit(secondCard);
 
     let candidateX = secondCardPosition.x + (secondCardPosition.x - firstCardPosition.x);
     let candidateY = secondCardPosition.y + (secondCardPosition.y - firstCardPosition.y);
 
     let candidatePosition: Point = new Point(candidateX, candidateY);
-    return this.getBoardObjectIdByPosition(candidatePosition);
+    return this.getUnitIdByPosition(candidatePosition);
+  }
+
+  private getPositionOfBoardObject (boardObject: BoardObject, boardObjects: BoardObjects): Point|null {
+    for (let x in boardObjects) {
+      for (let y in boardObjects[x]) {
+        let boardObjectId = boardObjects[x][y];
+        if (boardObjectId === boardObject.id) {
+          return new Point(Number(x), Number(y));
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private createBoardObjectWith (boardObject: BoardObject, toPosition: Point, boardObjects: BoardObjects): BoardObjects {
+    let {x, y} = toPosition;
+
+    if (x < 1 || x > this.state.width || y < 1 || y > this.state.height) {
+      throw new DomainError('Point out of map');
+    }
+
+    let newBoardObjects = lodash.cloneDeep(boardObjects);
+    newBoardObjects[x][y] = boardObject.id;
+
+    return newBoardObjects;
   }
 
   private getPFGrid (): Grid {
@@ -204,15 +233,15 @@ class Board extends Entity {
   private getPFGridWithEnemies (opponent: Player, areas: Area[]): Grid {
     const grid = this.getPFGrid();
 
-    for (let x in this.state.boardObjects) {
-      for (let y in this.state.boardObjects[x]) {
-        let boardObject = this.state.boardObjects[x][y];
+    for (let x in this.state.units) {
+      for (let y in this.state.units[x]) {
+        let areaId = this.state.areas[x][y];
 
-        let area = this.getAreaFromAreas(boardObject, areas);
+        let area = this.getAreaFromAreas(areaId, areas);
         if (area) {
           grid.setWalkableAt(Number(x), Number(y), area.canUnitsWalkThoughtIt);
         } else {
-          let cardId = this.state.boardObjects[x][y];
+          let cardId = this.state.units[x][y];
 
           if (opponent.checkCardIdIn(cardId, CardStack.TABLE)) {
             grid.setWalkableAt(Number(x), Number(y), false);
@@ -224,32 +253,27 @@ class Board extends Entity {
     return grid;
   }
 
-  private checkPositionForMovement (toPosition: Point, areas: Area[]): void {
+  private checkPositionCanBeOccupiedByUnit (toPosition: Point, areas: Area[]): void {
     let {x, y} = toPosition;
 
     if (x > this.state.width || x <= 0) {
-        throw new DomainError(`Tile x: ${x}, y: ${y} is not on the board`);
+      throw new DomainError(`Tile x: ${x}, y: ${y} is not on the board`);
     }
 
     if (y > this.state.height || y <= 0) {
-        throw new DomainError(`Tile x: ${x}, y: ${y} is not on the board`);
+      throw new DomainError(`Tile x: ${x}, y: ${y} is not on the board`);
     }
 
-    let boardObjectId = this.state.boardObjects[x][y];
+    if (this.state.units[x][y]) {
+      throw new DomainError(`Tile x: ${x}, y: ${y} is occupied`);
+    }
 
-    if (boardObjectId) {
-      let area = this.getAreaFromAreas(boardObjectId, areas);
-      if (!area || !area.canUnitsWalkThoughtIt) {
+    const areaId = this.state.areas[x][y];
+    if (areaId) {
+      const area = this.getAreaFromAreas(areaId, areas);
+      if (!area.canUnitsWalkThoughtIt) {
         throw new DomainError(`Tile x: ${x}, y: ${y} is occupied`);
       }
-    }
-  }
-
-  private checkPositionForVacancy (toPosition: Point): void {
-    let {x, y} = toPosition;
-
-    if (this.state.boardObjects[x][y]) {
-      throw new DomainError(`Tile x: ${x}, y: ${y} is occupied`);
     }
   }
 

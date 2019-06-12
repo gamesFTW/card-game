@@ -41,7 +41,7 @@ const fillAreas = async (board: Board, repository: Repository): Promise<any> => 
   for (let area of areas) {
     let areaResponse = Object(area).state;
 
-    let position = board.getPositionByBoardObject(area);
+    let position = board.getPositionOfArea(area);
 
     if (position) {
       areaResponse.x = position.x;

@@ -9,6 +9,7 @@ import { CardEventType } from '../../domain/events';
 import { UseCase } from '../../infr/UseCase';
 import { Point } from '../../infr/Point';
 import { Board } from '../../domain/board/Board';
+import { Area } from '../../domain/area/Area';
 
 interface PlayCardParams {
   gameId: EntityId;
@@ -41,6 +42,7 @@ class PlayCardUseCase extends UseCase {
     playerManaPoolCards?: Card[],
     playerTableCards?: Card[],
     enemyPlayerTableCards?: Card[]
+    areas?: Area[]
   } = {};
 
   protected params: PlayCardParams;
@@ -56,6 +58,7 @@ class PlayCardUseCase extends UseCase {
     let enemyId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
     let enemy = await this.repository.get<Player>(enemyId, Player);
     this.entities.enemyPlayerTableCards = await this.repository.getMany<Card>(enemy.table, Card);
+    this.entities.areas = await this.repository.getMany<Area>(this.entities.board.areas, Area);
   }
 
   protected addEventListeners (): void {
@@ -70,7 +73,7 @@ class PlayCardUseCase extends UseCase {
   protected runBusinessLogic (): void {
     this.entities.player.playCard(
       this.entities.card, this.entities.playerManaPoolCards, this.entities.playerTableCards,
-      this.params.position, this.entities.board, this.entities.enemyPlayerTableCards
+      this.params.position, this.entities.board, this.entities.enemyPlayerTableCards, this.entities.areas
     );
   }
 

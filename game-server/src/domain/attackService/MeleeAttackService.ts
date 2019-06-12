@@ -183,7 +183,7 @@ class MeleeAttackService {
   }
 
   private static pushAttackedCard (attackerCard: Card, attackedCard: Card, board: Board, pushPosition: Point, areas: Area[]): void {
-    let attackedCardPosition = board.getPositionByBoardObject(attackedCard);
+    let attackedCardPosition = board.getPositionOfUnit(attackedCard);
 
     let distanceX = attackedCardPosition.x - pushPosition.x;
     let distanceY = attackedCardPosition.y - pushPosition.y;

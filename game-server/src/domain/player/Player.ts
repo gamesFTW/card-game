@@ -39,7 +39,7 @@ class Player extends Entity {
     this.state = new PlayerState(events);
   }
 
-  public create (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean): Array<Card> {
+  public create (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean, areas: Area[]): Array<Card> {
     let id = this.generateId();
 
     // TODO сделать проверку на минимальное количество стартовых карт.
@@ -60,7 +60,7 @@ class Player extends Entity {
     ));
 
     this.shuffleDeck();
-    this.placeHeroes(heroes, board, isFirstPlayer);
+    this.placeHeroes(heroes, board, isFirstPlayer, areas);
     this.drawStartingHand(isFirstPlayer);
     this.convertStartingMana(isFirstPlayer);
 
@@ -106,7 +106,7 @@ class Player extends Entity {
 
   public playCard (
     card: Card, manaPoolCards: Array<Card>, tableCards: Array<Card>,
-    position: Point, board: Board, enemyPlayerTableCards: Card[]
+    position: Point, board: Board, enemyPlayerTableCards: Card[], areas: Area[]
   ): void {
     this.checkIfItHisTurn();
 
@@ -127,7 +127,7 @@ class Player extends Entity {
 
     this.tapMana(card.manaCost, manaPoolCards);
 
-    this.placeCardOnBoard(card, board, position);
+    this.placeCardOnBoard(card, board, position, areas);
 
     card.makeAlive();
     card.tap();
@@ -189,12 +189,12 @@ class Player extends Entity {
     });
   }
 
-  private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean): void {
+  private placeHeroes (heroes: Array<Card>, board: Board, isFirstPlayer: boolean, areas: Area[]): void {
     const y = isFirstPlayer ? 2 : GameConstants.BOARD_HEIGHT - 1;
     let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2) + 1, y);
 
     const hero = heroes[0];
-    board.addUnitOnBoard(hero, position);
+    board.addUnitOnBoard(hero, position, areas);
 
     let { fromStack: deck, toStack: table } = this.changeCardStack(CardStack.DECK, CardStack.TABLE, hero.id);
 
@@ -210,7 +210,7 @@ class Player extends Entity {
       const hero2 = heroes[1];
       let position = new Point(Math.round(GameConstants.BOARD_WIDTH / 2) - 1, y);
 
-      board.addUnitOnBoard(hero2, position);
+      board.addUnitOnBoard(hero2, position, areas);
 
       let { fromStack: deck, toStack: table } = this.changeCardStack(CardStack.DECK, CardStack.TABLE, hero2.id);
 
@@ -297,8 +297,8 @@ class Player extends Entity {
     manaPoolCardsToUntap.forEach((card) => card.untap());
   }
 
-  private placeCardOnBoard (card: Card, board: Board, position: Point): void {
-    board.addUnitOnBoard(card, position);
+  private placeCardOnBoard (card: Card, board: Board, position: Point, areas: Area[]): void {
+    board.addUnitOnBoard(card, position, areas);
 
     let { fromStack: hand, toStack: table } = this.changeCardStack(CardStack.HAND, CardStack.TABLE, card.id);
 
@@ -311,7 +311,7 @@ class Player extends Entity {
   private assertPositionNearAtHeroOnDistance (position: Point, distance: number, tableCards: Card[], board: Board): boolean {
     for (let card of tableCards) {
       if (card.hero) {
-        const heroPosition = board.getPositionByBoardObject(card);
+        const heroPosition = board.getPositionOfUnit(card);
         const distanceBetweenPoints = board.getDistanceBetweenPositions(position, heroPosition);
 
         if (distanceBetweenPoints <= distance) {

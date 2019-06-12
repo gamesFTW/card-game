@@ -58,8 +58,8 @@ class RangeAttackService {
 
   private static checkCanRangeAttackTo (
     attackerCard: Card, attackedCard: Card, attackedPlayer: Player, board: Board, attackedPlayerTableCards: Card[], areas: Area[]): boolean {
-    const attackerCardPosition = board.getPositionByBoardObject(attackerCard);
-    const attackedCardPosition = board.getPositionByBoardObject(attackedCard);
+    const attackerCardPosition = board.getPositionOfUnit(attackerCard);
+    const attackedCardPosition = board.getPositionOfUnit(attackedCard);
 
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
     const range = path.length - 1;
@@ -72,29 +72,33 @@ class RangeAttackService {
     let attackedPlayerTableCardsIds = attackedPlayerTableCards.map((card) => card.id);
     let areasIds = areas.map((area) => area.id);
 
+    console.log(areasIds);
+
     let betweenPath = path;
     betweenPath.shift();
     betweenPath.pop();
 
     let blockersOfRangeAttack = [];
     for (let point of betweenPath) {
-      const boardObjectId = board.getBoardObjectIdByPosition(point);
+      const cardId = board.getUnitIdByPosition(point);
 
-      if (attackedPlayerTableCardsIds.includes(boardObjectId)) {
-        blockersOfRangeAttack.push(boardObjectId);
+      if (attackedPlayerTableCardsIds.includes(cardId)) {
+        blockersOfRangeAttack.push(cardId);
       }
 
-      if (areasIds.includes(boardObjectId)) {
+      const areaId = board.getAreaIdByPosition(point);
+
+      if (areasIds.includes(areaId)) {
         let area;
 
         for (let a of areas) {
-          if (a.id === boardObjectId) {
+          if (a.id === areaId) {
             area = a;
           }
         }
 
         if (!area.canUnitsShootThoughtIt) {
-          blockersOfRangeAttack.push(boardObjectId);
+          blockersOfRangeAttack.push(areaId);
         }
       }
     }
