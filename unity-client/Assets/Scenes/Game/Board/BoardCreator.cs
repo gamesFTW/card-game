@@ -2,6 +2,7 @@
 using UnibusEvent;
 using System;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class BoardCreator : MonoBehaviour
 {
@@ -51,13 +52,15 @@ public class BoardCreator : MonoBehaviour
     public void MoveUnit(CardDisplay cardDisplay, Point position, Point[] path)
     {
         UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
+        List<Vector3> waypoints = new List<Vector3>();
 
-        Sequence moveSequence = DOTween.Sequence();
-        foreach(var point in path) {
-            moveSequence.Append(
-                unitDisplay.transform.DOLocalMove(PointerToIcometric(point, tileWidth, tileHeight), 0.5f)
-            );
+        foreach (var point in path)
+        {
+            waypoints.Add(PointerToIcometric(point, tileWidth, tileHeight));
         }
+
+      
+        unitDisplay.transform.DOLocalPath(waypoints.ToArray(), 1f);
 
         this.UpdatePositions(unitDisplay, position);
     }
