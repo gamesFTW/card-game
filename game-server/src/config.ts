@@ -7,6 +7,7 @@ export default {
   MONGO_PORT: 27017,
   GAME_URL: 'http://localhost:3000/',
   LOBBY_URL: 'http://localhost:3001/',
+  METEOR_URL: 'http://localhost:4000/',
   DEV: true,
   MAIN_EXCHANGE: 'main',
   IN_MEMORY_STORAGE: false

@@ -6,19 +6,30 @@ interface Games {
 }
 
 let lobbyMethods = {
-  GET_ALL_GAMES: config.LOBBY_URL + 'games'
+  GET_ALL_GAMES: config.METEOR_URL + 'methods/getGames'
 };
 
+interface GamesData {
+  Games: GameData[];
+}
+
+interface GameData {
+  _id: string;
+  gameServerId: string;
+  deckName1: string;
+  deckName2: string;
+}
+
 let lobbyService = {
-  getAllGames: async (): Promise<Array<String>> => {
-    let response;
+  getAllGames: async (): Promise<GameData[]> => {
+    let response: AxiosResponse<GamesData>;
     try {
       response = await axios.get(lobbyMethods.GET_ALL_GAMES);
     } catch (error) {
       throw new Error('GAME: не могу достучатся до lobby. Скорее всего его забыли запустить.');
     }
 
-    return response.data.games;
+    return response.data.Games;
   }
 };
 

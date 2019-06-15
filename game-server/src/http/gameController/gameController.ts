@@ -47,10 +47,10 @@ gameController.post('/endTurn', async (ctx) => {
 });
 
 gameController.get('/getLastGame', async (ctx) => {
-  let games = await lobbyService.getAllGames();
-  let lastGameId = games[games.length - 1];
+  const games = await lobbyService.getAllGames();
+  let lastGameId = games[games.length - 1].gameServerId;
 
-  let response = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
+  const response = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
 
   ctx.body = response.data;
 });
