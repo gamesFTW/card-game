@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import logging
 
-from gym_card_game.envs.infra.req_session import get_session
+from .infra.req_session import get_session
 
 from .consts import API_URLS, CREATE_GAME_JSON
 
