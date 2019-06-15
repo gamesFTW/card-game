@@ -3,10 +3,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnibusEvent;
 using LateExe;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
     public Text errorText;
+    public GameObject changeTurn;
     public Text changeTurnText;
 
     private Executer executer;
@@ -21,7 +23,7 @@ public class UIManager : MonoBehaviour
 
         this.executer = new Executer(this);
 
-        changeTurnText.GetComponent<CanvasRenderer>().SetAlpha(0);
+        this.changeTurn.GetComponent<CanvasGroup>().DOFade(0, 0);
 
         Unibus.Subscribe<string>(ReceiverFromServer.TURN_ENDED, OnTurnEnded);
     }
@@ -70,11 +72,11 @@ public class UIManager : MonoBehaviour
         }
 
         var colorToFadeTo = new Color(1f, 1f, 1f, 1);
-        changeTurnText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
+        this.changeTurn.GetComponent<CanvasGroup>().DOFade(1, 0.5f);
 
         this.executer.DelayExecute(1, x => {
             colorToFadeTo = new Color(1f, 1f, 1f, 0);
-            changeTurnText.CrossFadeColor(colorToFadeTo, 0.2f, true, true);
+            this.changeTurn.GetComponent<CanvasGroup>().DOFade(0, 0.5f);
         });
     }
 }
