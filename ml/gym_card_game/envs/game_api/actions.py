@@ -6,8 +6,6 @@ ACTION = ["N", "S", "E", "W"]
 
 def action_move_to_command_data(raw_game_state, direction_code, player):
     action = ACTION[direction_code]
-    # print ('go {}'.format(action))
-    # print ("act {}".format(action))
     
     hero_id = get_hero_id(raw_game_state, player)
     hero_x, hero_y = get_hero_xy(raw_game_state, player)
