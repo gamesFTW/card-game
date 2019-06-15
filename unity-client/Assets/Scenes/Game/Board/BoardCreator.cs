@@ -20,6 +20,7 @@ public class BoardCreator : MonoBehaviour
 
     private GameObject[,] Tiles;
     private GameObject[,] Units;
+    private GameObject[,] Areas;
 
     private float tileWidth;
     private float tileHeight;
@@ -47,6 +48,8 @@ public class BoardCreator : MonoBehaviour
         var areaDispay = area.GetComponent<AreaDisplay>();
         areaDispay.areaData = areaData;
         areaDispay.Init();
+
+        Areas[areaData.x, areaData.y] = area as GameObject;
     }
 
     public void MoveUnit(CardDisplay cardDisplay, Point position, Point[] path)
@@ -119,6 +122,67 @@ public class BoardCreator : MonoBehaviour
         return false;
     }
 
+    public void ShowPathReach(UnitDisplay unitDisplay)
+    {
+        var reachChecker = new ReachChecker(this.Width, this.Height);
+
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                var area = this.Areas[x, y];
+                if (area != null)
+                {
+                    var areaDisplay = area.GetComponent<AreaDisplay>();
+                    
+                    if (!areaDisplay.areaData.canUnitsWalkThoughtIt)
+                    {
+                        reachChecker.AddBlocker(new Point(x, y));
+                    }
+                }
+            }
+        }
+
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                var unit = this.Units[x, y];
+                if (unit != null)
+                {
+                    var cardDisplay = unit.GetComponent<UnitDisplay>().CardDisplay;
+
+                    if (!cardDisplay.IsAlly)
+                    {
+                        reachChecker.AddBlocker(new Point(x, y));
+                    }
+                }
+            }
+        }
+
+        Point unitPosition = this.GetUnitsPosition(unitDisplay);
+        var points = reachChecker.CheckReach(unitPosition, unitDisplay.CardData.currentMovingPoints);
+
+        foreach (var point in points)
+        {
+            Debug.Log(point.x + " " + point.y);
+            var tile = this.Tiles[point.x, point.y];
+            tile.GetComponent<TileDisplay>().PathOn();
+        }
+    }
+
+    public void RemoveAllPathReach()
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                var tile = this.Tiles[x, y];
+                tile.GetComponent<TileDisplay>().PathOff();
+            }
+        }
+    }
+
     private bool CheckForEnemy(int x, int y)
     {
         var unit = this.Units[x, y];
@@ -166,6 +230,7 @@ public class BoardCreator : MonoBehaviour
     {
         Tiles = new GameObject[Width + 1, Height + 1];
         Units = new GameObject[Width + 1, Height + 1];
+        Areas = new GameObject[Width + 1, Height + 1];
 
         for (int x = 1; x <= Width; x++)
         {
@@ -187,6 +252,7 @@ public class BoardCreator : MonoBehaviour
                 TileDisplay tileDisplay = tile.GetComponent<TileDisplay>();
                 tileDisplay.x = x;
                 tileDisplay.y = y;
+                tileDisplay.SetText(x + " " + y);
 
                 Tiles[x, y] = tile as GameObject;
             }

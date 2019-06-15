@@ -235,12 +235,16 @@ public class OwnUnitSelectedState : SelectingState
 
         this.Select(selectedUnit);
 
+        this.playerActionsOnBoard.boardCreator.ShowPathReach(selectedUnit);
+
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
 
     protected override void Disable()
     {
+        this.playerActionsOnBoard.boardCreator.RemoveAllPathReach();
+
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
