@@ -1,7 +1,6 @@
 import { Player, CardStack } from '../player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
-import { MeleeAttackService } from './MeleeAttackService';
 import { RangeService } from '../abilities/RangeService';
 import { Point } from '../../infr/Point';
 import Bresenham from './Bresenham';
@@ -9,6 +8,7 @@ import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
 import { EntityId } from '../../infr/Entity';
 import { Area } from '../area/Area';
 import { DomainError } from '../../infr/DomainError';
+import { BaseAttackService } from './BaseAttackService';
 
 class RangeAttackService {
   public static rangeAttackUnit (
@@ -42,12 +42,16 @@ class RangeAttackService {
 
     attackerCard.tap();
 
-    let attackerDmg = MeleeAttackService.calcDamage(attackerCard, attackedCard);
+    let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard);
 
     attackedCard.takeDamage(attackerDmg);
 
     if (attackerCard.abilities.ricochet && abilitiesParams.ricochetTargetCardId) {
       this.ricochet(attackerCard, attackedCard, attackedPlayerTableCards, attackedPlayer, board, abilitiesParams.ricochetTargetCardId);
+    }
+
+    if (attackerCard.abilities.push && abilitiesParams.pushAt) {
+      BaseAttackService.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt, areas);
     }
 
     if (!attackedCard.alive) {
@@ -128,7 +132,7 @@ class RangeAttackService {
       throw new DomainError(`Card ${attackedCard.id} and ${ricochetedAt} is not adjacent.`);
     }
 
-    let attackerDmg = MeleeAttackService.calcDamage(attackerCard, ricochetTargetCard);
+    let attackerDmg = BaseAttackService.calcDamage(attackerCard, ricochetTargetCard);
 
     ricochetTargetCard.takeDamage(attackerDmg);
 

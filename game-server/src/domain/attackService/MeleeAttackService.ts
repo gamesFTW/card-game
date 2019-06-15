@@ -1,10 +1,10 @@
 import { Player, CardStack } from '../player/Player';
 import { Card } from '../card/Card';
 import { Board } from '../board/Board';
-import { Point } from '../../infr/Point';
 import { AbilitiesParams } from '../../app/player/AttackCardUseCase';
 import { Area } from '../area/Area';
 import { DomainError } from '../../infr/DomainError';
+import { BaseAttackService } from './BaseAttackService';
 
 class MeleeAttackService {
   public static meleeAttackUnit (
@@ -35,8 +35,8 @@ class MeleeAttackService {
       isAttackerFlankAttacked = this.checkIsAttackerFlankAttacked(attackerCard, attackedCard, board, attackerPlayerTableCards);
     }
 
-    let attackerDmg = this.calcDamage(attackerCard, attackedCard, isAttackerFlankAttacked);
-    let attackedDmg = this.calcDamage(attackedCard, attackerCard);
+    let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard, isAttackerFlankAttacked);
+    let attackedDmg = BaseAttackService.calcDamage(attackedCard, attackerCard);
 
     if (isAttackerCardHaveFirstStrike && isAttackedCardHaveFirstStrike ||
       !isAttackerCardHaveFirstStrike && !isAttackedCardHaveFirstStrike ||
@@ -51,7 +51,7 @@ class MeleeAttackService {
     }
 
     if (attackerCard.abilities.push && abilitiesParams.pushAt) {
-      this.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt, areas);
+      BaseAttackService.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt, areas);
     }
 
     if (!attackedCard.alive) {
@@ -117,7 +117,7 @@ class MeleeAttackService {
       }
 
       if (piercingTargetCard) {
-        let attackerDmg = this.calcDamage(attackerCard, piercingTargetCard);
+        let attackerDmg = BaseAttackService.calcDamage(attackerCard, piercingTargetCard);
 
         piercingTargetCard.takeDamage(attackerDmg);
 
@@ -129,22 +129,7 @@ class MeleeAttackService {
     }
   }
 
-  // tslint:disable-next-line:member-ordering
-  public static calcDamage (attackerCard: Card, attackedCard: Card, isAttackerFlankAttacked: boolean = false): number {
-    let attackerFlankingBonus = 0;
-    if (isAttackerFlankAttacked) {
-      attackerFlankingBonus = attackerCard.abilities.flanking.damage;
-    }
-
-    let attackerDmg = (attackerCard.damage + attackerFlankingBonus) - attackedCard.armor;
-
-    attackerDmg = attackerDmg >= 0 ? attackerDmg : 0;
-
-    return attackerDmg;
-  }
-
-  // tslint:disable-next-line:member-ordering
-  public static calcRetaliation (attackerCard: Card, attackedCard: Card): boolean {
+  private static calcRetaliation (attackerCard: Card, attackedCard: Card): boolean {
     return !(attackedCard.abilities.range) && !(attackerCard.abilities.noEnemyRetaliation);
   }
 
@@ -180,21 +165,6 @@ class MeleeAttackService {
     }
 
     return false;
-  }
-
-  private static pushAttackedCard (attackerCard: Card, attackedCard: Card, board: Board, pushPosition: Point, areas: Area[]): void {
-    let attackedCardPosition = board.getPositionOfUnit(attackedCard);
-
-    let distanceX = attackedCardPosition.x - pushPosition.x;
-    let distanceY = attackedCardPosition.y - pushPosition.y;
-
-    let pushDistance = Math.abs(distanceX) + Math.abs(distanceY);
-
-    if (pushDistance > attackerCard.abilities.push.range) {
-      throw new DomainError(`Card ${attackerCard.id} cant push ${attackedCard.id} at x: ${pushPosition.x} y: ${pushPosition.y}`);
-    }
-
-    board.moveUnit(attackedCard, pushPosition, areas);
   }
 }
 
