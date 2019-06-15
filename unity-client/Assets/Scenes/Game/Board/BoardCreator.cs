@@ -58,9 +58,8 @@ public class BoardCreator : MonoBehaviour
         {
             waypoints.Add(PointerToIcometric(point, tileWidth, tileHeight));
         }
-
       
-        unitDisplay.transform.DOLocalPath(waypoints.ToArray(), 1f);
+        unitDisplay.transform.DOLocalPath(waypoints.ToArray(), 0.3f * waypoints.Count);
 
         this.UpdatePositions(unitDisplay, position);
     }
