@@ -155,6 +155,9 @@ public class BoardCreator : MonoBehaviour
                     if (!cardDisplay.IsAlly)
                     {
                         reachChecker.AddBlocker(new Point(x, y));
+                    } else
+                    {
+                        reachChecker.AddBlocker(new Point(x, y), true);
                     }
                 }
             }
@@ -165,7 +168,6 @@ public class BoardCreator : MonoBehaviour
 
         foreach (var point in points)
         {
-            Debug.Log(point.x + " " + point.y);
             var tile = this.Tiles[point.x, point.y];
             tile.GetComponent<TileDisplay>().PathOn();
         }

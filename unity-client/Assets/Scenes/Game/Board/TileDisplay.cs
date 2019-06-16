@@ -77,14 +77,14 @@ public class TileDisplay : MonoBehaviour
         }
         var spriteRenderer = this.path.GetComponent<SpriteRenderer>();
 
-        var color1 = new Color(0, 0, 0, 0.15f);
+        var color1 = new Color(0, 0, 0, 0.1f);
         var color2 = new Color(0, 0, 0, 0.2f);
 
-        spriteRenderer.color = color1;
+        spriteRenderer.color = color2;
 
         this.sequence = DOTween.Sequence();
-        this.sequence.Append(spriteRenderer.DOColor(color2, 0.7f));
-        this.sequence.Append(spriteRenderer.DOColor(color1, 0.7f));
+        this.sequence.Append(spriteRenderer.DOColor(color1, 1.0f).SetEase(Ease.Linear));
+        this.sequence.Append(spriteRenderer.DOColor(color2, 1.0f).SetEase(Ease.Linear));
         this.sequence.OnComplete(() => this.sequence.Restart());
 
         this.path.SetActive(true);

@@ -40,6 +40,7 @@ public class ReachChecker : MonoBehaviour
         this.Distance = distance;
         var tile = Tiles[point.x, point.y];
         this.TilesForCheck.Add(tile);
+        tile.isChecked = true;
 
         this.CheckTile();
 
@@ -61,8 +62,6 @@ public class ReachChecker : MonoBehaviour
             this.CheckNeighbour(tile.x, tile.y - 1, tileDistance);
             this.CheckNeighbour(tile.x, tile.y + 1, tileDistance);
 
-            tile.isChecked = true;
-
             this.CheckTile();
         }
     }
@@ -78,11 +77,16 @@ public class ReachChecker : MonoBehaviour
 
         if (!tile.isChecked && tileDistance + 1 <= this.Distance)
         {
-            if (tile.canWalkToIt)
+            if (tile.canWalkToIt || tile.canWalkThroughtIt)
             {
+                tile.isChecked = true;
                 tile.distance = tileDistance + 1;
                 this.TilesForCheck.Add(tile);
-                this.ResultedPoints.Add(new Point(x, y));
+
+                if (tile.canWalkToIt)
+                {
+                    this.ResultedPoints.Add(new Point(x, y));
+                }
             }
         }
     }
