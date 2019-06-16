@@ -260,6 +260,11 @@ public class BoardCreator : MonoBehaviour
 
     private UnitDisplay GetEnemy(Point point)
     {
+        if (point.x < 1 || point.y < 1 || point.x > this.Width || point.y > this.Height)
+        {
+            return null;
+        }
+
         var unit = this.Units[point.x, point.y];
         if (!unit)
         {
