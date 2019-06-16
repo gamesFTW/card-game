@@ -116,9 +116,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a3e6e27669bdf943ab075a47798dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 6037887025651514098}
   x: 0
   y: 0
-  text: {fileID: 6037887025651514098}
 --- !u!222 &3101436907010750809
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -546,6 +546,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5573468876521831001}
   - component: {fileID: 3296662302402091912}
+  - component: {fileID: 3637886000085455563}
   m_Layer: 0
   m_Name: Path
   m_TagString: Untagged
@@ -620,3 +621,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3637886000085455563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9085602644362798448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09fac1e6921cb7c4d9dd7044403842af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -56,15 +56,16 @@ public class UnitDisplay : MonoBehaviour
         redGlow.SetActive(false);
     }
 
-    public IEnumerator LoadSprite()
+    public void TeamColorBlinkOn()
     {
-        WWW www = new WWW(Config.LOBBY_SERVER_URL + CardData.image);
-        yield return www;
+        var spriteRenderer = this.redGlow.GetComponent<BlinkedSpriteRenderer>();
+        spriteRenderer.BlinkOn();
+    }
 
-        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
-
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = sprite;
+    public void TeamColorBlinkOff()
+    {
+        var spriteRenderer = this.redGlow.GetComponent<BlinkedSpriteRenderer>();
+        spriteRenderer.BlinkOff();
     }
 
     public void Shake()
@@ -80,5 +81,16 @@ public class UnitDisplay : MonoBehaviour
         {
             shakeTween = this.transform.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), 10, 90);
         }
+    }
+
+    private IEnumerator LoadSprite()
+    {
+        WWW www = new WWW(Config.LOBBY_SERVER_URL + CardData.image);
+        yield return www;
+
+        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = sprite;
     }
 }

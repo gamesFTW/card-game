@@ -387,6 +387,8 @@ public class SelectingRicochetTargetState : SelectingState
         this.attackerSelectedUnit = attackerSelectedUnit;
         this.attackedSelectedUnit = attackedSelectedUnit;
 
+        this.playerActionsOnBoard.boardCreator.BlinkRicochetTargets(attackedSelectedUnit);
+
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
 
         this.Select(attackedSelectedUnit);
@@ -394,6 +396,8 @@ public class SelectingRicochetTargetState : SelectingState
 
     protected override void Disable()
     {
+        this.playerActionsOnBoard.boardCreator.RemoveAllBlinks();
+
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
     }
 

@@ -20,7 +20,6 @@ public class TileDisplay : MonoBehaviour
     private GameObject selectedGlowObject;
     private GameObject path;
 
-    private Tween pathTween;
     private Sequence sequence;
 
     void Start()
@@ -75,30 +74,17 @@ public class TileDisplay : MonoBehaviour
         {
             return;
         }
-        var spriteRenderer = this.path.GetComponent<SpriteRenderer>();
 
-        var color1 = new Color(0, 0, 0, 0.1f);
-        var color2 = new Color(0, 0, 0, 0.2f);
-
-        spriteRenderer.color = color2;
-
-        this.sequence = DOTween.Sequence();
-        this.sequence.Append(spriteRenderer.DOColor(color1, 1.0f).SetEase(Ease.Linear));
-        this.sequence.Append(spriteRenderer.DOColor(color2, 1.0f).SetEase(Ease.Linear));
-        this.sequence.OnComplete(() => this.sequence.Restart());
+        var spriteRenderer = this.path.GetComponent<BlinkedSpriteRenderer>();
+        spriteRenderer.BlinkOn();
 
         this.path.SetActive(true);
-
-        this.IsPathOn = true;
     }
 
     public void PathOff()
     {
-        this.IsPathOn = false;
-
-        var spriteRenderer = this.path.GetComponent<SpriteRenderer>();
-        this.sequence.OnComplete(null);
-        this.sequence.Kill();
+        var spriteRenderer = this.path.GetComponent<BlinkedSpriteRenderer>();
+        spriteRenderer.BlinkOff();
 
         this.path.SetActive(false);
     }

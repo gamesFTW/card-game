@@ -25,6 +25,18 @@ public class BoardCreator : MonoBehaviour
     private float tileWidth;
     private float tileHeight;
 
+    private void Awake()
+    {
+        CreateTiles();
+    }
+
+    private void Start()
+    {
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
+        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
+    }
+
     public void CreateUnit(CardDisplay cardDisplay, Point position)
     {
         GameObject unit = Instantiate<GameObject>(UnitPrefab, this.transform);
@@ -115,7 +127,9 @@ public class BoardCreator : MonoBehaviour
     {
         Point p = GetUnitsPosition(unitDisplay);
 
-        if (this.CheckForEnemy(p.x + 1, p.y) || this.CheckForEnemy(p.x - 1, p.y) || this.CheckForEnemy(p.x, p.y + 1) || this.CheckForEnemy(p.x, p.y - 1)) {
+        Point[] points = new Point[] { new Point(p.x + 1, p.y), new Point(p.x - 1, p.y), new Point(p.x, p.y + 1), new Point(p.x, p.y - 1) };
+
+        if (this.CheckForEnemy(points[0]) || this.CheckForEnemy(points[1]) || this.CheckForEnemy(points[2]) || this.CheckForEnemy(points[3])) {
             return true;
         }
 
@@ -140,6 +154,49 @@ public class BoardCreator : MonoBehaviour
         var points = reachChecker.CheckReach(unitPosition, attacker.CardData.abilities.push.range);
 
         this.HighlightPathInTilesByPoints(points);
+    }
+
+    public void RemoveAllPathReach()
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                var tile = this.Tiles[x, y];
+                tile.GetComponent<TileDisplay>().PathOff();
+            }
+        }
+    }
+
+    public void BlinkRicochetTargets(UnitDisplay unitDisplay)
+    {
+        Point p = GetUnitsPosition(unitDisplay);
+
+        Point[] points = new Point[] { new Point(p.x + 1, p.y), new Point(p.x - 1, p.y), new Point(p.x, p.y + 1), new Point(p.x, p.y - 1) };
+
+        foreach (Point point in points)
+        {
+            UnitDisplay enemy = this.GetEnemy(point);
+            if (enemy != null)
+            {
+                enemy.TeamColorBlinkOn();
+            }
+        }
+    }
+
+    public void RemoveAllBlinks()
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                var unit = this.Units[x, y];
+                if (unit != null)
+                {
+                    unit.GetComponent<UnitDisplay>().TeamColorBlinkOff();
+                }
+            }
+        }
     }
 
     private void HighlightPathInTilesByPoints(List<Point> points)
@@ -196,28 +253,26 @@ public class BoardCreator : MonoBehaviour
         return reachChecker;
     }
 
-    public void RemoveAllPathReach()
+    private bool CheckForEnemy(Point point)
     {
-        for (int x = 1; x <= Width; x++)
-        {
-            for (int y = 1; y <= Height; y++)
-            {
-                var tile = this.Tiles[x, y];
-                tile.GetComponent<TileDisplay>().PathOff();
-            }
-        }
+        return (GetEnemy(point) != null);
     }
 
-    private bool CheckForEnemy(int x, int y)
+    private UnitDisplay GetEnemy(Point point)
     {
-        var unit = this.Units[x, y];
+        var unit = this.Units[point.x, point.y];
         if (!unit)
         {
-            return false;
+            return null;
         }
 
-        var card = unit.GetComponent<UnitDisplay>().CardDisplay;
-        return !card.IsAlly;
+        var cardDisplay = unit.GetComponent<UnitDisplay>();
+
+        if (!cardDisplay.CardDisplay.IsAlly)
+        {
+            return cardDisplay;
+        }
+        return null;
     }
 
     private bool checkPositionsAdjacency(Point firstPosition, Point secondPosition) {
@@ -237,18 +292,6 @@ public class BoardCreator : MonoBehaviour
 
         Units[oldPosition.x, oldPosition.y] = null;
         Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
-    }
-
-    private void Awake()
-    {
-        CreateTiles();
-    }
-
-    private void Start()
-    {
-        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
-        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
-        Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
     }
 
     private void CreateTiles ()
