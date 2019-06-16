@@ -341,6 +341,8 @@ public class SelectingPushTargetState : SelectingState
         this.attackerSelectedUnit = attackerSelectedUnit;
         this.attackedSelectedUnit = attackedSelectedUnit;
 
+        this.playerActionsOnBoard.boardCreator.ShowPushReach(attackerSelectedUnit, attackedSelectedUnit);
+
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
 
         this.Select(attackedSelectedUnit);
@@ -348,6 +350,8 @@ public class SelectingPushTargetState : SelectingState
 
     protected override void Disable()
     {
+        this.playerActionsOnBoard.boardCreator.RemoveAllPathReach();
+
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
 
@@ -404,7 +408,7 @@ public class SelectingRicochetTargetState : SelectingState
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        if (clickedUnitDisplay.CardData.ownerId != GameState.mainPlayerId)
+        if (!clickedUnitDisplay.CardDisplay.IsAlly)
         {
             this.playerActionsOnBoard.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, null, clickedUnitDisplay);
             this.EnableNoSelectionsState();

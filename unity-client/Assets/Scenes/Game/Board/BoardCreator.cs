@@ -124,6 +124,35 @@ public class BoardCreator : MonoBehaviour
 
     public void ShowPathReach(UnitDisplay unitDisplay)
     {
+        var reachChecker = this.CreateReachChecker();
+
+        Point unitPosition = this.GetUnitsPosition(unitDisplay);
+        var points = reachChecker.CheckReach(unitPosition, unitDisplay.CardData.currentMovingPoints);
+
+        this.HighlightPathInTilesByPoints(points);
+    }
+
+    public void ShowPushReach(UnitDisplay attacker, UnitDisplay attacked)
+    {
+        var reachChecker = this.CreateReachChecker(true, true, true);
+
+        Point unitPosition = this.GetUnitsPosition(attacked);
+        var points = reachChecker.CheckReach(unitPosition, attacker.CardData.abilities.push.range);
+
+        this.HighlightPathInTilesByPoints(points);
+    }
+
+    private void HighlightPathInTilesByPoints(List<Point> points)
+    {
+        foreach (var point in points)
+        {
+            var tile = this.Tiles[point.x, point.y];
+            tile.GetComponent<TileDisplay>().PathOn();
+        }
+    }
+
+    private ReachChecker CreateReachChecker(bool isCanWalkThgroughtArea = false, bool isCanWalkThgroughtEnemy = false, bool isCanWalkThgroughtAlly = true)
+    {
         var reachChecker = new ReachChecker(this.Width, this.Height);
 
         for (int x = 1; x <= Width; x++)
@@ -134,10 +163,10 @@ public class BoardCreator : MonoBehaviour
                 if (area != null)
                 {
                     var areaDisplay = area.GetComponent<AreaDisplay>();
-                    
+
                     if (!areaDisplay.areaData.canUnitsWalkThoughtIt)
                     {
-                        reachChecker.AddBlocker(new Point(x, y));
+                        reachChecker.AddBlocker(new Point(x, y), isCanWalkThgroughtArea);
                     }
                 }
             }
@@ -154,23 +183,17 @@ public class BoardCreator : MonoBehaviour
 
                     if (!cardDisplay.IsAlly)
                     {
-                        reachChecker.AddBlocker(new Point(x, y));
-                    } else
+                        reachChecker.AddBlocker(new Point(x, y), isCanWalkThgroughtEnemy);
+                    }
+                    else
                     {
-                        reachChecker.AddBlocker(new Point(x, y), true);
+                        reachChecker.AddBlocker(new Point(x, y), isCanWalkThgroughtAlly);
                     }
                 }
             }
         }
 
-        Point unitPosition = this.GetUnitsPosition(unitDisplay);
-        var points = reachChecker.CheckReach(unitPosition, unitDisplay.CardData.currentMovingPoints);
-
-        foreach (var point in points)
-        {
-            var tile = this.Tiles[point.x, point.y];
-            tile.GetComponent<TileDisplay>().PathOn();
-        }
+        return reachChecker;
     }
 
     public void RemoveAllPathReach()
