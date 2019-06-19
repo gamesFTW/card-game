@@ -38,6 +38,8 @@ interface CardData {
   currentMovingPoints?: number;
   abilities?: Abilities;
   image?: string;
+  attackSound?: string;
+  sounds?: {[key: string]: {soundName: string; url: string}};
 }
 
 class CardState extends EntityState implements CardData {
@@ -53,6 +55,7 @@ class CardState extends EntityState implements CardData {
   public manaCost: number;
   public abilities: Abilities;
   public image: string;
+  public sounds: {[key: string]: {soundName: string; url: string}};
 
   public constructor (events: Array<Event<CardData>>) {
     super();

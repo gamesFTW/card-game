@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
+
     private Dictionary<string, Transform> cardIdToCards;
     private Dictionary<string, PlayerTransformsStacks> playerStacks;
 
@@ -82,6 +83,8 @@ public class CardManager : MonoBehaviour
         cardDisplay.CurrentHp = newHp;
 
         boardCreator.CreateUnit(cardDisplay, position);
+
+        Unibus.Dispatch(AudioController.CARD_PLAYED, cardDisplay);
     }
 
     public void PlayCardAsMana(string playerId, string cardId, bool taped)
@@ -109,9 +112,11 @@ public class CardManager : MonoBehaviour
         cardDisplay.CurrentMovingPoints = currentMovingPoints;
 
         boardCreator.MoveUnit(cardDisplay, position, path);
+
+        Unibus.Dispatch(AudioController.CARD_MOVED, cardDisplay);
     }
 
-    public void CardWasInBattle(ServerActions.CardAfterBattle card)
+    public void CardWasInBattle(ServerActions.CardAfterBattle card, bool isAttacker)
     {
         var cardTransform = cardIdToCards[card.id];
 
@@ -146,6 +151,9 @@ public class CardManager : MonoBehaviour
         {
             boardCreator.PushUnit(cardDisplay, card.pushedTo);
         }
+
+        Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
+        
     }
 
     private void KillUnit(CardDisplay cardDisplay)
@@ -153,5 +161,7 @@ public class CardManager : MonoBehaviour
         cardDisplay.Kill();
         cardDisplay.Placeholder.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
         boardCreator.KillUnit(cardDisplay);
+
+        Unibus.Dispatch(AudioController.CARD_DIED, cardDisplay);
     }
 }

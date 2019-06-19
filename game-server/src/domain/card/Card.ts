@@ -46,6 +46,7 @@ class Card extends Entity {
   }
 
   public create (cardCreationData: CardCreationData): void {
+    console.log(cardCreationData);
     let id = this.generateId();
 
     this.applyEvent(new Event<CardData>(

@@ -3,6 +3,8 @@ using TMPro;
 using UnibusEvent;
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -23,6 +25,8 @@ public class CardDisplay : MonoBehaviour
     public TextMeshPro currentMovingPoints;
 
     public bool isMovedAtInitialPosition = false;
+
+    public Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
@@ -74,6 +78,15 @@ public class CardDisplay : MonoBehaviour
         currentMovingPoints.text = cardData.currentMovingPoints.ToString();
 
         StartCoroutine(LoadSprite());
+
+        if (this.cardData.sounds != null)
+        {
+            foreach (KeyValuePair<string, SoundData> entry in this.cardData.sounds)
+            {
+                StartCoroutine(LoadMusic(entry.Value));
+            }
+
+        }
 
         this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
         this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
@@ -274,16 +287,6 @@ public class CardDisplay : MonoBehaviour
         Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
     }
 
-    public IEnumerator LoadSprite()
-    {
-        WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
-        yield return www;
-
-        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
-
-        artwork.GetComponent<SpriteRenderer>().sprite = sprite;
-    }
-
     public void UpdateZIndex()
     {
         Vector3 position = transform.localPosition;
@@ -302,6 +305,34 @@ public class CardDisplay : MonoBehaviour
         if (this.UnitDisplay)
         {
             this.UnitDisplay.Shake();
+        }
+    }
+
+    public IEnumerator LoadSprite()
+    {
+        WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
+        yield return www;
+
+        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
+
+        artwork.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    IEnumerator LoadMusic(SoundData soundData)
+    {
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(Config.LOBBY_SERVER_URL + soundData.url, AudioType.WAV))
+        {
+            yield return www.Send();
+
+            if (www.isError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
+                this.sounds.Add(soundData.soundName, myClip);
+            }
         }
     }
 }

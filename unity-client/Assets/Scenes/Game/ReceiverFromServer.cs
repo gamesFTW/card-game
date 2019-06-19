@@ -160,7 +160,8 @@ public class ReceiverFromServer : MonoBehaviour
     {
         foreach (ServerActions.CardAfterBattle card in action.cardChanges)
         {
-            cardManger.CardWasInBattle(card);
+            var isAttacker = card.id == action.attackerCardId;
+            cardManger.CardWasInBattle(card, isAttacker);
         }
     }
 }

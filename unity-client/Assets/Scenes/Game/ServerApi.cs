@@ -18,12 +18,20 @@ public class CardData
     public int x;
     public int y;
     public string image;
+    public Dictionary<string, SoundData> sounds;
     // Простите, но слишком долго делать по другому.
     // По правильному нужно хранить стеки со ссылками на карты.
     // TODO: Перенести это хотя бы в Card. И больше так не делать.
     public string ownerId;
 
     public Abilities abilities;
+}
+
+[Serializable]
+public class SoundData
+{
+    public string soundName;
+    public string url;
 }
 
 [Serializable]
