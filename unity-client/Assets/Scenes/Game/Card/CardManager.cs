@@ -152,7 +152,10 @@ public class CardManager : MonoBehaviour
             boardCreator.PushUnit(cardDisplay, card.pushedTo);
         }
 
-        Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
+        if (isAttacker)
+        {
+            Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
+        }
         
     }
 
