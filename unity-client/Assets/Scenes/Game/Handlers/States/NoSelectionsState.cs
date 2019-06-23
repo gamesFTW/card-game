@@ -2,12 +2,12 @@
 
 public class NoSelectionsState
 {
-    private PlayerActionsOnBoard playerActionsOnBoard;
+    private PlayerActionsOnBoardStates states;
     private BoardCreator boardCreator;
 
-    public NoSelectionsState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator)
+    public NoSelectionsState(PlayerActionsOnBoardStates states, BoardCreator boardCreator)
     {
-        this.playerActionsOnBoard = playerActionsOnBoard;
+        this.states = states;
         this.boardCreator = boardCreator;
     }
 
@@ -31,7 +31,7 @@ public class NoSelectionsState
         if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
             this.Disable();
-            this.playerActionsOnBoard.ownUnitSelectedState.Enable(clickedUnitDisplay);
+            this.states.ownUnitSelectedState.Enable(clickedUnitDisplay);
         }
     }
 

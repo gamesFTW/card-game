@@ -1,20 +1,24 @@
-﻿using UnibusEvent;
+﻿using System;
+using UnibusEvent;
 using UnityEngine;
 
 public abstract class SelectingState
 {
-    protected PlayerActionsOnBoard playerActionsOnBoard;
+    public ActionEmmiter actionEmmiter;
+    public Action OnEnabled;
+
+    protected PlayerActionsOnBoardStates states;
     protected BoardCreator boardCreator;
 
-    public SelectingState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator)
+    public SelectingState(PlayerActionsOnBoardStates states, BoardCreator boardCreator)
     {
-        this.playerActionsOnBoard = playerActionsOnBoard;
+        this.states = states;
         this.boardCreator = boardCreator;
     }
 
     protected void Enable()
     {
-        this.playerActionsOnBoard.clickOutOfBoardEmmiter.Reset();
+        this.OnEnabled();
         Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
         Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
     }

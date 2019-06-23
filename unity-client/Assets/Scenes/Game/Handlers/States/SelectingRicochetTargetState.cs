@@ -6,7 +6,7 @@ public class SelectingRicochetTargetState : SelectingState
     private UnitDisplay attackerSelectedUnit;
     private UnitDisplay attackedSelectedUnit;
 
-    public SelectingRicochetTargetState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator) : base(playerActionsOnBoard, boardCreator) { }
+    public SelectingRicochetTargetState(PlayerActionsOnBoardStates states, BoardCreator boardCreator) : base(states, boardCreator) { }
 
     public void Enable(UnitDisplay attackerSelectedUnit, UnitDisplay attackedSelectedUnit)
     {
@@ -14,7 +14,7 @@ public class SelectingRicochetTargetState : SelectingState
         this.attackerSelectedUnit = attackerSelectedUnit;
         this.attackedSelectedUnit = attackedSelectedUnit;
 
-        this.playerActionsOnBoard.boardCreator.BlinkRicochetTargets(attackedSelectedUnit);
+        this.boardCreator.BlinkRicochetTargets(attackedSelectedUnit);
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
 
@@ -34,14 +34,14 @@ public class SelectingRicochetTargetState : SelectingState
         this.Unselect(this.attackedSelectedUnit);
 
         this.Disable();
-        this.playerActionsOnBoard.noSelectionsState.Enable();
+        this.states.noSelectionsState.Enable();
     }
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
         if (!clickedUnitDisplay.CardDisplay.IsAlly)
         {
-            this.playerActionsOnBoard.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, null, clickedUnitDisplay);
+            this.actionEmmiter.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, null, clickedUnitDisplay);
             this.EnableNoSelectionsState();
         }
     }

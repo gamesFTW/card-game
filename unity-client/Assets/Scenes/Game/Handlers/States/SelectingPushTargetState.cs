@@ -6,7 +6,7 @@ public class SelectingPushTargetState : SelectingState
     private UnitDisplay attackerSelectedUnit;
     private UnitDisplay attackedSelectedUnit;
 
-    public SelectingPushTargetState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator) : base(playerActionsOnBoard, boardCreator) { }
+    public SelectingPushTargetState(PlayerActionsOnBoardStates states, BoardCreator boardCreator) : base(states, boardCreator) { }
 
     public void Enable(UnitDisplay attackerSelectedUnit, UnitDisplay attackedSelectedUnit)
     {
@@ -23,7 +23,7 @@ public class SelectingPushTargetState : SelectingState
 
     protected override void Disable()
     {
-        this.playerActionsOnBoard.boardCreator.RemoveAllPathReach();
+        this.boardCreator.RemoveAllPathReach();
 
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
@@ -34,12 +34,12 @@ public class SelectingPushTargetState : SelectingState
         this.Unselect(this.attackedSelectedUnit);
 
         this.Disable();
-        this.playerActionsOnBoard.noSelectionsState.Enable();
+        this.states.noSelectionsState.Enable();
     }
 
     private void OnClickedOnVoidTile(Point point)
     {
-        this.playerActionsOnBoard.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, point);
+        this.actionEmmiter.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, point);
 
         this.EnableNoSelectionsState();
     }

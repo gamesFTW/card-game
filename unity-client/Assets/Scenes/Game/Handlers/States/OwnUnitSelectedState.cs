@@ -1,11 +1,12 @@
-﻿using UnibusEvent;
+﻿using System;
+using UnibusEvent;
 
 public class OwnUnitSelectedState : SelectingState
 {
     private bool MouseOnTile = false;
     private UnitDisplay selectedUnit;
 
-    public OwnUnitSelectedState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator) : base(playerActionsOnBoard, boardCreator) { }
+    public OwnUnitSelectedState(PlayerActionsOnBoardStates states, BoardCreator boardCreator) : base(states, boardCreator) { }
 
     public void Enable(UnitDisplay selectedUnit)
     {
@@ -35,26 +36,26 @@ public class OwnUnitSelectedState : SelectingState
     {
         this.Unselect(this.selectedUnit);
         Disable();
-        this.playerActionsOnBoard.noSelectionsState.Enable();
+        this.states.noSelectionsState.Enable();
     }
 
     private void EnableOwnUnitSelectedState(UnitDisplay unitDisplay)
     {
         this.Unselect(this.selectedUnit);
         this.Disable();
-        this.playerActionsOnBoard.ownUnitSelectedState.Enable(unitDisplay);
+        this.states.ownUnitSelectedState.Enable(unitDisplay);
     }
 
     private void EnableSelectingPushTargetState(UnitDisplay unitDisplay)
     {
         this.Disable();
-        this.playerActionsOnBoard.selectingPushTargetState.Enable(this.selectedUnit, unitDisplay);
+        this.states.selectingPushTargetState.Enable(this.selectedUnit, unitDisplay);
     }
 
     private void EnableSelectingRicochetTargetState(UnitDisplay unitDisplay)
     {
         this.Disable();
-        this.playerActionsOnBoard.selectingRicochetTargetState.Enable(this.selectedUnit, unitDisplay);
+        this.states.selectingRicochetTargetState.Enable(this.selectedUnit, unitDisplay);
     }
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
@@ -75,7 +76,7 @@ public class OwnUnitSelectedState : SelectingState
             }
             else
             {
-                this.playerActionsOnBoard.EmmitCardAttackAction(this.selectedUnit, clickedUnitDisplay);
+                this.actionEmmiter.EmmitCardAttackAction(this.selectedUnit, clickedUnitDisplay);
 
                 this.EnableNoSelectionsState();
             }
@@ -84,7 +85,7 @@ public class OwnUnitSelectedState : SelectingState
 
     private void OnClickedOnVoidTile(Point point)
     {
-        this.playerActionsOnBoard.EmmitCardMoveAction(this.selectedUnit, point);
+        this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
 
         this.EnableNoSelectionsState();
     }

@@ -6,14 +6,11 @@ public class PlayerActionsOnBoard : MonoBehaviour
     public static readonly string CARD_MOVE = "PlayerActionsOnBoard:CARD_MOVE";
     public static readonly string CARD_ATTACK = "PlayerActionsOnBoard:CARD_ATTACK";
 
-    public NoSelectionsState noSelectionsState;
-    public OwnUnitSelectedState ownUnitSelectedState;
-    public SelectingPushTargetState selectingPushTargetState;
-    public SelectingRicochetTargetState selectingRicochetTargetState;
-
     public ClickOutOfBoardEmmiter clickOutOfBoardEmmiter;
 
     public BoardCreator boardCreator;
+    private PlayerActionsOnBoardStates states;
+    private ActionEmmiter actionEmmiter;
 
     private void Awake()
     {
@@ -24,18 +21,58 @@ public class PlayerActionsOnBoard : MonoBehaviour
     {
         clickOutOfBoardEmmiter = new ClickOutOfBoardEmmiter();
 
-        noSelectionsState = new NoSelectionsState(this, this.boardCreator);
-        ownUnitSelectedState = new OwnUnitSelectedState(this, this.boardCreator);
-        selectingPushTargetState = new SelectingPushTargetState(this, this.boardCreator);
-        selectingRicochetTargetState = new SelectingRicochetTargetState(this, this.boardCreator);
+        this.actionEmmiter = new ActionEmmiter()
+        {
+            boardCreator = this.boardCreator
+        };
 
-        noSelectionsState.Enable();
+        this.states = new PlayerActionsOnBoardStates();
+
+        this.states.noSelectionsState = new NoSelectionsState(this.states, this.boardCreator);
+
+        this.states.ownUnitSelectedState = new OwnUnitSelectedState(this.states, this.boardCreator)
+        {
+            actionEmmiter = this.actionEmmiter,
+            OnEnabled = this.OnStateEnabled
+        };
+
+        this.states.selectingPushTargetState = new SelectingPushTargetState(this.states, this.boardCreator)
+        {
+            actionEmmiter = this.actionEmmiter,
+            OnEnabled = this.OnStateEnabled
+        };
+
+        this.states.selectingRicochetTargetState = new SelectingRicochetTargetState(this.states, this.boardCreator)
+        {
+            actionEmmiter = this.actionEmmiter,
+            OnEnabled = this.OnStateEnabled
+        };
+
+        this.states.noSelectionsState.Enable();
     }
 
     void Update()
     {
         clickOutOfBoardEmmiter.CheckClickOutOfAnyCard();
     }
+
+    private void OnStateEnabled()
+    {
+        this.clickOutOfBoardEmmiter.Reset();
+    }
+}
+
+public class PlayerActionsOnBoardStates
+{
+    public NoSelectionsState noSelectionsState;
+    public OwnUnitSelectedState ownUnitSelectedState;
+    public SelectingPushTargetState selectingPushTargetState;
+    public SelectingRicochetTargetState selectingRicochetTargetState;
+}
+
+public class ActionEmmiter
+{
+    public BoardCreator boardCreator;
 
     public void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit, Point pushPoint = null, UnitDisplay ricochetTarget = null)
     {
@@ -49,7 +86,7 @@ public class PlayerActionsOnBoard : MonoBehaviour
             isRangeAttack = isRangeAttack
         };
 
-        AbilitiesParams abilitiesParams = new AbilitiesParams {};
+        AbilitiesParams abilitiesParams = new AbilitiesParams { };
 
         if (pushPoint != null)
         {
