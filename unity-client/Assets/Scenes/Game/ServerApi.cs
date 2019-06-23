@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class CardData
 {
     public string id;
+    public Boolean hero;
     public Boolean alive;
     public Boolean tapped;
     public string name;

@@ -90,13 +90,16 @@ public class UnitDisplay : MonoBehaviour
 
     private void EnableHeroColor()
     {
-        if (this.CardDisplay.IsAlly)
+        if (this.cardData.hero)
         {
-            blueBack.SetActive(true);
-        }
-        else
-        {
-            redBack.SetActive(true);
+            if (this.CardDisplay.IsAlly)
+            {
+                blueBack.SetActive(true);
+            }
+            else
+            {
+                redBack.SetActive(true);
+            }
         }
     }
 
