@@ -22,14 +22,19 @@ public class UnitDisplay : MonoBehaviour
 
     private GameObject blueGlow;
     private GameObject redGlow;
+    private GameObject blueBack;
+    private GameObject redBack;
 
     // Start is called before the first frame update
     void Start()
     {
         this.blueGlow = this.transform.Find("BlueGlow").gameObject;
         this.redGlow = this.transform.Find("RedGlow").gameObject;
+        this.blueBack = this.transform.Find("BlueBack").gameObject;
+        this.redBack = this.transform.Find("RedBack").gameObject;
 
         this.EnableTeamColor();
+        this.EnableHeroColor();
     }
 
     // Update is called once per frame
@@ -40,7 +45,7 @@ public class UnitDisplay : MonoBehaviour
 
     public void EnableTeamColor()
     {
-        if (this.cardData.ownerId == GameState.mainPlayerId)
+        if (this.CardDisplay.IsAlly)
         {
             blueGlow.SetActive(true);
         }
@@ -80,6 +85,18 @@ public class UnitDisplay : MonoBehaviour
         if (isNeedShake)
         {
             shakeTween = this.transform.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), 10, 90);
+        }
+    }
+
+    private void EnableHeroColor()
+    {
+        if (this.CardDisplay.IsAlly)
+        {
+            blueBack.SetActive(true);
+        }
+        else
+        {
+            redBack.SetActive(true);
         }
     }
 
