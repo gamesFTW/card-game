@@ -25,7 +25,7 @@ public class OwnUnitSelectedState : SelectingState
 
     protected override void Disable()
     {
-        this.playerActionsOnBoard.boardCreator.RemoveAllPathReach();
+        this.boardCreator.RemoveAllPathReach();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
