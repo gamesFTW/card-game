@@ -6,7 +6,7 @@ public class SelectingRicochetTargetState : SelectingState
     private UnitDisplay attackerSelectedUnit;
     private UnitDisplay attackedSelectedUnit;
 
-    public SelectingRicochetTargetState(PlayerActionsOnBoard playerActionsOnBoard) : base(playerActionsOnBoard) { }
+    public SelectingRicochetTargetState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator) : base(playerActionsOnBoard, boardCreator) { }
 
     public void Enable(UnitDisplay attackerSelectedUnit, UnitDisplay attackedSelectedUnit)
     {
@@ -23,7 +23,7 @@ public class SelectingRicochetTargetState : SelectingState
 
     protected override void Disable()
     {
-        this.playerActionsOnBoard.boardCreator.RemoveAllBlinks();
+        this.boardCreator.RemoveAllBlinks();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
     }

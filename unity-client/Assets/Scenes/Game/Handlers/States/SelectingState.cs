@@ -4,10 +4,12 @@ using UnityEngine;
 public abstract class SelectingState
 {
     protected PlayerActionsOnBoard playerActionsOnBoard;
+    protected BoardCreator boardCreator;
 
-    public SelectingState(PlayerActionsOnBoard playerActionsOnBoard)
+    public SelectingState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator)
     {
         this.playerActionsOnBoard = playerActionsOnBoard;
+        this.boardCreator = boardCreator;
     }
 
     protected void Enable()
@@ -33,7 +35,7 @@ public abstract class SelectingState
 
     protected void Unselect(UnitDisplay selectedUnit)
     {
-        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
+        GameObject tile = this.boardCreator.GetTileByUnit(selectedUnit.gameObject);
         tile.GetComponent<TileDisplay>().SelectedHighlightOff();
 
         selectedUnit.CardDisplay.SelectedHighlightOff();
@@ -42,7 +44,7 @@ public abstract class SelectingState
     protected void Select(UnitDisplay selectedUnit)
     {
         // Сделать чтобы tile слушал события selectedUnit и сам переключался.
-        GameObject tile = this.playerActionsOnBoard.boardCreator.GetTileByUnit(selectedUnit.gameObject);
+        GameObject tile = this.boardCreator.GetTileByUnit(selectedUnit.gameObject);
         tile.GetComponent<TileDisplay>().SelectedHighlightOn();
 
         selectedUnit.CardDisplay.SelectedHighlightOn();

@@ -6,7 +6,7 @@ public class SelectingPushTargetState : SelectingState
     private UnitDisplay attackerSelectedUnit;
     private UnitDisplay attackedSelectedUnit;
 
-    public SelectingPushTargetState(PlayerActionsOnBoard playerActionsOnBoard) : base(playerActionsOnBoard) { }
+    public SelectingPushTargetState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator) : base(playerActionsOnBoard, boardCreator) { }
 
     public void Enable(UnitDisplay attackerSelectedUnit, UnitDisplay attackedSelectedUnit)
     {
@@ -14,7 +14,7 @@ public class SelectingPushTargetState : SelectingState
         this.attackerSelectedUnit = attackerSelectedUnit;
         this.attackedSelectedUnit = attackedSelectedUnit;
 
-        this.playerActionsOnBoard.boardCreator.ShowPushReach(attackerSelectedUnit, attackedSelectedUnit);
+        this.boardCreator.ShowPushReach(attackerSelectedUnit, attackedSelectedUnit);
 
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
 

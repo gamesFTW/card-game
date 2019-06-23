@@ -3,10 +3,12 @@
 public class NoSelectionsState
 {
     private PlayerActionsOnBoard playerActionsOnBoard;
+    private BoardCreator boardCreator;
 
-    public NoSelectionsState(PlayerActionsOnBoard playerActionsOnBoard)
+    public NoSelectionsState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator)
     {
         this.playerActionsOnBoard = playerActionsOnBoard;
+        this.boardCreator = boardCreator;
     }
 
     public void Enable()
@@ -18,7 +20,7 @@ public class NoSelectionsState
 
     private void Disable()
     {
-        this.playerActionsOnBoard.boardCreator.RemoveAllPathReach();
+        this.boardCreator.RemoveAllPathReach();
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
@@ -37,12 +39,12 @@ public class NoSelectionsState
     {
         if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
-            this.playerActionsOnBoard.boardCreator.ShowPathReach(clickedUnitDisplay);
+            this.boardCreator.ShowPathReach(clickedUnitDisplay);
         }
     }
 
     private void OnUnitMouseExitOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        this.playerActionsOnBoard.boardCreator.RemoveAllPathReach();
+        this.boardCreator.RemoveAllPathReach();
     }
 }

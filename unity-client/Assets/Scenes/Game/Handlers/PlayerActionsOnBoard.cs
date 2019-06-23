@@ -20,20 +20,18 @@ public class PlayerActionsOnBoard : MonoBehaviour
         boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         clickOutOfBoardEmmiter = new ClickOutOfBoardEmmiter();
 
-        noSelectionsState = new NoSelectionsState(this);
-        ownUnitSelectedState = new OwnUnitSelectedState(this);
-        selectingPushTargetState = new SelectingPushTargetState(this);
-        selectingRicochetTargetState = new SelectingRicochetTargetState(this);
+        noSelectionsState = new NoSelectionsState(this, this.boardCreator);
+        ownUnitSelectedState = new OwnUnitSelectedState(this, this.boardCreator);
+        selectingPushTargetState = new SelectingPushTargetState(this, this.boardCreator);
+        selectingRicochetTargetState = new SelectingRicochetTargetState(this, this.boardCreator);
 
         noSelectionsState.Enable();
     }
 
-    // Update is called once per frame
     void Update()
     {
         clickOutOfBoardEmmiter.CheckClickOutOfAnyCard();

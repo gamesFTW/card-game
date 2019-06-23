@@ -5,7 +5,7 @@ public class OwnUnitSelectedState : SelectingState
     private bool MouseOnTile = false;
     private UnitDisplay selectedUnit;
 
-    public OwnUnitSelectedState(PlayerActionsOnBoard playerActionsOnBoard) : base(playerActionsOnBoard) { }
+    public OwnUnitSelectedState(PlayerActionsOnBoard playerActionsOnBoard, BoardCreator boardCreator) : base(playerActionsOnBoard, boardCreator) { }
 
     public void Enable(UnitDisplay selectedUnit)
     {
@@ -15,7 +15,7 @@ public class OwnUnitSelectedState : SelectingState
 
         this.Select(selectedUnit);
 
-        this.playerActionsOnBoard.boardCreator.ShowPathReach(selectedUnit);
+        this.boardCreator.ShowPathReach(selectedUnit);
 
         Unibus.Dispatch(AudioController.CARD_SELECTED, selectedUnit.CardDisplay);
 
@@ -69,7 +69,7 @@ public class OwnUnitSelectedState : SelectingState
             {
                 this.EnableSelectingPushTargetState(clickedUnitDisplay);
             }
-            else if (this.selectedUnit.CardData.abilities.ricochet && this.playerActionsOnBoard.boardCreator.UnitHaveRicochetTargetNearby(clickedUnitDisplay))
+            else if (this.selectedUnit.CardData.abilities.ricochet && this.boardCreator.UnitHaveRicochetTargetNearby(clickedUnitDisplay))
             {
                 this.EnableSelectingRicochetTargetState(clickedUnitDisplay);
             }
