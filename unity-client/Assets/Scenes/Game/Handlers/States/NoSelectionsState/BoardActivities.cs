@@ -1,13 +1,14 @@
-﻿using UnibusEvent;
+﻿using System;
+using UnibusEvent;
 
-public class NoSelectionsState
+public class BoardActivities
 {
-    private PlayerActionsOnBoardStates states;
     private BoardCreator boardCreator;
 
-    public NoSelectionsState(PlayerActionsOnBoardStates states, BoardCreator boardCreator)
+    public Action<UnitDisplay> OnAllySelected;
+
+    public BoardActivities(BoardCreator boardCreator)
     {
-        this.states = states;
         this.boardCreator = boardCreator;
     }
 
@@ -18,7 +19,7 @@ public class NoSelectionsState
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
     }
 
-    private void Disable()
+    public void Disable()
     {
         this.boardCreator.RemoveAllPathReach();
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
@@ -30,8 +31,7 @@ public class NoSelectionsState
     {
         if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
-            this.Disable();
-            this.states.ownUnitSelectedState.Enable(clickedUnitDisplay);
+            this.OnAllySelected(clickedUnitDisplay);
         }
     }
 
@@ -42,7 +42,7 @@ public class NoSelectionsState
             this.boardCreator.ShowPathReach(clickedUnitDisplay);
         }
     }
-
+    
     private void OnUnitMouseExitOnBoard(UnitDisplay clickedUnitDisplay)
     {
         this.boardCreator.RemoveAllPathReach();

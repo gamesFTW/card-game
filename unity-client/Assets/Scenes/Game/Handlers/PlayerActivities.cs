@@ -1,7 +1,7 @@
 ﻿using UnibusEvent;
 using UnityEngine;
 
-public class PlayerActionsOnBoard : MonoBehaviour
+public class PlayerActivities : MonoBehaviour
 {
     public static readonly string CARD_MOVE = "PlayerActionsOnBoard:CARD_MOVE";
     public static readonly string CARD_ATTACK = "PlayerActionsOnBoard:CARD_ATTACK";
@@ -48,12 +48,15 @@ public class PlayerActionsOnBoard : MonoBehaviour
             OnEnabled = this.OnStateEnabled
         };
 
+        this.states.selectingTileForCardPlayingState = new SelectingTileForCardPlayingState(this.states, this.boardCreator);
+
         this.states.noSelectionsState.Enable();
     }
 
     void Update()
     {
         clickOutOfBoardEmmiter.CheckClickOutOfAnyCard();
+        this.states.selectingTileForCardPlayingState.CheckClickOutOfAnyCard();
     }
 
     private void OnStateEnabled()
@@ -68,6 +71,7 @@ public class PlayerActionsOnBoardStates
     public OwnUnitSelectedState ownUnitSelectedState;
     public SelectingPushTargetState selectingPushTargetState;
     public SelectingRicochetTargetState selectingRicochetTargetState;
+    public SelectingTileForCardPlayingState selectingTileForCardPlayingState;
 }
 
 public class ActionEmmiter
@@ -102,12 +106,12 @@ public class ActionEmmiter
 
         attackCardAction.abilitiesParams = abilitiesParams;
 
-        Unibus.Dispatch<AttackCardAction>(PlayerActionsOnBoard.CARD_ATTACK, attackCardAction);
+        Unibus.Dispatch<AttackCardAction>(PlayerActivities.CARD_ATTACK, attackCardAction);
     }
 
     public void EmmitCardMoveAction(UnitDisplay movingUnit, Point point)
     {
-        Unibus.Dispatch<MoveCardAction>(PlayerActionsOnBoard.CARD_MOVE, new MoveCardAction
+        Unibus.Dispatch<MoveCardAction>(PlayerActivities.CARD_MOVE, new MoveCardAction
         {
             cardId = movingUnit.CardData.id,
             x = point.x.ToString(),
