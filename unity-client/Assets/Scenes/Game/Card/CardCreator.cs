@@ -207,10 +207,13 @@ public class CardCreator : MonoBehaviour {
 
         foreach (var cardDisplay in cardDisplays)
         {
-            foreach (KeyValuePair<string, SoundData> entry in cardDisplay.cardData.sounds)
+            if (cardDisplay.cardData.sounds != null)
             {
-                SoundData soundData = entry.Value;
-                urls.Add(soundData.url);
+                foreach (KeyValuePair<string, SoundData> entry in cardDisplay.cardData.sounds)
+                {
+                    SoundData soundData = entry.Value;
+                    urls.Add(soundData.url);
+                }
             }
         }
 
