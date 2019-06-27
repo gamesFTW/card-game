@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SelectingTileForCardPlayingState : MonoBehaviour
 {
-    public static readonly string CARD_PLAY = "CARD_PLAY";
+    public static readonly string CARD_PLAY = "SelectingTileForCardPlayingState:CARD_PLAY";
 
     private PlayerActionsOnBoardStates states;
     private BoardCreator boardCreator;
