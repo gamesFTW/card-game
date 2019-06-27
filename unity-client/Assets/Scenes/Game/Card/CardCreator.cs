@@ -32,6 +32,7 @@ public class CardCreator : MonoBehaviour {
 
     private BoardCreator boardCreator;
     private CardsContainer cardsContainer;
+    private AudioController audioController;
 
     public Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
 
@@ -41,6 +42,7 @@ public class CardCreator : MonoBehaviour {
     {
         boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
         cardsContainer = this.transform.Find("CardsContainer").GetComponent<CardsContainer>();
+        audioController = this.GetComponent<AudioController>();
     }
 
     public void Start ()
@@ -85,7 +87,9 @@ public class CardCreator : MonoBehaviour {
             PlayerDeck, PlayerHand, PlayerManaPool, PlayerTable, PlayerGraveyard,
             OpponentDeck, OpponentHand, OpponentManaPool, OpponentTable, OpponentGraveyard
         };
-        
+
+        List<CardDisplay> cardDisplays = new List<CardDisplay>();
+
         for (int i = 0; i < stacksTransforms.Length; i++)
         {
             foreach (CardData card in stacksData[i])
@@ -100,9 +104,12 @@ public class CardCreator : MonoBehaviour {
                     playerId = GameState.enemyOfMainPlayerId;
                 }
 
-                CreateCardIn(card, playerId, stacksTransforms[i]);
+                CardDisplay cardDisplay = CreateCardIn(card, playerId, stacksTransforms[i]);
+                cardDisplays.Add(cardDisplay);
             }
         }
+
+        this.LoadSounds(cardDisplays);
 
         if (!firstTimeDataRecived)
         {
@@ -150,7 +157,7 @@ public class CardCreator : MonoBehaviour {
         return stacksData;
     }
 
-    private void CreateCardIn(CardData cardData, string playerId, Transform stack)
+    private CardDisplay CreateCardIn(CardData cardData, string playerId, Transform stack)
     {
         Transform newCard = (Transform)Instantiate(CardPrefab, new Vector2(0, 0), new Quaternion());
         Transform newCardPlaceholder = (Transform)Instantiate(CardPlaceholderPrefab, new Vector2(0, 0), new Quaternion());
@@ -183,6 +190,8 @@ public class CardCreator : MonoBehaviour {
         {
             boardCreator.CreateUnit(cardDisplay, new Point(cardData.x, cardData.y));
         }
+
+        return cardDisplay;
     }
 
     private void OnGameDataFirstTimeRecived()
@@ -190,5 +199,21 @@ public class CardCreator : MonoBehaviour {
         GameObject go = GameObject.Find("Canvas");
         SocketIOClient socketClient = go.GetComponent<SocketIOClient>();
         socketClient.StartExchange();
+    }
+
+    private void LoadSounds(List<CardDisplay> cardDisplays)
+    {
+        List<string> urls = new List<string>();
+
+        foreach (var cardDisplay in cardDisplays)
+        {
+            foreach (KeyValuePair<string, SoundData> entry in cardDisplay.cardData.sounds)
+            {
+                SoundData soundData = entry.Value;
+                urls.Add(soundData.url);
+            }
+        }
+
+        this.audioController.AddSounds(urls);
     }
 }

@@ -26,7 +26,7 @@ public class CardDisplay : MonoBehaviour
 
     public bool isMovedAtInitialPosition = false;
 
-    public Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
+    public Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
     public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
@@ -83,9 +83,9 @@ public class CardDisplay : MonoBehaviour
         {
             foreach (KeyValuePair<string, SoundData> entry in this.cardData.sounds)
             {
-                StartCoroutine(LoadMusic(entry.Value));
+                SoundData soundData = entry.Value;
+                this.sounds.Add(soundData.soundName, soundData);
             }
-
         }
 
         this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
@@ -316,23 +316,5 @@ public class CardDisplay : MonoBehaviour
         Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
 
         artwork.GetComponent<SpriteRenderer>().sprite = sprite;
-    }
-
-    IEnumerator LoadMusic(SoundData soundData)
-    {
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(Config.LOBBY_SERVER_URL + soundData.url, AudioType.WAV))
-        {
-            yield return www.Send();
-
-            if (www.isError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
-                this.sounds.Add(soundData.soundName, myClip);
-            }
-        }
     }
 }

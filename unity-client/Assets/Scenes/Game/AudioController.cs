@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnibusEvent;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class AudioController : MonoBehaviour
 {
@@ -11,6 +13,7 @@ public class AudioController : MonoBehaviour
     public static readonly string CARD_SELECTED = "AudioController:CARD_SELECTED";
 
     private AudioSource AudioSource;
+    private Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +31,42 @@ public class AudioController : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void AddSounds(List<string> urls)
+    {
+        foreach(var url in urls)
+        {
+            if (url != null && !this.sounds.ContainsKey(url))
+            {
+                // Remove dublicates
+                this.sounds.Add(url, null);
+            }
+        }
+
+        foreach (KeyValuePair<string, AudioClip> entry in this.sounds)
+        {
+            StartCoroutine(this.LoadSound(entry.Key));
+        }
+    }
+
+    private IEnumerator LoadSound(string url)
+    {
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(Config.LOBBY_SERVER_URL + url, AudioType.WAV))
+        {
+            yield return www.Send();
+
+            if (www.isError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+                this.sounds.Remove(url);
+                this.sounds.Add(url, clip);
+            }
+        }
     }
 
     private void OnCardAttacked(CardDisplay attackerCard)
@@ -59,13 +98,14 @@ public class AudioController : MonoBehaviour
     {
         if (card.sounds.ContainsKey(soundName))
         {
-            var audio = card.sounds[soundName];
+            SoundData soundData = card.sounds[soundName];
+            AudioClip clip = this.sounds[soundData.url];
 
             AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.clip = audio;
+            audioSource.clip = clip;
             audioSource.Play();
 
-            var duration = audio.length;
+            var duration = clip.length;
 
             StartCoroutine(WaitForSound(duration, audioSource));
         }
