@@ -17,12 +17,12 @@ public class HandActivities
 
     public void Enable()
     {
-        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_SELECTED_TO_PLAY, OnCardSelectedToPlayHandler);
+        Unibus.Subscribe<CardDisplay>(PlayerHandDisplay.CARD_SELECTED_TO_PLAY, OnCardSelectedToPlayHandler);
     }
 
     public void Disable()
     {
-        Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_SELECTED_TO_PLAY, OnCardSelectedToPlayHandler);
+        Unibus.Unsubscribe<CardDisplay>(PlayerHandDisplay.CARD_SELECTED_TO_PLAY, OnCardSelectedToPlayHandler);
     }
 
     private void OnCardSelectedToPlayHandler(CardDisplay card)
