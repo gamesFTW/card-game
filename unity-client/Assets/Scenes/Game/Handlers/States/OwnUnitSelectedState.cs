@@ -39,7 +39,21 @@ public class OwnUnitSelectedState : SelectingState
         this.states.noSelectionsState.Enable();
     }
 
-    private void EnableOwnUnitSelectedState(UnitDisplay unitDisplay)
+    private void AttackEnemy(UnitDisplay enemyDisplay)
+    {
+        this.actionEmmiter.EmmitCardAttackAction(this.selectedUnit, enemyDisplay);
+
+        this.EnableNoSelectionsState();
+    }
+
+    private void MoveUnit(Point point)
+    {
+        this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
+
+        this.EnableNoSelectionsState();
+    }
+
+    private void ChangeSelectedToAnotherAlly(UnitDisplay unitDisplay)
     {
         this.Unselect(this.selectedUnit);
         this.Disable();
@@ -62,7 +76,7 @@ public class OwnUnitSelectedState : SelectingState
     {
         if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
-            this.EnableOwnUnitSelectedState(clickedUnitDisplay);
+            this.ChangeSelectedToAnotherAlly(clickedUnitDisplay);
         }
         else
         {
@@ -76,17 +90,13 @@ public class OwnUnitSelectedState : SelectingState
             }
             else
             {
-                this.actionEmmiter.EmmitCardAttackAction(this.selectedUnit, clickedUnitDisplay);
-
-                this.EnableNoSelectionsState();
+                this.AttackEnemy(clickedUnitDisplay);
             }
         }
     }
 
     private void OnClickedOnVoidTile(Point point)
     {
-        this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
-
-        this.EnableNoSelectionsState();
+        this.MoveUnit(point);
     }
 }

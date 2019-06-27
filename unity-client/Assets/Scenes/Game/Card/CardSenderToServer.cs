@@ -34,9 +34,9 @@ public class CardSenderToServer : MonoBehaviour
     void Start()
     {
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_PLAY_AS_MANA, OnCardPlayAsMana);
-        Unibus.Subscribe<PlayCardAction> (SelectingTileForCardPlayingState.CARD_PLAY, OnCardPlay);
-        Unibus.Subscribe<MoveCardAction> (PlayerActivities.CARD_MOVE, OnCardMove);
-        Unibus.Subscribe<AttackCardAction> (PlayerActivities.CARD_ATTACK, OnCardAttack);
+        Unibus.Subscribe<PlayCardAction> (ActionEmmiter.CARD_PLAY, OnCardPlay);
+        Unibus.Subscribe<MoveCardAction> (ActionEmmiter.CARD_MOVE, OnCardMove);
+        Unibus.Subscribe<AttackCardAction> (ActionEmmiter.CARD_ATTACK, OnCardAttack);
     }
 
     void Update() 

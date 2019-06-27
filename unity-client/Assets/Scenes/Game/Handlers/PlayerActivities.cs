@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class PlayerActivities : MonoBehaviour
 {
-    public static readonly string CARD_MOVE = "PlayerActionsOnBoard:CARD_MOVE";
-    public static readonly string CARD_ATTACK = "PlayerActionsOnBoard:CARD_ATTACK";
-
     public ClickOutOfBoardEmmiter clickOutOfBoardEmmiter;
 
     public BoardCreator boardCreator;
@@ -48,7 +45,10 @@ public class PlayerActivities : MonoBehaviour
             OnEnabled = this.OnStateEnabled
         };
 
-        this.states.selectingTileForCardPlayingState = new SelectingTileForCardPlayingState(this.states, this.boardCreator);
+        this.states.selectingTileForCardPlayingState = new SelectingTileForCardPlayingState(this.states, this.boardCreator)
+        {
+            actionEmmiter = this.actionEmmiter
+        };
 
         this.states.noSelectionsState.Enable();
     }
@@ -76,6 +76,10 @@ public class PlayerActionsOnBoardStates
 
 public class ActionEmmiter
 {
+    public static readonly string CARD_PLAY = "ActionEmmiter:CARD_PLAY";
+    public static readonly string CARD_MOVE = "ActionEmmiter:CARD_MOVE";
+    public static readonly string CARD_ATTACK = "ActionEmmiter:CARD_ATTACK";
+
     public BoardCreator boardCreator;
 
     public void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit, Point pushPoint = null, UnitDisplay ricochetTarget = null)
@@ -106,14 +110,24 @@ public class ActionEmmiter
 
         attackCardAction.abilitiesParams = abilitiesParams;
 
-        Unibus.Dispatch<AttackCardAction>(PlayerActivities.CARD_ATTACK, attackCardAction);
+        Unibus.Dispatch<AttackCardAction>(ActionEmmiter.CARD_ATTACK, attackCardAction);
     }
 
     public void EmmitCardMoveAction(UnitDisplay movingUnit, Point point)
     {
-        Unibus.Dispatch<MoveCardAction>(PlayerActivities.CARD_MOVE, new MoveCardAction
+        Unibus.Dispatch<MoveCardAction>(ActionEmmiter.CARD_MOVE, new MoveCardAction
         {
             cardId = movingUnit.CardData.id,
+            x = point.x.ToString(),
+            y = point.y.ToString()
+        });
+    }
+
+    public void EmmitCardPlayAction(CardDisplay card, Point point)
+    {
+        Unibus.Dispatch<PlayCardAction>(ActionEmmiter.CARD_PLAY, new PlayCardAction
+        {
+            cardId = card.cardData.id,
             x = point.x.ToString(),
             y = point.y.ToString()
         });

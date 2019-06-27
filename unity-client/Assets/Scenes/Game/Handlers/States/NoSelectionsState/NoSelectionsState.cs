@@ -17,9 +17,9 @@ public class NoSelectionsState
             OnAllySelected = this.EnableOwnUnitSelectedState
         };
 
-        this.handActivities = new HandActivities(states, boardCreator)
+        this.handActivities = new HandActivities(states)
         {
-            OnCardSelectedToPlay = this.OnCardSelectedToPlay
+            OnCardSelectedToPlay = this.EnableSelectingTileForCardPlayingState
         };
     }
 
@@ -35,7 +35,7 @@ public class NoSelectionsState
         this.states.ownUnitSelectedState.Enable(unit);
     }
 
-    private void OnCardSelectedToPlay(CardDisplay card)
+    private void EnableSelectingTileForCardPlayingState(CardDisplay card)
     {
         this.Disable();
         this.states.selectingTileForCardPlayingState.Enable(card);

@@ -7,12 +7,10 @@ public class HandActivities
     public Action<CardDisplay> OnCardSelectedToPlay;
 
     private PlayerActionsOnBoardStates states;
-    private BoardCreator boardCreator;
 
-    public HandActivities(PlayerActionsOnBoardStates states, BoardCreator boardCreator)
+    public HandActivities(PlayerActionsOnBoardStates states)
     {
         this.states = states;
-        this.boardCreator = boardCreator;
     }
 
     public void Enable()

@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnibusEvent;
+﻿using UnibusEvent;
 using UnityEngine;
 
 public class SelectingTileForCardPlayingState : MonoBehaviour
 {
-    public static readonly string CARD_PLAY = "SelectingTileForCardPlayingState:CARD_PLAY";
+
+    public ActionEmmiter actionEmmiter;
 
     private PlayerActionsOnBoardStates states;
     private BoardCreator boardCreator;
@@ -36,7 +35,6 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
 
     public void CheckClickOutOfAnyCard()
     {
-
         if (!this.skipedFirstCheckClickOutOfAnyCard)
         {
             this.skipedFirstCheckClickOutOfAnyCard = true;
@@ -48,11 +46,24 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
                 var leftMouseClicked = Input.GetButtonDown("Fire1");
                 if (leftMouseClicked && !this.MouseOnCard && this.SelectedCard)
                 {
-                    this.Disable();
-                    this.states.noSelectionsState.Enable();
+                    this.SkipSelection();
                 }
             }
         }
+    }
+
+    private void SkipSelection()
+    {
+        this.Disable();
+        this.states.noSelectionsState.Enable();
+    }
+
+    private void PlayCard(Point point)
+    {
+        this.actionEmmiter.EmmitCardPlayAction(this.SelectedCard, point);
+
+        this.Disable();
+        this.states.noSelectionsState.Enable();
     }
 
     private void Disable()
@@ -70,15 +81,7 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
     {
         if (this.SelectedCard != null)
         {
-            Unibus.Dispatch<PlayCardAction>(CARD_PLAY, new PlayCardAction
-            {
-                cardId = this.SelectedCard.cardData.id,
-                x = point.x.ToString(),
-                y = point.y.ToString()
-            });
-
-            this.Disable();
-            this.states.noSelectionsState.Enable();
+            this.PlayCard(point);
         }
     }
 
