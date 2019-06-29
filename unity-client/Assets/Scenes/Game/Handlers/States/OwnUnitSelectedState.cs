@@ -22,6 +22,12 @@ public class OwnUnitSelectedState : SelectingState
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
+
+        if (selectedUnit.CardData.abilities.range != null)
+        {
+            Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+            Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+        }
     }
 
     protected override void Disable()
@@ -31,6 +37,8 @@ public class OwnUnitSelectedState : SelectingState
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
     }
 
     protected override void EnableNoSelectionsState()
@@ -99,5 +107,20 @@ public class OwnUnitSelectedState : SelectingState
     private void OnClickedOnVoidTile(Point point)
     {
         this.MoveUnit(point);
+    }
+
+    private void OnUnitMouseEnterOnBoard(UnitDisplay unit)
+    {
+        if (!unit.CardDisplay.IsAlly)
+        {
+            this.boardCreator.RemoveAllTileBlinks();
+            this.boardCreator.ShowRangeAttackReach(this.selectedUnit, unit);
+        }
+    }
+
+    private void OnUnitMouseExitOnBoard(UnitDisplay unit)
+    {
+        this.boardCreator.RemoveAllTileBlinks();
+        this.boardCreator.ShowPathReach(this.selectedUnit);
     }
 }

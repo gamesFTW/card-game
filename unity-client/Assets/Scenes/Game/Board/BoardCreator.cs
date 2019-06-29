@@ -187,6 +187,32 @@ public class BoardCreator : MonoBehaviour
         this.HighlightPathInTilesByPoints(positions);
     }
 
+    public void ShowRangeAttackReach(UnitDisplay attacker, UnitDisplay attacked)
+    {
+        Point attackerPosition = GetUnitsPosition(attacker);
+        var radiusPoints = this.FindPointsInRadius(attackerPosition, attacker.CardData.abilities.range.range);
+
+        var points = new List<Point>();
+        foreach(var radiusPoint in radiusPoints)
+        {
+            var canUnitStandsAtThisPoint = true;
+            var area = this.Areas[radiusPoint.x, radiusPoint.y];
+            if (area != null && !area.GetComponent<AreaDisplay>().areaData.canUnitsWalkThoughtIt)
+            {
+                canUnitStandsAtThisPoint = false;
+            }
+
+            var canAttackToThisPoint = this.CheckRangeAttackBetweenPoints(attackerPosition, radiusPoint);
+
+            if(canAttackToThisPoint && canUnitStandsAtThisPoint)
+            {
+                points.Add(radiusPoint);
+            }
+        }
+
+        this.HighlightPathInTilesByPoints(points);
+    }
+
     public void RemoveAllTileBlinks()
     {
         for (int x = 1; x <= Width; x++)
@@ -228,6 +254,76 @@ public class BoardCreator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool CheckRangeAttackBetweenPoints(Point point1, Point point2)
+    {
+        var points = this.PlotRangePath(point1, point2);
+
+        points.RemoveAt(0);
+        points.RemoveAt(points.Count - 1);
+
+        foreach (var point in points)
+        {
+            var unit = this.Units[point.x, point.y];
+            if (unit != null && !unit.GetComponent<UnitDisplay>().CardDisplay.IsAlly)
+            {
+                return false;
+            }
+
+            var area = this.Areas[point.x, point.y];
+            if (area != null && !area.GetComponent<AreaDisplay>().areaData.canUnitsShootThoughtIt)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private List<Point> PlotRangePath(Point point1, Point point2)
+    {
+        var x1 = point1.x;
+        var y1 = point1.y;
+        var x2 = point2.x;
+        var y2 = point2.y;
+
+        var xDist = Math.Abs(x2 - x1);
+        var yDist = -Math.Abs(y2 - y1);
+        var xStep = (x1 < x2 ? +1 : -1);
+        var yStep = (y1 < y2 ? +1 : -1);
+        var error = xDist + yDist;
+
+        var dots = new List<Point>();
+        dots.Add(new Point(x1, y1));
+
+        while (x1 != x2 || y1 != y2)
+        {
+            if (2 * error - yDist == xDist - 2 * error)
+            {
+                error += yDist;
+                x1 += xStep;
+                dots.Add(new Point(x1, y1));
+
+                error += xDist;
+                y1 += yStep;
+                dots.Add(new Point(x1, y1));
+            }
+            else if (2 * error - yDist > xDist - 2 * error)
+            {
+                error += yDist;
+                x1 += xStep;
+                dots.Add(new Point(x1, y1));
+            }
+            else
+            {
+                error += xDist;
+                y1 += yStep;
+                dots.Add(new Point(x1, y1));
+            }
+        }
+
+        return dots;
     }
 
     private bool PositionAdjacentToEnemy(Point point)
