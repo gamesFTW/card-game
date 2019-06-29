@@ -350,8 +350,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blinkOpacityUp: 1
-  blinkOpacityDown: 0.3
-  blinkSpeed: 0.6
+  blinkOpacityDown: 0.2
+  blinkSpeed: 0.4
 --- !u!1 &7399311723132172013
 GameObject:
   m_ObjectHideFlags: 0

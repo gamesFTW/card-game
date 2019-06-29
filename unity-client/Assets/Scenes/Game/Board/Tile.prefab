@@ -633,3 +633,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09fac1e6921cb7c4d9dd7044403842af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blinkOpacityUp: 0.23
+  blinkOpacityDown: 0.1
+  blinkSpeed: 0.8

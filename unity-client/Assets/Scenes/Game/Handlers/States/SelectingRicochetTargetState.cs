@@ -23,6 +23,7 @@ public class SelectingRicochetTargetState : SelectingState
 
     protected override void Disable()
     {
+        base.Disable();
         this.boardCreator.RemoveAllBlinks();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);

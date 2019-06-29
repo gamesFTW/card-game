@@ -21,7 +21,7 @@ public class BoardActivities
 
     public void Disable()
     {
-        this.boardCreator.RemoveAllPathReach();
+        this.boardCreator.RemoveAllTileBlinks();
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
@@ -45,6 +45,6 @@ public class BoardActivities
     
     private void OnUnitMouseExitOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        this.boardCreator.RemoveAllPathReach();
+        this.boardCreator.RemoveAllTileBlinks();
     }
 }

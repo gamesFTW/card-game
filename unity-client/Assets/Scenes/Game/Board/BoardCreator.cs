@@ -18,6 +18,8 @@ public class BoardCreator : MonoBehaviour
     public GameObject UnitPrefab;
     public GameObject AreaPrefab;
 
+    public List<CardDisplay> allyHeroes = new List<CardDisplay>();
+
     private GameObject[,] Tiles;
     private GameObject[,] Units;
     private GameObject[,] Areas;
@@ -126,14 +128,7 @@ public class BoardCreator : MonoBehaviour
     public bool UnitHaveRicochetTargetNearby(UnitDisplay unitDisplay)
     {
         Point p = GetUnitsPosition(unitDisplay);
-
-        Point[] points = new Point[] { new Point(p.x + 1, p.y), new Point(p.x - 1, p.y), new Point(p.x, p.y + 1), new Point(p.x, p.y - 1) };
-
-        if (this.CheckForEnemy(points[0]) || this.CheckForEnemy(points[1]) || this.CheckForEnemy(points[2]) || this.CheckForEnemy(points[3])) {
-            return true;
-        }
-
-        return false;
+        return PositionAdjacentToEnemy(p);
     }
 
     public void ShowPathReach(UnitDisplay unitDisplay)
@@ -156,7 +151,43 @@ public class BoardCreator : MonoBehaviour
         this.HighlightPathInTilesByPoints(points);
     }
 
-    public void RemoveAllPathReach()
+    public void ShowPlacesToCastCreatures()
+    {
+        List<Point> positionsInRadius = new List<Point>();
+        foreach (var hero in this.allyHeroes)
+        {
+            Point position = this.GetUnitsPosition(hero.UnitDisplay);
+
+            List<Point> p = FindPointsInRadius(position, 2);
+
+            positionsInRadius.AddRange(p);
+        }
+        
+        List<Point> positions = new List<Point>();
+        foreach (var position in positionsInRadius)
+        {
+            bool unitOcuppiedTile = this.Units[position.x, position.y] != null;
+
+            var area = this.Areas[position.x, position.y];
+            bool areaOccupiedTile = false;
+            if (area != null)
+            {
+                var areaDisplay = area.GetComponent<AreaDisplay>();
+                areaOccupiedTile = !areaDisplay.areaData.canUnitsWalkThoughtIt;
+            }
+
+            bool positionAdjacentToEnemy = this.PositionAdjacentToEnemy(position);
+
+            if (!unitOcuppiedTile && !areaOccupiedTile && !positionAdjacentToEnemy)
+            {
+                positions.Add(position);
+            }
+        }
+
+        this.HighlightPathInTilesByPoints(positions);
+    }
+
+    public void RemoveAllTileBlinks()
     {
         for (int x = 1; x <= Width; x++)
         {
@@ -197,6 +228,52 @@ public class BoardCreator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool PositionAdjacentToEnemy(Point point)
+    {
+        List<Point> points = this.FindPointsInRadius(point, 1);
+
+        Debug.Log(points.Count);
+
+        foreach (var p in points)
+        {
+            if (this.CheckForEnemy(p))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private List<Point> FindPointsInRadius(Point center, int radius)
+    {
+        List<Point> pointsInRadius = new List<Point>();
+
+        for (int x = 1; x <= this.Width; x++)
+        {
+            var rangeX = Math.Abs(center.x - x);
+
+            if (rangeX <= radius)
+            {
+                for (int y = 1; y <= this.Height; y++)
+                {
+                    if (!(center.x == x && center.y == y))
+                    {
+                        var rangeY = Math.Abs(center.y - y);
+
+                        if ((rangeY + rangeX) <= radius)
+                        {
+                            pointsInRadius.Add(new Point(x, y));
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return pointsInRadius;
     }
 
     private void HighlightPathInTilesByPoints(List<Point> points)

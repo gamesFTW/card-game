@@ -191,6 +191,13 @@ public class CardCreator : MonoBehaviour {
             boardCreator.CreateUnit(cardDisplay, new Point(cardData.x, cardData.y));
         }
 
+        if (cardData.hero)
+        {
+            if (playerId == GameState.mainPlayerId) {
+                boardCreator.allyHeroes.Add(cardDisplay);
+            }
+        }
+
         return cardDisplay;
     }
 

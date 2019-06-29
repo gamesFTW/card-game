@@ -23,7 +23,11 @@ public abstract class SelectingState
         Unibus.Subscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
     }
 
-    protected abstract void Disable();
+    protected virtual void Disable()
+    {
+        Unibus.Unsubscribe<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, OnClickOutOfBoard);
+        Unibus.Unsubscribe<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, OnRightClick);
+    }
 
     protected abstract void EnableNoSelectionsState();
 

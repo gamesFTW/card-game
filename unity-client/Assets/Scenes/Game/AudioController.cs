@@ -99,15 +99,19 @@ public class AudioController : MonoBehaviour
         if (card.sounds.ContainsKey(soundName))
         {
             SoundData soundData = card.sounds[soundName];
-            AudioClip clip = this.sounds[soundData.url];
 
-            AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.clip = clip;
-            audioSource.Play();
+            if (soundData.url != null && this.sounds.ContainsKey(soundData.url))
+            {
+                AudioClip clip = this.sounds[soundData.url];
 
-            var duration = clip.length;
+                AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+                audioSource.clip = clip;
+                audioSource.Play();
 
-            StartCoroutine(WaitForSound(duration, audioSource));
+                var duration = clip.length;
+
+                StartCoroutine(WaitForSound(duration, audioSource));
+            }
         }
     }
 

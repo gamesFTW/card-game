@@ -23,7 +23,8 @@ public class SelectingPushTargetState : SelectingState
 
     protected override void Disable()
     {
-        this.boardCreator.RemoveAllPathReach();
+        base.Disable();
+        this.boardCreator.RemoveAllTileBlinks();
 
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }

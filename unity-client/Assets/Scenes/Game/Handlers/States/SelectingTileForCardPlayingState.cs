@@ -27,6 +27,7 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.enabled = true;
         this.SelectedCard = card;
         card.SelectedHighlightOn();
+        this.boardCreator.ShowPlacesToCastCreatures();
 
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);
@@ -71,6 +72,7 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.enabled = false;
         this.SelectedCard.SelectedHighlightOff();
         this.SelectedCard = null;
+        this.boardCreator.RemoveAllTileBlinks();
 
         Unibus.Unsubscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);

@@ -1,5 +1,5 @@
-﻿using System;
-using UnibusEvent;
+﻿using UnibusEvent;
+using UnityEngine;
 
 public class OwnUnitSelectedState : SelectingState
 {
@@ -26,7 +26,8 @@ public class OwnUnitSelectedState : SelectingState
 
     protected override void Disable()
     {
-        this.boardCreator.RemoveAllPathReach();
+        base.Disable();
+        this.boardCreator.RemoveAllTileBlinks();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
