@@ -66,7 +66,7 @@ class RangeAttackService {
     const attackedCardPosition = board.getPositionOfUnit(attackedCard);
 
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
-    const range = path.length - 1;
+    const range = Math.abs(attackerCardPosition.x - attackedCardPosition.x) + Math.abs(attackerCardPosition.y - attackedCardPosition.y);
     const attackerRange = attackerCard.abilities.range.range;
 
     if (range > attackerRange) {
@@ -75,8 +75,6 @@ class RangeAttackService {
 
     let attackedPlayerTableCardsIds = attackedPlayerTableCards.map((card) => card.id);
     let areasIds = areas.map((area) => area.id);
-
-    console.log(areasIds);
 
     let betweenPath = path;
     betweenPath.shift();
