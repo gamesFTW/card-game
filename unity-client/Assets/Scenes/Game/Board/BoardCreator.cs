@@ -301,6 +301,8 @@ public class BoardCreator : MonoBehaviour
         {
             if (2 * error - yDist == xDist - 2 * error)
             {
+                dots.Add(new Point(x1, y1 + yStep));
+
                 error += yDist;
                 x1 += xStep;
                 dots.Add(new Point(x1, y1));

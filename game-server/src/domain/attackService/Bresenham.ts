@@ -18,6 +18,8 @@ class Bresenham {
 
     while (x1 !== x2 || y1 !== y2) {
       if (2 * error - yDist === xDist - 2 * error) {
+        dots.push(new Point(x1, y1 + yStep));
+
         error += yDist;
         x1 += xStep;
         dots.push(new Point(x1, y1));
