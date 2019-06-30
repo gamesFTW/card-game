@@ -104,13 +104,17 @@ public class AudioController : MonoBehaviour
             {
                 AudioClip clip = this.sounds[soundData.url];
 
-                AudioSource audioSource = gameObject.AddComponent<AudioSource>();
-                audioSource.clip = clip;
-                audioSource.Play();
+                if (clip != null)
+                {
 
-                var duration = clip.length;
+                    AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+                    audioSource.clip = clip;
+                    audioSource.Play();
 
-                StartCoroutine(WaitForSound(duration, audioSource));
+                    var duration = clip.length;
+
+                    StartCoroutine(WaitForSound(duration, audioSource));
+                }
             }
         }
     }
