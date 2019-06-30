@@ -68,7 +68,6 @@ class RangeAttackService {
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
     const range = Math.abs(attackerCardPosition.x - attackedCardPosition.x) + Math.abs(attackerCardPosition.y - attackedCardPosition.y);
     const attackerRange = attackerCard.abilities.range.range;
-    console.log(path);
 
     if (range > attackerRange) {
       throw new DomainError(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
