@@ -238,11 +238,11 @@ public class CardDisplay : MonoBehaviour
     public void UpdateZIndex()
     {
         Vector3 position = transform.localPosition;
-        float z = (float)(position.x * 0.001);
+        float z = (float)(position.x * 0.01) - 10;
 
         if (IsZoomed)
         {
-            z = -20;
+            z = -50;
         }
 
         this.transform.localPosition = new Vector3(position.x, position.y, z);
