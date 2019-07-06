@@ -9,6 +9,8 @@ public class BoardCreator : MonoBehaviour
     public static readonly string UNIT_CLICKED_ON_BOARD = "UNIT_CLICKED_ON_BOARD";
     public static readonly string UNIT_MOUSE_ENTER_ON_BOARD = "UNIT_MOUSE_ENTER_ON_BOARD";
     public static readonly string UNIT_MOUSE_EXIT_ON_BOARD = "UNIT_MOUSE_EXIT_ON_BOARD";
+    public static readonly string TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD = "TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD";
+    public static readonly string TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD = "TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD";
     public static readonly string CLICKED_ON_VOID_TILE = "CLICKED_ON_VOID_TILE";
 
     public int Width;
@@ -213,18 +215,6 @@ public class BoardCreator : MonoBehaviour
         this.HighlightPathInTilesByPoints(points);
     }
 
-    public void RemoveAllTileBlinks()
-    {
-        for (int x = 1; x <= Width; x++)
-        {
-            for (int y = 1; y <= Height; y++)
-            {
-                var tile = this.Tiles[x, y];
-                tile.GetComponent<TileDisplay>().PathOff();
-            }
-        }
-    }
-
     public void BlinkRicochetTargets(UnitDisplay unitDisplay)
     {
         Point p = GetUnitsPosition(unitDisplay);
@@ -236,12 +226,36 @@ public class BoardCreator : MonoBehaviour
             UnitDisplay enemy = this.GetEnemy(point);
             if (enemy != null)
             {
-                enemy.TeamColorBlinkOn();
+                enemy.BlinkOn();
             }
         }
     }
 
+    public void BlinkHealTargets(UnitDisplay unitDisplay, int range)
+    {
+        Point p = GetUnitsPosition(unitDisplay);
+
+        var radiusPoints = this.FindPointsInRadius(p, range);
+
+        foreach (Point point in radiusPoints)
+        {
+            UnitDisplay ally = this.GetAlly(point);
+            if (ally != null)
+            {
+                ally.BlinkOn();
+            }
+        }
+
+        this.HighlightPathInTilesByPoints(radiusPoints);
+    }
+
     public void RemoveAllBlinks()
+    {
+        RemoveAllUnitBlinks();
+        RemoveAllTileBlinks();
+    }
+
+    private void RemoveAllUnitBlinks()
     {
         for (int x = 1; x <= Width; x++)
         {
@@ -250,8 +264,20 @@ public class BoardCreator : MonoBehaviour
                 var unit = this.Units[x, y];
                 if (unit != null)
                 {
-                    unit.GetComponent<UnitDisplay>().TeamColorBlinkOff();
+                    unit.GetComponent<UnitDisplay>().BlinkOff();
                 }
+            }
+        }
+    }
+
+    private void RemoveAllTileBlinks()
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                var tile = this.Tiles[x, y];
+                tile.GetComponent<TileDisplay>().PathOff();
             }
         }
     }
@@ -332,8 +358,6 @@ public class BoardCreator : MonoBehaviour
     {
         List<Point> points = this.FindPointsInRadius(point, 1);
 
-        Debug.Log(points.Count);
-
         foreach (var p in points)
         {
             if (this.CheckForEnemy(p))
@@ -348,6 +372,7 @@ public class BoardCreator : MonoBehaviour
     private List<Point> FindPointsInRadius(Point center, int radius)
     {
         List<Point> pointsInRadius = new List<Point>();
+        pointsInRadius.Add(center);
 
         for (int x = 1; x <= this.Width; x++)
         {
@@ -435,6 +460,38 @@ public class BoardCreator : MonoBehaviour
 
     private UnitDisplay GetEnemy(Point point)
     {
+        var unitDisplay = this.GetUnit(point);
+
+        if (!unitDisplay)
+        {
+            return null;
+        }
+
+        if (!unitDisplay.CardDisplay.IsAlly)
+        {
+            return unitDisplay;
+        }
+        return null;
+    }
+
+    private UnitDisplay GetAlly(Point point)
+    {
+        var unitDisplay = this.GetUnit(point);
+
+        if (!unitDisplay)
+        {
+            return null;
+        }
+
+        if (unitDisplay.CardDisplay.IsAlly)
+        {
+            return unitDisplay;
+        }
+        return null;
+    }
+
+    private UnitDisplay GetUnit(Point point)
+    {
         if (point.x < 1 || point.y < 1 || point.x > this.Width || point.y > this.Height)
         {
             return null;
@@ -446,13 +503,7 @@ public class BoardCreator : MonoBehaviour
             return null;
         }
 
-        var cardDisplay = unit.GetComponent<UnitDisplay>();
-
-        if (!cardDisplay.CardDisplay.IsAlly)
-        {
-            return cardDisplay;
-        }
-        return null;
+        return unit.GetComponent<UnitDisplay>();
     }
 
     private bool checkPositionsAdjacency(Point firstPosition, Point secondPosition) {
@@ -540,13 +591,17 @@ public class BoardCreator : MonoBehaviour
 
     void OnTileMouseEnter(Point position)
     {
-        GameObject unit = Units[position.x, position.y];
+        GameObject unit = this.Units[position.x, position.y];
 
         if (unit)
         {
             UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
 
             Unibus.Dispatch<UnitDisplay>(UNIT_MOUSE_ENTER_ON_BOARD, unitDisplay);
+        } else
+        {
+            TileDisplay tileDisplay = this.Tiles[position.x, position.y].GetComponent<TileDisplay>();
+            Unibus.Dispatch<TileDisplay>(TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, tileDisplay);
         }
     }
 
@@ -560,6 +615,11 @@ public class BoardCreator : MonoBehaviour
 
             Unibus.Dispatch<UnitDisplay>(UNIT_MOUSE_EXIT_ON_BOARD, unitDisplay);
         }
+        else
+        {
+            TileDisplay tileDisplay = this.Tiles[position.x, position.y].GetComponent<TileDisplay>();
+            Unibus.Dispatch<TileDisplay>(TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, tileDisplay);
+        }
     }
 
     Vector3 PointerToIcometric(Point position, float tileWidth, float tileHeight)
@@ -572,4 +632,10 @@ public class BoardCreator : MonoBehaviour
             (x + y) * (tileHeight / 2)
         );
     }
+}
+
+public class AbilityActivated
+{
+    public CardDisplay cardDisplay;
+    public Ability ability;
 }

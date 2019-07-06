@@ -45,6 +45,12 @@ public class PlayerActivities : MonoBehaviour
             OnEnabled = this.OnStateEnabled
         };
 
+        this.states.selectingHealingTargetState = new SelectingHealingTargetState(this.states, this.boardCreator)
+        {
+            actionEmmiter = this.actionEmmiter,
+            OnEnabled = this.OnStateEnabled
+        };
+
         this.states.selectingTileForCardPlayingState = new SelectingTileForCardPlayingState(this.states, this.boardCreator)
         {
             actionEmmiter = this.actionEmmiter
@@ -72,6 +78,7 @@ public class PlayerActionsOnBoardStates
     public SelectingPushTargetState selectingPushTargetState;
     public SelectingRicochetTargetState selectingRicochetTargetState;
     public SelectingTileForCardPlayingState selectingTileForCardPlayingState;
+    public SelectingHealingTargetState selectingHealingTargetState;
 }
 
 public class ActionEmmiter
@@ -79,6 +86,7 @@ public class ActionEmmiter
     public static readonly string CARD_PLAY = "ActionEmmiter:CARD_PLAY";
     public static readonly string CARD_MOVE = "ActionEmmiter:CARD_MOVE";
     public static readonly string CARD_ATTACK = "ActionEmmiter:CARD_ATTACK";
+    public static readonly string CARD_HEAL = "ActionEmmiter:CARD_HEAL";
 
     public BoardCreator boardCreator;
 
@@ -130,6 +138,15 @@ public class ActionEmmiter
             cardId = card.cardData.id,
             x = point.x.ToString(),
             y = point.y.ToString()
+        });
+    }
+
+    public void EmmitCardHealingAction(UnitDisplay healerUnit, UnitDisplay healedUnit)
+    {
+        Unibus.Dispatch<HealCardAction>(ActionEmmiter.CARD_HEAL, new HealCardAction
+        {
+            healerCardId = healerUnit.CardData.id,
+            healedCardId = healedUnit.CardData.id
         });
     }
 }

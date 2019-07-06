@@ -2177,6 +2177,7 @@ MonoBehaviour:
     type: 3}
   AreaPrefab: {fileID: 7399311723132172013, guid: 5f0d4bdc4a09c364eb254a854ef649f5,
     type: 3}
+  allyHeroes: []
 --- !u!1 &1884503108
 GameObject:
   m_ObjectHideFlags: 0

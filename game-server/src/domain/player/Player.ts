@@ -161,8 +161,8 @@ class Player extends Entity {
 
     healerCard.heal();
     // distance
-    const healedUnitPosition = board.getPositionByUnit(healedCard);
-    const healerUnitPosition = board.getPositionByUnit(healerCard);
+    const healedUnitPosition = board.getPositionOfUnit(healedCard);
+    const healerUnitPosition = board.getPositionOfUnit(healerCard);
 
     const distance = board.getDistanceBetweenPositions(healedUnitPosition, healerUnitPosition);
     const range = healerCard.abilities.healing.range;

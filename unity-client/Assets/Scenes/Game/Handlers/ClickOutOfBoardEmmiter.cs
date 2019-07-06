@@ -13,6 +13,8 @@ public class ClickOutOfBoardEmmiter
     {
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
+        Unibus.Subscribe<AbilityDisplay>(AbilityDisplay.ABILITY_MOUSE_ENTER, OnTileMouseEnter);
+        Unibus.Subscribe<AbilityDisplay>(AbilityDisplay.ABILITY_MOUSE_EXIT, OnTileMouseExit);
     }
 
     private void OnTileMouseEnter(Point point)
@@ -21,6 +23,16 @@ public class ClickOutOfBoardEmmiter
     }
 
     private void OnTileMouseExit(Point point)
+    {
+        this.MouseOnTile = false;
+    }
+
+    private void OnTileMouseEnter(AbilityDisplay point)
+    {
+        this.MouseOnTile = true;
+    }
+
+    private void OnTileMouseExit(AbilityDisplay point)
     {
         this.MouseOnTile = false;
     }

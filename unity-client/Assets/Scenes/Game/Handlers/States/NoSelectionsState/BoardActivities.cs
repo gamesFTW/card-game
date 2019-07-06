@@ -1,15 +1,18 @@
 ﻿using System;
 using UnibusEvent;
+using UnityEngine;
 
 public class BoardActivities
 {
     private BoardCreator boardCreator;
+    private OverHighlightActivity overHighlightActivity;
 
     public Action<UnitDisplay> OnAllySelected;
 
     public BoardActivities(BoardCreator boardCreator)
     {
         this.boardCreator = boardCreator;
+        this.overHighlightActivity = new OverHighlightActivity(boardCreator);
     }
 
     public void Enable()
@@ -17,11 +20,15 @@ public class BoardActivities
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+
+        overHighlightActivity.Enable();
     }
 
     public void Disable()
     {
-        this.boardCreator.RemoveAllTileBlinks();
+        overHighlightActivity.Disable();
+
+        this.boardCreator.RemoveAllBlinks();
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
@@ -35,16 +42,16 @@ public class BoardActivities
         }
     }
 
-    private void OnUnitMouseEnterOnBoard(UnitDisplay clickedUnitDisplay)
+    private void OnUnitMouseEnterOnBoard(UnitDisplay unit)
     {
-        if (clickedUnitDisplay.CardDisplay.IsAlly)
+        if (unit.CardDisplay.IsAlly)
         {
-            this.boardCreator.ShowPathReach(clickedUnitDisplay);
+            this.boardCreator.ShowPathReach(unit);
         }
     }
     
-    private void OnUnitMouseExitOnBoard(UnitDisplay clickedUnitDisplay)
+    private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
-        this.boardCreator.RemoveAllTileBlinks();
+        this.boardCreator.RemoveAllBlinks();
     }
 }

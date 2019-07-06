@@ -73,6 +73,13 @@ namespace ServerActions
     }
 
     [Serializable]
+    public class CardHealedAction
+    {
+        public CardAfterHealing healerCard;
+        public CardAfterHealing healedCard;
+    }
+
+    [Serializable]
     public class CardAfterBattle
     {
         public string id;
@@ -82,6 +89,15 @@ namespace ServerActions
         public bool killed;
         public int? currentMovingPoints;
         public Point pushedTo;
+    }
+
+    [Serializable]
+    public class CardAfterHealing
+    {
+        public string id;
+        public bool isTapped;
+        public int? newHp;
+        public int? currentMovingPoints;
     }
 }
 
@@ -127,6 +143,12 @@ public class ReceiverFromServer : MonoBehaviour
             SocketData<ServerActions.CardAttackedAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardAttackedAction>>(message);
             this.OnCardAttackedAction(data.actions[index]);
         }
+
+        if (type == "CardHealedAction")
+        {
+            SocketData<ServerActions.CardHealedAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardHealedAction>>(message);
+            this.OnCardHealedAction(data.actions[index]);
+        }
     }
 
     public void OnEndTurnAction(ServerActions.EndTurnAction action)
@@ -163,5 +185,11 @@ public class ReceiverFromServer : MonoBehaviour
             var isAttacker = card.id == action.attackerCardId;
             cardManger.CardWasInBattle(card, isAttacker);
         }
+    }
+
+    public void OnCardHealedAction(ServerActions.CardHealedAction action)
+    {
+        cardManger.CardAfterHealing(action.healerCard);
+        cardManger.CardAfterHealing(action.healedCard);
     }
 }

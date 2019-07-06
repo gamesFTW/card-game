@@ -1,17 +1,13 @@
 import { Player } from '../../domain/player/Player';
-import { Repository } from '../../infr/repositories/Repository';
 import { Board } from '../../domain/board/Board';
 import { Game } from '../../domain/game/Game';
 import { CardEventType } from '../../domain/events';
-import { MeleeAttackService } from '../../domain/attackService/MeleeAttackService';
 import { Card } from '../../domain/card/Card';
 import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
 import { UseCase } from '../../infr/UseCase';
-import { RangeAttackService } from '../../domain/attackService/RangeAttackService';
-
 
 interface HealCardParams {
   gameId: EntityId;
@@ -24,6 +20,7 @@ interface CardChanges {
   id?: string;
   isTapped?: boolean;
   newHp?: number;
+  currentMovingPoints?: number;
 }
 
 interface CardHealedAction {
@@ -36,7 +33,7 @@ class HealCardUseCase extends UseCase {
   protected action: CardHealedAction = {
     type: 'CardHealedAction',
     healerCard: {},
-    healedCard: {},
+    healedCard: {}
   };
 
   protected entities: {
@@ -51,13 +48,13 @@ class HealCardUseCase extends UseCase {
   protected params: HealCardParams;
 
   protected async readEntities (): Promise<void> {
-    this.entities.game = await Repository.get<Game>(this.params.gameId, Game);
-    this.entities.board = await Repository.get<Board>(this.entities.game.boardId, Board);
-    this.entities.player = await Repository.get<Player>(this.params.playerId, Player);
+    this.entities.game = await this.repository.get<Game>(this.params.gameId, Game);
+    this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
+    this.entities.player = await this.repository.get<Player>(this.params.playerId, Player);
     let opponent = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
-    this.entities.opponent = await Repository.get<Player>(opponent, Player);
-    this.entities.healerCard = await Repository.get<Card>(this.params.healerCardId, Card);
-    this.entities.healedCard = await Repository.get<Card>(this.params.healedCardId, Card);
+    this.entities.opponent = await this.repository.get<Player>(opponent, Player);
+    this.entities.healerCard = await this.repository.get<Card>(this.params.healerCardId, Card);
+    this.entities.healedCard = await this.repository.get<Card>(this.params.healedCardId, Card);
   }
 
   protected addEventListeners (): void {
@@ -70,7 +67,7 @@ class HealCardUseCase extends UseCase {
       this.entities.healerCard,
       this.entities.healedCard,
       this.entities.board,
-      this.entities.opponent,
+      this.entities.opponent
     );
   }
 
@@ -82,6 +79,7 @@ class HealCardUseCase extends UseCase {
   @boundMethod
   private onHealerCardTapped (event: Event<CardData>): void {
     this.action.healerCard.isTapped = true;
+    this.action.healerCard.currentMovingPoints = event.data.currentMovingPoints;
   }
 
   @boundMethod

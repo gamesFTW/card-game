@@ -41,6 +41,10 @@ public class CardDisplay : MonoBehaviour
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
 
+    private BoxCollider2D defaultCollider;
+    private BoxCollider2D handCollider;
+    private BoxCollider2D tableCollider;
+
     public int CurrentHp
     {
         get { return cardData.currentHp; }
@@ -67,9 +71,14 @@ public class CardDisplay : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start () 
+    private void Start () 
     {
-		nameText.text = cardData.name;
+        var colliders = this.GetComponents<BoxCollider2D>();
+        this.defaultCollider = colliders[0];
+        this.handCollider = colliders[1];
+        this.tableCollider = colliders[2];
+
+        nameText.text = cardData.name;
 
 		manaText.text = cardData.manaCost.ToString();
         damageText.text = cardData.damage.ToString();
@@ -94,7 +103,7 @@ public class CardDisplay : MonoBehaviour
         this.FillDescription();
     }
 
-    void Update()
+    private void Update()
     {
         CheckRightMouseDown();
 
@@ -154,8 +163,157 @@ public class CardDisplay : MonoBehaviour
     {
         Unibus.Dispatch(CARD_DIED, this);
         this.ZoomOut();
-        this.SelectedHighlightOff();
+        this.Unselect();
         this.OverHighlightOff();
+    }
+
+    public void EnableDefaultCollider()
+    {
+        this.defaultCollider.enabled = true;
+        this.handCollider.enabled = false;
+        this.tableCollider.enabled = false;
+    }
+
+    public void EnableHandCollider()
+    {
+        this.defaultCollider.enabled = false;
+        this.handCollider.enabled = true;
+        this.tableCollider.enabled = false;
+    }
+
+    public void EnableTableCollider()
+    {
+        this.defaultCollider.enabled = false;
+        this.handCollider.enabled = false;
+        this.tableCollider.enabled = true;
+    }
+    
+    public void Select()
+    {
+        IsSelected = true;
+        this.selectedGlowObject.SetActive(true);
+        this.overGlowObject.SetActive(false);
+
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.SelectedHighlightOn();
+        }
+    }
+
+    public void Unselect()
+    {
+        IsSelected = false;
+        this.selectedGlowObject.SetActive(false);
+
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.SelectedHighlightOff();
+        }
+    }
+
+    public void OverHighlightOn()
+    {
+        if (!IsSelected)
+        {
+            this.overGlowObject.SetActive(true);
+            this.UnitDisplay.OverHighlightOn();
+        }
+    }
+
+    public void OverHighlightOff()
+    {
+        if (!IsSelected)
+        {
+            this.overGlowObject.SetActive(false);
+            this.UnitDisplay.OverHighlightOff();
+        }
+    }
+
+    private void OnLeftMouseClicked()
+    {
+        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
+    }
+
+    private void OnRightMouseClicked()
+    {
+        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
+    }
+
+    public void UpdateZIndex()
+    {
+        Vector3 position = transform.localPosition;
+        float z = (float)(position.x * 0.001);
+
+        if (IsZoomed)
+        {
+            z = -20;
+        }
+
+        this.transform.localPosition = new Vector3(position.x, position.y, z);
+    }
+
+    public void Shake()
+    {
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.Shake();
+        }
+    }
+
+    public void ShowAbilities()
+    {
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.ShowAbilities();
+        }
+    }
+
+    public void HideAbilities()
+    {
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.HideAbilities();
+        }
+    }
+
+    private IEnumerator LoadSprite()
+    {
+        WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
+        yield return www;
+
+        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
+
+        artwork.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    private void CheckRightMouseDown()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+            if (hit && hit.collider.gameObject == this.gameObject)
+            {
+                OnRightMouseClicked();
+            }
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        OnLeftMouseClicked();
+    }
+
+    private void OnMouseEnter()
+    {
+        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
+    }
+
+    private void OnMouseExit()
+    {
+        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
 
     private void FillDescription()
@@ -201,120 +359,11 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Ricochet\n";
         }
+        if (this.cardData.abilities.healing != null)
+        {
+            descriptionText += "Healing " + this.cardData.abilities.healing.heal + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
-    }
-
-    void CheckRightMouseDown()
-    {
-        if (Input.GetMouseButtonDown(1))
-        {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
-
-            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
-            if (hit && hit.collider.gameObject == this.gameObject)
-            {
-                OnRightMouseClicked();
-            }
-        }
-    }
-
-    void OnMouseDown()
-    {
-        OnLeftMouseClicked();
-    }
-
-    void OnMouseEnter()
-    {
-        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
-    }
-
-    void OnMouseExit()
-    {
-        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
-    }
-    
-    public void SelectedHighlightOn()
-    {
-        IsSelected = true;
-        this.selectedGlowObject.SetActive(true);
-        this.overGlowObject.SetActive(false);
-
-        if (this.UnitDisplay)
-        {
-            this.UnitDisplay.DisableTeamColor();
-        }
-    }
-
-    public void SelectedHighlightOff()
-    {
-        IsSelected = false;
-        this.selectedGlowObject.SetActive(false);
-
-        if (this.UnitDisplay)
-        {
-            this.UnitDisplay.EnableTeamColor();
-        }
-
-    }
-
-    public void OverHighlightOn()
-    {
-        if (!IsSelected)
-        {
-            this.overGlowObject.SetActive(true);
-            this.UnitDisplay.DisableTeamColor();
-        }
-    }
-
-    public void OverHighlightOff()
-    {
-        if (!IsSelected)
-        {
-            this.overGlowObject.SetActive(false);
-            this.UnitDisplay.EnableTeamColor();
-        }
-    }
-
-    private void OnLeftMouseClicked()
-    {
-        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
-    }
-
-    private void OnRightMouseClicked()
-    {
-        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
-    }
-
-    public void UpdateZIndex()
-    {
-        Vector3 position = transform.localPosition;
-        float z = (float)(position.x * 0.001);
-
-        if (IsZoomed)
-        {
-            z = -20;
-        }
-
-        this.transform.localPosition = new Vector3(position.x, position.y, z);
-    }
-
-    public void Shake()
-    {
-        if (this.UnitDisplay)
-        {
-            this.UnitDisplay.Shake();
-        }
-    }
-
-    public IEnumerator LoadSprite()
-    {
-        WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
-        yield return www;
-
-        Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
-
-        artwork.GetComponent<SpriteRenderer>().sprite = sprite;
     }
 }

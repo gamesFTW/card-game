@@ -18,21 +18,21 @@ public class SelectingPushTargetState : SelectingState
 
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
 
-        this.Select(attackedSelectedUnit);
+        this.attackerSelectedUnit.CardDisplay.Select();
     }
 
     protected override void Disable()
     {
         base.Disable();
-        this.boardCreator.RemoveAllTileBlinks();
+        this.boardCreator.RemoveAllBlinks();
 
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
 
     protected override void EnableNoSelectionsState()
     {
-        this.Unselect(this.attackerSelectedUnit);
-        this.Unselect(this.attackedSelectedUnit);
+        this.attackerSelectedUnit.CardDisplay.Unselect();
+        this.attackedSelectedUnit.CardDisplay.Unselect();
 
         this.Disable();
         this.states.noSelectionsState.Enable();

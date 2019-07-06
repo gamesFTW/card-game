@@ -14,7 +14,8 @@ public class OwnUnitSelectedState : SelectingState
 
         this.selectedUnit = selectedUnit;
 
-        this.Select(selectedUnit);
+        selectedUnit.CardDisplay.Select();
+        selectedUnit.ShowAbilities();
 
         this.boardCreator.ShowPathReach(selectedUnit);
 
@@ -22,6 +23,7 @@ public class OwnUnitSelectedState : SelectingState
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
+        Unibus.Subscribe<AbilityActivated>(UnitDisplay.ABILITY_ACTIVATED, OnAbilityActivated);
 
         if (selectedUnit.CardData.abilities.range != null)
         {
@@ -33,17 +35,19 @@ public class OwnUnitSelectedState : SelectingState
     protected override void Disable()
     {
         base.Disable();
-        this.boardCreator.RemoveAllTileBlinks();
+        this.boardCreator.RemoveAllBlinks();
+        selectedUnit.HideAbilities();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+        Unibus.Unsubscribe<AbilityActivated>(UnitDisplay.ABILITY_ACTIVATED, OnAbilityActivated);
     }
 
     protected override void EnableNoSelectionsState()
     {
-        this.Unselect(this.selectedUnit);
+        this.selectedUnit.CardDisplay.Unselect();
         Disable();
         this.states.noSelectionsState.Enable();
     }
@@ -64,7 +68,7 @@ public class OwnUnitSelectedState : SelectingState
 
     private void ChangeSelectedToAnotherAlly(UnitDisplay unitDisplay)
     {
-        this.Unselect(this.selectedUnit);
+        this.selectedUnit.CardDisplay.Unselect();
         this.Disable();
         this.states.ownUnitSelectedState.Enable(unitDisplay);
     }
@@ -79,6 +83,12 @@ public class OwnUnitSelectedState : SelectingState
     {
         this.Disable();
         this.states.selectingRicochetTargetState.Enable(this.selectedUnit, unitDisplay);
+    }
+
+    private void EnableSelectingHealingTargetState(HealingAbility ability)
+    {
+        this.Disable();
+        this.states.selectingHealingTargetState.Enable(this.selectedUnit, ability);
     }
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
@@ -113,14 +123,22 @@ public class OwnUnitSelectedState : SelectingState
     {
         if (!unit.CardDisplay.IsAlly)
         {
-            this.boardCreator.RemoveAllTileBlinks();
+            this.boardCreator.RemoveAllBlinks();
             this.boardCreator.ShowRangeAttackReach(this.selectedUnit, unit);
         }
     }
 
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
-        this.boardCreator.RemoveAllTileBlinks();
+        this.boardCreator.RemoveAllBlinks();
         this.boardCreator.ShowPathReach(this.selectedUnit);
+    }
+
+    private void OnAbilityActivated(AbilityActivated abilityActivated)
+    {
+        if (abilityActivated.ability is HealingAbility)
+        {
+            this.EnableSelectingHealingTargetState(abilityActivated.ability as HealingAbility);
+        }
     }
 }

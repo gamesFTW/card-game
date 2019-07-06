@@ -19,6 +19,7 @@ public class PlayerHandDisplay : MonoBehaviour
         {
             card.ZoomIn(2f);
             card.transform.position += new Vector3(0, 3.4F, 0);
+            card.EnableHandCollider();
             //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
         }
     }
@@ -29,6 +30,7 @@ public class PlayerHandDisplay : MonoBehaviour
         {
             card.ZoomOut();
             card.transform.position -= new Vector3(0, 3.4F, 0);
+            card.EnableDefaultCollider();
             //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
         }
     }

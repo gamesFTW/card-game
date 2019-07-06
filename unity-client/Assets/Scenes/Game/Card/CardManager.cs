@@ -116,6 +116,28 @@ public class CardManager : MonoBehaviour
         Unibus.Dispatch(AudioController.CARD_MOVED, cardDisplay);
     }
 
+    public void CardAfterHealing(ServerActions.CardAfterHealing card)
+    {
+        var cardTransform = cardIdToCards[card.id];
+
+        CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
+
+        if (card.isTapped)
+        {
+            cardDisplay.Tap();
+        }
+
+        if (card.newHp != null)
+        {
+            cardDisplay.CurrentHp = (int)card.newHp;
+        }
+
+        if (card.currentMovingPoints != null)
+        {
+            cardDisplay.CurrentMovingPoints = (int)card.currentMovingPoints;
+        }
+    }
+
     public void CardWasInBattle(ServerActions.CardAfterBattle card, bool isAttacker)
     {
         var cardTransform = cardIdToCards[card.id];
@@ -156,7 +178,6 @@ public class CardManager : MonoBehaviour
         {
             Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
         }
-        
     }
 
     private void KillUnit(CardDisplay cardDisplay)

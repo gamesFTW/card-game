@@ -48,37 +48,50 @@ public class Abilities
     public FlankingAbility flanking;
     public PushAbility push;
     public Boolean ricochet;
+    public HealingAbility healing;
 }
 
 [Serializable]
-public class RangeAbility
+public class Ability
+{
+}
+
+[Serializable]
+public class RangeAbility : Ability
 {
     public int range;
     public Boolean blockedInBeginningOfTurn;
 }
 
 [Serializable]
-public class ArmoredAbility
+public class ArmoredAbility : Ability
 {
     public int armor;
 }
 
 [Serializable]
-public class SpeedAbility
+public class SpeedAbility : Ability
 {
     public int speed;
 }
 
 [Serializable]
-public class FlankingAbility
+public class FlankingAbility : Ability
 {
     public int damage;
 }
 
 [Serializable]
-public class PushAbility
+public class PushAbility : Ability
 {
     public int range;
+}
+
+[Serializable]
+public class HealingAbility : Ability
+{
+    public int range;
+    public int heal;
 }
 
 [Serializable]
@@ -199,5 +212,18 @@ public class ServerApi
         };
 
         await HttpRequest.Post(Config.GAME_SERVER_URL + "attackCard", values);
+    }
+
+    public async static Task HealCard(HealCardAction action)
+    {
+        var values = new
+        {
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
+            action.healerCardId,
+            action.healedCardId
+        };
+
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "healCard", values);
     }
 }

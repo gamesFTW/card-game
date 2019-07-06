@@ -18,7 +18,7 @@ public class SelectingRicochetTargetState : SelectingState
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
 
-        this.Select(attackedSelectedUnit);
+        attackedSelectedUnit.CardDisplay.Select();
     }
 
     protected override void Disable()
@@ -31,8 +31,8 @@ public class SelectingRicochetTargetState : SelectingState
 
     protected override void EnableNoSelectionsState()
     {
-        this.Unselect(this.attackerSelectedUnit);
-        this.Unselect(this.attackedSelectedUnit);
+        this.attackerSelectedUnit.CardDisplay.Unselect();
+        this.attackedSelectedUnit.CardDisplay.Unselect();
 
         this.Disable();
         this.states.noSelectionsState.Enable();
