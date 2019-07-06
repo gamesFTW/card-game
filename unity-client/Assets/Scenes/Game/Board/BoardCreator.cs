@@ -158,11 +158,14 @@ public class BoardCreator : MonoBehaviour
         List<Point> positionsInRadius = new List<Point>();
         foreach (var hero in this.allyHeroes)
         {
-            Point position = this.GetUnitsPosition(hero.UnitDisplay);
+            if (hero.cardData.alive)
+            {
+                Point position = this.GetUnitsPosition(hero.UnitDisplay);
 
-            List<Point> p = FindPointsInRadius(position, 2);
+                List<Point> p = FindPointsInRadius(position, 2);
 
-            positionsInRadius.AddRange(p);
+                positionsInRadius.AddRange(p);
+            }
         }
         
         List<Point> positions = new List<Point>();
@@ -193,6 +196,7 @@ public class BoardCreator : MonoBehaviour
     {
         Point attackerPosition = GetUnitsPosition(attacker);
         var radiusPoints = this.FindPointsInRadius(attackerPosition, attacker.CardData.abilities.range.range);
+        radiusPoints.RemoveAt(0);
 
         var points = new List<Point>();
         foreach(var radiusPoint in radiusPoints)
@@ -357,6 +361,7 @@ public class BoardCreator : MonoBehaviour
     private bool PositionAdjacentToEnemy(Point point)
     {
         List<Point> points = this.FindPointsInRadius(point, 1);
+        points.RemoveAt(0);
 
         foreach (var p in points)
         {

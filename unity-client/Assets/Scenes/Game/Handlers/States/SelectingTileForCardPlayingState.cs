@@ -15,10 +15,13 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
     private bool enabled = false;
     private bool skipedFirstCheckClickOutOfAnyCard = false;
 
+    private OverHighlightActivity overHighlightActivity;
+
     public SelectingTileForCardPlayingState(PlayerActionsOnBoardStates states, BoardCreator boardCreator)
     {
         this.states = states;
         this.boardCreator = boardCreator;
+        this.overHighlightActivity = new OverHighlightActivity(boardCreator);
     }
 
     public void Enable(CardDisplay card)
@@ -28,6 +31,7 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.SelectedCard = card;
         card.Select();
         this.boardCreator.ShowPlacesToCastCreatures();
+        this.overHighlightActivity.Enable();
 
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);
@@ -73,6 +77,7 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.SelectedCard.Unselect();
         this.SelectedCard = null;
         this.boardCreator.RemoveAllBlinks();
+        this.overHighlightActivity.Disable();
 
         Unibus.Unsubscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);
