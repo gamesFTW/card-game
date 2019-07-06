@@ -40,6 +40,7 @@ public class CardDisplay : MonoBehaviour
 
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
+    private GameObject descritionContainer;
 
     private BoxCollider2D defaultCollider;
     private BoxCollider2D handCollider;
@@ -99,6 +100,7 @@ public class CardDisplay : MonoBehaviour
 
         this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
         this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
+        this.descritionContainer = this.transform.Find("Front").Find("DescritionContainer").gameObject;
 
         this.FillDescription();
     }
@@ -136,7 +138,7 @@ public class CardDisplay : MonoBehaviour
     public void Tap()
     {
         cardData.tapped = true;
-        this.transform.DORotate(new Vector3(0, 0, -90), 1);
+        this.transform.DORotate(new Vector3(0, 0, -10), 1);
 
         this.Shake();
     }
@@ -213,6 +215,8 @@ public class CardDisplay : MonoBehaviour
 
     public void OverHighlightOn()
     {
+        this.ShowDescription();
+
         if (!IsSelected)
         {
             this.overGlowObject.SetActive(true);
@@ -222,21 +226,13 @@ public class CardDisplay : MonoBehaviour
 
     public void OverHighlightOff()
     {
+        this.HideDescription();
+
         if (!IsSelected)
         {
             this.overGlowObject.SetActive(false);
             this.UnitDisplay.OverHighlightOff();
         }
-    }
-
-    private void OnLeftMouseClicked()
-    {
-        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
-    }
-
-    private void OnRightMouseClicked()
-    {
-        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
     }
 
     public void UpdateZIndex()
@@ -276,6 +272,26 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    private void ShowDescription()
+    {
+        this.descritionContainer.SetActive(true);
+    }
+
+    private void HideDescription()
+    {
+        this.descritionContainer.SetActive(false);
+    }
+
+    private void OnLeftMouseClicked()
+    {
+        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
+    }
+
+    private void OnRightMouseClicked()
+    {
+        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
+    }
+
     private IEnumerator LoadSprite()
     {
         WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
@@ -308,11 +324,13 @@ public class CardDisplay : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        this.ShowDescription();
         Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     private void OnMouseExit()
     {
+        this.HideDescription();
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
 
