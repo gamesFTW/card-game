@@ -35,8 +35,8 @@ class MeleeAttackService {
       isAttackerFlankAttacked = this.checkIsAttackerFlankAttacked(attackerCard, attackedCard, board, attackerPlayerTableCards);
     }
 
-    let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard, isAttackerFlankAttacked);
-    let attackedDmg = BaseAttackService.calcDamage(attackedCard, attackerCard);
+    let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard, attackedPlayerTableCards, board, isAttackerFlankAttacked);
+    let attackedDmg = BaseAttackService.calcDamage(attackedCard, attackerCard, attackerPlayerTableCards, board);
 
     if (isAttackerCardHaveFirstStrike && isAttackedCardHaveFirstStrike ||
       !isAttackerCardHaveFirstStrike && !isAttackedCardHaveFirstStrike ||
@@ -117,7 +117,7 @@ class MeleeAttackService {
       }
 
       if (piercingTargetCard) {
-        let attackerDmg = BaseAttackService.calcDamage(attackerCard, piercingTargetCard);
+        let attackerDmg = BaseAttackService.calcDamage(attackerCard, piercingTargetCard, attackedPlayerTableCards, board);
 
         piercingTargetCard.takeDamage(attackerDmg);
 

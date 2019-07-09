@@ -49,7 +49,8 @@ enum CardEventType {
   CARD_MOVED = 'Card:CardMoved',
   CARD_HEALED = 'Card:CardHealed',
   CARD_BLOCKED_RANGE_ABILITY = 'Card:CardBlockedRangeAbility',
-  CARD_UNBLOCKED_RANGE_ABILITY = 'Card:CardUnblockedRangeAbility'
+  CARD_UNBLOCKED_RANGE_ABILITY = 'Card:CardUnblockedRangeAbility',
+  CARD_USE_BLOCK_ABILITY = 'Card:CARD_USE_BLOCK_ABILITY'
 }
 
 enum BoardEventType {

@@ -5,7 +5,7 @@ import { Area } from '../area/Area';
 import { DomainError } from '../../infr/DomainError';
 
 class BaseAttackService {
-  public static calcDamage (attackerCard: Card, attackedCard: Card, isAttackerFlankAttacked: boolean = false): number {
+  public static calcDamage (attackerCard: Card, attackedCard: Card, attackedPlayerTableCards: Card[], board: Board, isAttackerFlankAttacked: boolean = false): number {
     let attackerFlankingBonus = 0;
     if (isAttackerFlankAttacked) {
       attackerFlankingBonus = attackerCard.abilities.flanking.damage;
@@ -14,6 +14,10 @@ class BaseAttackService {
     let attackerDmg = (attackerCard.damage + attackerFlankingBonus) - attackedCard.armor;
 
     attackerDmg = attackerDmg >= 0 ? attackerDmg : 0;
+
+    if (attackerDmg > 0) {
+      attackerDmg = this.tryBlockDamage(attackerDmg, attackedCard, attackedPlayerTableCards, board);
+    }
 
     return attackerDmg;
   }
@@ -31,6 +35,30 @@ class BaseAttackService {
     }
 
     board.moveUnit(attackedCard, pushPosition, areas);
+  }
+
+  private static tryBlockDamage (attackerDmg: number, attackedCard: Card, attackedPlayerTableCards: Card[], board: Board): number {
+    let cardsWithBlockAbility = attackedPlayerTableCards.filter(card => card.abilities.block && !card.abilities.block.usedInThisTurn);
+
+    let cardsWhoCanBlock = [];
+    for (let card of cardsWithBlockAbility) {
+      let distance = board.calcDistanceBetweenUnits(attackedCard, card);
+
+      if (card.abilities.block.range >= distance) {
+        cardsWhoCanBlock.push(card);
+      }
+    }
+
+    for (let card of cardsWhoCanBlock) {
+      if (attackerDmg > 0) {
+        attackerDmg -= card.abilities.block.blockingDamage;
+        card.block();
+      } else {
+        return 0;
+      }
+    }
+
+    return attackerDmg;
   }
 }
 

@@ -30,6 +30,11 @@ interface Abilities {
     range: number;
     heal: number;
   };
+  block?: {
+    range: number;
+    blockingDamage: number;
+    usedInThisTurn: boolean
+  };
 }
 
 interface CardData {

@@ -49,6 +49,7 @@ public class Abilities
     public PushAbility push;
     public Boolean ricochet;
     public HealingAbility healing;
+    public BlockAbility block;
 }
 
 [Serializable]
@@ -92,6 +93,13 @@ public class HealingAbility : Ability
 {
     public int range;
     public int heal;
+}
+
+[Serializable]
+public class BlockAbility : Ability
+{
+    public int range;
+    public int blockingDamage;
 }
 
 [Serializable]

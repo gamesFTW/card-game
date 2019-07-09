@@ -46,7 +46,6 @@ class Card extends Entity {
   }
 
   public create (cardCreationData: CardCreationData): void {
-    console.log(cardCreationData);
     let id = this.generateId();
 
     this.applyEvent(new Event<CardData>(
@@ -78,6 +77,8 @@ class Card extends Entity {
   public onEndOfTurn (): void {
     if (this.state.alive) {
       this.addDefaultMovingPoints();
+
+      this.resetAbilities();
     }
 
     if (this.tapped) {
@@ -126,6 +127,20 @@ class Card extends Entity {
     if (newHp <= 0) {
       this.killCard();
     }
+  }
+
+  public block (): void {
+    if (!this.abilities.block) {
+      throw new Error(`Card ${this.state.id} doesn't have block ability`);
+    }
+
+    let abilities = lodash.cloneDeep(this.state.abilities);
+    abilities.block.usedInThisTurn = true;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_USE_BLOCK_ABILITY,
+      {id: this.id, abilities}
+    ));
   }
 
   public heal (): void {
@@ -177,6 +192,19 @@ class Card extends Entity {
       CardEventType.CARD_UNBLOCKED_RANGE_ABILITY,
       {id: this.id, abilities}
     ));
+  }
+
+  private resetAbilities (): void {
+    if (this.abilities.block) {
+      let abilities = lodash.cloneDeep(this.state.abilities);
+
+      abilities.block.usedInThisTurn = false;
+
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_USE_BLOCK_ABILITY,
+        {id: this.id, abilities}
+      ));
+    }
   }
 
   private addDefaultMovingPoints (): void {

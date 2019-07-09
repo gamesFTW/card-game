@@ -381,6 +381,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Healing " + this.cardData.abilities.healing.heal + " (range " + this.cardData.abilities.healing.range + ")\n";
         }
+        if (this.cardData.abilities.block != null)
+        {
+            descriptionText += "Block " + this.cardData.abilities.block.blockingDamage + " (range " + this.cardData.abilities.block.range + ")\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

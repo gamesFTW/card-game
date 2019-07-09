@@ -99,6 +99,16 @@ class Board extends Entity {
     return false;
   }
 
+  public calcDistanceBetweenUnits (firstCard: Card, secondCard: Card): number {
+    let firstCardPoint = this.getPositionOfUnit(firstCard);
+    let secondCardPoint = this.getPositionOfUnit(secondCard);
+
+    let xDistance = Math.abs(firstCardPoint.x - secondCardPoint.x);
+    let yDistance = Math.abs(firstCardPoint.y - secondCardPoint.y);
+
+    return xDistance + yDistance;
+  }
+
   public checkPositionsAdjacency (firstPosition: Point, secondPosition: Point): boolean {
     let xDistance = Math.abs(firstPosition.x - secondPosition.x);
     let yDistance = Math.abs(firstPosition.y - secondPosition.y);

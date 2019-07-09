@@ -42,7 +42,7 @@ class RangeAttackService {
 
     attackerCard.tap();
 
-    let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard);
+    let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard, attackedPlayerTableCards, board);
 
     attackedCard.takeDamage(attackerDmg);
 
@@ -130,7 +130,7 @@ class RangeAttackService {
       throw new DomainError(`Card ${attackedCard.id} and ${ricochetedAt} is not adjacent.`);
     }
 
-    let attackerDmg = BaseAttackService.calcDamage(attackerCard, ricochetTargetCard);
+    let attackerDmg = BaseAttackService.calcDamage(attackerCard, ricochetTargetCard, attackedPlayerTableCards, board);
 
     ricochetTargetCard.takeDamage(attackerDmg);
 
