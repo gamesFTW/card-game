@@ -100,6 +100,7 @@ public class BlockAbility : Ability
 {
     public int range;
     public int blockingDamage;
+    public bool usedInThisTurn;
 }
 
 [Serializable]

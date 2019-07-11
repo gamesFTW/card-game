@@ -66,6 +66,16 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public bool UsedInThisTurnBlockAbility
+    {
+        get { return cardData.abilities.block.usedInThisTurn; }
+        set
+        {
+            cardData.abilities.block.usedInThisTurn = value;
+            this.UnitDisplay.RedrawAbilisiesStatus();
+        }
+    }
+
     public bool IsAlly
     {
         get { return this.cardData.ownerId == GameState.mainPlayerId; }

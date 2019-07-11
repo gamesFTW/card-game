@@ -30,6 +30,7 @@ public class UnitDisplay : MonoBehaviour
     private GameObject redBack;
     private GameObject selectedGlowObject;
     private GameObject overGlowObject;
+    private GameObject abilitiesStatus;
 
     private GameObject abilities;
 
@@ -45,9 +46,13 @@ public class UnitDisplay : MonoBehaviour
         this.selectedGlowObject = this.transform.Find("SelectedGlow").gameObject;
         this.overGlowObject = this.transform.Find("OverGlow").gameObject;
 
+        this.abilitiesStatus = this.transform.Find("AbilitiesStatus").gameObject;
+
         this.EnableTeamColor();
         this.EnableHeroColor();
         this.CheckForActivatedAbilities();
+
+        this.RedrawAbilisiesStatus();
     }
 
     // Update is called once per frame
@@ -168,6 +173,31 @@ public class UnitDisplay : MonoBehaviour
         {
             this.abilities.SetActive(false);
         }
+    }
+
+    public void RedrawAbilisiesStatus()
+    {
+        foreach (Transform child in this.abilitiesStatus.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        if (this.cardData.abilities.block != null)
+        {
+            if (this.cardData.abilities.block.usedInThisTurn == false)
+            {
+                this.RedrawAbilityStatus("SpellBook01_48");
+            }
+        }
+    }
+
+    private void RedrawAbilityStatus(string path)
+    {
+        GameObject abilityStatusPrefab = Resources.Load<GameObject>("AbilityStatus");
+        GameObject abilityStatus = Instantiate<GameObject>(abilityStatusPrefab, this.abilitiesStatus.transform);
+        abilityStatus.transform.SetParent(this.abilitiesStatus.transform);
+
+        Sprite abilitySprite = Resources.Load<Sprite>("Abilities/" + path);
+        abilityStatus.transform.Find("Art").GetComponent<SpriteRenderer>().sprite = abilitySprite;
     }
 
     private void CheckForActivatedAbilities()

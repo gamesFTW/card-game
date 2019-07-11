@@ -25,6 +25,7 @@ namespace ServerActions
         public string endedPlayerId;
         public string startedPlayerId;
         public MovingPoints[] cardsMovingPointsUpdated;
+        public BlockAbilityUpdate[] cardsBlockAbilityUpdated;
         public string[] cardsUntapped;
         public string[] cardsDrawn;
     }
@@ -33,6 +34,12 @@ namespace ServerActions
     {
         public string id;
         public int currentMovingPoints;
+    }
+
+    public class BlockAbilityUpdate
+    {
+        public string id;
+        public bool usedInThisTurn;
     }
 
     [Serializable]
@@ -89,6 +96,7 @@ namespace ServerActions
         public bool killed;
         public int? currentMovingPoints;
         public Point pushedTo;
+        public bool? usedInThisTurnBlockAbility;
     }
 
     [Serializable]
@@ -156,6 +164,7 @@ public class ReceiverFromServer : MonoBehaviour
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
         cardManger.UpdateMovingPoints(action.cardsMovingPointsUpdated);
+        cardManger.UpdateBlockAbility(action.cardsBlockAbilityUpdated);
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
 

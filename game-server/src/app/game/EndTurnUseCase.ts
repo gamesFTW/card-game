@@ -22,6 +22,7 @@ interface EndTurnAction {
   endedPlayerId?: string;
   startedPlayerId?: string;
   cardsMovingPointsUpdated?: Array<{id: string; currentMovingPoints: number}>;
+  cardsBlockAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
   cardsUntapped?: Array<EntityId>;
   cardsDrawn?: Array<EntityId>;
 }
@@ -30,6 +31,7 @@ class EndTurnUseCase extends UseCase {
   protected action: EndTurnAction = {
     type: 'EndTurnAction',
     cardsMovingPointsUpdated: [],
+    cardsBlockAbilityUpdated: [],
     cardsUntapped: [],
     cardsDrawn: []
   };
@@ -70,6 +72,7 @@ class EndTurnUseCase extends UseCase {
     this.entities.endingTurnPlayerTableCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
+      card.addEventListener(CardEventType.CARD_USE_BLOCK_ABILITY, this.onCardUseBlockAbility);
     });
 
     this.entities.endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);
@@ -96,7 +99,12 @@ class EndTurnUseCase extends UseCase {
 
   @boundMethod
   private onCardAddedCurrentMovingPoints (event: Event<CardData>): void {
-    this.action.cardsMovingPointsUpdated.push({id: event.data.id, currentMovingPoints: event.data.currentMovingPoints})
+    this.action.cardsMovingPointsUpdated.push({id: event.data.id, currentMovingPoints: event.data.currentMovingPoints});
+  }
+
+  @boundMethod
+  private onCardUseBlockAbility (event: Event<CardData>): void {
+    this.action.cardsBlockAbilityUpdated.push({id: event.data.id, usedInThisTurn: event.data.abilities.block.usedInThisTurn});
   }
 
   @boundMethod

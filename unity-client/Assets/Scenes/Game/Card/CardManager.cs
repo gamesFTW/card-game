@@ -66,6 +66,16 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void UpdateBlockAbility(ServerActions.BlockAbilityUpdate[] blockAbilitiesUpdates)
+    {
+        foreach (ServerActions.BlockAbilityUpdate blockAbilityUpdate in blockAbilitiesUpdates)
+        {
+            var cardId = blockAbilityUpdate.id;
+            var cardTransform = cardIdToCards[cardId];
+            cardTransform.GetComponent<CardDisplay>().UsedInThisTurnBlockAbility = blockAbilityUpdate.usedInThisTurn;
+        }
+    }
+
     public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];
@@ -172,6 +182,11 @@ public class CardManager : MonoBehaviour
         if (card.pushedTo != null)
         {
             boardCreator.PushUnit(cardDisplay, card.pushedTo);
+        }
+
+        if (card.usedInThisTurnBlockAbility != null)
+        {
+            cardDisplay.UsedInThisTurnBlockAbility = (bool)card.usedInThisTurnBlockAbility;
         }
 
         if (isAttacker)

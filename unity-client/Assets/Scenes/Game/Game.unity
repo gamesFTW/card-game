@@ -391,7 +391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 93866545}
   - component: {fileID: 93866546}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CardsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 385371942}
   - component: {fileID: 385371941}
   - component: {fileID: 385371943}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: OpponentDeck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -782,7 +782,7 @@ GameObject:
   - component: {fileID: 542082833}
   - component: {fileID: 542082832}
   - component: {fileID: 542082834}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PlayerManaPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -865,7 +865,7 @@ GameObject:
   - component: {fileID: 569730414}
   - component: {fileID: 569730413}
   - component: {fileID: 569730415}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PlayerGraveyard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -949,7 +949,7 @@ GameObject:
   - component: {fileID: 593345986}
   - component: {fileID: 593345988}
   - component: {fileID: 593345989}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PlayerTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1041,7 +1041,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 719303132}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Stacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1090,7 +1090,7 @@ GameObject:
   - component: {fileID: 796229648}
   - component: {fileID: 796229650}
   - component: {fileID: 796229651}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: OpponentTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1251,7 +1251,7 @@ GameObject:
   - component: {fileID: 1230668943}
   - component: {fileID: 1230668942}
   - component: {fileID: 1230668944}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: OpponentManaPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1643,7 +1643,7 @@ GameObject:
   - component: {fileID: 1572573646}
   - component: {fileID: 1572573645}
   - component: {fileID: 1572573647}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PlayerDeck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1726,7 +1726,7 @@ GameObject:
   - component: {fileID: 1575736522}
   - component: {fileID: 1575736521}
   - component: {fileID: 1575736523}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: OpponentGraveyard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1809,7 +1809,7 @@ GameObject:
   - component: {fileID: 1619247068}
   - component: {fileID: 1619247067}
   - component: {fileID: 1619247069}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: OpponentHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2253,7 +2253,7 @@ GameObject:
   - component: {fileID: 1940513867}
   - component: {fileID: 1940513869}
   - component: {fileID: 1940513870}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: PlayerHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
