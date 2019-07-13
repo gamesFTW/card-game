@@ -132,6 +132,7 @@ public class AreaData
     public int x;
     public int y;
     public string type;
+    public string subtype;
     public bool canUnitsWalkThoughtIt;
     public bool canUnitsShootThoughtIt;
 }

@@ -23,14 +23,18 @@ public class AreaDisplay : MonoBehaviour
     {
         Sprite sprite = null;
 
-        if (areaData.type == "lake") {
-            sprite = Resources.Load<Sprite>("Sprites/Areas/lake-micro");
+        if (this.areaData.type == "lake") {
+            sprite = Resources.Load<Sprite>("Down" + this.areaData.subtype);
         }
-        if (areaData.type == "mountain") {
-            sprite = Resources.Load<Sprite>("Sprites/Areas/hollow-micro");
+        if (this.areaData.type == "mountain") {
+            sprite = Resources.Load<Sprite>("Stone" + this.areaData.subtype);
         }
-        if (areaData.type == "windWall") {
-            sprite = Resources.Load<Sprite>("Sprites/Areas/windwall-micro");
+        if (this.areaData.type == "windWall")
+        {
+            sprite = Resources.Load<Sprite>("Bushes" + this.areaData.subtype + "-back");
+
+            var spriteFront = Resources.Load<Sprite>("Bushes" + this.areaData.subtype + "-front");
+            this.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = spriteFront;
         }
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();

@@ -4,6 +4,7 @@ import { EntityId, EntityState } from '../../infr/Entity';
 interface AreaData {
   id: EntityId;
   type?: AreaType;
+  subtype?: string;
   canUnitsWalkThoughtIt?: boolean;
   canUnitsShootThoughtIt?: boolean;
 }
@@ -16,6 +17,8 @@ enum AreaType {
 
 class AreaState extends EntityState implements AreaData {
   public id: EntityId;
+  public type: AreaType;
+  public subtype: string;
   public canUnitsWalkThoughtIt: boolean;
   public canUnitsShootThoughtIt: boolean;
 
