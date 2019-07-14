@@ -60,6 +60,11 @@ public class AbilityDisplay : MonoBehaviour
             sprite = Resources.Load<Sprite>("Abilities/SpellBook01_06");
         }
 
+        if (this._ability is ManaAbility)
+        {
+            sprite = Resources.Load<Sprite>("Abilities/SpellBook01_102");
+        }
+
         var abilityImage = this.transform.Find("AbilityMask").Find("AbilityImage").gameObject;
         SpriteRenderer spriteRenderer = abilityImage.GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = sprite;

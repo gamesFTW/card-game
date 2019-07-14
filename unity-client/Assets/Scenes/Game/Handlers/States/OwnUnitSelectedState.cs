@@ -59,6 +59,13 @@ public class OwnUnitSelectedState : SelectingState
         this.EnableNoSelectionsState();
     }
 
+    private void UseManaAbility()
+    {
+        this.actionEmmiter.EmmitCardUseManaAbilityAction(this.selectedUnit);
+
+        this.EnableNoSelectionsState();
+    }
+
     private void MoveUnit(Point point)
     {
         this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
@@ -139,6 +146,11 @@ public class OwnUnitSelectedState : SelectingState
         if (abilityActivated.ability is HealingAbility)
         {
             this.EnableSelectingHealingTargetState(abilityActivated.ability as HealingAbility);
+        }
+
+        if (abilityActivated.ability is ManaAbility)
+        {
+            this.UseManaAbility();
         }
     }
 }

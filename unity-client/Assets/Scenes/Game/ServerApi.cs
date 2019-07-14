@@ -50,6 +50,7 @@ public class Abilities
     public Boolean ricochet;
     public HealingAbility healing;
     public BlockAbility block;
+    public ManaAbility mana;
 }
 
 [Serializable]
@@ -102,6 +103,12 @@ public class BlockAbility : Ability
     public int range;
     public int blockingDamage;
     public bool usedInThisTurn;
+}
+
+[Serializable]
+public class ManaAbility : Ability
+{
+    public int mana;
 }
 
 [Serializable]
@@ -236,5 +243,17 @@ public class ServerApi
         };
 
         await HttpRequest.Post(Config.GAME_SERVER_URL + "healCard", values);
+    }
+
+    public async static Task UseManaAbility(ManaAbilityCardAction action)
+    {
+        var values = new
+        {
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
+            action.cardId
+        };
+
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "useManaAbility", values);
     }
 }

@@ -36,6 +36,9 @@ interface Abilities {
     blockingDamage: number;
     usedInThisTurn: boolean
   };
+  mana?: {
+    mana: number;
+  };
 }
 
 interface CardData {

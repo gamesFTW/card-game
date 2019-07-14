@@ -87,6 +87,14 @@ namespace ServerActions
     }
 
     [Serializable]
+    public class CardUsedManaAbilityAction
+    {
+        public string playerId;
+        public string tappedCardId;
+        public string[] cardsUntapped;
+    }
+
+    [Serializable]
     public class CardAfterBattle
     {
         public string id;
@@ -157,6 +165,12 @@ public class ReceiverFromServer : MonoBehaviour
             SocketData<ServerActions.CardHealedAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardHealedAction>>(message);
             this.OnCardHealedAction(data.actions[index]);
         }
+
+        if (type == "CardUsedManaAbilityAction")
+        {
+            SocketData<ServerActions.CardUsedManaAbilityAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardUsedManaAbilityAction>>(message);
+            this.OnCardUsedManaAbilityAction(data.actions[index]);
+        }
     }
 
     public void OnEndTurnAction(ServerActions.EndTurnAction action)
@@ -200,5 +214,11 @@ public class ReceiverFromServer : MonoBehaviour
     {
         cardManger.CardAfterHealing(action.healerCard);
         cardManger.CardAfterHealing(action.healedCard);
+    }
+
+    public void OnCardUsedManaAbilityAction(ServerActions.CardUsedManaAbilityAction action)
+    {
+        cardManger.TapCards(action.playerId, new string[] { action.tappedCardId });
+        cardManger.UntapCards(action.playerId, action.cardsUntapped);
     }
 }

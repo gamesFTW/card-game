@@ -211,6 +211,12 @@ public class UnitDisplay : MonoBehaviour
             abilities.Add(this.cardData.abilities.healing);
         }
 
+        if (this.cardData.abilities.mana != null)
+        {
+            numberOfactivatedAbilities++;
+            abilities.Add(this.cardData.abilities.mana);
+        }
+
         if (numberOfactivatedAbilities == 1)
         {
             this.abilities = this.transform.Find("OneAbitily").gameObject;

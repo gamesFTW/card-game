@@ -6,6 +6,7 @@ import { PlayCardUseCase } from '../app/player/PlayCardUseCase';
 import { MoveCardUseCase } from '../app/player/MoveCardUseCase';
 import { AbilitiesParams, AttackCardUseCase } from '../app/player/AttackCardUseCase';
 import { HealCardUseCase } from '../app/player/HealCardUseCase';
+import { UseManaAbilityUseCase } from '../app/player/UseManaAbilityUseCase';
 
 const playerController = new Router();
 
@@ -77,6 +78,18 @@ playerController.post('/healCard', async (ctx) => {
 
   let healCard = new HealCardUseCase();
   await healCard.execute({gameId, playerId, healerCardId, healedCardId});
+
+  ctx.body = `Ok`;
+});
+
+playerController.post('/useManaAbility', async (ctx) => {
+  let gameId = ctx.request.body.gameId as EntityId;
+  // TODO: его нужно доставать из сессии
+  let playerId = ctx.request.body.playerId as EntityId;
+  let cardId = ctx.request.body.cardId as EntityId;
+
+  let useCase = new UseManaAbilityUseCase();
+  await useCase.execute({gameId, playerId, cardId});
 
   ctx.body = `Ok`;
 });

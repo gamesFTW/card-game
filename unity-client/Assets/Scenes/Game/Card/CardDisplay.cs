@@ -403,6 +403,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Block " + this.cardData.abilities.block.blockingDamage + " (range " + this.cardData.abilities.block.range + ")\n";
         }
+        if (this.cardData.abilities.mana != null)
+        {
+            descriptionText += "Mana " + this.cardData.abilities.mana.mana + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

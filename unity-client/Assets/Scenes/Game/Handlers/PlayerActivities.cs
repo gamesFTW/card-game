@@ -87,6 +87,7 @@ public class ActionEmmiter
     public static readonly string CARD_MOVE = "ActionEmmiter:CARD_MOVE";
     public static readonly string CARD_ATTACK = "ActionEmmiter:CARD_ATTACK";
     public static readonly string CARD_HEAL = "ActionEmmiter:CARD_HEAL";
+    public static readonly string CARD_USE_MANA_ABILITY = "ActionEmmiter:CARD_USE_MANA_ABILITY";
 
     public BoardCreator boardCreator;
 
@@ -147,6 +148,14 @@ public class ActionEmmiter
         {
             healerCardId = healerUnit.CardData.id,
             healedCardId = healedUnit.CardData.id
+        });
+    }
+
+    public void EmmitCardUseManaAbilityAction(UnitDisplay unit)
+    {
+        Unibus.Dispatch<ManaAbilityCardAction>(ActionEmmiter.CARD_USE_MANA_ABILITY, new ManaAbilityCardAction
+        {
+            cardId = unit.CardData.id
         });
     }
 }

@@ -147,7 +147,7 @@ class Player extends Entity {
     card.move(movePoints, path);
   }
 
-  public healCard (healerCard: Card, healedCard:Card, board: Board, opponent: Player): void {
+  public healCard (healerCard: Card, healedCard: Card, board: Board, opponent: Player): void {
     this.checkIfItHisTurn();
 
     const isHealerCardInTable = this.checkCardIn(healerCard, CardStack.TABLE);
@@ -172,6 +172,28 @@ class Player extends Entity {
 
     const hpHeal = healerCard.abilities.healing.heal;
     healedCard.healed(hpHeal);
+  }
+
+  public useManaAbility (card: Card, playerManaPoolCards: Card[]): void {
+    this.checkIfItHisTurn();
+
+    if (!card.abilities.mana) {
+      throw new Error(`Card ${this.state.id} doesn't have mana ability`);
+    }
+
+    const isCardInTable = this.checkCardIn(card, CardStack.TABLE);
+    if (!isCardInTable) {
+      throw new Error(`Card ${card.id} not located in table of player ${this.id}`);
+    }
+
+    card.tap();
+
+    let tappedManaPoolCards = playerManaPoolCards.filter(card => card.tapped);
+    if (tappedManaPoolCards.length > 0) {
+      let manaPoolCardsToUntap = tappedManaPoolCards.slice(0, card.abilities.mana.mana);
+
+      manaPoolCardsToUntap.forEach((card) => card.untap());
+    }
   }
 
   // TODO: это очень не правильно, данный метод находится не на своем уровне абстракции
