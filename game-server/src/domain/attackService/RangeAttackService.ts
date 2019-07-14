@@ -66,11 +66,16 @@ class RangeAttackService {
     const attackedCardPosition = board.getPositionOfUnit(attackedCard);
 
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
-    const range = Math.abs(attackerCardPosition.x - attackedCardPosition.x) + Math.abs(attackerCardPosition.y - attackedCardPosition.y);
-    const attackerRange = attackerCard.abilities.range.range;
+    const distanceToAttacked = Math.abs(attackerCardPosition.x - attackedCardPosition.x) + Math.abs(attackerCardPosition.y - attackedCardPosition.y);
+    const attackerMaxRange = attackerCard.abilities.range.range;
+    const attackerMinRangeRange = attackerCard.abilities.range.minRange | 0;
 
-    if (range > attackerRange) {
+    if (distanceToAttacked > attackerMaxRange) {
       throw new DomainError(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
+    }
+
+    if (distanceToAttacked < attackerMinRangeRange) {
+      throw new DomainError(`Unit ${attackerCard.id} to close to unit ${attackedCard.id} in range attack.`);
     }
 
     let attackedPlayerTableCardsIds = attackedPlayerTableCards.map((card) => card.id);

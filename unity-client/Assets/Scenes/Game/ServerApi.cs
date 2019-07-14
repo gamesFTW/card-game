@@ -61,6 +61,7 @@ public class Ability
 public class RangeAbility : Ability
 {
     public int range;
+    public int minRange;
     public Boolean blockedInBeginningOfTurn;
 }
 

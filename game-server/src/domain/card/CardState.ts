@@ -7,6 +7,7 @@ import { EntityId, EntityState } from '../../infr/Entity';
 interface Abilities {
   range?: {
     range: number;
+    minRange?: number;
     blockedInBeginningOfTurn: boolean;
   };
   firstStrike?: boolean;

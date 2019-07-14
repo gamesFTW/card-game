@@ -195,7 +195,7 @@ public class BoardCreator : MonoBehaviour
     public void ShowRangeAttackReach(UnitDisplay attacker, UnitDisplay attacked)
     {
         Point attackerPosition = GetUnitsPosition(attacker);
-        var radiusPoints = this.FindPointsInRadius(attackerPosition, attacker.CardData.abilities.range.range);
+        var radiusPoints = this.FindPointsInRadius(attackerPosition, attacker.CardData.abilities.range.range, attacker.CardData.abilities.range.minRange);
         radiusPoints.RemoveAt(0);
 
         var points = new List<Point>();
@@ -374,10 +374,14 @@ public class BoardCreator : MonoBehaviour
         return false;
     }
 
-    private List<Point> FindPointsInRadius(Point center, int radius)
+    private List<Point> FindPointsInRadius(Point center, int radius, int minRadius = 1)
     {
         List<Point> pointsInRadius = new List<Point>();
-        pointsInRadius.Add(center);
+
+        if (minRadius == 1)
+        {
+            pointsInRadius.Add(center);
+        }
 
         for (int x = 1; x <= this.Width; x++)
         {
@@ -391,7 +395,7 @@ public class BoardCreator : MonoBehaviour
                     {
                         var rangeY = Math.Abs(center.y - y);
 
-                        if ((rangeY + rangeX) <= radius)
+                        if ((rangeY + rangeX) <= radius && (rangeY + rangeX) >= minRadius)
                         {
                             pointsInRadius.Add(new Point(x, y));
                         }

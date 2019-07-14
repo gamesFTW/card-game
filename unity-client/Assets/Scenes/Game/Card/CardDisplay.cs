@@ -349,7 +349,15 @@ public class CardDisplay : MonoBehaviour
         string descriptionText = "";
         if (this.cardData.abilities.range != null)
         {
-            descriptionText += "Range " + this.cardData.abilities.range.range + "\n";
+            if (this.cardData.abilities.range.minRange > 1)
+            {
+
+                descriptionText += "Range " + this.cardData.abilities.range.minRange + "-" + this.cardData.abilities.range.range + "\n";
+            }
+            else
+            {
+                descriptionText += "Range " + this.cardData.abilities.range.range + "\n";
+            }
         }
         if (this.cardData.abilities.firstStrike)
         {
