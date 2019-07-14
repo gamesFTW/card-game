@@ -7,7 +7,7 @@ from gym import error, spaces
 from gym import utils
 import numpy as np
 
-from .game_api import game, commands, getters, actions
+from .game_api import game, commands, getters, actions, mappings
 from .space.card import CARD_SPACE
 from .state import map_raw_state_to_observation, map_raw_state_to_state
 from .reward import calc_reward
@@ -21,13 +21,13 @@ class CardGameEnv(gym.Env, utils.EzPickle):
     metadata = {'render.modes': ['human', 'ansii']}
 
     def __init__(self):
-        self.observation_space = spaces.Dict({
-            "board": spaces.Box(low=-2, high=2, shape=(10,10), dtype=np.int),
-            "hero0": CARD_SPACE,
+        self.observation_space = spaces.Box(low=-10, high=10, shape=(10,10), dtype=np.int)
+            # (spaces.Discrete(2), spaces.Discrete(3))) spaces.Dict({
+           
+            # "hero0": CARD_SPACE,
             # "hero1": CARD_SPACE,
-            "opponentHero0": CARD_SPACE,
+            # "opponentHero0": CARD_SPACE,
             # "opponentHero1": CARD_SPACE,
-        })
         self._create_action_space()
 
     def _seed(self, seed=None):
@@ -36,7 +36,19 @@ class CardGameEnv(gym.Env, utils.EzPickle):
 
     def render(self, mode="ansii", close=False):
         ob = map_raw_state_to_state(self.raw_state, self._player, self._opponent)
-        print(ob["board"])
+        for x, row in enumerate(ob["board"]):
+            line = []
+            for y, board_code in enumerate(row):
+                if board_code == mappings.BOARD_HERO:
+                    line.append("😎")
+                if board_code == mappings.BOARD_EMPTY:
+                    line.append("░")
+                if board_code == mappings.BOARD_OPPONENT_HERO:
+                    line.append("👻")
+                if board_code < 0:
+                    line.append("▓")
+            print(" ".join(line))
+        print("---------")
 
 
     def _create_action_space(self):
@@ -59,8 +71,7 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         return self.state
 
 
-    def step(self, direction_code):
-        self.get_game()
+    def step(self, direction_code): # [кто, что, куда]
         self.time_to_end_turn()
         self.save_pre_game()
 
@@ -71,11 +82,14 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         self.state = map_raw_state_to_observation(self.observation_space, self.raw_state, self._player, self._opponent)
 
         is_done = self.is_game_stop()
-        reward = -1
+        reward = -100
 
         if isValid:
             reward = calc_reward(self.prev_raw_state, self.raw_state, self._player, self._opponent)
         else:
+            reward = -2
+
+        if reward == 100:
             is_done = True
 
         return self.state, reward, is_done, {}
@@ -92,9 +106,8 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         tapped = hero["tapped"]
         if mp < 1 or tapped:
             logger.debug("MP of hero {}. Double end of tour".format(mp))
-            game.end_turn(self.raw_state)
-            self.get_game()
-            game.end_turn(self.raw_state)
+            game.end_turn(self.raw_state, self.raw_state["game"]["player1Id"])
+            game.end_turn(self.raw_state, self.raw_state["game"]["player2Id"])
             self.get_game()
             return 
 
@@ -102,7 +115,8 @@ class CardGameEnv(gym.Env, utils.EzPickle):
         logger.debug("MP of hero {}".format(mp))
         
     def is_game_stop(self):
-        return self.raw_state["game"]["currentTurn"] > 6
+        return False
+        # return self.raw_state["game"]["currentTurn"] > 8
 
 
         

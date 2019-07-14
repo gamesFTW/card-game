@@ -482,6 +482,39 @@
                     }
                 },
                 "image": "/cfs/files/Images/BRsv2rvNMtHrzCGEK/hero-speed.png"
+            },
+            {
+                "_id": "ptaxT6p7HiBcHQaTp",
+                "counter": 0,
+                "type": "crature",
+                "text": "Снижение лечения 1.\n\nДальнобойный 6.\nНе отвечает.\nСкорость 2.\n\nВ апкипе положите 1 каунтер, не больше 2.\n\n↷, снимите 2 каунтера: получите карту.",
+                "date": "2017-07-10T20:06:48.881Z",
+                "hero": true,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "FHwEJmQ7ei6zst5wH",
+                "tags": [
+                    "range",
+                    "draw",
+                    "__needimage",
+                    "_race_nature",
+                    "slow"
+                ],
+                "name": "Horned",
+                "maxHp": 5,
+                "damage": 1,
+                "manaCost": 0,
+                "movingPoints": 3,
+                "abilities": {
+                    "range": {
+                        "range": 6
+                    },
+                    "speed": {
+                        "speed": 2
+                    }
+                },
+                "image": "/cfs/files/Images/FHwEJmQ7ei6zst5wH/creature-sniper-crossbow2.png"
             }
         ]
     },
@@ -968,6 +1001,39 @@
                     }
                 },
                 "image": "/cfs/files/Images/BRsv2rvNMtHrzCGEK/hero-speed.png"
+            },
+            {
+                "_id": "ptaxT6p7HiBcHQaTp",
+                "counter": 0,
+                "type": "creature",
+                "text": "Снижение лечения 1.\n\nДальнобойный 6.\nНе отвечает.\nСкорость 2.\n\nВ апкипе положите 1 каунтер, не больше 2.\n\n↷, снимите 2 каунтера: получите карту.",
+                "date": "2017-07-10T20:06:48.881Z",
+                "hero": true,
+                "big": false,
+                "draft": false,
+                "summoned": false,
+                "imageId": "FHwEJmQ7ei6zst5wH",
+                "tags": [
+                    "range",
+                    "draw",
+                    "__needimage",
+                    "_race_nature",
+                    "slow"
+                ],
+                "name": "Horned",
+                "maxHp": 5,
+                "damage": 1,
+                "manaCost": 0,
+                "movingPoints": 3,
+                "abilities": {
+                    "range": {
+                        "range": 6
+                    },
+                    "speed": {
+                        "speed": 2
+                    }
+                },
+                "image": "/cfs/files/Images/FHwEJmQ7ei6zst5wH/creature-sniper-crossbow2.png"
             }
         ]
     }

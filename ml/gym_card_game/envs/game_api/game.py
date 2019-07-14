@@ -16,13 +16,15 @@ def create_game():
   logger.debug("Created", game_id)
   return game_id
 
-def end_turn(raw_state):
+def end_turn(raw_state, player_id):
   session = get_session()
   data = {
-    "playerId": raw_state["game"]["currentPlayersTurn"],
+    "playerId": player_id,
     "gameId": raw_state["game"]["id"]
   }
   r = session.post(API_URLS["END_TURN"], json = data)
+  if not r.status_code == 200:
+    raise Exception('Error on end turn {}. Data: {}'.format(r.text, data))
   # game_id = r.json()["gameId"]
   logger.debug("End of turn")
 

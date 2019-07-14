@@ -9,9 +9,7 @@ CARD_SPACE = spaces.Dict({
     # "currentMovingPoints": spaces.Box(low=0, high=10, shape=(1,), dtype=np.int),
     # "range": spaces.Box(low=0, high=10, shape=(1,), dtype=np.int),
     # "manaCost": spaces.Box(low=0, high=10, shape=(1,), dtype=np.int),
-
     "x": spaces.Box(low=1, high=9, shape=(1,), dtype=np.int),
     "y": spaces.Box(low=1, high=9, shape=(1,), dtype=np.int),
-
 })
 

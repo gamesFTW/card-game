@@ -15,9 +15,11 @@ def calc_heros_distance_reward(old_state, new_state, player, opponent):
     new_distance = get_distance(new_hero0["x"], new_hero0["y"], new_heroOpponent0["x"], new_heroOpponent0["y"])
  
     if new_distance <= 1:
-        return 1
+        return 100
+    # elif new_distance < old_distance:
+    #     return ((9 + 9) / new_distance) / 10
     else:
-        return 0
+        return -1
 
 
 def calc_reward(old_state, new_state, player, opponent):
