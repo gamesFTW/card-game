@@ -54,9 +54,10 @@ public class CardDisplay : MonoBehaviour
 
             cardData.currentHp = value;
 
+            currentHpText.text = value.ToString();
+
             if (this.UnitDisplay)
             {
-                currentHpText.text = value.ToString();
                 this.Shake();
 
                 UnityEngine.Color color;
