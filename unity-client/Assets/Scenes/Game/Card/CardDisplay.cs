@@ -53,21 +53,28 @@ public class CardDisplay : MonoBehaviour
             int hpDifference = value - cardData.currentHp;
 
             cardData.currentHp = value;
-            currentHpText.text = value.ToString();
-            this.Shake();
 
-            UnityEngine.Color color;
-            if (hpDifference == 0)
+            if (this.UnitDisplay)
             {
-                color = UnityEngine.Color.white;
-            } else if (hpDifference > 0) {
-                color = UnityEngine.Color.green;
-            } else
-            {
-                color = UnityEngine.Color.red;
+                currentHpText.text = value.ToString();
+                this.Shake();
+
+                UnityEngine.Color color;
+                if (hpDifference == 0)
+                {
+                    color = UnityEngine.Color.white;
+                }
+                else if (hpDifference > 0)
+                {
+                    color = UnityEngine.Color.green;
+                }
+                else
+                {
+                    color = UnityEngine.Color.red;
+                }
+
+                this.UnitDisplay.ShowToolTip(System.Math.Abs(hpDifference).ToString(), color);
             }
-
-            this.UnitDisplay.ShowToolTip(System.Math.Abs(hpDifference).ToString(), color);
         }
     }
 
