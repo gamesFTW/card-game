@@ -155,9 +155,11 @@ class Card extends Entity {
 
     newHp = newHp <= this.state.maxHp ? newHp : this.state.maxHp;
 
-    this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_HEALED, {currentHp: newHp, id: this.state.id}
-    ));
+    if (newHp > this.state.currentHp) {
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_HEALED, {currentHp: newHp, id: this.state.id}
+      ));
+    }
   }
 
   public overhealed (heal: number): void {

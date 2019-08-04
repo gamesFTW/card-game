@@ -13,6 +13,7 @@ import { RangeService } from '../abilities/RangeService';
 import { Area } from '../area/Area';
 import { AreaType } from '../area/AreaState';
 import { Point } from '../../infr/Point';
+import { RegenerationsService } from '../abilities/RegenerationsService';
 
 class Game extends Entity {
   protected state: GameState;
@@ -77,6 +78,8 @@ class Game extends Entity {
     endingTurnPlayerOpponent.startTurn();
 
     RangeService.applyBlockForRangeUnits(endingTurnPlayerOpponentTableCards, endingTurnPlayerTableCards, board);
+
+    RegenerationsService.regenerateUnits(endingTurnPlayerOpponentTableCards);
   }
 
   public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {

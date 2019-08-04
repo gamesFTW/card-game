@@ -56,6 +56,16 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void HealCards(string playerId, ServerActions.CardHealed[] cardsHealed)
+    {
+        foreach (ServerActions.CardHealed cardHealed in cardsHealed)
+        {
+            var cardId = cardHealed.id;
+            var cardTransform = cardIdToCards[cardId];
+            cardTransform.GetComponent<CardDisplay>().CurrentHp = cardHealed.newHp;
+        }
+    }
+
     public void UpdateMovingPoints(ServerActions.MovingPoints[] movingPoints)
     {
         foreach (ServerActions.MovingPoints movingPoint in movingPoints)

@@ -39,6 +39,9 @@ interface Abilities {
   mana?: {
     mana: number;
   };
+  regeneration?: {
+    regeneration: number;
+  };
 }
 
 interface CardData {

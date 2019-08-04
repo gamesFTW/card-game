@@ -26,6 +26,7 @@ namespace ServerActions
         public string startedPlayerId;
         public MovingPoints[] cardsMovingPointsUpdated;
         public BlockAbilityUpdate[] cardsBlockAbilityUpdated;
+        public CardHealed[] cardsHealed;
         public string[] cardsUntapped;
         public string[] cardsDrawn;
     }
@@ -40,6 +41,12 @@ namespace ServerActions
     {
         public string id;
         public bool usedInThisTurn;
+    }
+
+    public class CardHealed
+    {
+        public string id;
+        public int newHp;
     }
 
     [Serializable]
@@ -175,6 +182,7 @@ public class ReceiverFromServer : MonoBehaviour
 
     public void OnEndTurnAction(ServerActions.EndTurnAction action)
     {
+        cardManger.HealCards(action.endedPlayerId, action.cardsHealed);
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
         cardManger.UpdateMovingPoints(action.cardsMovingPointsUpdated);

@@ -23,6 +23,7 @@ interface EndTurnAction {
   startedPlayerId?: string;
   cardsMovingPointsUpdated?: Array<{id: string; currentMovingPoints: number}>;
   cardsBlockAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
+  cardsHealed?: Array<{id: string; newHp: number}>;
   cardsUntapped?: Array<EntityId>;
   cardsDrawn?: Array<EntityId>;
 }
@@ -32,6 +33,7 @@ class EndTurnUseCase extends UseCase {
     type: 'EndTurnAction',
     cardsMovingPointsUpdated: [],
     cardsBlockAbilityUpdated: [],
+    cardsHealed: [],
     cardsUntapped: [],
     cardsDrawn: []
   };
@@ -75,6 +77,10 @@ class EndTurnUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_USE_BLOCK_ABILITY, this.onCardUseBlockAbility);
     });
 
+    this.entities.endingTurnPlayerOpponentTableCards.forEach((card: Card) => {
+      card.addEventListener(CardEventType.CARD_HEALED, this.onCardHealed);
+    });
+
     this.entities.endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);
   }
 
@@ -115,6 +121,11 @@ class EndTurnUseCase extends UseCase {
   @boundMethod
   private onCardDrawn (event: Event<CardData, PlayerDrawnCardData>): void {
     this.action.cardsDrawn.push(event.extra.drawnCard);
+  }
+
+  @boundMethod
+  private onCardHealed (event: Event<CardData>): void {
+    this.action.cardsHealed.push({id: event.data.id, newHp: event.data.currentHp});
   }
 }
 

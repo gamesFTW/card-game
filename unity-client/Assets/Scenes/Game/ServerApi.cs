@@ -51,6 +51,7 @@ public class Abilities
     public HealingAbility healing;
     public BlockAbility block;
     public ManaAbility mana;
+    public RegenerationsAbility regeneration;
 }
 
 [Serializable]
@@ -109,6 +110,12 @@ public class BlockAbility : Ability
 public class ManaAbility : Ability
 {
     public int mana;
+}
+
+[Serializable]
+public class RegenerationsAbility : Ability
+{
+    public int regeneration;
 }
 
 [Serializable]

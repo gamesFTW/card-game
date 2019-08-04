@@ -430,6 +430,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Mana " + this.cardData.abilities.mana.mana + "\n";
         }
+        if (this.cardData.abilities.regeneration != null)
+        {
+            descriptionText += "Regeneration " + this.cardData.abilities.regeneration.regeneration + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }
