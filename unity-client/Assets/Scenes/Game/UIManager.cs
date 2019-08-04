@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         Button endOfTurnButton = this.transform.Find("UI/EndOfTurn").GetComponent<Button>();
-        endOfTurnButton.onClick.AddListener(OnClick);
+        endOfTurnButton.onClick.AddListener(this.OnEndOfTurnButtonClick);
 
         Unibus.Subscribe<string>(HttpRequest.HTTP_ERROR, OnHttpError);
 
@@ -35,11 +35,25 @@ public class UIManager : MonoBehaviour
         {
             SceneManager.LoadScene("Lobby");
         }
+
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            ServerApi.EndOfTurn();
+        }
     }
 
-    void OnClick()
+    void OnEndOfTurnButtonClick()
     {
-        ServerApi.EndOfTurn();
+        if (GameState.isMainPlayerTurn)
+        {
+            ServerApi.EndOfTurn();
+        }
+    }
+
+    void OnEndOfTurnPointerEnter()
+    {
+        Button endOfTurnButton = this.transform.Find("UI/EndOfTurn").GetComponent<Button>();
+        //endOfTurnButton.transform.DOScale(endOfTurnButton.transform.localScale, 0,3f);
     }
 
     private void OnHttpError(string errorMessage)
@@ -74,13 +88,17 @@ public class UIManager : MonoBehaviour
 
     private void ShowTurn()
     {
+        GameObject endOfTurnButtonSelectedGlow = this.transform.Find("UI/EndOfTurn/Selected").gameObject;
+
         if (GameState.isMainPlayerTurn)
         {
             changeTurnText.text = "Your turn";
+            endOfTurnButtonSelectedGlow.SetActive(true);
         }
         else
         {
             changeTurnText.text = "Opponent turn";
+            endOfTurnButtonSelectedGlow.SetActive(false);
         }
 
         var colorToFadeTo = new Color(1f, 1f, 1f, 1);
