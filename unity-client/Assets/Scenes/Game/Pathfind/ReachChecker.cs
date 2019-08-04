@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ReachChecker : MonoBehaviour
+public class ReachChecker
 {
     private Tile[,] Tiles;
     private List<Tile> TilesForCheck = new List<Tile>();

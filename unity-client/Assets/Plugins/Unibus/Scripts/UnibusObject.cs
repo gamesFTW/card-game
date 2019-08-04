@@ -96,7 +96,8 @@ namespace UnibusEvent
             else
             {
                 string tagAndAction = string.Format("(tag:{0}, action:{1})", tag, action);
-                Debug.LogWarning("Unibus.Dispatch failed to send: " + tagAndAction);
+                // Отключил логирование. Оно только мешает.
+                // Debug.LogWarning("Unibus.Dispatch failed to send: " + tagAndAction);
             }
         }
     }
