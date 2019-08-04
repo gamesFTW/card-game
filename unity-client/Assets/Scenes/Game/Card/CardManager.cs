@@ -86,6 +86,16 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void UpdateEvasionAbility(ServerActions.EvasionAbilityUpdate[] evasionAbilitiesUpdates)
+    {
+        foreach (ServerActions.EvasionAbilityUpdate evasionAbilityUpdate in evasionAbilitiesUpdates)
+        {
+            var cardId = evasionAbilityUpdate.id;
+            var cardTransform = cardIdToCards[cardId];
+            cardTransform.GetComponent<CardDisplay>().UsedInThisTurnEvasionAbility = evasionAbilityUpdate.usedInThisTurn;
+        }
+    }
+
     public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];
@@ -158,45 +168,50 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public void CardWasInBattle(ServerActions.CardAfterBattle card, bool isAttacker)
+    public void CardWasInBattle(ServerActions.CardAfterBattle cardChanges, bool isAttacker)
     {
-        var cardTransform = cardIdToCards[card.id];
+        var cardTransform = cardIdToCards[cardChanges.id];
 
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
-        if (card.isTapped)
+        if (cardChanges.isTapped)
         {
             cardDisplay.Tap();
         }
         // Это не баг, что сразу и тап и антап. Потому что в дальнейшем должна быть анимация тапа, а потом антапа.
-        if (card.isUntapped)
+        if (cardChanges.isUntapped)
         {
             cardDisplay.Untap();
         }
 
-        if (card.newHp != null)
+        if (cardChanges.newHp != null)
         {
-            cardDisplay.CurrentHp = (int)card.newHp;
+            cardDisplay.CurrentHp = (int)cardChanges.newHp;
         }
 
-        if (card.killed)
+        if (cardChanges.killed)
         {
             KillUnit(cardDisplay);
         }
 
-        if (card.currentMovingPoints != null)
+        if (cardChanges.currentMovingPoints != null)
         {
-            cardDisplay.CurrentMovingPoints = (int)card.currentMovingPoints;
+            cardDisplay.CurrentMovingPoints = (int)cardChanges.currentMovingPoints;
         }
 
-        if (card.pushedTo != null)
+        if (cardChanges.pushedTo != null)
         {
-            boardCreator.PushUnit(cardDisplay, card.pushedTo);
+            boardCreator.PushUnit(cardDisplay, cardChanges.pushedTo);
         }
 
-        if (card.usedInThisTurnBlockAbility != null)
+        if (cardChanges.usedInThisTurnBlockAbility != null)
         {
-            cardDisplay.UsedInThisTurnBlockAbility = (bool)card.usedInThisTurnBlockAbility;
+            cardDisplay.UsedInThisTurnBlockAbility = (bool)cardChanges.usedInThisTurnBlockAbility;
+        }
+
+        if (cardChanges.usedInThisTurnEvasionAbility != null)
+        {
+            cardDisplay.UsedInThisTurnEvasionAbility = (bool)cardChanges.usedInThisTurnEvasionAbility;
         }
 
         if (isAttacker)

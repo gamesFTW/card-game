@@ -34,7 +34,7 @@ interface Abilities {
   block?: {
     range: number;
     blockingDamage: number;
-    usedInThisTurn: boolean
+    usedInThisTurn: boolean;
   };
   mana?: {
     mana: number;
@@ -43,6 +43,9 @@ interface Abilities {
     regeneration: number;
   };
   bash?: boolean;
+  evasion?: {
+    usedInThisTurn: boolean;
+  };
 }
 
 interface CardData {

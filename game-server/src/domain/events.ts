@@ -50,7 +50,10 @@ enum CardEventType {
   CARD_HEALED = 'Card:CardHealed',
   CARD_BLOCKED_RANGE_ABILITY = 'Card:CardBlockedRangeAbility',
   CARD_UNBLOCKED_RANGE_ABILITY = 'Card:CardUnblockedRangeAbility',
-  CARD_USE_BLOCK_ABILITY = 'Card:CARD_USE_BLOCK_ABILITY'
+  CARD_USE_BLOCK_ABILITY = 'Card:CardUseBlockAbility',
+  CARD_USE_EVASION_ABILITY = 'Card:CardUseEvasionAbility',
+  CARD_RESET_BLOCK_ABILITY = 'Card:CardResetBlockAbility',
+  CARD_RESET_EVASION_ABILITY = 'Card:CardResetEvasionAbility'
 }
 
 enum BoardEventType {

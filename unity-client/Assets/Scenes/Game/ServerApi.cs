@@ -53,6 +53,7 @@ public class Abilities
     public ManaAbility mana;
     public RegenerationsAbility regeneration;
     public Boolean bash;
+    public EvasionAbility evasion;
 }
 
 [Serializable]
@@ -117,6 +118,12 @@ public class ManaAbility : Ability
 public class RegenerationsAbility : Ability
 {
     public int regeneration;
+}
+
+[Serializable]
+public class EvasionAbility : Ability
+{
+    public bool usedInThisTurn;
 }
 
 [Serializable]

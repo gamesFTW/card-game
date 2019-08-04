@@ -23,6 +23,7 @@ interface EndTurnAction {
   startedPlayerId?: string;
   cardsMovingPointsUpdated?: Array<{id: string; currentMovingPoints: number}>;
   cardsBlockAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
+  cardsEvasionAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
   cardsHealed?: Array<{id: string; newHp: number}>;
   cardsUntapped?: Array<EntityId>;
   cardsDrawn?: Array<EntityId>;
@@ -33,6 +34,7 @@ class EndTurnUseCase extends UseCase {
     type: 'EndTurnAction',
     cardsMovingPointsUpdated: [],
     cardsBlockAbilityUpdated: [],
+    cardsEvasionAbilityUpdated: [],
     cardsHealed: [],
     cardsUntapped: [],
     cardsDrawn: []
@@ -74,7 +76,8 @@ class EndTurnUseCase extends UseCase {
     this.entities.endingTurnPlayerTableCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
-      card.addEventListener(CardEventType.CARD_USE_BLOCK_ABILITY, this.onCardUseBlockAbility);
+      card.addEventListener(CardEventType.CARD_RESET_BLOCK_ABILITY, this.onCardResetBlockAbility);
+      card.addEventListener(CardEventType.CARD_RESET_EVASION_ABILITY, this.onCardResetEvasionAbility);
     });
 
     this.entities.endingTurnPlayerOpponentTableCards.forEach((card: Card) => {
@@ -109,8 +112,13 @@ class EndTurnUseCase extends UseCase {
   }
 
   @boundMethod
-  private onCardUseBlockAbility (event: Event<CardData>): void {
+  private onCardResetBlockAbility (event: Event<CardData>): void {
     this.action.cardsBlockAbilityUpdated.push({id: event.data.id, usedInThisTurn: event.data.abilities.block.usedInThisTurn});
+  }
+
+  @boundMethod
+  private onCardResetEvasionAbility (event: Event<CardData>): void {
+    this.action.cardsEvasionAbilityUpdated.push({id: event.data.id, usedInThisTurn: event.data.abilities.evasion.usedInThisTurn});
   }
 
   @boundMethod

@@ -48,6 +48,11 @@ class Card extends Entity {
   public create (cardCreationData: CardCreationData): void {
     let id = this.generateId();
 
+    if (cardCreationData.abilities.evasion) {
+      cardCreationData.abilities.evasion = {
+        usedInThisTurn: false
+      };
+    }
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_CREATED, {id, abilities: {}, ...cardCreationData}
     ));
@@ -143,6 +148,20 @@ class Card extends Entity {
     ));
   }
 
+  public evade (): void {
+    if (!this.abilities.evasion) {
+      throw new Error(`Card ${this.state.id} doesn't have evasion ability`);
+    }
+
+    let abilities = lodash.cloneDeep(this.state.abilities);
+    abilities.evasion.usedInThisTurn = true;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_USE_EVASION_ABILITY,
+      {id: this.id, abilities}
+    ));
+  }
+
   public heal (): void {
     if (!this.abilities.healing) {
       throw new Error(`Card ${this.state.id} doesn't have heal ability`);
@@ -203,7 +222,18 @@ class Card extends Entity {
       abilities.block.usedInThisTurn = false;
 
       this.applyEvent(new Event<CardData>(
-        CardEventType.CARD_USE_BLOCK_ABILITY,
+        CardEventType.CARD_RESET_BLOCK_ABILITY,
+        {id: this.id, abilities}
+      ));
+    }
+
+    if (this.abilities.evasion) {
+      let abilities = lodash.cloneDeep(this.state.abilities);
+
+      abilities.evasion.usedInThisTurn = false;
+
+      this.applyEvent(new Event<CardData>(
+        CardEventType.CARD_RESET_EVASION_ABILITY,
         {id: this.id, abilities}
       ));
     }

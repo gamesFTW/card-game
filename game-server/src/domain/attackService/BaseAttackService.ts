@@ -15,6 +15,11 @@ class BaseAttackService {
 
     attackerDmg = attackerDmg >= 0 ? attackerDmg : 0;
 
+    if (attackerDmg > 0 && attackedCard.abilities.evasion && !attackedCard.abilities.evasion.usedInThisTurn) {
+      attackedCard.evade();
+      attackerDmg = 0;
+    }
+
     if (attackerDmg > 0) {
       attackerDmg = this.tryBlockDamage(attackerDmg, attackedCard, attackedPlayerTableCards, board);
     }

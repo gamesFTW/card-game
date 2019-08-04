@@ -38,6 +38,7 @@ interface CardChanges {
   currentMovingPoints?: number;
   pushedTo?: Point;
   usedInThisTurnBlockAbility?: boolean;
+  usedInThisTurnEvasionAbility?: boolean;
 }
 
 interface CardAttackedAction {
@@ -92,6 +93,7 @@ class AttackCardUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onCardHpChanged);
       card.addEventListener(CardEventType.CARD_DIED, this.onCardDied);
       card.addEventListener(CardEventType.CARD_USE_BLOCK_ABILITY, this.onCardUseBlockAbility);
+      card.addEventListener(CardEventType.CARD_USE_EVASION_ABILITY, this.onCardUseEvasionAbility);
     }
 
     this.entities.board.addEventListener(BoardEventType.CARD_MOVED, this.onCardMoved);
@@ -151,6 +153,13 @@ class AttackCardUseCase extends UseCase {
     let cardChanges = this.getOrCreateCardChangesById(event.data.id);
 
     cardChanges.usedInThisTurnBlockAbility = event.data.abilities.block.usedInThisTurn;
+  }
+
+  @boundMethod
+  private onCardUseEvasionAbility (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.usedInThisTurnEvasionAbility = event.data.abilities.evasion.usedInThisTurn;
   }
 
   @boundMethod

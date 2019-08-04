@@ -99,6 +99,16 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public bool UsedInThisTurnEvasionAbility
+    {
+        get { return cardData.abilities.evasion.usedInThisTurn; }
+        set
+        {
+            cardData.abilities.evasion.usedInThisTurn = value;
+            this.UnitDisplay.RedrawAbilisiesStatus();
+        }
+    }
+
     public bool IsAlly
     {
         get { return this.cardData.ownerId == GameState.mainPlayerId; }
@@ -437,6 +447,10 @@ public class CardDisplay : MonoBehaviour
         if (this.cardData.abilities.bash)
         {
             descriptionText += "Bash\n";
+        }
+        if (this.cardData.abilities.evasion != null)
+        {
+            descriptionText += "Evasion\n";
         }
 
         this.descriptionText.text = descriptionText;

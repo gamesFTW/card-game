@@ -189,6 +189,13 @@ public class UnitDisplay : MonoBehaviour
                 this.RedrawAbilityStatus("SpellBook01_48");
             }
         }
+        if (this.cardData.abilities.evasion != null)
+        {
+            if (this.cardData.abilities.evasion.usedInThisTurn == false)
+            {
+                this.RedrawAbilityStatus("SpellBook01_16");
+            }
+        }
     }
 
     public void ShowToolTip (string text, UnityEngine.Color color)

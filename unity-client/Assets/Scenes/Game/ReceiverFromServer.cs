@@ -26,6 +26,7 @@ namespace ServerActions
         public string startedPlayerId;
         public MovingPoints[] cardsMovingPointsUpdated;
         public BlockAbilityUpdate[] cardsBlockAbilityUpdated;
+        public EvasionAbilityUpdate[] cardsEvasionAbilityUpdated;
         public CardHealed[] cardsHealed;
         public string[] cardsUntapped;
         public string[] cardsDrawn;
@@ -38,6 +39,12 @@ namespace ServerActions
     }
 
     public class BlockAbilityUpdate
+    {
+        public string id;
+        public bool usedInThisTurn;
+    }
+
+    public class EvasionAbilityUpdate
     {
         public string id;
         public bool usedInThisTurn;
@@ -112,6 +119,7 @@ namespace ServerActions
         public int? currentMovingPoints;
         public Point pushedTo;
         public bool? usedInThisTurnBlockAbility;
+        public bool? usedInThisTurnEvasionAbility;
     }
 
     [Serializable]
@@ -187,6 +195,7 @@ public class ReceiverFromServer : MonoBehaviour
         cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
         cardManger.UpdateMovingPoints(action.cardsMovingPointsUpdated);
         cardManger.UpdateBlockAbility(action.cardsBlockAbilityUpdated);
+        cardManger.UpdateEvasionAbility(action.cardsEvasionAbilityUpdated);
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
 
