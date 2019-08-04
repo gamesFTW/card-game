@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnibusEvent;
 using UnityEngine;
 
 public class PlayerTransformsStacks
@@ -11,7 +12,9 @@ public class PlayerTransformsStacks
     public Transform graveyard;
 }
 
-public class CardCreator : MonoBehaviour {
+public class CardCreator : MonoBehaviour
+{
+    public static readonly string GAME_BUILDED = "GAME_BUILDED";
 
     public bool firstTimeDataRecived = false;
 
@@ -118,6 +121,8 @@ public class CardCreator : MonoBehaviour {
         }
 
         this.CreateAreas(gameData.areas);
+
+        Unibus.Dispatch<string>(CardCreator.GAME_BUILDED, "");
     }
 
     private void CreateAreas(AreaData[] areas)

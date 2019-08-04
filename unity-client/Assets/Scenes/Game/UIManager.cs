@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
         this.changeTurn.GetComponent<CanvasGroup>().DOFade(0, 0);
 
         Unibus.Subscribe<string>(ReceiverFromServer.TURN_ENDED, OnTurnEnded);
+        Unibus.Subscribe<string>(CardCreator.GAME_BUILDED, OnGameBuilded);
     }
 
     void Update()
@@ -61,12 +62,23 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    private void OnTurnEnded (string playerId)
+    private void OnGameBuilded(string _)
+    {
+        ShowTurn();
+    }
+
+    private void OnTurnEnded (string _)
+    {
+        ShowTurn();
+    }
+
+    private void ShowTurn()
     {
         if (GameState.isMainPlayerTurn)
         {
             changeTurnText.text = "Your turn";
-        } else
+        }
+        else
         {
             changeTurnText.text = "Opponent turn";
         }
