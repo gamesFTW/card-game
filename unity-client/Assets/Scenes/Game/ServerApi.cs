@@ -52,6 +52,7 @@ public class Abilities
     public BlockAbility block;
     public ManaAbility mana;
     public RegenerationsAbility regeneration;
+    public Boolean bash;
 }
 
 [Serializable]

@@ -54,6 +54,10 @@ class MeleeAttackService {
       BaseAttackService.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt, areas);
     }
 
+    if (attackerCard.abilities.bash && !attackedCard.tapped) {
+      attackedCard.tap();
+    }
+
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
       board.removeUnitFromBoard(attackedCard);

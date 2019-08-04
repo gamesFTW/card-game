@@ -434,6 +434,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Regeneration " + this.cardData.abilities.regeneration.regeneration + "\n";
         }
+        if (this.cardData.abilities.bash)
+        {
+            descriptionText += "Bash\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

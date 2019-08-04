@@ -42,6 +42,7 @@ interface Abilities {
   regeneration?: {
     regeneration: number;
   };
+  bash?: boolean;
 }
 
 interface CardData {
