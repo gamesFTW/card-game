@@ -42,6 +42,21 @@ class BaseAttackService {
     board.moveUnit(attackedCard, pushPosition, areas);
   }
 
+  public static checkForVampiricAndDrainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number): void {
+    if (attackerCard.abilities.vampiric) {
+      this.drainHP(attackerCard, attackedCard, attackerDmg);
+    }
+  }
+
+  public static drainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number): void {
+    let attackerCardVampiricPower = attackerDmg;
+
+    let attackerCardVampiredHP = attackedCard.currentHp >= attackerCardVampiricPower ?
+      attackerCardVampiricPower : attackedCard.currentHp;
+
+    attackerCard.overhealed(attackerCardVampiredHP);
+  }
+
   private static tryBlockDamage (attackerDmg: number, attackedCard: Card, attackedPlayerTableCards: Card[], board: Board): number {
     let cardsWithBlockAbility = attackedPlayerTableCards.filter(card => card.abilities.block && !card.abilities.block.usedInThisTurn);
 

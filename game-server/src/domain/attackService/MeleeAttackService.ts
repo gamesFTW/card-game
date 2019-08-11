@@ -72,10 +72,10 @@ class MeleeAttackService {
   private static attackWithoutFirstStrike (attackerCard: Card, attackedCard: Card, attackerDmg: number, attackedDmg: number): void {
     let isAttackedCardRetaliation = this.calcRetaliation(attackerCard, attackedCard);
 
-    this.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
+    BaseAttackService.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
 
     if (isAttackedCardRetaliation) {
-      this.checkForVampiricAndDrainHP(attackedCard, attackerCard, attackedDmg);
+      BaseAttackService.checkForVampiricAndDrainHP(attackedCard, attackerCard, attackedDmg);
     }
 
     attackedCard.takeDamage(attackerDmg);
@@ -96,11 +96,11 @@ class MeleeAttackService {
     let firstAttackerDmg = isAttackerCardHaveFirstStrike ? attackerDmg : attackedDmg;
     let secondAttackerDmg = isAttackedCardHaveFirstStrike ? attackerDmg : attackedDmg;
 
-    this.checkForVampiricAndDrainHP(firstAttacker, secondAttacker, firstAttackerDmg);
+    BaseAttackService.checkForVampiricAndDrainHP(firstAttacker, secondAttacker, firstAttackerDmg);
     secondAttacker.takeDamage(firstAttackerDmg);
 
     if (secondAttacker.alive) {
-      this.checkForVampiricAndDrainHP(secondAttacker, firstAttacker, secondAttackerDmg);
+      BaseAttackService.checkForVampiricAndDrainHP(secondAttacker, firstAttacker, secondAttackerDmg);
       firstAttacker.takeDamage(secondAttackerDmg);
     }
   }
@@ -135,21 +135,6 @@ class MeleeAttackService {
 
   private static calcRetaliation (attackerCard: Card, attackedCard: Card): boolean {
     return !(attackedCard.abilities.range) && !(attackerCard.abilities.noEnemyRetaliation);
-  }
-
-  private static checkForVampiricAndDrainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number): void {
-    if (attackerCard.abilities.vampiric) {
-      this.drainHP(attackerCard, attackedCard, attackerDmg);
-    }
-  }
-
-  private static drainHP (attackerCard: Card, attackedCard: Card, attackerDmg: number): void {
-    let attackerCardVampiricPower = attackerDmg;
-
-    let attackerCardVampiredHP = attackedCard.currentHp >= attackerCardVampiricPower ?
-      attackerCardVampiricPower : attackedCard.currentHp;
-
-    attackerCard.overhealed(attackerCardVampiredHP);
   }
 
   private static checkIsAttackerFlankAttacked (attackerCard: Card, attackedCard: Card, board: Board, attackerPlayerTableCards: Card[]): boolean {

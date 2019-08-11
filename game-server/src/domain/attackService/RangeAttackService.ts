@@ -44,6 +44,8 @@ class RangeAttackService {
 
     let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard, attackedPlayerTableCards, board);
 
+    BaseAttackService.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
+
     attackedCard.takeDamage(attackerDmg);
 
     if (attackerCard.abilities.ricochet && abilitiesParams.ricochetTargetCardId) {
