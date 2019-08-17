@@ -56,7 +56,7 @@ public class AudioController : MonoBehaviour
         {
             yield return www.Send();
 
-            if (www.isError)
+            if (www.isNetworkError)
             {
                 Debug.Log(www.error);
             }
