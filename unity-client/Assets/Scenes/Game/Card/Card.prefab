@@ -106,6 +106,11 @@ MonoBehaviour:
         usedInThisTurn: 0
       mana:
         mana: 0
+      regeneration:
+        regeneration: 0
+      bash: 0
+      evasion:
+        usedInThisTurn: 0
   Placeholder: {fileID: 0}
   artwork: {fileID: 4150893717027933245}
   nameText: {fileID: 7156934267358142637}
@@ -181,7 +186,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 131.5469, y: -4.5682983}
+  m_Offset: {x: 172.2239, y: -4.5682983}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -192,7 +197,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 530.88666, y: 409.56982}
+  m_Size: {x: 612.24066, y: 409.56982}
   m_EdgeRadius: 0
 --- !u!1 &1996936224542484
 GameObject:
@@ -2526,7 +2531,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_textAlignment: 257
-  m_isAlignmentEnumConverted: 0
+  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
