@@ -96,6 +96,16 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    public void UpdateRangeAbility(ServerActions.RangeAbilityUpdate[] rangeAbilitiesUpdates)
+    {
+        foreach (ServerActions.RangeAbilityUpdate rangeAbilitiesUpdate in rangeAbilitiesUpdates)
+        {
+            var cardId = rangeAbilitiesUpdate.id;
+            var cardTransform = cardIdToCards[cardId];
+            cardTransform.GetComponent<CardDisplay>().BlockedInBeginningOfTurn = rangeAbilitiesUpdate.blockedInBeginningOfTurn;
+        }
+    }
+
     public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];

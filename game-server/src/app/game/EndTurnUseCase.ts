@@ -24,6 +24,7 @@ interface EndTurnAction {
   cardsMovingPointsUpdated?: Array<{id: string; currentMovingPoints: number}>;
   cardsBlockAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
   cardsEvasionAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
+  cardsRangeAbilityUpdated?: Array<{id: string; blockedInBeginningOfTurn: boolean}>;
   cardsHealed?: Array<{id: string; newHp: number}>;
   cardsUntapped?: Array<EntityId>;
   cardsDrawn?: Array<EntityId>;
@@ -35,6 +36,7 @@ class EndTurnUseCase extends UseCase {
     cardsMovingPointsUpdated: [],
     cardsBlockAbilityUpdated: [],
     cardsEvasionAbilityUpdated: [],
+    cardsRangeAbilityUpdated: [],
     cardsHealed: [],
     cardsUntapped: [],
     cardsDrawn: []
@@ -78,10 +80,14 @@ class EndTurnUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
       card.addEventListener(CardEventType.CARD_RESET_BLOCK_ABILITY, this.onCardResetBlockAbility);
       card.addEventListener(CardEventType.CARD_RESET_EVASION_ABILITY, this.onCardResetEvasionAbility);
+      card.addEventListener(CardEventType.CARD_BLOCKED_RANGE_ABILITY, this.onCardBlockRangeAbility);
+      card.addEventListener(CardEventType.CARD_UNBLOCKED_RANGE_ABILITY, this.onCardUnblockRangeAbility);
     });
 
     this.entities.endingTurnPlayerOpponentTableCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_HEALED, this.onCardHealed);
+      card.addEventListener(CardEventType.CARD_BLOCKED_RANGE_ABILITY, this.onCardBlockRangeAbility);
+      card.addEventListener(CardEventType.CARD_UNBLOCKED_RANGE_ABILITY, this.onCardUnblockRangeAbility);
     });
 
     this.entities.endingTurnPlayer.addEventListener(PlayerEventType.CARD_DRAWN, this.onCardDrawn);
@@ -119,6 +125,16 @@ class EndTurnUseCase extends UseCase {
   @boundMethod
   private onCardResetEvasionAbility (event: Event<CardData>): void {
     this.action.cardsEvasionAbilityUpdated.push({id: event.data.id, usedInThisTurn: event.data.abilities.evasion.usedInThisTurn});
+  }
+
+  @boundMethod
+  private onCardBlockRangeAbility (event: Event<CardData>): void {
+    this.action.cardsRangeAbilityUpdated.push({id: event.data.id, blockedInBeginningOfTurn: event.data.abilities.range.blockedInBeginningOfTurn});
+  }
+
+  @boundMethod
+  private onCardUnblockRangeAbility (event: Event<CardData>): void {
+    this.action.cardsRangeAbilityUpdated.push({id: event.data.id, blockedInBeginningOfTurn: event.data.abilities.range.blockedInBeginningOfTurn});
   }
 
   @boundMethod

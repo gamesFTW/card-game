@@ -203,11 +203,9 @@ public class UnitDisplay : MonoBehaviour
         GameObject toolTipPrefab = Resources.Load<GameObject>("ToolTip");
         GameObject toolTip = Instantiate<GameObject>(toolTipPrefab, this.abilitiesStatus.transform);
         toolTip.transform.SetParent(this.transform);
-        Debug.Log(text);
-        Debug.Log(toolTip.GetComponent<TextMeshPro>());
         toolTip.GetComponent<TextMeshPro>().SetText(text);
         toolTip.GetComponent<TextMeshPro>().color = color;
-        toolTip.transform.DOLocalMoveY(toolTip.transform.localPosition.y + 0.2f, 1).OnComplete(() => {
+        toolTip.transform.DOLocalMoveY(toolTip.transform.localPosition.y + 0.2f, 1.5f).OnComplete(() => {
             GameObject.Destroy(toolTip);
         });
     }

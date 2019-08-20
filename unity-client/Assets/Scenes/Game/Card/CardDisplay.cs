@@ -16,7 +16,6 @@ public class CardDisplay : MonoBehaviour
     public GameObject artwork;
 
 	public TextMeshPro nameText;
-	public TextMeshPro descriptionText;
 
 	public TextMeshPro manaText;
 	public TextMeshPro damageText;
@@ -33,6 +32,9 @@ public class CardDisplay : MonoBehaviour
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
     public static readonly string CARD_DIED = "CARD_DIED";
+
+    private TextMeshPro descriptionText;
+    private TextMeshPro negativeEffectsText;
 
     private bool IsSelected = false;
     private bool IsZoomed = false;
@@ -109,6 +111,24 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public bool BlockedInBeginningOfTurn
+    {
+        get { return cardData.abilities.range.blockedInBeginningOfTurn; }
+        set
+        {
+            cardData.abilities.range.blockedInBeginningOfTurn = value;
+            this.FillNegativeEffects();
+
+            if (cardData.abilities.range.blockedInBeginningOfTurn)
+            {
+                this.UnitDisplay.ShowToolTip("Can't shoot", UnityEngine.Color.red);
+            } else
+            {
+                this.UnitDisplay.ShowToolTip("Can shoot", UnityEngine.Color.white);
+            }
+        }
+    }
+
     public bool IsAlly
     {
         get { return this.cardData.ownerId == GameState.mainPlayerId; }
@@ -145,7 +165,11 @@ public class CardDisplay : MonoBehaviour
         this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
         this.descritionContainer = this.transform.Find("Front").Find("DescritionContainer").gameObject;
 
+        this.descriptionText = descritionContainer.transform.Find("Description").GetComponent<TextMeshPro>();
+        this.negativeEffectsText = descritionContainer.transform.Find("NegativeEffects").GetComponent<TextMeshPro>();
+
         this.FillDescription();
+        this.FillNegativeEffects();
     }
 
     private void Update()
@@ -454,5 +478,17 @@ public class CardDisplay : MonoBehaviour
         }
 
         this.descriptionText.text = descriptionText;
+    }
+
+    private void FillNegativeEffects()
+    {
+        string negativeEffectsText = "";
+
+        if (this.cardData.abilities.range != null && this.cardData.abilities.range.blockedInBeginningOfTurn)
+        {
+            negativeEffectsText += "Can't shoot\n";
+        }
+
+        this.negativeEffectsText.text = negativeEffectsText;
     }
 }
