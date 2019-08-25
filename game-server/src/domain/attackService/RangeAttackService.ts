@@ -60,6 +60,10 @@ class RangeAttackService {
       attackedCard.tap();
     }
 
+    if (attackerCard.abilities.poison) {
+      attackedCard.toPoison(attackerCard.abilities.poison.poisonDamage);
+    }
+
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
       board.removeUnitFromBoard(attackedCard);

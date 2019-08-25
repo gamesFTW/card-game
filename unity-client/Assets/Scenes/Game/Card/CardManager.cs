@@ -56,56 +56,6 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public void HealCards(string playerId, ServerActions.CardHealed[] cardsHealed)
-    {
-        foreach (ServerActions.CardHealed cardHealed in cardsHealed)
-        {
-            var cardId = cardHealed.id;
-            var cardTransform = cardIdToCards[cardId];
-            cardTransform.GetComponent<CardDisplay>().CurrentHp = cardHealed.newHp;
-        }
-    }
-
-    public void UpdateMovingPoints(ServerActions.MovingPoints[] movingPoints)
-    {
-        foreach (ServerActions.MovingPoints movingPoint in movingPoints)
-        {
-            var cardId = movingPoint.id;
-            var cardTransform = cardIdToCards[cardId];
-            cardTransform.GetComponent<CardDisplay>().CurrentMovingPoints = movingPoint.currentMovingPoints;
-        }
-    }
-
-    public void UpdateBlockAbility(ServerActions.BlockAbilityUpdate[] blockAbilitiesUpdates)
-    {
-        foreach (ServerActions.BlockAbilityUpdate blockAbilityUpdate in blockAbilitiesUpdates)
-        {
-            var cardId = blockAbilityUpdate.id;
-            var cardTransform = cardIdToCards[cardId];
-            cardTransform.GetComponent<CardDisplay>().UsedInThisTurnBlockAbility = blockAbilityUpdate.usedInThisTurn;
-        }
-    }
-
-    public void UpdateEvasionAbility(ServerActions.EvasionAbilityUpdate[] evasionAbilitiesUpdates)
-    {
-        foreach (ServerActions.EvasionAbilityUpdate evasionAbilityUpdate in evasionAbilitiesUpdates)
-        {
-            var cardId = evasionAbilityUpdate.id;
-            var cardTransform = cardIdToCards[cardId];
-            cardTransform.GetComponent<CardDisplay>().UsedInThisTurnEvasionAbility = evasionAbilityUpdate.usedInThisTurn;
-        }
-    }
-
-    public void UpdateRangeAbility(ServerActions.RangeAbilityUpdate[] rangeAbilitiesUpdates)
-    {
-        foreach (ServerActions.RangeAbilityUpdate rangeAbilitiesUpdate in rangeAbilitiesUpdates)
-        {
-            var cardId = rangeAbilitiesUpdate.id;
-            var cardTransform = cardIdToCards[cardId];
-            cardTransform.GetComponent<CardDisplay>().BlockedInBeginningOfTurn = rangeAbilitiesUpdate.blockedInBeginningOfTurn;
-        }
-    }
-
     public void PlayCard(string playerId, string cardId, Point position, bool taped, int newHp)
     {
         var cardTransform = cardIdToCards[cardId];
@@ -178,16 +128,29 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public void CardWasInBattle(ServerActions.CardAfterBattle cardChanges, bool isAttacker)
+    public void CardWasInBattle(ServerActions.CardChanges cardChanges, bool isAttacker)
     {
         var cardTransform = cardIdToCards[cardChanges.id];
+        CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
+        this.ApplyChangesToCard(cardChanges);
+
+        if (isAttacker)
+        {
+            Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
+        }
+    }
+
+    public void ApplyChangesToCard(ServerActions.CardChanges cardChanges)
+    {
+        var cardTransform = cardIdToCards[cardChanges.id];
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
         if (cardChanges.isTapped)
         {
             cardDisplay.Tap();
         }
+
         // Это не баг, что сразу и тап и антап. Потому что в дальнейшем должна быть анимация тапа, а потом антапа.
         if (cardChanges.isUntapped)
         {
@@ -224,9 +187,15 @@ public class CardManager : MonoBehaviour
             cardDisplay.UsedInThisTurnEvasionAbility = (bool)cardChanges.usedInThisTurnEvasionAbility;
         }
 
-        if (isAttacker)
+        if (cardChanges.isPoisoned != null)
         {
-            Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
+            if ((bool)cardChanges.isPoisoned)
+            {
+                cardDisplay.PoisonedByDamage = (int)cardChanges.poisonDamage;
+            } else
+            {
+                cardDisplay.PoisonedByDamage = 0;
+            }
         }
     }
 

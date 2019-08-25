@@ -1,7 +1,8 @@
 import { map } from 'lodash';
 import { Repository } from './repositories/Repository';
 import { godOfSockets } from './GodOfSockets';
-import { Entity } from './Entity';
+import { Entity, EntityId } from './Entity';
+import { CardChanges } from '../app/player/AttackCardUseCase';
 
 abstract class UseCase {
   protected params: any;
@@ -35,6 +36,22 @@ abstract class UseCase {
   protected abstract runBusinessLogic (): void;
 
   protected abstract addClientActions (): void;
+
+  protected getOrCreateCardChangesById (cardId: EntityId): CardChanges {
+    let cardChanges = null;
+    for (let card of this.action.cardChanges) {
+      if (card.id === cardId) {
+        cardChanges = card;
+      }
+    }
+
+    if (!cardChanges) {
+      cardChanges = {id: cardId};
+      this.action.cardChanges.push(cardChanges);
+    }
+
+    return cardChanges;
+  }
 
   private async saveEntities (): Promise<void> {
     let entities = map(this.entities, (e: Entity) => e);

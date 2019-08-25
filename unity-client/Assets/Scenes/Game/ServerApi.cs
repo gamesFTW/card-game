@@ -26,6 +26,7 @@ public class CardData
     public string ownerId;
 
     public Abilities abilities;
+    public NegativeEffects negativeEffects;
 }
 
 [Serializable]
@@ -54,6 +55,7 @@ public class Abilities
     public RegenerationsAbility regeneration;
     public Boolean bash;
     public EvasionAbility evasion;
+    public PoisonAbility poison;
 }
 
 [Serializable]
@@ -125,6 +127,27 @@ public class EvasionAbility : Ability
 {
     public bool usedInThisTurn;
 }
+
+[Serializable]
+public class PoisonAbility : Ability
+{
+    public int poisonDamage;
+}
+
+
+[Serializable]
+public class NegativeEffects
+{
+    public PoisonEffect poisoned;
+}
+
+
+[Serializable]
+public class PoisonEffect
+{
+    public int damage;
+}
+
 
 [Serializable]
 public class PlayerData

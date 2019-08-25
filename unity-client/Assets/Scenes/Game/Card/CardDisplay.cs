@@ -129,6 +129,26 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public int PoisonedByDamage
+    {
+        get { return cardData.negativeEffects.poisoned.damage; }
+        set
+        {
+            if (value == 0)
+            {
+                cardData.negativeEffects.poisoned = null;
+            } else
+            {
+                var poisonEffect = new PoisonEffect();
+                poisonEffect.damage = value;
+                cardData.negativeEffects.poisoned = poisonEffect;
+                this.UnitDisplay.ShowToolTip("Poisoned", UnityEngine.Color.red);
+            }
+
+            this.FillNegativeEffects();
+        }
+    }
+
     public bool IsAlly
     {
         get { return this.cardData.ownerId == GameState.mainPlayerId; }
@@ -476,6 +496,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Evasion\n";
         }
+        if (this.cardData.abilities.poison != null)
+        {
+            descriptionText += "Poison " + this.cardData.abilities.poison.poisonDamage + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }
@@ -487,6 +511,11 @@ public class CardDisplay : MonoBehaviour
         if (this.cardData.abilities.range != null && this.cardData.abilities.range.blockedInBeginningOfTurn)
         {
             negativeEffectsText += "Can't shoot\n";
+        }
+
+        if (this.cardData.negativeEffects.poisoned != null)
+        {
+            negativeEffectsText += "Poisoned " + this.cardData.negativeEffects.poisoned.damage + "\n";
         }
 
         this.negativeEffectsText.text = negativeEffectsText;

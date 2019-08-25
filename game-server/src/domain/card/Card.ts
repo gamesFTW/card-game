@@ -1,7 +1,7 @@
 import { Entity, EntityId } from '../../infr/Entity';
 
 import { Event } from '../../infr/Event';
-import { Abilities, CardData, CardState } from './CardState';
+import { Abilities, CardData, CardState, NegativeEffects } from './CardState';
 import { CardEventType, CardMovedExtra } from '../events';
 import * as lodash from 'lodash';
 import { Point } from '../../infr/Point';
@@ -39,6 +39,7 @@ class Card extends Entity {
   }
 
   get abilities (): Abilities { return this.state.abilities; }
+  get negativeEffects (): NegativeEffects { return this.state.negativeEffects; }
 
   constructor (events: Array<Event<CardData>> = []) {
     super();
@@ -54,7 +55,7 @@ class Card extends Entity {
       };
     }
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_CREATED, {id, abilities: {}, ...cardCreationData}
+      CardEventType.CARD_CREATED, {id, abilities: {}, negativeEffects: {}, ...cardCreationData}
     ));
   }
 
@@ -212,6 +213,28 @@ class Card extends Entity {
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_UNBLOCKED_RANGE_ABILITY,
       {id: this.id, abilities}
+    ));
+  }
+
+  public toPoison (poisonDamage: number): void {
+    let negativeEffects = lodash.cloneDeep(this.state.negativeEffects);
+
+    negativeEffects.poisoned = {damage: poisonDamage};
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_POISONED,
+      {id: this.id, negativeEffects}
+    ));
+  }
+
+  public removePoison (): void {
+    let negativeEffects = lodash.cloneDeep(this.state.negativeEffects);
+
+    negativeEffects.poisoned = null;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_POISON_REMOVED,
+      {id: this.id, negativeEffects}
     ));
   }
 

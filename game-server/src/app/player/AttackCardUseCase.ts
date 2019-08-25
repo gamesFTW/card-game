@@ -39,6 +39,9 @@ interface CardChanges {
   pushedTo?: Point;
   usedInThisTurnBlockAbility?: boolean;
   usedInThisTurnEvasionAbility?: boolean;
+  blockedRangeAbilityInBeginningOfTurn?: boolean;
+  isPoisoned?: boolean;
+  poisonDamage?: number;
 }
 
 interface CardAttackedAction {
@@ -94,6 +97,7 @@ class AttackCardUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_DIED, this.onCardDied);
       card.addEventListener(CardEventType.CARD_USE_BLOCK_ABILITY, this.onCardUseBlockAbility);
       card.addEventListener(CardEventType.CARD_USE_EVASION_ABILITY, this.onCardUseEvasionAbility);
+      card.addEventListener(CardEventType.CARD_POISONED, this.onCardPoisoned);
     }
 
     this.entities.board.addEventListener(BoardEventType.CARD_MOVED, this.onCardMoved);
@@ -163,27 +167,19 @@ class AttackCardUseCase extends UseCase {
   }
 
   @boundMethod
+  private onCardPoisoned (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.isPoisoned = true;
+    cardChanges.poisonDamage = event.data.negativeEffects.poisoned.damage;
+  }
+
+  @boundMethod
   private onCardMoved (event: Event<CardData, BoardCardMovedExtra>): void {
     let cardChanges = this.getOrCreateCardChangesById(event.extra.movedCardId);
 
     cardChanges.pushedTo = event.extra.toPosition;
   }
-
-  private getOrCreateCardChangesById (cardId: EntityId): CardChanges {
-    let cardChanges = null;
-    for (let card of this.action.cardChanges) {
-      if (card.id === cardId) {
-        cardChanges = card;
-      }
-    }
-
-    if (!cardChanges) {
-      cardChanges = {id: cardId};
-      this.action.cardChanges.push(cardChanges);
-    }
-
-    return cardChanges;
-  }
 }
 
-export {AttackCardUseCase, AbilitiesParams};
+export {AttackCardUseCase, AbilitiesParams, CardChanges};

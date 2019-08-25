@@ -9,6 +9,7 @@ import { CardEventType, PlayerDrawnCardData, PlayerEventType } from '../../domai
 import { GameData } from '../../domain/game/GameState';
 import { UseCase } from '../../infr/UseCase';
 import { Board } from '../../domain/board/Board';
+import { CardChanges } from '../player/AttackCardUseCase';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 interface EndTurnParams {
@@ -21,24 +22,14 @@ interface EndTurnAction {
   currentTurn?: number;
   endedPlayerId?: string;
   startedPlayerId?: string;
-  cardsMovingPointsUpdated?: Array<{id: string; currentMovingPoints: number}>;
-  cardsBlockAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
-  cardsEvasionAbilityUpdated?: Array<{id: string; usedInThisTurn: boolean}>;
-  cardsRangeAbilityUpdated?: Array<{id: string; blockedInBeginningOfTurn: boolean}>;
-  cardsHealed?: Array<{id: string; newHp: number}>;
-  cardsUntapped?: Array<EntityId>;
+  cardChanges: CardChanges[];
   cardsDrawn?: Array<EntityId>;
 }
 
 class EndTurnUseCase extends UseCase {
   protected action: EndTurnAction = {
     type: 'EndTurnAction',
-    cardsMovingPointsUpdated: [],
-    cardsBlockAbilityUpdated: [],
-    cardsEvasionAbilityUpdated: [],
-    cardsRangeAbilityUpdated: [],
-    cardsHealed: [],
-    cardsUntapped: [],
+    cardChanges: [],
     cardsDrawn: []
   };
 
@@ -82,6 +73,8 @@ class EndTurnUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_RESET_EVASION_ABILITY, this.onCardResetEvasionAbility);
       card.addEventListener(CardEventType.CARD_BLOCKED_RANGE_ABILITY, this.onCardBlockRangeAbility);
       card.addEventListener(CardEventType.CARD_UNBLOCKED_RANGE_ABILITY, this.onCardUnblockRangeAbility);
+      card.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onCardHpChanged);
+      card.addEventListener(CardEventType.CARD_POISON_REMOVED, this.onCardPoisonRemoved);
     });
 
     this.entities.endingTurnPlayerOpponentTableCards.forEach((card: Card) => {
@@ -113,43 +106,71 @@ class EndTurnUseCase extends UseCase {
   }
 
   @boundMethod
-  private onCardAddedCurrentMovingPoints (event: Event<CardData>): void {
-    this.action.cardsMovingPointsUpdated.push({id: event.data.id, currentMovingPoints: event.data.currentMovingPoints});
-  }
-
-  @boundMethod
-  private onCardResetBlockAbility (event: Event<CardData>): void {
-    this.action.cardsBlockAbilityUpdated.push({id: event.data.id, usedInThisTurn: event.data.abilities.block.usedInThisTurn});
-  }
-
-  @boundMethod
-  private onCardResetEvasionAbility (event: Event<CardData>): void {
-    this.action.cardsEvasionAbilityUpdated.push({id: event.data.id, usedInThisTurn: event.data.abilities.evasion.usedInThisTurn});
-  }
-
-  @boundMethod
-  private onCardBlockRangeAbility (event: Event<CardData>): void {
-    this.action.cardsRangeAbilityUpdated.push({id: event.data.id, blockedInBeginningOfTurn: event.data.abilities.range.blockedInBeginningOfTurn});
-  }
-
-  @boundMethod
-  private onCardUnblockRangeAbility (event: Event<CardData>): void {
-    this.action.cardsRangeAbilityUpdated.push({id: event.data.id, blockedInBeginningOfTurn: event.data.abilities.range.blockedInBeginningOfTurn});
-  }
-
-  @boundMethod
-  private onCardUntapped (event: Event<CardData>): void {
-    this.action.cardsUntapped.push(event.data.id);
-  }
-
-  @boundMethod
   private onCardDrawn (event: Event<CardData, PlayerDrawnCardData>): void {
     this.action.cardsDrawn.push(event.extra.drawnCard);
   }
 
   @boundMethod
+  private onCardAddedCurrentMovingPoints (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.currentMovingPoints = event.data.currentMovingPoints;
+  }
+
+  @boundMethod
+  private onCardResetBlockAbility (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.usedInThisTurnBlockAbility = event.data.abilities.block.usedInThisTurn;
+  }
+
+  @boundMethod
+  private onCardResetEvasionAbility (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.usedInThisTurnEvasionAbility = event.data.abilities.evasion.usedInThisTurn;
+  }
+
+  @boundMethod
+  private onCardBlockRangeAbility (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.blockedRangeAbilityInBeginningOfTurn = event.data.abilities.range.blockedInBeginningOfTurn;
+  }
+
+  @boundMethod
+  private onCardUnblockRangeAbility (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.blockedRangeAbilityInBeginningOfTurn = event.data.abilities.range.blockedInBeginningOfTurn;
+  }
+
+  @boundMethod
+  private onCardHpChanged (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.newHp = event.data.currentHp;
+  }
+
+  @boundMethod
+  private onCardPoisonRemoved (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.isPoisoned = false;
+  }
+
+  @boundMethod
+  private onCardUntapped (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.isUntapped = !event.data.tapped;
+  }
+
+  @boundMethod
   private onCardHealed (event: Event<CardData>): void {
-    this.action.cardsHealed.push({id: event.data.id, newHp: event.data.currentHp});
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.newHp = event.data.currentHp;
   }
 }
 

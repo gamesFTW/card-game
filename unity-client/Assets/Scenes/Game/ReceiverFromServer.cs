@@ -24,43 +24,8 @@ namespace ServerActions
         public int currentTurn;
         public string endedPlayerId;
         public string startedPlayerId;
-        public MovingPoints[] cardsMovingPointsUpdated;
-        public BlockAbilityUpdate[] cardsBlockAbilityUpdated;
-        public EvasionAbilityUpdate[] cardsEvasionAbilityUpdated;
-        public RangeAbilityUpdate[] cardsRangeAbilityUpdated;
-        public CardHealed[] cardsHealed;
-        public string[] cardsUntapped;
         public string[] cardsDrawn;
-    }
-
-    public class MovingPoints
-    {
-        public string id;
-        public int currentMovingPoints;
-    }
-
-    public class BlockAbilityUpdate
-    {
-        public string id;
-        public bool usedInThisTurn;
-    }
-
-    public class EvasionAbilityUpdate
-    {
-        public string id;
-        public bool usedInThisTurn;
-    }
-
-    public class RangeAbilityUpdate
-    {
-        public string id;
-        public bool blockedInBeginningOfTurn;
-    }
-
-    public class CardHealed
-    {
-        public string id;
-        public int newHp;
+        public CardChanges[] cardChanges;
     }
 
     [Serializable]
@@ -97,7 +62,7 @@ namespace ServerActions
     {
         public string attackerCardId;
         public string attackedCardId;
-        public CardAfterBattle[] cardChanges;
+        public CardChanges[] cardChanges;
     }
 
     [Serializable]
@@ -116,7 +81,7 @@ namespace ServerActions
     }
 
     [Serializable]
-    public class CardAfterBattle
+    public class CardChanges
     {
         public string id;
         public bool isTapped;
@@ -127,6 +92,8 @@ namespace ServerActions
         public Point pushedTo;
         public bool? usedInThisTurnBlockAbility;
         public bool? usedInThisTurnEvasionAbility;
+        public bool? isPoisoned;
+        public int? poisonDamage;
     }
 
     [Serializable]
@@ -197,13 +164,12 @@ public class ReceiverFromServer : MonoBehaviour
 
     public void OnEndTurnAction(ServerActions.EndTurnAction action)
     {
-        cardManger.HealCards(action.endedPlayerId, action.cardsHealed);
+        foreach (ServerActions.CardChanges card in action.cardChanges)
+        {
+            cardManger.ApplyChangesToCard(card);
+        }
+
         cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
-        cardManger.UntapCards(action.endedPlayerId, action.cardsUntapped);
-        cardManger.UpdateMovingPoints(action.cardsMovingPointsUpdated);
-        cardManger.UpdateBlockAbility(action.cardsBlockAbilityUpdated);
-        cardManger.UpdateEvasionAbility(action.cardsEvasionAbilityUpdated);
-        cardManger.UpdateRangeAbility(action.cardsRangeAbilityUpdated);
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
 
@@ -228,7 +194,7 @@ public class ReceiverFromServer : MonoBehaviour
 
     public void OnCardAttackedAction(ServerActions.CardAttackedAction action)
     {
-        foreach (ServerActions.CardAfterBattle card in action.cardChanges)
+        foreach (ServerActions.CardChanges card in action.cardChanges)
         {
             var isAttacker = card.id == action.attackerCardId;
             cardManger.CardWasInBattle(card, isAttacker);

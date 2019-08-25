@@ -46,6 +46,13 @@ interface Abilities {
   evasion?: {
     usedInThisTurn: boolean;
   };
+  poison?: {
+    poisonDamage: number;
+  };
+}
+
+interface NegativeEffects {
+  poisoned?: {damage: number};
 }
 
 interface CardData {
@@ -60,6 +67,7 @@ interface CardData {
   manaCost?: number;
   currentMovingPoints?: number;
   abilities?: Abilities;
+  negativeEffects?: NegativeEffects;
   image?: string;
   attackSound?: string;
   sounds?: {[key: string]: {soundName: string; url: string}};
@@ -77,6 +85,7 @@ class CardState extends EntityState implements CardData {
   public currentMovingPoints: number;
   public manaCost: number;
   public abilities: Abilities;
+  public negativeEffects: NegativeEffects;
   public image: string;
   public sounds: {[key: string]: {soundName: string; url: string}};
 
@@ -86,4 +95,4 @@ class CardState extends EntityState implements CardData {
   }
 }
 
-export {CardState, CardData, Abilities};
+export {CardState, CardData, Abilities, NegativeEffects};
