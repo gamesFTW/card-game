@@ -219,7 +219,11 @@ class Card extends Entity {
   public toPoison (poisonDamage: number): void {
     let negativeEffects = lodash.cloneDeep(this.state.negativeEffects);
 
-    negativeEffects.poisoned = {damage: poisonDamage};
+    if (negativeEffects.poisoned) {
+      negativeEffects.poisoned.damage = negativeEffects.poisoned.damage + poisonDamage;
+    } else {
+      negativeEffects.poisoned = {damage: poisonDamage};
+    }
 
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_POISONED,
