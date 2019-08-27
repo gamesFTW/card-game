@@ -54,8 +54,14 @@ class Card extends Entity {
         usedInThisTurn: false
       };
     }
+
     this.applyEvent(new Event<CardData>(
-      CardEventType.CARD_CREATED, {id, abilities: {}, negativeEffects: {}, ...cardCreationData}
+      CardEventType.CARD_CREATED, {
+        id,
+        abilities: {},
+        negativeEffects: {},
+        initialDamage: cardCreationData.damage,
+        ...cardCreationData}
     ));
   }
 
@@ -239,6 +245,36 @@ class Card extends Entity {
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_POISON_REMOVED,
       {id: this.id, negativeEffects}
+    ));
+  }
+
+  public toCurse (damageReduction: number): void {
+    let negativeEffects = lodash.cloneDeep(this.state.negativeEffects);
+
+    if (negativeEffects.damageCursed) {
+      negativeEffects.damageCursed.damageReduction = negativeEffects.damageCursed.damageReduction + damageReduction;
+    } else {
+      negativeEffects.damageCursed = {damageReduction: damageReduction};
+    }
+
+    let damage = this.state.initialDamage - negativeEffects.damageCursed.damageReduction;
+
+    damage = damage < 0 ? 0 : damage;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_DAMAGE_CURSED,
+      {id: this.id, damage, negativeEffects}
+    ));
+  }
+
+  public removeDamageCurse (): void {
+    let negativeEffects = lodash.cloneDeep(this.state.negativeEffects);
+
+    negativeEffects.damageCursed = null;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_DAMAGE_CURSE_REMOVED,
+      {id: this.id, negativeEffects, damage: this.state.initialDamage}
     ));
   }
 

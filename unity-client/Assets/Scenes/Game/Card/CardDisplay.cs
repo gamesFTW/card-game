@@ -81,6 +81,15 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public int Damage
+    {
+        get { return cardData.damage; }
+        set {
+            cardData.damage = value;
+            damageText.text = cardData.damage.ToString();
+        }
+    }
+
     public int CurrentMovingPoints
     {
         get { return cardData.currentMovingPoints; }
@@ -129,7 +138,7 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    public int PoisonedByDamage
+    public int PoisonedDamage
     {
         get { return cardData.negativeEffects.poisoned.damage; }
         set
@@ -143,6 +152,26 @@ public class CardDisplay : MonoBehaviour
                 poisonEffect.damage = value;
                 cardData.negativeEffects.poisoned = poisonEffect;
                 this.UnitDisplay.ShowToolTip("Poisoned", UnityEngine.Color.red);
+            }
+
+            this.FillNegativeEffects();
+        }
+    }
+
+    public int DamageCursedDamage
+    {
+        get { return cardData.negativeEffects.damageCursed.damageReduction; }
+        set
+        {
+            if (value == 0)
+            {
+                cardData.negativeEffects.damageCursed = null;
+            } else
+            {
+                var effect = new DamageCurseEffect();
+                effect.damageReduction = value;
+                cardData.negativeEffects.damageCursed = effect;
+                this.UnitDisplay.ShowToolTip("Cursed", UnityEngine.Color.red);
             }
 
             this.FillNegativeEffects();
@@ -500,6 +529,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Poison " + this.cardData.abilities.poison.poisonDamage + "\n";
         }
+        if (this.cardData.abilities.damageCurse != null)
+        {
+            descriptionText += "Damage curse " + this.cardData.abilities.damageCurse.damageReduction + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }
@@ -515,7 +548,12 @@ public class CardDisplay : MonoBehaviour
 
         if (this.cardData.negativeEffects.poisoned != null)
         {
-            negativeEffectsText += "Poisoned " + this.cardData.negativeEffects.poisoned.damage + "\n";
+            negativeEffectsText += "Poisoned - " + this.cardData.negativeEffects.poisoned.damage + "\n";
+        }
+
+        if (this.cardData.negativeEffects.damageCursed != null)
+        {
+            negativeEffectsText += "Damage cursed - " + this.cardData.negativeEffects.damageCursed.damageReduction + "\n";
         }
 
         this.negativeEffectsText.text = negativeEffectsText;

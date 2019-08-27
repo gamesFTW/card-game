@@ -49,10 +49,14 @@ interface Abilities {
   poison?: {
     poisonDamage: number;
   };
+  damageCurse?: {
+    damageReduction: number;
+  };
 }
 
 interface NegativeEffects {
   poisoned?: {damage: number};
+  damageCursed?: {damageReduction: number};
 }
 
 interface CardData {
@@ -61,6 +65,7 @@ interface CardData {
   name?: string;
   maxHp?: number;
   currentHp?: number;
+  initialDamage?: number;
   damage?: number;
   alive?: boolean;
   tapped?: boolean;
@@ -80,6 +85,7 @@ class CardState extends EntityState implements CardData {
   public maxHp: number;
   public currentHp: number;
   public damage: number;
+  public initialDamage: number;
   public alive: boolean = false;
   public tapped: boolean = false;
   public currentMovingPoints: number;

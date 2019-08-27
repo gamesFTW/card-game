@@ -162,6 +162,11 @@ public class CardManager : MonoBehaviour
             cardDisplay.CurrentHp = (int)cardChanges.newHp;
         }
 
+        if (cardChanges.damage != null)
+        {
+            cardDisplay.Damage = (int)cardChanges.damage;
+        }
+
         if (cardChanges.killed)
         {
             KillUnit(cardDisplay);
@@ -191,10 +196,21 @@ public class CardManager : MonoBehaviour
         {
             if ((bool)cardChanges.isPoisoned)
             {
-                cardDisplay.PoisonedByDamage = (int)cardChanges.poisonDamage;
+                cardDisplay.PoisonedDamage = (int)cardChanges.poisonDamage;
             } else
             {
-                cardDisplay.PoisonedByDamage = 0;
+                cardDisplay.PoisonedDamage = 0;
+            }
+        }
+
+        if (cardChanges.isDamageCursed != null)
+        {
+            if ((bool)cardChanges.isDamageCursed)
+            {
+                cardDisplay.DamageCursedDamage = (int)cardChanges.damageCursedDamageReduction;
+            } else
+            {
+                cardDisplay.DamageCursedDamage = 0;
             }
         }
 

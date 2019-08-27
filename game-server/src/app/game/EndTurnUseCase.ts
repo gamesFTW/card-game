@@ -75,6 +75,7 @@ class EndTurnUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_UNBLOCKED_RANGE_ABILITY, this.onCardUnblockRangeAbility);
       card.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onCardHpChanged);
       card.addEventListener(CardEventType.CARD_POISON_REMOVED, this.onCardPoisonRemoved);
+      card.addEventListener(CardEventType.CARD_DAMAGE_CURSE_REMOVED, this.onCardDamageCurseRemoved);
     });
 
     this.entities.endingTurnPlayerOpponentTableCards.forEach((card: Card) => {
@@ -157,6 +158,14 @@ class EndTurnUseCase extends UseCase {
     let cardChanges = this.getOrCreateCardChangesById(event.data.id);
 
     cardChanges.isPoisoned = false;
+  }
+
+  @boundMethod
+  private onCardDamageCurseRemoved (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.isDamageCursed = false;
+    cardChanges.damage = event.data.damage;
   }
 
   @boundMethod

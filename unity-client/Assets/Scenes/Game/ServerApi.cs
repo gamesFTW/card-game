@@ -56,6 +56,7 @@ public class Abilities
     public Boolean bash;
     public EvasionAbility evasion;
     public PoisonAbility poison;
+    public DamageCurseAbility damageCurse;
 }
 
 [Serializable]
@@ -134,18 +135,30 @@ public class PoisonAbility : Ability
     public int poisonDamage;
 }
 
+[Serializable]
+public class DamageCurseAbility : Ability
+{
+    public int damageReduction;
+}
+
 
 [Serializable]
 public class NegativeEffects
 {
     public PoisonEffect poisoned;
+    public DamageCurseEffect damageCursed;
 }
-
 
 [Serializable]
 public class PoisonEffect
 {
     public int damage;
+}
+
+[Serializable]
+public class DamageCurseEffect
+{
+    public int damageReduction;
 }
 
 

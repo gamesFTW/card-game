@@ -111,6 +111,15 @@ MonoBehaviour:
       bash: 0
       evasion:
         usedInThisTurn: 0
+      poison:
+        poisonDamage: 0
+      damageCurse:
+        damageReduction: 0
+    negativeEffects:
+      poisoned:
+        damage: 0
+      damageCursed:
+        damageReduction: 0
   Placeholder: {fileID: 0}
   artwork: {fileID: 4150893717027933245}
   nameText: {fileID: 7156934267358142637}

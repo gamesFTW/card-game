@@ -42,6 +42,9 @@ interface CardChanges {
   blockedRangeAbilityInBeginningOfTurn?: boolean;
   isPoisoned?: boolean;
   poisonDamage?: number;
+  isDamageCursed?: boolean;
+  damageCursedDamageReduction?: number;
+  damage?: number;
 }
 
 interface CardAttackedAction {
@@ -98,6 +101,7 @@ class AttackCardUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_USE_BLOCK_ABILITY, this.onCardUseBlockAbility);
       card.addEventListener(CardEventType.CARD_USE_EVASION_ABILITY, this.onCardUseEvasionAbility);
       card.addEventListener(CardEventType.CARD_POISONED, this.onCardPoisoned);
+      card.addEventListener(CardEventType.CARD_DAMAGE_CURSED, this.onCardDamageCursed);
     }
 
     this.entities.board.addEventListener(BoardEventType.CARD_MOVED, this.onCardMoved);
@@ -172,6 +176,15 @@ class AttackCardUseCase extends UseCase {
 
     cardChanges.isPoisoned = true;
     cardChanges.poisonDamage = event.data.negativeEffects.poisoned.damage;
+  }
+
+  @boundMethod
+  private onCardDamageCursed (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.isDamageCursed = true;
+    cardChanges.damageCursedDamageReduction = event.data.negativeEffects.damageCursed.damageReduction;
+    cardChanges.damage = event.data.damage;
   }
 
   @boundMethod

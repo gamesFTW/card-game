@@ -62,6 +62,10 @@ class MeleeAttackService {
       attackedCard.toPoison(attackerCard.abilities.poison.poisonDamage);
     }
 
+    if (attackerCard.abilities.damageCurse) {
+      attackedCard.toCurse(attackerCard.abilities.damageCurse.damageReduction);
+    }
+
     if (!attackedCard.alive) {
       attackedPlayer.endOfCardDeath(attackedCard);
       board.removeUnitFromBoard(attackedCard);

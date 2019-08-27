@@ -55,7 +55,9 @@ enum CardEventType {
   CARD_RESET_BLOCK_ABILITY = 'Card:CardResetBlockAbility',
   CARD_RESET_EVASION_ABILITY = 'Card:CardResetEvasionAbility',
   CARD_POISONED = 'Card:CardPoisoned',
-  CARD_POISON_REMOVED = 'Card:CardRemovePoison'
+  CARD_POISON_REMOVED = 'Card:CardRemovePoison',
+  CARD_DAMAGE_CURSED = 'Card:CardCursed',
+  CARD_DAMAGE_CURSE_REMOVED = 'Card:CardDamageCurseRemoved'
 }
 
 enum BoardEventType {

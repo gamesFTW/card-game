@@ -95,6 +95,9 @@ namespace ServerActions
         public bool? usedInThisTurnEvasionAbility;
         public bool? isPoisoned;
         public int? poisonDamage;
+        public bool? isDamageCursed;
+        public int? damageCursedDamageReduction;
+        public int? damage;
     }
 
     [Serializable]

@@ -15,6 +15,7 @@ import { AreaType } from '../area/AreaState';
 import { Point } from '../../infr/Point';
 import { RegenerationsService } from '../abilities/RegenerationsService';
 import { PoisonService } from '../abilities/PoisonService';
+import { DamageCurseService } from '../abilities/DamageCurseService';
 
 class Game extends Entity {
   protected state: GameState;
@@ -82,6 +83,7 @@ class Game extends Entity {
 
     RegenerationsService.regenerateUnits(endingTurnPlayerOpponentTableCards);
     PoisonService.inflictPoisonDamage(endingTurnPlayerTableCards);
+    DamageCurseService.removeDamageCurse(endingTurnPlayerTableCards);
   }
 
   public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {
