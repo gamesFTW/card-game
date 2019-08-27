@@ -197,6 +197,11 @@ public class CardManager : MonoBehaviour
                 cardDisplay.PoisonedByDamage = 0;
             }
         }
+
+        if (cardChanges.blockedRangeAbilityInBeginningOfTurn != null)
+        {
+            cardTransform.GetComponent<CardDisplay>().BlockedInBeginningOfTurn = (bool)cardChanges.blockedRangeAbilityInBeginningOfTurn;
+        }
     }
 
     private void KillUnit(CardDisplay cardDisplay)

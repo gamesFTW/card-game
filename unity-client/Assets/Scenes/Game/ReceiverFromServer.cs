@@ -90,6 +90,7 @@ namespace ServerActions
         public bool killed;
         public int? currentMovingPoints;
         public Point pushedTo;
+        public bool? blockedRangeAbilityInBeginningOfTurn;
         public bool? usedInThisTurnBlockAbility;
         public bool? usedInThisTurnEvasionAbility;
         public bool? isPoisoned;
