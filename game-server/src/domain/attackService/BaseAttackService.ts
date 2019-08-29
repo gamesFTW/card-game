@@ -56,7 +56,7 @@ class BaseAttackService {
     let attackerCardVampiredHP = attackedCard.currentHp >= attackerCardVampiricPower ?
       attackerCardVampiricPower : attackedCard.currentHp;
 
-    attackerCard.overhealed(attackerCardVampiredHP);
+    attackerCard.healed(attackerCardVampiredHP);
   }
 
   private static tryBlockDamage (attackerDmg: number, attackedCard: Card, attackedPlayerTableCards: Card[], board: Board): number {
