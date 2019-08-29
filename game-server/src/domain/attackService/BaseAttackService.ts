@@ -24,6 +24,8 @@ class BaseAttackService {
       attackerDmg = this.tryBlockDamage(attackerDmg, attackedCard, attackedPlayerTableCards, board);
     }
 
+    attackerDmg = attackerDmg < 0 ? 0 : attackerDmg;
+
     return attackerDmg;
   }
 
@@ -77,6 +79,8 @@ class BaseAttackService {
         return 0;
       }
     }
+
+    attackerDmg = attackerDmg < 0 ? 0 : attackerDmg;
 
     return attackerDmg;
   }
