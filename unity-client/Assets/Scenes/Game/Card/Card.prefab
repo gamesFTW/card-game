@@ -766,7 +766,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5108753967628667026}
+  - {fileID: 4866610863383922967}
   - {fileID: 5582228777599009766}
   - {fileID: 329168092440541117}
   - {fileID: 714561606038765876}
@@ -1487,8 +1487,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5108753967628667026}
+  - component: {fileID: 4866610863383922967}
   - component: {fileID: 4340188014568484603}
+  - component: {fileID: 6938759446360534399}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -1496,8 +1497,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!4 &5108753967628667026
-Transform:
+--- !u!224 &4866610863383922967
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1510,6 +1511,11 @@ Transform:
   m_Father: {fileID: 3057278598641393368}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 8.13, y: 10.66}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &4340188014568484603
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1527,7 +1533,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e6a8aa3efa7ad444bc7003903edec47, type: 2}
+  - {fileID: 2100000, guid: 427120a73a18afa4991b1340e136d501, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1558,6 +1564,14 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!222 &6938759446360534399
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3396785897292533104}
+  m_CullTransparentMesh: 0
 --- !u!1 &3813827679075712937
 GameObject:
   m_ObjectHideFlags: 0
@@ -2293,9 +2307,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5582228777599009766}
   - component: {fileID: 2370579605732724373}
-  - component: {fileID: 7094004982519076841}
+  - component: {fileID: 7098781730184575567}
   m_Layer: 0
-  m_Name: Background
+  m_Name: Background test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2309,7 +2323,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6027960025650026815}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 31.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0.1}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 3057278598641393368}
@@ -2328,7 +2342,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6027960025650026815}
   m_CullTransparentMesh: 1
---- !u!114 &7094004982519076841
+--- !u!114 &7098781730184575567
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2337,7 +2351,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6027960025650026815}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -98529514, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 427120a73a18afa4991b1340e136d501, type: 2}
@@ -2348,13 +2362,15 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 0}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+  m_Sprite: {fileID: 21300000, guid: 52a4f5d16bf6d164da89244910289376, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
 --- !u!1 &6595987667079562483
 GameObject:
   m_ObjectHideFlags: 0
