@@ -50,7 +50,13 @@ class MoveCardUseCase extends UseCase {
     this.entities.opponent = await this.repository.get<Player>(opponentId, Player);
     this.entities.card = await this.repository.get<Card>(this.params.cardId, Card);
     this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
-    this.entities.areas = await this.repository.getMany<Area>(this.entities.board.areas, Area);
+    try {
+      this.entities.areas = await this.repository.getMany<Area>(this.entities.board.areas, Area);
+    } catch (e) {
+      console.log(this.entities.game);
+      console.log('board id', this.entities.game.boardId);
+      throw e;
+    }
   }
 
   protected addEventListeners (): void {

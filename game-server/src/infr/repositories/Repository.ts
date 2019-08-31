@@ -68,6 +68,9 @@ class Repository {
 
   async getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any):
     Promise<Array<EntityClass>> {
+    if (!entityIds) {
+      throw new Error('entityIds is empty');
+    }
     return await Promise.all(entityIds.map(entityId => {
       return this.get(entityId, ClassConstructor);
     })) as Array<EntityClass>;
@@ -110,6 +113,11 @@ class Repository {
   private createEntityByEvents<EntityClass> (
       streamEvents: Array <eventstore.Event>, ClassConstructor: any
   ): EntityClass {
+
+    if (!streamEvents) {
+      throw new Error('Stream error is empty');
+    }
+
     let events = streamEvents.map((eventstoreEvent: eventstore.Event) => {
       let payload = eventstoreEvent.payload;
 

@@ -50,6 +50,7 @@ playerController.post('/moveCard', async (ctx) => {
   let position = new Point(x, y);
 
   let useCase = new MoveCardUseCase();
+  console.log('data', {gameId, playerId, cardId, position});
   await useCase.execute({gameId, playerId, cardId, position});
 
   ctx.body = `Ok`;

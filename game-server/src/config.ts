@@ -10,5 +10,5 @@ export default {
   METEOR_URL: 'http://localhost:4000/',
   DEV: true,
   MAIN_EXCHANGE: 'main',
-  IN_MEMORY_STORAGE: false
+  IN_MEMORY_STORAGE: true
 };
