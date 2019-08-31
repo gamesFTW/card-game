@@ -533,6 +533,15 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "Damage curse " + this.cardData.abilities.damageCurse.damageReduction + "\n";
         }
+        if (this.cardData.abilities.aoe != null)
+        {
+            var withDiagonalText = "";
+            if (this.cardData.abilities.aoe.diagonal)
+            {
+                withDiagonalText = " (with diagonal)";
+            }
+            descriptionText += "AOE " + this.cardData.abilities.aoe.range + withDiagonalText + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }

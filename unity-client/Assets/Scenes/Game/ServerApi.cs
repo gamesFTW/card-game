@@ -57,6 +57,7 @@ public class Abilities
     public EvasionAbility evasion;
     public PoisonAbility poison;
     public DamageCurseAbility damageCurse;
+    public AOEAbility aoe;
 }
 
 [Serializable]
@@ -139,6 +140,13 @@ public class PoisonAbility : Ability
 public class DamageCurseAbility : Ability
 {
     public int damageReduction;
+}
+
+[Serializable]
+public class AOEAbility : Ability
+{
+    public int range;
+    public bool diagonal;
 }
 
 
