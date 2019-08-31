@@ -82,10 +82,6 @@ class MeleeAttackService {
 
     BaseAttackService.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
 
-    if (isAttackedCardRetaliation) {
-      BaseAttackService.checkForVampiricAndDrainHP(attackedCard, attackerCard, attackedDmg);
-    }
-
     attackedCard.takeDamage(attackerDmg);
 
     if (isAttackedCardRetaliation) {
@@ -104,11 +100,15 @@ class MeleeAttackService {
     let firstAttackerDmg = isAttackerCardHaveFirstStrike ? attackerDmg : attackedDmg;
     let secondAttackerDmg = isAttackedCardHaveFirstStrike ? attackerDmg : attackedDmg;
 
-    BaseAttackService.checkForVampiricAndDrainHP(firstAttacker, secondAttacker, firstAttackerDmg);
+    if (attackerCard === firstAttacker) {
+      BaseAttackService.checkForVampiricAndDrainHP(firstAttacker, secondAttacker, firstAttackerDmg);
+    }
     secondAttacker.takeDamage(firstAttackerDmg);
 
     if (secondAttacker.alive) {
-      BaseAttackService.checkForVampiricAndDrainHP(secondAttacker, firstAttacker, secondAttackerDmg);
+      if (attackerCard === firstAttacker) {
+        BaseAttackService.checkForVampiricAndDrainHP(secondAttacker, firstAttacker, secondAttackerDmg);
+      }
       firstAttacker.takeDamage(secondAttackerDmg);
     }
   }
