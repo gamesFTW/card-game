@@ -9,6 +9,7 @@ import { EntityId } from '../../infr/Entity';
 import { Area } from '../area/Area';
 import { DomainError } from '../../infr/DomainError';
 import { BaseAttackService } from './BaseAttackService';
+import { AOEService } from '../abilities/AOEService';
 
 class RangeAttackService {
   public static rangeAttackUnit (
@@ -47,6 +48,10 @@ class RangeAttackService {
     BaseAttackService.checkForVampiricAndDrainHP(attackerCard, attackedCard, attackerDmg);
 
     attackedCard.takeDamage(attackerDmg);
+
+    if (attackerCard.abilities.aoe) {
+      AOEService.attackAOETargets(attackerCard, attackedCard, attackedPlayerTableCards, board);
+    }
 
     if (attackerCard.abilities.ricochet && abilitiesParams.ricochetTargetCardId) {
       this.ricochet(attackerCard, attackedCard, attackedPlayerTableCards, attackedPlayer, board, abilitiesParams.ricochetTargetCardId);

@@ -52,6 +52,10 @@ interface Abilities {
   damageCurse?: {
     damageReduction: number;
   };
+  aoe?: {
+    range: number;
+    diagonal: boolean;
+  };
 }
 
 interface NegativeEffects {

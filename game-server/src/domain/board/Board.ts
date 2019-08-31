@@ -210,6 +210,56 @@ class Board extends Entity {
     return this.getUnitIdByPosition(candidatePosition);
   }
 
+  public findPointsInRadius (center: Point, radius: number, minRadius: number = 1): Point[] {
+    let pointsInRadius: Point[] = [];
+
+    if (minRadius === 1) {
+      pointsInRadius.push(center);
+    }
+
+    for (let x = 1; x <= this.state.width; x++) {
+      let rangeX = Math.abs(center.x - x);
+
+      if (rangeX <= radius) {
+        for (let y = 1; y <= this.state.height; y++) {
+          if (!(center.x === x && center.y === y)) {
+            let rangeY = Math.abs(center.y - y);
+
+            if ((rangeY + rangeX) <= radius && (rangeY + rangeX) >= minRadius) {
+              pointsInRadius.push(new Point(x, y));
+            }
+          }
+        }
+      }
+    }
+
+    return pointsInRadius;
+  }
+
+  public findPointsInSquareRadius (center: Point, radius: number): Point[] {
+    let pointsInRadius: Point[] = [];
+
+    pointsInRadius.push(center);
+
+    for (let x = 1; x <= this.state.width; x++) {
+      let rangeX = Math.abs(center.x - x);
+
+      if (rangeX <= radius) {
+        for (let y = 1; y <= this.state.height; y++) {
+          if (!(center.x === x && center.y === y)) {
+            let rangeY = Math.abs(center.y - y);
+
+            if (rangeX <= radius && rangeY <= radius) {
+              pointsInRadius.push(new Point(x, y));
+            }
+          }
+        }
+      }
+    }
+
+    return pointsInRadius;
+  }
+
   private getPositionOfBoardObject (boardObject: BoardObject, boardObjects: BoardObjects): Point|null {
     for (let x in boardObjects) {
       for (let y in boardObjects[x]) {
