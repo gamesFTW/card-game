@@ -3,6 +3,7 @@ node_modules
 unity-client/build
 __pycache__
 
+.vscode
 .DS_Store
 
 *.h5f
