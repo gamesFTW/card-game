@@ -50,7 +50,7 @@ class CardGameEnv(py_environment.PyEnvironment):
     self._state = map_raw_state_to_observation(None, self.raw_state, self._player, self._opponent)
     self._episode_ended = False
 
-    return ts.restart(np.array([self._state], dtype=np.int32))
+    return ts.restart(self._state)
 
   def _step(self, action):
     if self._episode_ended or self.is_game_stop():
