@@ -27,6 +27,7 @@ public class CardData
 
     public Abilities abilities;
     public NegativeEffects negativeEffects;
+    public PositiveEffects positiveEffects;
 }
 
 [Serializable]
@@ -58,6 +59,7 @@ public class Abilities
     public PoisonAbility poison;
     public DamageCurseAbility damageCurse;
     public AOEAbility aoe;
+    public HPAuraAbility hpAura;
 }
 
 [Serializable]
@@ -149,6 +151,13 @@ public class AOEAbility : Ability
     public bool diagonal;
 }
 
+[Serializable]
+public class HPAuraAbility : Ability
+{
+    public int range;
+    public int hpBuff;
+}
+
 
 [Serializable]
 public class NegativeEffects
@@ -167,6 +176,19 @@ public class PoisonEffect
 public class DamageCurseEffect
 {
     public int damageReduction;
+}
+
+
+[Serializable]
+public class PositiveEffects
+{
+    public HPAuraBuffEffect hpAuraBuff;
+}
+
+[Serializable]
+public class HPAuraBuffEffect
+{
+    public int hpBuff;
 }
 
 
