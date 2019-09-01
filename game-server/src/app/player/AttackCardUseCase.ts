@@ -45,6 +45,7 @@ interface CardChanges {
   isDamageCursed?: boolean;
   damageCursedDamageReduction?: number;
   damage?: number;
+  hpAuraBuffChange?: number;
 }
 
 interface CardAttackedAction {

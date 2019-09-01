@@ -57,7 +57,10 @@ enum CardEventType {
   CARD_POISONED = 'Card:CardPoisoned',
   CARD_POISON_REMOVED = 'Card:CardRemovePoison',
   CARD_DAMAGE_CURSED = 'Card:CardCursed',
-  CARD_DAMAGE_CURSE_REMOVED = 'Card:CardDamageCurseRemoved'
+  CARD_DAMAGE_CURSE_REMOVED = 'Card:CardDamageCurseRemoved',
+  CARD_HP_AURA_BUFF_ADDED = 'Card:CardAddHpAuraBuff',
+  CARD_HP_AURA_BUFF_CHANGED = 'Card:CardChangeHpAuraBuff',
+  CARD_HP_AURA_BUFF_REMOVED = 'Card:CardRemoveHpAuraBuff'
 }
 
 enum BoardEventType {

@@ -56,11 +56,19 @@ interface Abilities {
     range: number;
     diagonal: boolean;
   };
+  hpAura?: {
+    range: number;
+    hpBuff: number;
+  };
 }
 
 interface NegativeEffects {
   poisoned?: {damage: number};
   damageCursed?: {damageReduction: number};
+}
+
+interface PositiveEffects {
+  hpAuraBuff?: {hpBuff: number};
 }
 
 interface CardData {
@@ -77,6 +85,7 @@ interface CardData {
   currentMovingPoints?: number;
   abilities?: Abilities;
   negativeEffects?: NegativeEffects;
+  positiveEffects?: PositiveEffects;
   image?: string;
   attackSound?: string;
   sounds?: {[key: string]: {soundName: string; url: string}};
@@ -96,6 +105,7 @@ class CardState extends EntityState implements CardData {
   public manaCost: number;
   public abilities: Abilities;
   public negativeEffects: NegativeEffects;
+  public positiveEffects: PositiveEffects;
   public image: string;
   public sounds: {[key: string]: {soundName: string; url: string}};
 
@@ -105,4 +115,4 @@ class CardState extends EntityState implements CardData {
   }
 }
 
-export {CardState, CardData, Abilities, NegativeEffects};
+export {CardState, CardData, Abilities, NegativeEffects, PositiveEffects};

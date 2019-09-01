@@ -157,7 +157,11 @@ public class CardManager : MonoBehaviour
             cardDisplay.Untap();
         }
 
-        if (cardChanges.newHp != null)
+        if (cardChanges.newHp != null && cardChanges.hpAuraBuffChange != null)
+        {
+            cardDisplay.ChangeHpByHPAura((int)cardChanges.newHp, (int)cardChanges.hpAuraBuffChange);
+        }
+        else if (cardChanges.newHp != null)
         {
             cardDisplay.CurrentHp = (int)cardChanges.newHp;
         }

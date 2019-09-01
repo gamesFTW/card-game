@@ -1,7 +1,7 @@
 import { Entity, EntityId } from '../../infr/Entity';
 
 import { Event } from '../../infr/Event';
-import { Abilities, CardData, CardState, NegativeEffects } from './CardState';
+import { Abilities, CardData, CardState, NegativeEffects, PositiveEffects } from './CardState';
 import { CardEventType, CardMovedExtra } from '../events';
 import * as lodash from 'lodash';
 import { Point } from '../../infr/Point';
@@ -40,6 +40,7 @@ class Card extends Entity {
 
   get abilities (): Abilities { return this.state.abilities; }
   get negativeEffects (): NegativeEffects { return this.state.negativeEffects; }
+  get positiveEffects (): PositiveEffects { return this.state.positiveEffects; }
 
   constructor (events: Array<Event<CardData>> = []) {
     super();
@@ -60,6 +61,7 @@ class Card extends Entity {
         id,
         abilities: {},
         negativeEffects: {},
+        positiveEffects: {},
         initialDamage: cardCreationData.damage,
         ...cardCreationData}
     ));
@@ -276,6 +278,52 @@ class Card extends Entity {
       CardEventType.CARD_DAMAGE_CURSE_REMOVED,
       {id: this.id, negativeEffects, damage: this.state.initialDamage}
     ));
+  }
+
+  public addHPAuraBuff (hpBuff: number): void {
+    let newCurrentHp = this.state.currentHp + hpBuff;
+
+    let positiveEffects = lodash.cloneDeep(this.state.positiveEffects);
+    positiveEffects.hpAuraBuff = {hpBuff: hpBuff};
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_HP_AURA_BUFF_ADDED,
+      {id: this.id, currentHp: newCurrentHp, positiveEffects}
+    ));
+  }
+
+  public changeHPAuraBuff (hpBuff: number): void {
+    let newCurrentHp = this.state.currentHp - this.positiveEffects.hpAuraBuff.hpBuff;
+
+    newCurrentHp += hpBuff;
+
+    let positiveEffects = lodash.cloneDeep(this.state.positiveEffects);
+    positiveEffects.hpAuraBuff.hpBuff = hpBuff;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_HP_AURA_BUFF_CHANGED,
+      {id: this.id, currentHp: newCurrentHp, positiveEffects}
+    ));
+
+    if (newCurrentHp <= 0) {
+      this.killCard();
+    }
+  }
+
+  public removeHPAuraBuff (): void {
+    let newCurrentHp = this.state.currentHp - this.positiveEffects.hpAuraBuff.hpBuff;
+
+    let positiveEffects = lodash.cloneDeep(this.state.positiveEffects);
+    delete positiveEffects.hpAuraBuff;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_HP_AURA_BUFF_REMOVED,
+      {id: this.id, currentHp: newCurrentHp, positiveEffects}
+    ));
+
+    if (newCurrentHp <= 0) {
+      this.killCard();
+    }
   }
 
   private resetAbilities (): void {

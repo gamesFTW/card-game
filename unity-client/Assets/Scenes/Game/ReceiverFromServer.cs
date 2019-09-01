@@ -98,6 +98,7 @@ namespace ServerActions
         public bool? isDamageCursed;
         public int? damageCursedDamageReduction;
         public int? damage;
+        public int? hpAuraBuffChange;
     }
 
     [Serializable]

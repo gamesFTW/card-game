@@ -67,6 +67,7 @@ class EndTurnUseCase extends UseCase {
     });
 
     this.entities.endingTurnPlayerTableCards.forEach((card: Card) => {
+      card.addEventListener(CardEventType.CARD_DIED, this.onCardDied);
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
       card.addEventListener(CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS, this.onCardAddedCurrentMovingPoints);
       card.addEventListener(CardEventType.CARD_RESET_BLOCK_ABILITY, this.onCardResetBlockAbility);
@@ -76,6 +77,9 @@ class EndTurnUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_TOOK_DAMAGE, this.onCardHpChanged);
       card.addEventListener(CardEventType.CARD_POISON_REMOVED, this.onCardPoisonRemoved);
       card.addEventListener(CardEventType.CARD_DAMAGE_CURSE_REMOVED, this.onCardDamageCurseRemoved);
+      card.addEventListener(CardEventType.CARD_HP_AURA_BUFF_ADDED, this.onCardHPAuraBuffAdded);
+      card.addEventListener(CardEventType.CARD_HP_AURA_BUFF_CHANGED, this.onCardHPAuraBuffAdded);
+      card.addEventListener(CardEventType.CARD_HP_AURA_BUFF_REMOVED, this.onCardHPAuraBuffRemoved);
     });
 
     this.entities.endingTurnPlayerOpponentTableCards.forEach((card: Card) => {
@@ -104,6 +108,13 @@ class EndTurnUseCase extends UseCase {
   @boundMethod
   private onGameEnded (event: Event<GameData>): void {
     this.action.currentTurn = event.data.currentTurn;
+  }
+
+  @boundMethod
+  private onCardDied (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.killed = !event.data.alive;
   }
 
   @boundMethod
@@ -166,6 +177,22 @@ class EndTurnUseCase extends UseCase {
 
     cardChanges.isDamageCursed = false;
     cardChanges.damage = event.data.damage;
+  }
+
+  @boundMethod
+  private onCardHPAuraBuffAdded (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.newHp = event.data.currentHp;
+    cardChanges.hpAuraBuffChange = event.data.positiveEffects.hpAuraBuff.hpBuff;
+  }
+
+  @boundMethod
+  private onCardHPAuraBuffRemoved (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.newHp = event.data.currentHp;
+    cardChanges.hpAuraBuffChange = 0;
   }
 
   @boundMethod

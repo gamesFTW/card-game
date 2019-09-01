@@ -35,6 +35,7 @@ public class CardDisplay : MonoBehaviour
 
     private TextMeshPro descriptionText;
     private TextMeshPro negativeEffectsText;
+    private TextMeshPro positiveEffectsText;
 
     private bool IsSelected = false;
     private bool IsZoomed = false;
@@ -183,6 +184,50 @@ public class CardDisplay : MonoBehaviour
         get { return this.cardData.ownerId == GameState.mainPlayerId; }
     }
 
+    public void ChangeHpByHPAura (int newHP, int hpAuraBuff)
+    {
+        int hpDifference = newHP - cardData.currentHp;
+
+        cardData.currentHp = newHP;
+
+        currentHpText.text = newHP.ToString();
+
+        if (this.UnitDisplay)
+        {
+            UnityEngine.Color color;
+            if (hpDifference == 0)
+            {
+
+            }
+            else { 
+                if (hpDifference > 0)
+                {
+                    color = UnityEngine.Color.green;
+                }
+                else
+                {
+                    color = UnityEngine.Color.red;
+                }
+
+                this.Shake();
+                this.UnitDisplay.ShowToolTip(System.Math.Abs(hpDifference).ToString() + " (hp aura)", color);
+            }
+        }
+
+        if (hpAuraBuff > 0)
+        {
+            HPAuraBuffEffect hpAuraBuffEffect = new HPAuraBuffEffect();
+            hpAuraBuffEffect.hpBuff = hpAuraBuff;
+            this.cardData.positiveEffects.hpAuraBuff = hpAuraBuffEffect;
+        }
+        else
+        {
+            this.cardData.positiveEffects.hpAuraBuff = null;
+        }
+
+        this.FillPositiveEffects();
+    }
+
     // Use this for initialization
     private void Start () 
     {
@@ -216,9 +261,11 @@ public class CardDisplay : MonoBehaviour
 
         this.descriptionText = descritionContainer.transform.Find("Description").GetComponent<TextMeshPro>();
         this.negativeEffectsText = descritionContainer.transform.Find("NegativeEffects").GetComponent<TextMeshPro>();
+        this.positiveEffectsText = descritionContainer.transform.Find("PositiveEffects").GetComponent<TextMeshPro>();
 
         this.FillDescription();
         this.FillNegativeEffects();
+        this.FillPositiveEffects();
     }
 
     private void Update()
@@ -542,6 +589,10 @@ public class CardDisplay : MonoBehaviour
             }
             descriptionText += "AOE " + this.cardData.abilities.aoe.range + withDiagonalText + "\n";
         }
+        if (this.cardData.abilities.hpAura != null)
+        {
+            descriptionText += "HP Aura " + this.cardData.abilities.hpAura.hpBuff + " (range " + this.cardData.abilities.hpAura.range + ")" + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }
@@ -555,16 +606,28 @@ public class CardDisplay : MonoBehaviour
             negativeEffectsText += "Can't shoot\n";
         }
 
+        if (this.cardData.negativeEffects.damageCursed != null)
+        {
+            negativeEffectsText += "- " + this.cardData.negativeEffects.damageCursed.damageReduction + " damage (damage curse) \n";
+        }
+
         if (this.cardData.negativeEffects.poisoned != null)
         {
             negativeEffectsText += "Poisoned - " + this.cardData.negativeEffects.poisoned.damage + "\n";
         }
 
-        if (this.cardData.negativeEffects.damageCursed != null)
+        this.negativeEffectsText.text = negativeEffectsText;
+    }
+
+    private void FillPositiveEffects()
+    {
+        string positiveEffectsText = "";
+
+        if (this.cardData.positiveEffects.hpAuraBuff != null)
         {
-            negativeEffectsText += "Damage cursed - " + this.cardData.negativeEffects.damageCursed.damageReduction + "\n";
+            positiveEffectsText += "+ " + this.cardData.positiveEffects.hpAuraBuff.hpBuff + " hp (hp aura buff) \n";
         }
 
-        this.negativeEffectsText.text = negativeEffectsText;
+        this.positiveEffectsText.text = positiveEffectsText;
     }
 }
