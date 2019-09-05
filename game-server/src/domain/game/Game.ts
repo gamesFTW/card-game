@@ -83,7 +83,7 @@ class Game extends Entity {
     RangeService.applyBlockForRangeUnits(endingTurnPlayerOpponentTableCards, endingTurnPlayerTableCards, board);
 
     RegenerationsService.regenerateUnits(endingTurnPlayerOpponentTableCards);
-    PoisonService.inflictPoisonDamage(endingTurnPlayerTableCards);
+    PoisonService.inflictPoisonDamage(endingTurnPlayerTableCards, endingTurnPlayer, board);
     DamageCurseService.removeDamageCurse(endingTurnPlayerTableCards);
     HPAuraService.buffHP(endingTurnPlayerTableCards, endingTurnPlayer, board);
   }
