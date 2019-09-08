@@ -65,6 +65,11 @@ public class AbilityDisplay : MonoBehaviour
             sprite = Resources.Load<Sprite>("Abilities/SpellBook01_102");
         }
 
+        if (this._ability is AimingAbility)
+        {
+            sprite = Resources.Load<Sprite>("Abilities/SpellBook01_64");
+        }
+
         var abilityImage = this.transform.Find("AbilityMask").Find("AbilityImage").gameObject;
         SpriteRenderer spriteRenderer = abilityImage.GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = sprite;

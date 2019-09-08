@@ -60,6 +60,10 @@ interface Abilities {
     range: number;
     hpBuff: number;
   };
+  aiming?: {
+    numberOfAimingForAttack: number;
+    numberOfAiming: number;
+  };
 }
 
 interface NegativeEffects {

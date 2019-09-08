@@ -60,6 +60,7 @@ public class Abilities
     public DamageCurseAbility damageCurse;
     public AOEAbility aoe;
     public HPAuraAbility hpAura;
+    public AimingAbility aiming;
 }
 
 [Serializable]
@@ -156,6 +157,13 @@ public class HPAuraAbility : Ability
 {
     public int range;
     public int hpBuff;
+}
+
+[Serializable]
+public class AimingAbility : Ability
+{
+    public int numberOfAimingForAttack;
+    public int numberOfAiming;
 }
 
 
@@ -326,7 +334,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "healCard", values);
     }
 
-    public async static Task UseManaAbility(ManaAbilityCardAction action)
+    public async static Task UseManaAbility(SimpleAbilityCardAction action)
     {
         var values = new
         {
@@ -336,5 +344,17 @@ public class ServerApi
         };
 
         await HttpRequest.Post(Config.GAME_SERVER_URL + "useManaAbility", values);
+    }
+
+    public async static Task ToAim(SimpleAbilityCardAction action)
+    {
+        var values = new
+        {
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
+            action.cardId
+        };
+
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "toAim", values);
     }
 }

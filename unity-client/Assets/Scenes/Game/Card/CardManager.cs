@@ -222,6 +222,11 @@ public class CardManager : MonoBehaviour
         {
             cardTransform.GetComponent<CardDisplay>().BlockedInBeginningOfTurn = (bool)cardChanges.blockedRangeAbilityInBeginningOfTurn;
         }
+
+        if (cardChanges.numberOfAiming != null)
+        {
+            cardTransform.GetComponent<CardDisplay>().NumberOfAiming = (int)cardChanges.numberOfAiming;
+        }
     }
 
     private void KillUnit(CardDisplay cardDisplay)

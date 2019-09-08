@@ -179,6 +179,17 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    public int NumberOfAiming
+    {
+        get { return cardData.abilities.aiming.numberOfAiming; }
+        set
+        {
+            cardData.abilities.aiming.numberOfAiming = value;
+            this.UnitDisplay.RedrawAbilisiesStatus();
+            this.FillPositiveEffects();
+        }
+    }
+
     public bool IsAlly
     {
         get { return this.cardData.ownerId == GameState.mainPlayerId; }
@@ -593,6 +604,10 @@ public class CardDisplay : MonoBehaviour
         {
             descriptionText += "HP Aura " + this.cardData.abilities.hpAura.hpBuff + " (range " + this.cardData.abilities.hpAura.range + ")" + "\n";
         }
+        if (this.cardData.abilities.aiming != null)
+        {
+            descriptionText += "Aiming " + this.cardData.abilities.aiming.numberOfAimingForAttack + "\n";
+        }
 
         this.descriptionText.text = descriptionText;
     }
@@ -622,6 +637,11 @@ public class CardDisplay : MonoBehaviour
     private void FillPositiveEffects()
     {
         string positiveEffectsText = "";
+
+        if (this.cardData.abilities.aiming != null && this.cardData.abilities.aiming.numberOfAiming > 0)
+        {
+            positiveEffectsText += "Aimed " + this.cardData.abilities.aiming.numberOfAiming + " / " + this.cardData.abilities.aiming.numberOfAimingForAttack + "\n";
+        }
 
         if (this.cardData.positiveEffects.hpAuraBuff != null)
         {

@@ -88,6 +88,7 @@ public class ActionEmmiter
     public static readonly string CARD_ATTACK = "ActionEmmiter:CARD_ATTACK";
     public static readonly string CARD_HEAL = "ActionEmmiter:CARD_HEAL";
     public static readonly string CARD_USE_MANA_ABILITY = "ActionEmmiter:CARD_USE_MANA_ABILITY";
+    public static readonly string CARD_TO_AIM = "ActionEmmiter:CARD_TO_AIM";
 
     public BoardCreator boardCreator;
 
@@ -153,7 +154,15 @@ public class ActionEmmiter
 
     public void EmmitCardUseManaAbilityAction(UnitDisplay unit)
     {
-        Unibus.Dispatch<ManaAbilityCardAction>(ActionEmmiter.CARD_USE_MANA_ABILITY, new ManaAbilityCardAction
+        Unibus.Dispatch<SimpleAbilityCardAction>(ActionEmmiter.CARD_USE_MANA_ABILITY, new SimpleAbilityCardAction
+        {
+            cardId = unit.CardData.id
+        });
+    }
+
+    public void EmmitCardToAimAction(UnitDisplay unit)
+    {
+        Unibus.Dispatch<SimpleAbilityCardAction>(ActionEmmiter.CARD_TO_AIM, new SimpleAbilityCardAction
         {
             cardId = unit.CardData.id
         });

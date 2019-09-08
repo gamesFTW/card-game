@@ -29,7 +29,7 @@ public class HealCardAction
     public string healedCardId;
 }
 
-public class ManaAbilityCardAction
+public class SimpleAbilityCardAction
 {
     public string cardId;
 }
@@ -49,7 +49,8 @@ public class CardSenderToServer : MonoBehaviour
         Unibus.Subscribe<MoveCardAction> (ActionEmmiter.CARD_MOVE, OnCardMove);
         Unibus.Subscribe<AttackCardAction> (ActionEmmiter.CARD_ATTACK, OnCardAttack);
         Unibus.Subscribe<HealCardAction> (ActionEmmiter.CARD_HEAL, OnCardHeal);
-        Unibus.Subscribe<ManaAbilityCardAction> (ActionEmmiter.CARD_USE_MANA_ABILITY, OnUseManaAbility);
+        Unibus.Subscribe<SimpleAbilityCardAction> (ActionEmmiter.CARD_USE_MANA_ABILITY, OnUseManaAbility);
+        Unibus.Subscribe<SimpleAbilityCardAction> (ActionEmmiter.CARD_TO_AIM, OnToAim);
     }
 
     void Update() 
@@ -82,8 +83,13 @@ public class CardSenderToServer : MonoBehaviour
         await ServerApi.HealCard(action);
     }
 
-    async void OnUseManaAbility(ManaAbilityCardAction action)
+    async void OnUseManaAbility(SimpleAbilityCardAction action)
     {
         await ServerApi.UseManaAbility(action);
+    }
+
+    async void OnToAim(SimpleAbilityCardAction action)
+    {
+        await ServerApi.ToAim(action);
     }
 }

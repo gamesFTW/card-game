@@ -196,6 +196,23 @@ class Player extends Entity {
     }
   }
 
+  public toAim (card: Card): void {
+    this.checkIfItHisTurn();
+
+    if (!card.abilities.aiming) {
+      throw new Error(`Card ${this.state.id} doesn't have aiming ability`);
+    }
+
+    const isCardInTable = this.checkCardIn(card, CardStack.TABLE);
+    if (!isCardInTable) {
+      throw new Error(`Card ${card.id} not located in table of player ${this.id}`);
+    }
+
+    card.tap();
+
+    card.toAim();
+  }
+
   // TODO: это очень не правильно, данный метод находится не на своем уровне абстракции
   // Нужно создать глобальную шину и делать такое через эвенты и этот метод должен быть приватным
   public endOfCardDeath (card: Card): void {

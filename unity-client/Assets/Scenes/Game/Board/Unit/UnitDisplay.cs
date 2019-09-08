@@ -196,6 +196,13 @@ public class UnitDisplay : MonoBehaviour
                 this.RedrawAbilityStatus("SpellBook01_16");
             }
         }
+        if (this.cardData.abilities.aiming != null)
+        {
+            if (this.cardData.abilities.aiming.numberOfAiming >= this.cardData.abilities.aiming.numberOfAimingForAttack)
+            {
+                this.RedrawAbilityStatus("SpellBook01_64");
+            }
+        }
     }
 
     public void ShowToolTip (string text, UnityEngine.Color color)
@@ -235,6 +242,12 @@ public class UnitDisplay : MonoBehaviour
         {
             numberOfactivatedAbilities++;
             abilities.Add(this.cardData.abilities.mana);
+        }
+
+        if (this.cardData.abilities.aiming != null)
+        {
+            numberOfactivatedAbilities++;
+            abilities.Add(this.cardData.abilities.aiming);
         }
 
         if (numberOfactivatedAbilities == 1)

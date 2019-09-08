@@ -60,7 +60,9 @@ enum CardEventType {
   CARD_DAMAGE_CURSE_REMOVED = 'Card:CardDamageCurseRemoved',
   CARD_HP_AURA_BUFF_ADDED = 'Card:CardAddHpAuraBuff',
   CARD_HP_AURA_BUFF_CHANGED = 'Card:CardChangeHpAuraBuff',
-  CARD_HP_AURA_BUFF_REMOVED = 'Card:CardRemoveHpAuraBuff'
+  CARD_HP_AURA_BUFF_REMOVED = 'Card:CardRemoveHpAuraBuff',
+  CARD_AIMED = 'Card:CardAimed',
+  CARD_ATTACK_WITH_AIM = 'Card:CardAttackWithAim'
 }
 
 enum BoardEventType {

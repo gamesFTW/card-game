@@ -41,6 +41,14 @@ class RangeAttackService {
 
     this.checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards, areas);
 
+    if (attackerCard.abilities.aiming) {
+      if (attackerCard.abilities.aiming.numberOfAiming >= attackerCard.abilities.aiming.numberOfAimingForAttack) {
+        attackerCard.attackWithAim();
+      } else {
+        throw new DomainError(`Card ${attackerCard.id} can't attack. It's need more aiming`);
+      }
+    }
+
     attackerCard.tap();
 
     let attackerDmg = BaseAttackService.calcDamage(attackerCard, attackedCard, attackedPlayerTableCards, board);

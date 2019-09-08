@@ -24,6 +24,14 @@ class MeleeAttackService {
       throw new DomainError(`Card ${attackerCard.id} is not near ${attackedCard.id}`);
     }
 
+    if (attackerCard.abilities.aiming) {
+      if (attackerCard.abilities.aiming.numberOfAiming >= attackerCard.abilities.aiming.numberOfAimingForAttack) {
+        attackerCard.attackWithAim();
+      } else {
+        throw new DomainError(`Card ${attackerCard.id} can't attack. It's need more aiming`);
+      }
+    }
+
     attackerCard.tap();
 
     let isAttackerCardHaveFirstStrike = !!(attackerCard.abilities.firstStrike);

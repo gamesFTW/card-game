@@ -81,6 +81,13 @@ namespace ServerActions
     }
 
     [Serializable]
+    public class BaseAction
+    {
+        public string playerId;
+        public CardChanges[] cardChanges;
+    }
+
+    [Serializable]
     public class CardChanges
     {
         public string id;
@@ -99,6 +106,7 @@ namespace ServerActions
         public int? damageCursedDamageReduction;
         public int? damage;
         public int? hpAuraBuffChange;
+        public int? numberOfAiming;
     }
 
     [Serializable]
@@ -165,6 +173,12 @@ public class ReceiverFromServer : MonoBehaviour
             SocketData<ServerActions.CardUsedManaAbilityAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardUsedManaAbilityAction>>(message);
             this.OnCardUsedManaAbilityAction(data.actions[index]);
         }
+
+        if (type == "CardAimedAction")
+        {
+            SocketData<ServerActions.BaseAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.BaseAction>>(message);
+            this.OnCardAimedAction(data.actions[index]);
+        }
     }
 
     public void OnEndTurnAction(ServerActions.EndTurnAction action)
@@ -216,5 +230,13 @@ public class ReceiverFromServer : MonoBehaviour
     {
         cardManger.TapCards(action.playerId, new string[] { action.tappedCardId });
         cardManger.UntapCards(action.playerId, action.cardsUntapped);
+    }
+
+    public void OnCardAimedAction(ServerActions.BaseAction action)
+    {
+        foreach (ServerActions.CardChanges card in action.cardChanges)
+        {
+            cardManger.ApplyChangesToCard(card);
+        }
     }
 }

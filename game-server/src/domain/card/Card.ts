@@ -56,6 +56,10 @@ class Card extends Entity {
       };
     }
 
+    if (cardCreationData.abilities.aiming) {
+      cardCreationData.abilities.aiming.numberOfAiming = 0;
+    }
+
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_CREATED, {
         id,
@@ -324,6 +328,28 @@ class Card extends Entity {
     if (newCurrentHp <= 0) {
       this.killCard();
     }
+  }
+
+  public toAim (): void {
+    let abilities = lodash.cloneDeep(this.state.abilities);
+    abilities.aiming.numberOfAiming ++;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_AIMED,
+      {id: this.id, abilities}
+    ));
+  }
+
+  public attackWithAim (): void {
+    let abilities = lodash.cloneDeep(this.state.abilities);
+    abilities.aiming.numberOfAiming -= abilities.aiming.numberOfAimingForAttack;
+
+    abilities.aiming.numberOfAiming = abilities.aiming.numberOfAiming >= 0 ? abilities.aiming.numberOfAiming : 0;
+
+    this.applyEvent(new Event<CardData>(
+      CardEventType.CARD_ATTACK_WITH_AIM,
+      {id: this.id, abilities}
+    ));
   }
 
   private resetAbilities (): void {

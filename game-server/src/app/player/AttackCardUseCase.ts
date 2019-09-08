@@ -46,6 +46,7 @@ interface CardChanges {
   damageCursedDamageReduction?: number;
   damage?: number;
   hpAuraBuffChange?: number;
+  numberOfAiming?: number;
 }
 
 interface CardAttackedAction {
@@ -103,6 +104,7 @@ class AttackCardUseCase extends UseCase {
       card.addEventListener(CardEventType.CARD_USE_EVASION_ABILITY, this.onCardUseEvasionAbility);
       card.addEventListener(CardEventType.CARD_POISONED, this.onCardPoisoned);
       card.addEventListener(CardEventType.CARD_DAMAGE_CURSED, this.onCardDamageCursed);
+      card.addEventListener(CardEventType.CARD_ATTACK_WITH_AIM, this.onCardAttackWithAim);
     }
 
     this.entities.board.addEventListener(BoardEventType.CARD_MOVED, this.onCardMoved);
@@ -186,6 +188,13 @@ class AttackCardUseCase extends UseCase {
     cardChanges.isDamageCursed = true;
     cardChanges.damageCursedDamageReduction = event.data.negativeEffects.damageCursed.damageReduction;
     cardChanges.damage = event.data.damage;
+  }
+
+  @boundMethod
+  private onCardAttackWithAim (event: Event<CardData>): void {
+    let cardChanges = this.getOrCreateCardChangesById(event.data.id);
+
+    cardChanges.numberOfAiming = event.data.abilities.aiming.numberOfAiming;
   }
 
   @boundMethod

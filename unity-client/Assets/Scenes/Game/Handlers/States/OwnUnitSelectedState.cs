@@ -66,6 +66,13 @@ public class OwnUnitSelectedState : SelectingState
         this.EnableNoSelectionsState();
     }
 
+    private void ToAim()
+    {
+        this.actionEmmiter.EmmitCardToAimAction(this.selectedUnit);
+
+        this.EnableNoSelectionsState();
+    }
+
     private void MoveUnit(Point point)
     {
         this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
@@ -151,6 +158,11 @@ public class OwnUnitSelectedState : SelectingState
         if (abilityActivated.ability is ManaAbility)
         {
             this.UseManaAbility();
+        }
+
+        if (abilityActivated.ability is AimingAbility)
+        {
+            this.ToAim();
         }
     }
 }
