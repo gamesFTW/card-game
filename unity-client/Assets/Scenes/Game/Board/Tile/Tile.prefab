@@ -552,4 +552,3 @@ MonoBehaviour:
   blinkOpacityUp: 0.23
   blinkOpacityDown: 0.1
   blinkSpeed: 0.8
-  spriteRenderer: {fileID: 0}

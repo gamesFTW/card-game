@@ -212,7 +212,6 @@ public class BoardCreator : MonoBehaviour
     private List<Point> GetPositionsForRangeAttack(UnitDisplay attacker, Point fromPosition)
     {
         var radiusPoints = this.FindPointsInRadius(fromPosition, attacker.CardData.abilities.range.range, attacker.CardData.abilities.range.minRange);
-        radiusPoints.RemoveAt(0);
 
         var points = new List<Point>();
         foreach (var radiusPoint in radiusPoints)
