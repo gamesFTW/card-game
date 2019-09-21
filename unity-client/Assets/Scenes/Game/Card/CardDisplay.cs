@@ -337,6 +337,7 @@ public class CardDisplay : MonoBehaviour
 
     public void Kill()
     {
+        this.cardData.alive = false;
         Unibus.Dispatch(CARD_DIED, this);
         this.ZoomOut();
         this.Unselect();
