@@ -32,6 +32,7 @@ public class UnitDisplay : MonoBehaviour
     private GameObject selectedGlowObject;
     private GameObject overGlowObject;
     private GameObject abilitiesStatus;
+    private GameObject target;
 
     private GameObject abilities;
 
@@ -40,6 +41,7 @@ public class UnitDisplay : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        this.target = this.transform.Find("Target").gameObject;
         this.blueGlow = this.transform.Find("BlueGlow").gameObject;
         this.redGlow = this.transform.Find("RedGlow").gameObject;
         this.blueBack = this.transform.Find("BlueBack").gameObject;
@@ -215,6 +217,16 @@ public class UnitDisplay : MonoBehaviour
         toolTip.transform.DOLocalMoveY(toolTip.transform.localPosition.y + 0.2f, 1.5f).OnComplete(() => {
             GameObject.Destroy(toolTip);
         });
+    }
+
+    public void ShowTarget()
+    {
+        target.SetActive(true);
+    }
+
+    public void HideTarget()
+    {
+        target.SetActive(false);
     }
 
     private void RedrawAbilityStatus(string path)

@@ -194,11 +194,28 @@ public class BoardCreator : MonoBehaviour
 
     public void ShowRangeAttackReach(UnitDisplay attacker, Point fromPosition)
     {
+        var points = this.GetPositionsForRangeAttack(attacker, fromPosition);
+
+        this.HighlightPathInTilesByPoints(points, BlinkColor.Yellow);
+
+        List<UnitDisplay> units = this.GetUnitsByPoints(points);
+
+        foreach (var unit in units)
+        {
+            if (!unit.CardDisplay.IsAlly)
+            {
+                unit.ShowTarget();
+            }
+        }
+    }
+
+    private List<Point> GetPositionsForRangeAttack(UnitDisplay attacker, Point fromPosition)
+    {
         var radiusPoints = this.FindPointsInRadius(fromPosition, attacker.CardData.abilities.range.range, attacker.CardData.abilities.range.minRange);
         radiusPoints.RemoveAt(0);
 
         var points = new List<Point>();
-        foreach(var radiusPoint in radiusPoints)
+        foreach (var radiusPoint in radiusPoints)
         {
             var canUnitStandsAtThisPoint = true;
             var area = this.Areas[radiusPoint.x, radiusPoint.y];
@@ -209,13 +226,40 @@ public class BoardCreator : MonoBehaviour
 
             var canAttackToThisPoint = this.CheckRangeAttackBetweenPoints(fromPosition, radiusPoint);
 
-            if(canAttackToThisPoint && canUnitStandsAtThisPoint)
+            if (canAttackToThisPoint && canUnitStandsAtThisPoint)
             {
                 points.Add(radiusPoint);
             }
         }
 
-        this.HighlightPathInTilesByPoints(points, BlinkColor.Yellow);
+        return points;
+    }
+
+    private List<UnitDisplay> GetUnitsByPoints(List<Point> points)
+    {
+        var units = new List<UnitDisplay>();
+        foreach (var point in points)
+        {
+            var unit = GetUnitByPoint(point);
+            if (unit != null)
+            {
+                units.Add(unit);
+            }
+        }
+
+        return units;
+    }
+
+    private UnitDisplay GetUnitByPoint(Point point)
+    {
+        var unit = Units[point.x, point.y];
+        if (unit != null)
+        {
+            var unitDisplay = unit.GetComponent<UnitDisplay>();
+            return unitDisplay;
+        }
+
+        return null;
     }
 
     public void BlinkRicochetTargets(UnitDisplay unitDisplay)
@@ -300,6 +344,7 @@ public class BoardCreator : MonoBehaviour
                 if (unit != null)
                 {
                     unit.GetComponent<UnitDisplay>().BlinkOff();
+                    unit.GetComponent<UnitDisplay>().HideTarget();
                 }
             }
         }
