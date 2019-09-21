@@ -29,6 +29,8 @@ public class OwnUnitSelectedState : SelectingState
         {
             Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
             Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+            Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
+            Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
         }
     }
 
@@ -42,6 +44,8 @@ public class OwnUnitSelectedState : SelectingState
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+        Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
+        Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
         Unibus.Unsubscribe<AbilityActivated>(UnitDisplay.ABILITY_ACTIVATED, OnAbilityActivated);
     }
 
@@ -138,11 +142,25 @@ public class OwnUnitSelectedState : SelectingState
         if (!unit.CardDisplay.IsAlly)
         {
             this.boardCreator.RemoveAllBlinks();
-            this.boardCreator.ShowRangeAttackReach(this.selectedUnit, unit);
+            Point attackerPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
+            this.boardCreator.ShowRangeAttackReach(this.selectedUnit, attackerPosition);
         }
     }
 
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
+    {
+        this.boardCreator.RemoveAllBlinks();
+        this.boardCreator.ShowPathReach(this.selectedUnit);
+    }
+
+    private void OnTileMouseEnterOnBoard(TileDisplay tile)
+    {
+        this.boardCreator.RemoveAllBlinks();
+        Point fromPosition = this.boardCreator.GetTilePosition(tile);
+        this.boardCreator.ShowRangeAttackReach(this.selectedUnit, fromPosition);
+    }
+
+    private void OnTileMouseExitOnBoard(TileDisplay tile)
     {
         this.boardCreator.RemoveAllBlinks();
         this.boardCreator.ShowPathReach(this.selectedUnit);

@@ -96,7 +96,7 @@ public class BoardCreator : MonoBehaviour
     {
         UnitDisplay unitDisplay = cardDisplay.UnitDisplay;
 
-        Point position = GetUnitsPosition(unitDisplay);
+        Point position = GetUnitPosition(unitDisplay);
         Units[position.x, position.y] = null;
 
         Destroy(unitDisplay.gameObject);
@@ -106,15 +106,15 @@ public class BoardCreator : MonoBehaviour
     {
         UnitDisplay unitDisplay = card.GetComponent<UnitDisplay>();
 
-        Point unitPosition = GetUnitsPosition(unitDisplay);
+        Point unitPosition = GetUnitPosition(unitDisplay);
 
         return Tiles[unitPosition.x, unitPosition.y];
     }
 
     public bool CheckCardsAdjacency(GameObject firstCard, GameObject secondCard)
     {
-        Point firstCardPoint = GetUnitsPosition(firstCard.GetComponent<UnitDisplay>());
-        Point secondCardPoint = GetUnitsPosition(secondCard.GetComponent<UnitDisplay>());
+        Point firstCardPoint = GetUnitPosition(firstCard.GetComponent<UnitDisplay>());
+        Point secondCardPoint = GetUnitPosition(secondCard.GetComponent<UnitDisplay>());
 
         int xDistance = Math.Abs(firstCardPoint.x - secondCardPoint.x);
         int yDistance = Math.Abs(firstCardPoint.y - secondCardPoint.y);
@@ -129,7 +129,7 @@ public class BoardCreator : MonoBehaviour
 
     public bool UnitHaveRicochetTargetNearby(UnitDisplay unitDisplay)
     {
-        Point p = GetUnitsPosition(unitDisplay);
+        Point p = GetUnitPosition(unitDisplay);
         return PositionAdjacentToEnemy(p);
     }
 
@@ -137,7 +137,7 @@ public class BoardCreator : MonoBehaviour
     {
         var reachChecker = this.CreateReachChecker();
 
-        Point unitPosition = this.GetUnitsPosition(unitDisplay);
+        Point unitPosition = this.GetUnitPosition(unitDisplay);
         var points = reachChecker.CheckReach(unitPosition, unitDisplay.CardData.currentMovingPoints);
 
         this.HighlightPathInTilesByPoints(points);
@@ -147,7 +147,7 @@ public class BoardCreator : MonoBehaviour
     {
         var reachChecker = this.CreateReachChecker(true, true, true);
 
-        Point unitPosition = this.GetUnitsPosition(attacked);
+        Point unitPosition = this.GetUnitPosition(attacked);
         var points = reachChecker.CheckReach(unitPosition, attacker.CardData.abilities.push.range);
 
         this.HighlightPathInTilesByPoints(points);
@@ -160,7 +160,7 @@ public class BoardCreator : MonoBehaviour
         {
             if (hero.cardData.alive)
             {
-                Point position = this.GetUnitsPosition(hero.UnitDisplay);
+                Point position = this.GetUnitPosition(hero.UnitDisplay);
 
                 List<Point> p = FindPointsInRadius(position, 2);
 
@@ -192,10 +192,9 @@ public class BoardCreator : MonoBehaviour
         this.HighlightPathInTilesByPoints(positions);
     }
 
-    public void ShowRangeAttackReach(UnitDisplay attacker, UnitDisplay attacked)
+    public void ShowRangeAttackReach(UnitDisplay attacker, Point fromPosition)
     {
-        Point attackerPosition = GetUnitsPosition(attacker);
-        var radiusPoints = this.FindPointsInRadius(attackerPosition, attacker.CardData.abilities.range.range, attacker.CardData.abilities.range.minRange);
+        var radiusPoints = this.FindPointsInRadius(fromPosition, attacker.CardData.abilities.range.range, attacker.CardData.abilities.range.minRange);
         radiusPoints.RemoveAt(0);
 
         var points = new List<Point>();
@@ -208,7 +207,7 @@ public class BoardCreator : MonoBehaviour
                 canUnitStandsAtThisPoint = false;
             }
 
-            var canAttackToThisPoint = this.CheckRangeAttackBetweenPoints(attackerPosition, radiusPoint);
+            var canAttackToThisPoint = this.CheckRangeAttackBetweenPoints(fromPosition, radiusPoint);
 
             if(canAttackToThisPoint && canUnitStandsAtThisPoint)
             {
@@ -221,7 +220,7 @@ public class BoardCreator : MonoBehaviour
 
     public void BlinkRicochetTargets(UnitDisplay unitDisplay)
     {
-        Point p = GetUnitsPosition(unitDisplay);
+        Point p = GetUnitPosition(unitDisplay);
 
         Point[] points = new Point[] { new Point(p.x + 1, p.y), new Point(p.x - 1, p.y), new Point(p.x, p.y + 1), new Point(p.x, p.y - 1) };
 
@@ -237,7 +236,7 @@ public class BoardCreator : MonoBehaviour
 
     public void BlinkHealTargets(UnitDisplay unitDisplay, int range)
     {
-        Point p = GetUnitsPosition(unitDisplay);
+        Point p = GetUnitPosition(unitDisplay);
 
         var radiusPoints = this.FindPointsInRadius(p, range);
 
@@ -257,6 +256,38 @@ public class BoardCreator : MonoBehaviour
     {
         RemoveAllUnitBlinks();
         RemoveAllTileBlinks();
+    }
+
+    public Point GetUnitPosition(UnitDisplay unitDisplay)
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                if (Units[x, y] == unitDisplay.gameObject)
+                {
+                    return new Point(x, y);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Point GetTilePosition(TileDisplay tileDispay)
+    {
+        for (int x = 1; x <= Width; x++)
+        {
+            for (int y = 1; y <= Height; y++)
+            {
+                if (Tiles[x, y] == tileDispay.gameObject)
+                {
+                    return new Point(x, y);
+                }
+            }
+        }
+
+        return null;
     }
 
     private void RemoveAllUnitBlinks()
@@ -528,7 +559,7 @@ public class BoardCreator : MonoBehaviour
 
     private void UpdatePositions(UnitDisplay unitDisplay, Point position)
     {
-        Point oldPosition = GetUnitsPosition(unitDisplay);
+        Point oldPosition = GetUnitPosition(unitDisplay);
 
         Units[oldPosition.x, oldPosition.y] = null;
         Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
@@ -565,22 +596,6 @@ public class BoardCreator : MonoBehaviour
                 Tiles[x, y] = tile as GameObject;
             }
         }
-    }
-
-    private Point GetUnitsPosition(UnitDisplay unitDisplay)
-    {
-        for (int x = 1; x <= Width; x++)
-        {
-            for (int y = 1; y <= Height; y++)
-            {
-                if (Units[x, y] == unitDisplay.gameObject)
-                {
-                    return new Point(x, y);
-                }
-            }
-        }
-
-        return null;
     }
 
     void OnTileMouseLeftClick(Point position)
