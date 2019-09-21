@@ -216,7 +216,7 @@ public class BoardCreator : MonoBehaviour
             }
         }
 
-        this.HighlightPathInTilesByPoints(points);
+        this.HighlightPathInTilesByPoints(points, BlinkColor.Yellow);
     }
 
     public void BlinkRicochetTargets(UnitDisplay unitDisplay)
@@ -281,7 +281,7 @@ public class BoardCreator : MonoBehaviour
             for (int y = 1; y <= Height; y++)
             {
                 var tile = this.Tiles[x, y];
-                tile.GetComponent<TileDisplay>().PathOff();
+                tile.GetComponent<TileDisplay>().RemoveBlinks();
             }
         }
     }
@@ -408,12 +408,12 @@ public class BoardCreator : MonoBehaviour
         return pointsInRadius;
     }
 
-    private void HighlightPathInTilesByPoints(List<Point> points)
+    private void HighlightPathInTilesByPoints(List<Point> points, BlinkColor color = BlinkColor.Black)
     {
         foreach (var point in points)
         {
             var tile = this.Tiles[point.x, point.y];
-            tile.GetComponent<TileDisplay>().PathOn();
+            tile.GetComponent<TileDisplay>().Blink(color);
         }
     }
 

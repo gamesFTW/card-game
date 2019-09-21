@@ -173,7 +173,7 @@ public class CardManager : MonoBehaviour
 
         if (cardChanges.killed)
         {
-            KillUnit(cardDisplay);
+            this.KillUnit(cardDisplay);
         }
 
         if (cardChanges.currentMovingPoints != null)

@@ -16,7 +16,6 @@ public class BlinkedSpriteRenderer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -28,7 +27,6 @@ public class BlinkedSpriteRenderer : MonoBehaviour
     public void BlinkOn()
     {
         var spriteRenderer = this.GetComponent<SpriteRenderer>();
-
         this.InitialColor = spriteRenderer.color;
 
         var color1 = spriteRenderer.color;

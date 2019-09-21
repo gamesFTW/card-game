@@ -3,6 +3,12 @@ using UnibusEvent;
 using TMPro;
 using DG.Tweening;
 
+public enum BlinkColor
+{
+    Yellow,
+    Black
+}
+
 public class TileDisplay : MonoBehaviour
 {
     public static readonly string TILE_MOUSE_LEFT_CLICK = "TILE_MOUSE_LEFT_CLICK";
@@ -14,16 +20,16 @@ public class TileDisplay : MonoBehaviour
     public int x;
     public int y;
 
-    private bool IsPathOn = false;
+    private bool IsBlinkOn = false;
     private GameObject overGlowObject;
-    private GameObject path;
+    private GameObject blink;
 
     private Sequence sequence;
 
     void Start()
     {
         this.overGlowObject = this.transform.Find("OverGlow").gameObject;
-        this.path = this.transform.Find("Path").gameObject;
+        this.blink = this.transform.Find("Blink").gameObject;
     }
 
     void Update()
@@ -46,25 +52,45 @@ public class TileDisplay : MonoBehaviour
         this.overGlowObject.SetActive(false);
     }
 
-    public void PathOn()
+    public void Blink(BlinkColor color = BlinkColor.Black)
     {
-        if (this.IsPathOn)
+        if (this.IsBlinkOn)
         {
             return;
         }
 
-        var spriteRenderer = this.path.GetComponent<BlinkedSpriteRenderer>();
-        spriteRenderer.BlinkOn();
+        var blinkedSpriteRenderer = this.blink.GetComponent<BlinkedSpriteRenderer>();
+        var spriteRenderer = this.blink.GetComponent<SpriteRenderer>();
 
-        this.path.SetActive(true);
+        Sprite sprite = null;
+
+        if (color == BlinkColor.Black)
+        {
+            sprite = Resources.Load<Sprite>("isometric-tile-path");
+            blinkedSpriteRenderer.blinkOpacityUp = 0.2f;
+            blinkedSpriteRenderer.blinkOpacityDown = 0.1f;
+
+        }
+        if (color == BlinkColor.Yellow)
+        {
+            sprite = Resources.Load<Sprite>("isometric-tile-range-selection");
+            blinkedSpriteRenderer.blinkOpacityUp = 0.4f;
+            blinkedSpriteRenderer.blinkOpacityDown = 0.2f;
+        }
+
+        spriteRenderer.sprite = sprite;
+
+        blinkedSpriteRenderer.BlinkOn();
+
+        this.blink.SetActive(true);
     }
 
-    public void PathOff()
+    public void RemoveBlinks()
     {
-        var spriteRenderer = this.path.GetComponent<BlinkedSpriteRenderer>();
+        var spriteRenderer = this.blink.GetComponent<BlinkedSpriteRenderer>();
         spriteRenderer.BlinkOff();
 
-        this.path.SetActive(false);
+        this.blink.SetActive(false);
     }
 
     void OnMouseDown()
