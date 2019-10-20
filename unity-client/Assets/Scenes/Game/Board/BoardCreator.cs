@@ -196,7 +196,7 @@ public class BoardCreator : MonoBehaviour
     {
         var points = this.GetPositionsForRangeAttack(attacker, fromPosition);
 
-        this.HighlightPathInTilesByPoints(points, BlinkColor.Yellow);
+        this.HighlightRangeAttackReachInTilesByPoints(points);
 
         List<UnitDisplay> units = this.GetUnitsByPoints(points);
 
@@ -394,43 +394,71 @@ public class BoardCreator : MonoBehaviour
         var y2 = point2.y;
 
         var xDist = Math.Abs(x2 - x1);
-        var yDist = -Math.Abs(y2 - y1);
+        var yDist = Math.Abs(y2 - y1);
         var xStep = (x1 < x2 ? +1 : -1);
         var yStep = (y1 < y2 ? +1 : -1);
-        var error = xDist + yDist;
+
+        var maxDist = xDist > yDist ? xDist : yDist;
+        var minDist = xDist > yDist ? yDist : xDist;
 
         var dots = new List<Point>();
-        dots.Add(new Point(x1, y1));
 
-        while (x1 != x2 || y1 != y2)
+        var a = (float)minDist / (float)maxDist;
+        float inc = 0;
+
+        for (var i = 0; i <= maxDist; i++)
         {
-            if (2 * error - yDist == xDist - 2 * error)
+            if (xDist > yDist)
             {
-                dots.Add(new Point(x1, y1 + yStep));
+                var x = x1 + (xStep * i);
+                var y = y1 + (inc * yStep);
 
-                error += yDist;
-                x1 += xStep;
-                dots.Add(new Point(x1, y1));
+                if (this.IsInt(inc))
+                {
+                    dots.Add(new Point(x, (int)Math.Round(y)));
+                } else
+                {
+                    dots.Add(new Point(x, (int)Math.Floor(y)));
+                    dots.Add(new Point(x, (int)Math.Ceiling(y)));
+                }
+            }
+            if (xDist < yDist)
+            {
+                var x = x1 + (inc * xStep);
+                var y = y1 + (yStep * i);
 
-                error += xDist;
-                y1 += yStep;
-                dots.Add(new Point(x1, y1));
+                if (this.IsInt(inc))
+                {
+                    dots.Add(new Point((int)Math.Round(x), y));
+                } else
+                {
+                    dots.Add(new Point((int)Math.Floor(x), y));
+                    dots.Add(new Point((int)Math.Ceiling(x), y));
+                }
             }
-            else if (2 * error - yDist > xDist - 2 * error)
+            if (xDist == yDist)
             {
-                error += yDist;
-                x1 += xStep;
-                dots.Add(new Point(x1, y1));
+                var x = x1 + (xStep * i);
+                var y = y1 + (yStep * i);
+
+                dots.Add(new Point(x, y));
+
+                if (i != maxDist)
+                {
+                    dots.Add(new Point(x + xStep, y));
+                    dots.Add(new Point(x, y + yStep));
+                }
             }
-            else
-            {
-                error += xDist;
-                y1 += yStep;
-                dots.Add(new Point(x1, y1));
-            }
+
+            inc += a;
         }
 
         return dots;
+    }
+
+    private bool IsInt (float number)
+    {
+        return (number % 1) == 0;
     }
 
     private bool PositionAdjacentToEnemy(Point point)
@@ -483,12 +511,21 @@ public class BoardCreator : MonoBehaviour
         return pointsInRadius;
     }
 
-    private void HighlightPathInTilesByPoints(List<Point> points, BlinkColor color = BlinkColor.Black)
+    private void HighlightPathInTilesByPoints(List<Point> points)
     {
         foreach (var point in points)
         {
             var tile = this.Tiles[point.x, point.y];
-            tile.GetComponent<TileDisplay>().Blink(color);
+            tile.GetComponent<TileDisplay>().ShowPathReach();
+        }
+    }
+
+    private void HighlightRangeAttackReachInTilesByPoints(List<Point> points)
+    {
+        foreach (var point in points)
+        {
+            var tile = this.Tiles[point.x, point.y];
+            tile.GetComponent<TileDisplay>().ShowRangeAttackReach();
         }
     }
 

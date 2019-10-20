@@ -18,20 +18,17 @@ public class OwnUnitSelectedState : SelectingState
         selectedUnit.ShowAbilities();
 
         this.boardCreator.ShowPathReach(selectedUnit);
+        this.ShowRangeAttackReach(selectedUnit);
 
         Unibus.Dispatch(AudioController.CARD_SELECTED, selectedUnit.CardDisplay);
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Subscribe<AbilityActivated>(UnitDisplay.ABILITY_ACTIVATED, OnAbilityActivated);
-
-        if (selectedUnit.CardData.abilities.range != null)
-        {
-            Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
-            Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
-            Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
-            Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
-        }
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+        Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
+        Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
     }
 
     protected override void Disable()
@@ -143,7 +140,18 @@ public class OwnUnitSelectedState : SelectingState
         {
             this.boardCreator.RemoveAllBlinks();
             Point attackerPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
-            this.boardCreator.ShowRangeAttackReach(this.selectedUnit, attackerPosition);
+            this.ShowRangeAttackReach(this.selectedUnit, attackerPosition);
+            this.boardCreator.ShowPathReach(this.selectedUnit);
+        } else if (unit.CardDisplay == this.selectedUnit)
+        {
+            this.boardCreator.RemoveAllBlinks();
+            this.boardCreator.ShowPathReach(this.selectedUnit);
+            this.ShowRangeAttackReach(this.selectedUnit);
+        } else
+        {
+            this.boardCreator.RemoveAllBlinks();
+            this.boardCreator.ShowPathReach(unit);
+            this.ShowRangeAttackReach(unit);
         }
     }
 
@@ -156,8 +164,11 @@ public class OwnUnitSelectedState : SelectingState
     private void OnTileMouseEnterOnBoard(TileDisplay tile)
     {
         this.boardCreator.RemoveAllBlinks();
+
         Point fromPosition = this.boardCreator.GetTilePosition(tile);
-        this.boardCreator.ShowRangeAttackReach(this.selectedUnit, fromPosition);
+        this.ShowRangeAttackReach(this.selectedUnit, fromPosition);
+
+        this.boardCreator.ShowPathReach(this.selectedUnit);
     }
 
     private void OnTileMouseExitOnBoard(TileDisplay tile)
@@ -181,6 +192,18 @@ public class OwnUnitSelectedState : SelectingState
         if (abilityActivated.ability is AimingAbility)
         {
             this.ToAim();
+        }
+    }
+
+    private void ShowRangeAttackReach(UnitDisplay unit, Point fromPosition = null)
+    {
+        if (unit.CardData.abilities.range != null)
+        {
+            if (fromPosition == null)
+            {
+                fromPosition = this.boardCreator.GetUnitPosition(unit);
+            }
+            this.boardCreator.ShowRangeAttackReach(unit, fromPosition);
         }
     }
 }

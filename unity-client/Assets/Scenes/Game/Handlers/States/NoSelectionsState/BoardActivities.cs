@@ -47,6 +47,12 @@ public class BoardActivities
         if (unit.CardDisplay.IsAlly)
         {
             this.boardCreator.ShowPathReach(unit);
+
+            if (unit.CardData.abilities.range != null)
+            {
+                Point attackerPosition = this.boardCreator.GetUnitPosition(unit);
+                this.boardCreator.ShowRangeAttackReach(unit, attackerPosition);
+            }
         }
     }
     

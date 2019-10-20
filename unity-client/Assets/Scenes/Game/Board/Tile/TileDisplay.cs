@@ -6,7 +6,8 @@ using DG.Tweening;
 public enum BlinkColor
 {
     Yellow,
-    Black
+    Blue,
+    YellowAndBlue
 }
 
 public class TileDisplay : MonoBehaviour
@@ -20,7 +21,8 @@ public class TileDisplay : MonoBehaviour
     public int x;
     public int y;
 
-    private bool IsBlinkOn = false;
+    private bool IsPathReachOn = false;
+    private bool IsRangeAttackReachOn = false;
     private GameObject overGlowObject;
     private GameObject blink;
 
@@ -52,28 +54,78 @@ public class TileDisplay : MonoBehaviour
         this.overGlowObject.SetActive(false);
     }
 
-    public void Blink(BlinkColor color = BlinkColor.Black)
+    public void ShowPathReach()
     {
-        if (this.IsBlinkOn)
+        if (this.IsPathReachOn)
         {
             return;
         }
 
+        if (this.IsRangeAttackReachOn)
+        {
+            this.ShowPathReachAndRangeAttackReach();
+        }
+        else
+        {
+            this.Blink(BlinkColor.Blue);
+            this.IsPathReachOn = true;
+        }
+    }
+
+    public void ShowRangeAttackReach()
+    {
+        if (this.IsRangeAttackReachOn)
+        {
+            return;
+        }
+
+        if (this.IsPathReachOn)
+        {
+            this.ShowPathReachAndRangeAttackReach();
+        }
+        else
+        {
+            this.Blink(BlinkColor.Yellow);
+            this.IsRangeAttackReachOn = true;
+        }
+    }
+
+    private void ShowPathReachAndRangeAttackReach()
+    {
+        if (this.IsPathReachOn && this.IsRangeAttackReachOn)
+        {
+            return;
+        }
+
+        this.Blink(BlinkColor.YellowAndBlue);
+
+        this.IsPathReachOn = true;
+        this.IsRangeAttackReachOn = true;
+    }
+
+    private void Blink(BlinkColor color = BlinkColor.Blue)
+    {
         var blinkedSpriteRenderer = this.blink.GetComponent<BlinkedSpriteRenderer>();
+        blinkedSpriteRenderer.BlinkOff();
         var spriteRenderer = this.blink.GetComponent<SpriteRenderer>();
 
         Sprite sprite = null;
 
-        if (color == BlinkColor.Black)
+        if (color == BlinkColor.Blue)
         {
             sprite = Resources.Load<Sprite>("isometric-tile-path");
-            blinkedSpriteRenderer.blinkOpacityUp = 0.2f;
-            blinkedSpriteRenderer.blinkOpacityDown = 0.1f;
-
+            blinkedSpriteRenderer.blinkOpacityUp = 0.4f;
+            blinkedSpriteRenderer.blinkOpacityDown = 0.2f;
         }
         if (color == BlinkColor.Yellow)
         {
             sprite = Resources.Load<Sprite>("isometric-tile-range-selection");
+            blinkedSpriteRenderer.blinkOpacityUp = 0.4f;
+            blinkedSpriteRenderer.blinkOpacityDown = 0.2f;
+        }
+        if (color == BlinkColor.YellowAndBlue)
+        {
+            sprite = Resources.Load<Sprite>("isometric-tile-range-and-path-selection");
             blinkedSpriteRenderer.blinkOpacityUp = 0.4f;
             blinkedSpriteRenderer.blinkOpacityDown = 0.2f;
         }
@@ -91,6 +143,9 @@ public class TileDisplay : MonoBehaviour
         spriteRenderer.BlinkOff();
 
         this.blink.SetActive(false);
+
+        this.IsPathReachOn = false;
+        this.IsRangeAttackReachOn = false;
     }
 
     void OnMouseDown()
