@@ -12,30 +12,32 @@ class HPAuraService {
       }
     }
 
-    for (let card of playerTableCards) {
-      let hpAuraNewHp = 0;
+    if (cardsWithHPAura.length > 0) {
+      for (let card of playerTableCards) {
+        let hpAuraNewHp = 0;
 
-      for (let cardWithHPAura of cardsWithHPAura) {
-        if (cardWithHPAura !== card) {
-          let distance = board.calcDistanceBetweenUnits(card, cardWithHPAura);
+        for (let cardWithHPAura of cardsWithHPAura) {
+          if (cardWithHPAura !== card) {
+            let distance = board.calcDistanceBetweenUnits(card, cardWithHPAura);
 
-          if (distance <= cardWithHPAura.abilities.hpAura.range) {
-            hpAuraNewHp += cardWithHPAura.abilities.hpAura.hpBuff;
+            if (distance <= cardWithHPAura.abilities.hpAura.range) {
+              hpAuraNewHp += cardWithHPAura.abilities.hpAura.hpBuff;
+            }
           }
         }
-      }
 
-      if (card.positiveEffects.hpAuraBuff && hpAuraNewHp > 0) {
-        card.changeHPAuraBuff(hpAuraNewHp);
-      } else if (!card.positiveEffects.hpAuraBuff && hpAuraNewHp > 0) {
-        card.addHPAuraBuff(hpAuraNewHp);
-      } else if (card.positiveEffects.hpAuraBuff && hpAuraNewHp === 0) {
-        card.removeHPAuraBuff();
-      }
+        if (card.positiveEffects.hpAuraBuff && hpAuraNewHp > 0) {
+          card.changeHPAuraBuff(hpAuraNewHp);
+        } else if (!card.positiveEffects.hpAuraBuff && hpAuraNewHp > 0) {
+          card.addHPAuraBuff(hpAuraNewHp);
+        } else if (card.positiveEffects.hpAuraBuff && hpAuraNewHp === 0) {
+          card.removeHPAuraBuff();
+        }
 
-      if (!card.alive) {
-        player.endOfCardDeath(card);
-        board.removeUnitFromBoard(card);
+        if (!card.alive) {
+          player.endOfCardDeath(card);
+          board.removeUnitFromBoard(card);
+        }
       }
     }
   }
