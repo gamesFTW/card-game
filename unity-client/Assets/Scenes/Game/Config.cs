@@ -3,7 +3,7 @@
 public class Config : MonoBehaviour
 {
     //private static string HOST = "localhost";
-    private static string HOST = "78.46.194.129";
+    private static string HOST = "game.ep1c.org";
 
     public static string GAME_SERVER_URL = "http://" + HOST + ":3000/";
     public static string LOBBY_SERVER_URL = "http://" + HOST + ":4000/";
