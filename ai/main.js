@@ -1,4 +1,5 @@
 const axios = require('axios');
+const lodash = require('lodash');
 const PF = require('pathfinding');
 
 let gameId = 'xp90kyotfkfsey2lwwk2tscuia8fhe';
@@ -9,9 +10,20 @@ async function run () {
   let {gameData, currentPlayer, enemyPlayer} = await getGame();
 
   if (gameData.game.currentPlayersTurn === playerId) {
-    for (let unit of currentPlayer.table) {
-      let {gameData, currentPlayer, enemyPlayer} = await getGame();
-      await doUnitAction(gameData, currentPlayer, enemyPlayer, unit);
+    try {
+      if (currentPlayer.manaPool.length < 5) {
+          await playCardAsMana(currentPlayer.hand[0]);
+          await playCardAsMana(currentPlayer.hand[1]);
+      }
+
+      await playCards(gameData, currentPlayer, enemyPlayer);
+
+      for (let unit of currentPlayer.table) {
+          let {gameData, currentPlayer, enemyPlayer} = await getGame();
+          await doUnitAction(gameData, currentPlayer, enemyPlayer, unit);
+      }
+    } catch(e) {
+      console.log(e);
     }
 
     await endTurn();
@@ -24,7 +36,7 @@ async function getGame() {
   // let response = await axios.get(`${serverAddress}getGame?gameId=${gameId}`);
   let response = await axios.get(`${serverAddress}getLastGame`);
   gameId = response.data.game.id;
-  playerId = response.data.player1.id;
+  playerId = response.data.player2.id;
 
   const gameData = response.data;
   let currentPlayer = null;
@@ -39,6 +51,38 @@ async function getGame() {
   }
 
   return {gameData, currentPlayer, enemyPlayer};
+}
+
+async function playCards(gameData, currentPlayer, enemyPlayer) {
+  let mana = currentPlayer.manaPool.filter(card => !card.tapped).length;
+  let cards = currentPlayer.hand.filter((card) => card.manaCost <= mana);
+
+  let heroes = currentPlayer.table.filter((card) => card.hero);
+
+  if (cards.length > 0 && heroes.length > 0) {
+    const cardToPlay = cards[0];
+
+    const map = createMap(gameData, currentPlayer, enemyPlayer);
+    const pointsToCast = [];
+    for (let hero of heroes) {
+      if (map[hero.x - 1][hero.y] === 0){
+        pointsToCast.push([hero.x - 1, hero.y]);
+      }
+      if (map[hero.x + 1][hero.y] === 0){
+        pointsToCast.push([hero.x + 1, hero.y]);
+      }
+      if (map[hero.x][hero.y - 1] === 0){
+        pointsToCast.push([hero.x, hero.y - 1]);
+      }
+      if (map[hero.x][hero.y + 1] === 0){
+        pointsToCast.push([hero.x, hero.y + 1]);
+      }
+    }
+
+    let point = lodash.sample(pointsToCast);
+
+    await playCard(cardToPlay, point);
+  }
 }
 
 async function doUnitAction(game, currentPlayer, enemyPlayer, unit) {
@@ -89,6 +133,40 @@ async function moveOrAttack(game, currentPlayer, enemyPlayer, unit, ignoreTiles)
   }
 }
 
+async function playCard(unit, point) {
+  console.log(`Try cast card to x:${point[0]} y:${point[1]}`);
+
+  try {
+    await axios.post(`${serverAddress}playCard`, {
+      gameId,
+      playerId,
+      cardId: unit.id,
+      x: point[0],
+      y: point[1]
+    });
+    console.log('ok');
+    return 'ok';
+  } catch(e) {
+    console.log('fail');
+    return 'fail';
+  }
+}
+
+async function playCardAsMana(unit) {
+  console.log(`Try cast card as mana`);
+
+  try {
+    await axios.post(`${serverAddress}playCardAsMana`, {
+      gameId,
+      playerId,
+      cardId: unit.id
+    });
+    console.log('ok');
+  } catch(e) {
+    console.log('fail');
+  }
+}
+
 async function move(unit, point) {
   console.log(`Unit x:${unit.x} y:${unit.y} try to move to x:${point[0]} y:${point[1]}`);
 
@@ -136,7 +214,7 @@ function findShortestPath(game, currentPlayer, enemyPlayer, unit, ignoreTiles) {
   let shortestPathUnit = null;
 
   for (let enemyUnit of enemyPlayer.table) {
-    const grid = createMap(game, enemyPlayer, ignoreTiles);
+    const grid = createPFMap(game, enemyPlayer, ignoreTiles);
     const finder = new PF.AStarFinder();
     const path = finder.findPath(unit.x, unit.y, enemyUnit.x, enemyUnit.y, grid);
 
@@ -164,7 +242,7 @@ function getAdjacentUnit(game, currentPlayer, enemyPlayer, unit) {
   return adjacentUnit;
 }
 
-function createMap(game, enemyPlayer, ignoreTiles) {
+function createPFMap(game, enemyPlayer, ignoreTiles) {
   const grid = new PF.Grid([
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -191,6 +269,39 @@ function createMap(game, enemyPlayer, ignoreTiles) {
   return grid;
 }
 
+function createMap(game, currentPlayer, enemyPlayer) {
+  const grid = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  ];
+
+  for (let area of game.areas) {
+    if (area.type !== "windWall") {
+      grid[area.x][area.y] = 1;
+    }
+  }
+
+  for (let unit of currentPlayer.table) {
+    grid[unit.x][unit.y] = 1;
+  }
+
+  for (let unit of enemyPlayer.table) {
+    grid[unit.x][unit.y] = 1;
+  }
+
+  return grid;
+}
+
 function checkUnitsAdjacency (firstCard, secondCard) {
   let xDistance = Math.abs(firstCard.x - secondCard.x);
   let yDistance = Math.abs(firstCard.y - secondCard.y);
@@ -207,7 +318,6 @@ async function wait(ms) {
   return new Promise((res, rej) => setTimeout(() => res(), ms));
 }
 
-//run().catch((e)=> console.log(e.message));
 
 async function runInterval() {
   await run();
@@ -217,4 +327,6 @@ async function runInterval() {
   await runInterval();
 }
 
-runInterval()
+runInterval();
+
+//run().catch((e)=> console.log(e.message));
