@@ -49,48 +49,62 @@ async function doUnitAction(game, currentPlayer, enemyPlayer, unit) {
     await attack(unit, adjacentUnit);
   } else {
     if (unit.currentMovingPoints > 0) {
-
-      let {shortestPathUnit, shortestPath} = findShortestPath(game, currentPlayer, enemyPlayer, unit);
-
-      shortestPath.pop();
-      shortestPath.shift();
-
-      if (shortestPath.length > unit.currentMovingPoints) {
-        // Нужно идти
-        let point = shortestPath[unit.currentMovingPoints - 1];
-        await move(unit, point);
-      } else {
-        // Можно подойти и ударить
-        let point = shortestPath[shortestPath.length - 1];
-        await move(unit, point);
-        await wait(700);
-        await attack(unit, shortestPathUnit);
-      }
+      const ignoreTiles = [];
+      let i = 1;
+      await moveOrAttackLoop(game, currentPlayer, enemyPlayer, unit, i, ignoreTiles);
     }
   }
 }
 
-async function endTurn() {
-  await axios.post(`${serverAddress}endTurn`, {
-    gameId,
-    playerId
-  });
+async function moveOrAttackLoop(game, currentPlayer, enemyPlayer, unit, i, ignoreTiles) {
+  const result = await moveOrAttack(game, currentPlayer, enemyPlayer, unit, ignoreTiles);
+
+  if (result.result === 'ok') {
+    return;
+  } else if (i < 3) {
+    ignoreTiles.push(result.point);
+    i++;
+    await moveOrAttackLoop(game, currentPlayer, enemyPlayer, unit, i, ignoreTiles);
+  }
+}
+
+async function moveOrAttack(game, currentPlayer, enemyPlayer, unit, ignoreTiles) {
+  let {shortestPathUnit, shortestPath} = findShortestPath(game, currentPlayer, enemyPlayer, unit, ignoreTiles);
+
+  if (shortestPath.length > unit.currentMovingPoints) {
+    // Нужно идти
+    let point = shortestPath[unit.currentMovingPoints - 1];
+    const result = await move(unit, point);
+    return {result, point};
+  } else {
+    // Можно подойти и ударить
+    let point = shortestPath[shortestPath.length - 1];
+    const result = await move(unit, point);
+    if (result === 'fail') {
+      return {result, point};
+    }
+    await wait(700);
+    await attack(unit, shortestPathUnit);
+    return {result: 'ok'};
+  }
 }
 
 async function move(unit, point) {
   console.log(`Unit x:${unit.x} y:${unit.y} try to move to x:${point[0]} y:${point[1]}`);
 
   try {
-      await axios.post(`${serverAddress}moveCard`, {
-          gameId,
-          playerId,
-          cardId: unit.id,
-          x: point[0],
-          y: point[1]
-      });
-      console.log('ok');
+    await axios.post(`${serverAddress}moveCard`, {
+      gameId,
+      playerId,
+      cardId: unit.id,
+      x: point[0],
+      y: point[1]
+    });
+    console.log('ok');
+    return 'ok';
   } catch(e) {
-      console.log('fail');
+    console.log('fail');
+    return 'fail';
   }
 }
 
@@ -110,12 +124,19 @@ async function attack(unit, attackedCard) {
   }
 }
 
-function findShortestPath(game, currentPlayer, enemyPlayer, unit) {
+async function endTurn() {
+  await axios.post(`${serverAddress}endTurn`, {
+    gameId,
+    playerId
+  });
+}
+
+function findShortestPath(game, currentPlayer, enemyPlayer, unit, ignoreTiles) {
   let shortestPath = new Array(100);
   let shortestPathUnit = null;
 
   for (let enemyUnit of enemyPlayer.table) {
-    const grid = createMap(game, enemyPlayer);
+    const grid = createMap(game, enemyPlayer, ignoreTiles);
     const finder = new PF.AStarFinder();
     const path = finder.findPath(unit.x, unit.y, enemyUnit.x, enemyUnit.y, grid);
 
@@ -124,6 +145,9 @@ function findShortestPath(game, currentPlayer, enemyPlayer, unit) {
       shortestPath = path;
     }
   }
+
+  shortestPath.pop();
+  shortestPath.shift();
 
   return {shortestPathUnit, shortestPath};
 }
@@ -140,7 +164,7 @@ function getAdjacentUnit(game, currentPlayer, enemyPlayer, unit) {
   return adjacentUnit;
 }
 
-function createMap(game, enemyPlayer) {
+function createMap(game, enemyPlayer, ignoreTiles) {
   const grid = new PF.Grid([
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -160,29 +184,37 @@ function createMap(game, enemyPlayer) {
     }
   }
 
-  for (let unit of enemyPlayer.table) {
-    grid.setWalkableAt(unit.x, unit.y, false);
+  for (let point of ignoreTiles) {
+    grid.setWalkableAt(point[0], point[1], false);
   }
 
   return grid;
 }
 
 function checkUnitsAdjacency (firstCard, secondCard) {
-    let xDistance = Math.abs(firstCard.x - secondCard.x);
-    let yDistance = Math.abs(firstCard.y - secondCard.y);
+  let xDistance = Math.abs(firstCard.x - secondCard.x);
+  let yDistance = Math.abs(firstCard.y - secondCard.y);
 
-    if (xDistance + yDistance < 2) {
-      return true;
-    }
-
-    return false;
+  if (xDistance + yDistance < 2) {
+    return true;
   }
+
+  return false;
+}
 
 
 async function wait(ms) {
   return new Promise((res, rej) => setTimeout(() => res(), ms));
 }
 
-run().catch((e)=> console.log(e.message));
+//run().catch((e)=> console.log(e.message));
 
-//setInterval(run, 1000);
+async function runInterval() {
+  await run();
+
+  await wait(1000);
+
+  await runInterval();
+}
+
+runInterval()
