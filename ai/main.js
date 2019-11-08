@@ -14,14 +14,20 @@ async function run () {
       if (currentPlayer.manaPool.length < 5) {
           await playCardAsMana(currentPlayer.hand[0]);
           await playCardAsMana(currentPlayer.hand[1]);
+          ({gameData, currentPlayer, enemyPlayer} = await getGame());
       }
-
-      await playCards(gameData, currentPlayer, enemyPlayer);
 
       for (let unit of currentPlayer.table) {
           let {gameData, currentPlayer, enemyPlayer} = await getGame();
           await doUnitAction(gameData, currentPlayer, enemyPlayer, unit);
       }
+    } catch(e) {
+      console.log(e);
+    }
+
+    try {
+        ({gameData, currentPlayer, enemyPlayer} = await getGame());
+        await playCards(gameData, currentPlayer, enemyPlayer);
     } catch(e) {
       console.log(e);
     }
@@ -297,6 +303,10 @@ function createMap(game, currentPlayer, enemyPlayer) {
 
   for (let unit of enemyPlayer.table) {
     grid[unit.x][unit.y] = 1;
+    grid[unit.x + 1][unit.y] = 1;
+    grid[unit.x - 1][unit.y] = 1;
+    grid[unit.x][unit.y + 1] = 1;
+    grid[unit.x][unit.y - 1] = 1;
   }
 
   return grid;
