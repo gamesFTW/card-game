@@ -33,9 +33,7 @@ public class CardDisplay : MonoBehaviour
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
     public static readonly string CARD_DIED = "CARD_DIED";
 
-    private TextMeshPro descriptionText;
-    private TextMeshPro negativeEffectsText;
-    private TextMeshPro positiveEffectsText;
+    private CardAbilitiesDescription cardAbilitiesDescription;
 
     private bool IsSelected = false;
     private bool IsZoomed = false;
@@ -43,7 +41,6 @@ public class CardDisplay : MonoBehaviour
 
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
-    private GameObject descritionContainer;
 
     private BoxCollider2D defaultCollider;
     private BoxCollider2D handCollider;
@@ -127,7 +124,7 @@ public class CardDisplay : MonoBehaviour
         set
         {
             cardData.abilities.range.blockedInBeginningOfTurn = value;
-            this.FillNegativeEffects();
+            this.cardAbilitiesDescription.FillNegativeEffects();
 
             if (cardData.abilities.range.blockedInBeginningOfTurn)
             {
@@ -155,7 +152,7 @@ public class CardDisplay : MonoBehaviour
                 this.UnitDisplay.ShowToolTip("Poisoned", UnityEngine.Color.red);
             }
 
-            this.FillNegativeEffects();
+            this.cardAbilitiesDescription.FillNegativeEffects();
         }
     }
 
@@ -175,7 +172,7 @@ public class CardDisplay : MonoBehaviour
                 this.UnitDisplay.ShowToolTip("Cursed", UnityEngine.Color.red);
             }
 
-            this.FillNegativeEffects();
+            this.cardAbilitiesDescription.FillNegativeEffects();
         }
     }
 
@@ -186,7 +183,7 @@ public class CardDisplay : MonoBehaviour
         {
             cardData.abilities.aiming.numberOfAiming = value;
             this.UnitDisplay.RedrawAbilisiesStatus();
-            this.FillPositiveEffects();
+            this.cardAbilitiesDescription.FillPositiveEffects();
         }
     }
 
@@ -236,10 +233,14 @@ public class CardDisplay : MonoBehaviour
             this.cardData.positiveEffects.hpAuraBuff = null;
         }
 
-        this.FillPositiveEffects();
+        this.cardAbilitiesDescription.FillPositiveEffects();
     }
 
-    // Use this for initialization
+    private void Awake()
+    {
+        this.cardAbilitiesDescription = this.GetComponent<CardAbilitiesDescription>();
+    }
+
     private void Start () 
     {
         var colliders = this.GetComponents<BoxCollider2D>();
@@ -268,15 +269,6 @@ public class CardDisplay : MonoBehaviour
 
         this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
         this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
-        this.descritionContainer = this.transform.Find("Front").Find("DescritionContainer").gameObject;
-
-        this.descriptionText = descritionContainer.transform.Find("Description").GetComponent<TextMeshPro>();
-        this.negativeEffectsText = descritionContainer.transform.Find("NegativeEffects").GetComponent<TextMeshPro>();
-        this.positiveEffectsText = descritionContainer.transform.Find("PositiveEffects").GetComponent<TextMeshPro>();
-
-        this.FillDescription();
-        this.FillNegativeEffects();
-        this.FillPositiveEffects();
     }
 
     private void Update()
@@ -390,7 +382,7 @@ public class CardDisplay : MonoBehaviour
 
     public void OverHighlightOn()
     {
-        this.ShowDescription();
+        this.cardAbilitiesDescription.ShowDescription();
 
         if (!IsSelected)
         {
@@ -401,7 +393,7 @@ public class CardDisplay : MonoBehaviour
 
     public void OverHighlightOff()
     {
-        this.HideDescription();
+        this.cardAbilitiesDescription.HideDescription();
 
         if (!IsSelected)
         {
@@ -447,16 +439,6 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    private void ShowDescription()
-    {
-        this.descritionContainer.SetActive(true);
-    }
-
-    private void HideDescription()
-    {
-        this.descritionContainer.SetActive(false);
-    }
-
     private void OnLeftMouseClicked()
     {
         Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
@@ -499,156 +481,13 @@ public class CardDisplay : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        this.ShowDescription();
+        this.cardAbilitiesDescription.ShowDescription();
         Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     private void OnMouseExit()
     {
-        this.HideDescription();
+        this.cardAbilitiesDescription.HideDescription();
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
-    }
-
-    private void FillDescription()
-    {
-        string descriptionText = "";
-        if (this.cardData.abilities.range != null)
-        {
-            if (this.cardData.abilities.range.minRange > 1)
-            {
-
-                descriptionText += "Range " + this.cardData.abilities.range.minRange + "-" + this.cardData.abilities.range.range + "\n";
-            }
-            else
-            {
-                descriptionText += "Range " + this.cardData.abilities.range.range + "\n";
-            }
-        }
-        if (this.cardData.abilities.firstStrike)
-        {
-            descriptionText += "First strike\n";
-        }
-        if (this.cardData.abilities.armored != null)
-        {
-            descriptionText += "Armored " + this.cardData.abilities.armored.armor + "\n";
-        }
-        if (this.cardData.abilities.vampiric)
-        {
-            descriptionText += "Vampiric\n";
-        }
-        if (this.cardData.abilities.noEnemyRetaliation)
-        {
-            descriptionText += "No enemy retaliation\n";
-        }
-        if (this.cardData.abilities.piercing)
-        {
-            descriptionText += "Cleave\n";
-        }
-        if (this.cardData.abilities.speed != null)
-        {
-            descriptionText += "Speed " + this.cardData.abilities.speed.speed + "\n";
-        }
-        if (this.cardData.abilities.flanking != null)
-        {
-            descriptionText += "Flanking " + this.cardData.abilities.flanking.damage + "\n";
-        }
-        if (this.cardData.abilities.push != null)
-        {
-            descriptionText += "Push " + this.cardData.abilities.push.range + "\n";
-        }
-        if (this.cardData.abilities.ricochet)
-        {
-            descriptionText += "Ricochet\n";
-        }
-        if (this.cardData.abilities.healing != null)
-        {
-            descriptionText += "Healing " + this.cardData.abilities.healing.heal + " (range " + this.cardData.abilities.healing.range + ")\n";
-        }
-        if (this.cardData.abilities.block != null)
-        {
-            descriptionText += "Block " + this.cardData.abilities.block.blockingDamage + " (range " + this.cardData.abilities.block.range + ")\n";
-        }
-        if (this.cardData.abilities.mana != null)
-        {
-            descriptionText += "Mana " + this.cardData.abilities.mana.mana + "\n";
-        }
-        if (this.cardData.abilities.regeneration != null)
-        {
-            descriptionText += "Regeneration " + this.cardData.abilities.regeneration.regeneration + "\n";
-        }
-        if (this.cardData.abilities.bash)
-        {
-            descriptionText += "Bash\n";
-        }
-        if (this.cardData.abilities.evasion != null)
-        {
-            descriptionText += "Evasion\n";
-        }
-        if (this.cardData.abilities.poison != null)
-        {
-            descriptionText += "Poison " + this.cardData.abilities.poison.poisonDamage + "\n";
-        }
-        if (this.cardData.abilities.damageCurse != null)
-        {
-            descriptionText += "Damage curse " + this.cardData.abilities.damageCurse.damageReduction + "\n";
-        }
-        if (this.cardData.abilities.aoe != null)
-        {
-            var withDiagonalText = "";
-            if (this.cardData.abilities.aoe.diagonal)
-            {
-                withDiagonalText = " (with diagonal)";
-            }
-            descriptionText += "AOE " + this.cardData.abilities.aoe.range + withDiagonalText + "\n";
-        }
-        if (this.cardData.abilities.hpAura != null)
-        {
-            descriptionText += "HP Aura " + this.cardData.abilities.hpAura.hpBuff + " (range " + this.cardData.abilities.hpAura.range + ")" + "\n";
-        }
-        if (this.cardData.abilities.aiming != null)
-        {
-            descriptionText += "Aiming " + this.cardData.abilities.aiming.numberOfAimingForAttack + "\n";
-        }
-
-        this.descriptionText.text = descriptionText;
-    }
-
-    private void FillNegativeEffects()
-    {
-        string negativeEffectsText = "";
-
-        if (this.cardData.abilities.range != null && this.cardData.abilities.range.blockedInBeginningOfTurn)
-        {
-            negativeEffectsText += "Can't shoot\n";
-        }
-
-        if (this.cardData.negativeEffects.damageCursed != null)
-        {
-            negativeEffectsText += "- " + this.cardData.negativeEffects.damageCursed.damageReduction + " damage (damage curse) \n";
-        }
-
-        if (this.cardData.negativeEffects.poisoned != null)
-        {
-            negativeEffectsText += "Poisoned - " + this.cardData.negativeEffects.poisoned.damage + "\n";
-        }
-
-        this.negativeEffectsText.text = negativeEffectsText;
-    }
-
-    private void FillPositiveEffects()
-    {
-        string positiveEffectsText = "";
-
-        if (this.cardData.abilities.aiming != null && this.cardData.abilities.aiming.numberOfAiming > 0)
-        {
-            positiveEffectsText += "Aimed " + this.cardData.abilities.aiming.numberOfAiming + " / " + this.cardData.abilities.aiming.numberOfAimingForAttack + "\n";
-        }
-
-        if (this.cardData.positiveEffects.hpAuraBuff != null)
-        {
-            positiveEffectsText += "+ " + this.cardData.positiveEffects.hpAuraBuff.hpBuff + " hp (hp aura buff) \n";
-        }
-
-        this.positiveEffectsText.text = positiveEffectsText;
     }
 }

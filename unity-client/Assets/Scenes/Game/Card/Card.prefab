@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2941167804315973325}
   - component: {fileID: 1613900020118956671}
   - component: {fileID: 8077246953705889803}
+  - component: {fileID: 6802772316321257781}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -121,6 +122,9 @@ MonoBehaviour:
       hpAura:
         range: 0
         hpBuff: 0
+      aiming:
+        numberOfAimingForAttack: 0
+        numberOfAiming: 0
     negativeEffects:
       poisoned:
         damage: 0
@@ -216,6 +220,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 612.24066, y: 409.56982}
   m_EdgeRadius: 0
+--- !u!114 &6802772316321257781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053692156406166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc432e1117819ec4f990d48b013c93ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1996936224542484
 GameObject:
   m_ObjectHideFlags: 0
