@@ -34,6 +34,7 @@ public class CardDisplay : MonoBehaviour
     public static readonly string CARD_DIED = "CARD_DIED";
 
     private CardAbilitiesDescription cardAbilitiesDescription;
+    private CardCollider cardCollider;
 
     private bool IsSelected = false;
     private bool IsZoomed = false;
@@ -41,10 +42,6 @@ public class CardDisplay : MonoBehaviour
 
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
-
-    private BoxCollider2D defaultCollider;
-    private BoxCollider2D handCollider;
-    private BoxCollider2D tableCollider;
 
     public int CurrentHp
     {
@@ -124,7 +121,7 @@ public class CardDisplay : MonoBehaviour
         set
         {
             cardData.abilities.range.blockedInBeginningOfTurn = value;
-            this.cardAbilitiesDescription.FillNegativeEffects();
+            this.cardAbilitiesDescription.FillDescription();
 
             if (cardData.abilities.range.blockedInBeginningOfTurn)
             {
@@ -152,7 +149,7 @@ public class CardDisplay : MonoBehaviour
                 this.UnitDisplay.ShowToolTip("Poisoned", UnityEngine.Color.red);
             }
 
-            this.cardAbilitiesDescription.FillNegativeEffects();
+            this.cardAbilitiesDescription.FillDescription();
         }
     }
 
@@ -172,7 +169,7 @@ public class CardDisplay : MonoBehaviour
                 this.UnitDisplay.ShowToolTip("Cursed", UnityEngine.Color.red);
             }
 
-            this.cardAbilitiesDescription.FillNegativeEffects();
+            this.cardAbilitiesDescription.FillDescription();
         }
     }
 
@@ -183,7 +180,7 @@ public class CardDisplay : MonoBehaviour
         {
             cardData.abilities.aiming.numberOfAiming = value;
             this.UnitDisplay.RedrawAbilisiesStatus();
-            this.cardAbilitiesDescription.FillPositiveEffects();
+            this.cardAbilitiesDescription.FillDescription();
         }
     }
 
@@ -233,21 +230,17 @@ public class CardDisplay : MonoBehaviour
             this.cardData.positiveEffects.hpAuraBuff = null;
         }
 
-        this.cardAbilitiesDescription.FillPositiveEffects();
+        this.cardAbilitiesDescription.FillDescription();
     }
 
     private void Awake()
     {
         this.cardAbilitiesDescription = this.GetComponent<CardAbilitiesDescription>();
+        this.cardCollider = this.transform.Find("Collider").GetComponent<CardCollider>();
     }
 
     private void Start () 
     {
-        var colliders = this.GetComponents<BoxCollider2D>();
-        this.defaultCollider = colliders[0];
-        this.handCollider = colliders[1];
-        this.tableCollider = colliders[2];
-
         nameText.text = cardData.name;
 
 		manaText.text = cardData.manaCost.ToString();
@@ -338,23 +331,17 @@ public class CardDisplay : MonoBehaviour
 
     public void EnableDefaultCollider()
     {
-        this.defaultCollider.enabled = true;
-        this.handCollider.enabled = false;
-        this.tableCollider.enabled = false;
+        this.cardCollider.EnableDefaultCollider();
     }
 
     public void EnableHandCollider()
     {
-        this.defaultCollider.enabled = false;
-        this.handCollider.enabled = true;
-        this.tableCollider.enabled = false;
+        this.cardCollider.EnableHandCollider();
     }
 
     public void EnableTableCollider()
     {
-        this.defaultCollider.enabled = false;
-        this.handCollider.enabled = false;
-        this.tableCollider.enabled = true;
+        this.cardCollider.EnableTableCollider();
     }
     
     public void Select()
@@ -439,6 +426,26 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
+    // Public only for CardCollider class
+    public void CardMouseDown()
+    {
+        OnLeftMouseClicked();
+    }
+
+    // Public only for CardCollider class
+    public void CardMouseEnter()
+    {
+        this.cardAbilitiesDescription.ShowDescription();
+        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
+    }
+
+    // Public only for CardCollider class
+    public void CardMouseExit()
+    {
+        this.cardAbilitiesDescription.HideDescription();
+        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
+    }
+
     private void OnLeftMouseClicked()
     {
         Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
@@ -472,22 +479,5 @@ public class CardDisplay : MonoBehaviour
                 OnRightMouseClicked();
             }
         }
-    }
-
-    private void OnMouseDown()
-    {
-        OnLeftMouseClicked();
-    }
-
-    private void OnMouseEnter()
-    {
-        this.cardAbilitiesDescription.ShowDescription();
-        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
-    }
-
-    private void OnMouseExit()
-    {
-        this.cardAbilitiesDescription.HideDescription();
-        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
 }
