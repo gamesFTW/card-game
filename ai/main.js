@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import {turn} from "./turn.js";
 import {wait} from "./utils.js";
 import {serverAddress, lobbyAddress} from "./config.js";
+import { getAIDeckId, subToTurnOnEndOfTurn } from "./helpers.js";
 
 // При старте бота посмотреть все игры:
 // игра не должна быть завершена
@@ -14,55 +15,64 @@ let CURRENT_GAMES = {};
 
 // WebSockets registr 
 // научится слушать end of turn всех игр
-async function start() {
+const start = async () => {
   const socket = io(serverAddress);
-  const {data: {Games}}= await axios.get(`${lobbyAddress}/methods/getGames`);
+  const {data: {Games}} = await axios.get(`${lobbyAddress}/methods/getGames`);
   let games = Games;
 
-  games = games.filter((game) => {
-    return game.deckName1.startsWith("AI") || game.deckName2.startsWith("AI");
+  games = games.filter((gameLobbyData) => {
+    return gameLobbyData.deckName1.startsWith("AI") || gameLobbyData.deckName2.startsWith("AI");
   });
 
-  for (let game of games) {
-    CURRENT_GAMES[game._id] = game;
+  for (let gameLobbyData of games) {
+    CURRENT_GAMES[gameLobbyData.gameServerId] = gameLobbyData;
   }
 
   for (let gameId in CURRENT_GAMES) {
-    let game = CURRENT_GAMES[gameId];
+    let gameLobbyData = CURRENT_GAMES[gameId];
     socket.emit("register", {
       gameId: gameId,
-      playerId: getAIDeckId(game)
+      playerId: getAIDeckId(gameLobbyData)
     });
-    console.log("registered");
+    console.log(">> Registred in", gameId);
+
+    subToTurnOnEndOfTurn(socket, gameId, gameLobbyData);
+    turn(gameId, gameLobbyData);
   }
 
+  runCheckInterval(socket);
 }
 
-function getAIDeckId(game) {
-  return game[`deckId${getAIPlayerId(game)}`];
-}
+const refeshGamesList = async (socket) => {
+  const {data: {Games}}= await axios.get(`${lobbyAddress}/methods/getGames`);
+  let games = Games;
 
-function getAIPlayerId(game) {
-  if (game.deckName1.startsWith("AI")) {
-    return "1"
+  games = games.filter((gameLobbyData) => {
+    return !CURRENT_GAMES[gameLobbyData.gameServerId];
+  })
+  .filter((gameLobbyData) => {
+    return gameLobbyData.deckName1.startsWith("AI") || gameLobbyData.deckName2.startsWith("AI");
+  });
+
+  for (let gameLobbyData of games) {
+    CURRENT_GAMES[gameLobbyData.gameServerId] = gameLobbyData;
+    const gameId = gameLobbyData.gameServerId;
+    socket.emit("register", {
+      gameId: gameId,
+      playerId: getAIDeckId(gameLobbyData)
+    });
+    console.log('>> Registred in new game', gameId)
+    subToTurnOnEndOfTurn(socket, gameId, gameLobbyData);
+    turn(gameId, gameLobbyData);
   }
-  if (game.deckName2.startsWith("AI")) {
-    return "2"
-  }
+};
 
-  throw new Error(`there is now AI in: ${game}`);
+async function runCheckInterval(socket) {
+  while (true) {
+    refeshGamesList(socket);
+    await wait(10 * 1000);
+  } 
 }
 
 
-async function runInterval() {
-  await turn();
-
-  await wait(1000);
-
-  await runInterval();
-}
-
-// runInterval();
-
-//run().catch((e)=> console.log(e.message));
-start();
+start().catch(er => console.error(er));
