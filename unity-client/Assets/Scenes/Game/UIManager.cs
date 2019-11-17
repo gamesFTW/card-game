@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
         this.changeTurn.GetComponent<CanvasGroup>().DOFade(0, 0);
 
         Unibus.Subscribe<string>(ReceiverFromServer.TURN_ENDED, OnTurnEnded);
-        Unibus.Subscribe<string>(CardCreator.GAME_BUILDED, OnGameBuilded);
+        Unibus.Subscribe<string>(Main.GAME_BUILDED, OnGameBuilded);
     }
 
     void Update()

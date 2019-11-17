@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnibusEvent;
 using UnityEngine;
 
 public class PlayerTransformsStacks
@@ -14,10 +12,6 @@ public class PlayerTransformsStacks
 
 public class CardCreator : MonoBehaviour
 {
-    public static readonly string GAME_BUILDED = "GAME_BUILDED";
-
-    public bool firstTimeDataRecived = false;
-
     public Transform CardPrefab;
     public Transform CardPlaceholderPrefab;
 
@@ -35,7 +29,6 @@ public class CardCreator : MonoBehaviour
 
     private BoardCreator boardCreator;
     private CardsContainer cardsContainer;
-    private AudioController audioController;
 
     public Dictionary<string, Transform> cardIdToCards = new Dictionary<string, Transform>();
 
@@ -45,45 +38,14 @@ public class CardCreator : MonoBehaviour
     {
         boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
         cardsContainer = this.transform.Find("CardsContainer").GetComponent<CardsContainer>();
-        audioController = this.GetComponent<AudioController>();
     }
 
     public void Start ()
     {
     }
 
-    public async Task CreateCards()
+    public List<CardDisplay> CreateCards(GameData gameData)
     {
-        GameData gameData;
-        if (GameState.gameId != null)
-        {
-            gameData = await ServerApi.GetGame(GameState.gameId);
-
-            GameState.gameId = gameData.game.id;
-
-            if (GameState.isMainPlayerFirstPlayer)
-            {
-                GameState.mainPlayerId = gameData.game.player1Id;
-                GameState.enemyOfMainPlayerId = gameData.game.player2Id;
-            } else
-            {
-                GameState.mainPlayerId = gameData.game.player2Id;
-                GameState.enemyOfMainPlayerId = gameData.game.player1Id;
-            }
-
-            GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
-        } else
-        {
-            gameData = await ServerApi.GetLastGame();
-
-            GameState.gameId = gameData.game.id;
-            GameState.mainPlayerId = gameData.game.player1Id;
-            GameState.enemyOfMainPlayerId = gameData.game.player2Id;
-
-            GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
-        }
-
-
         CardData[][] stacksData = this.CreateStacksData(gameData);
 
         Transform[] stacksTransforms = new Transform[] {
@@ -112,17 +74,9 @@ public class CardCreator : MonoBehaviour
             }
         }
 
-        this.LoadSounds(cardDisplays);
-
-        if (!firstTimeDataRecived)
-        {
-            firstTimeDataRecived = true;
-            OnGameDataFirstTimeRecived();
-        }
-
         this.CreateAreas(gameData.areas);
 
-        Unibus.Dispatch<string>(CardCreator.GAME_BUILDED, "");
+        return cardDisplays;
     }
 
     private void CreateAreas(AreaData[] areas)
@@ -204,31 +158,5 @@ public class CardCreator : MonoBehaviour
         }
 
         return cardDisplay;
-    }
-
-    private void OnGameDataFirstTimeRecived()
-    {
-        GameObject go = GameObject.Find("Canvas");
-        SocketIOClient socketClient = go.GetComponent<SocketIOClient>();
-        socketClient.StartExchange();
-    }
-
-    private void LoadSounds(List<CardDisplay> cardDisplays)
-    {
-        List<string> urls = new List<string>();
-
-        foreach (var cardDisplay in cardDisplays)
-        {
-            if (cardDisplay.cardData.sounds != null)
-            {
-                foreach (KeyValuePair<string, SoundData> entry in cardDisplay.cardData.sounds)
-                {
-                    SoundData soundData = entry.Value;
-                    urls.Add(soundData.url);
-                }
-            }
-        }
-
-        this.audioController.AddSounds(urls);
     }
 }

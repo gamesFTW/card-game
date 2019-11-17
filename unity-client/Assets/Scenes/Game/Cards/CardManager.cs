@@ -10,12 +10,14 @@ public class CardManager : MonoBehaviour
 
     private BoardCreator boardCreator;
 
-    public async void Start()
+    public void Start()
     {
         boardCreator = this.transform.Find("Board").GetComponent<BoardCreator>();
+    }
 
+    public void Init()
+    {
         CardCreator cardCreator = this.GetComponent<CardCreator>();
-        await cardCreator.CreateCards();
 
         cardIdToCards = cardCreator.cardIdToCards;
         playerStacks = cardCreator.playersTransformsStacks;
