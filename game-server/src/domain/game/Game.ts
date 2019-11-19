@@ -40,7 +40,8 @@ class Game extends Entity {
     board.create(GameConstants.BOARD_WIDTH, GameConstants.BOARD_HEIGHT);
 
     // Более красивее было бы сначала создать игроков и потом их зашафлить.
-    let playersCreationData = lodash.shuffle([playerACreationData, playerBCreationData]);
+    // let playersCreationData = lodash.shuffle([playerACreationData, playerBCreationData]);
+    let playersCreationData = [playerACreationData, playerBCreationData];
 
     let areas = this.generateStartingAreas(board);
 
