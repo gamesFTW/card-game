@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.F1))
         {
             SceneManager.LoadScene("Lobby");
         }
