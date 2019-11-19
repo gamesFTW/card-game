@@ -23,7 +23,11 @@ export const subToTurnOnEndOfTurn = async (socket, gameId, gameLobbyData) => {
     socket.on("event", async ({actions}) => {
         const isEndOfTurn = actions.some(({type}) => type === "EndTurnAction");
         if (isEndOfTurn) {
-          await turn(gameId, gameLobbyData);
+          try {
+            await turn(gameId, gameLobbyData);
+          } catch (e) {
+            console.error(e);
+          }
         }
     });
 }

@@ -66,33 +66,24 @@ async function getGame(gameId, gameLobbyData) {
   let isSecondPlayerTurn = gameData.game.player2Id === gameData.game.currentPlayersTurn;
   let firstPlayerIsAI, secondPlayerIsAI;
 
-  // ID in lobby and server are different. Need to store decksIds from lobby in server
-  // if (gameLobbyData.deckId1 == gameData.game.player1Id) {
-  //   firstPlayerIsAI = isAIName(gameLobbyData.deckName1);
-  //   secondPlayerIsAI = isAIName(gameLobbyData.deckName2);
-  // } else {
-  //   firstPlayerIsAI = isAIName(gameLobbyData.deckName2);
-  //   secondPlayerIsAI = isAIName(gameLobbyData.deckName1);
-  // }
+  firstPlayerIsAI = isAIName(gameLobbyData.deckName1);
+  secondPlayerIsAI = isAIName(gameLobbyData.deckName2);
+
   // console.log(gameId, isFirstPlayerTurn, firstPlayerIsAI, isSecondPlayerTurn, secondPlayerIsAI)
 
-  // if (isFirstPlayerTurn && firstPlayerIsAI) {
-  //   currentPlayer = gameData.player1;
-  //   enemyPlayer = gameData.player2;
-  //   isAITurn = true;
-  // }
-
-  // if (isSecondPlayerTurn && secondPlayerIsAI) {
-  //   currentPlayer = gameData.player2;
-  //   enemyPlayer = gameData.player1;
-  //   isAITurn = true;
-  // }
-
-  if (isFirstPlayerTurn) {
+  if (isFirstPlayerTurn && firstPlayerIsAI) {
     currentPlayer = gameData.player1;
     enemyPlayer = gameData.player2;
     isAITurn = true;
   }
+
+  if (isSecondPlayerTurn && secondPlayerIsAI) {
+    currentPlayer = gameData.player2;
+    enemyPlayer = gameData.player1;
+    isAITurn = true;
+  }
+
+
 
   return {gameData, currentPlayer, enemyPlayer, isAITurn};
 }
@@ -215,7 +206,7 @@ async function move(gameId, playerId, unit, point) {
   console.log(`Unit x:${unit.x} y:${unit.y} try to move to x:${point[0]} y:${point[1]}`);
 
   try {
-    await axios.post(`${serverAddress}moveCard`, {
+    const re = await axios.post(`${serverAddress}moveCard`, {
       gameId,
       playerId,
       cardId: unit.id,

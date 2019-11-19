@@ -69,10 +69,14 @@ const refeshGamesList = async (socket) => {
 
 async function runCheckInterval(socket) {
   while (true) {
-    refeshGamesList(socket);
-    await wait(10 * 1000);
+    try {
+      refeshGamesList(socket);
+      await wait(10 * 1000);
+    } catch (e) {
+      console.log("Error on refresh", e);
+    }
   } 
 }
 
 
-start().catch(er => console.error(er));
+start().catch(er => console.error("Catch on start", er));
