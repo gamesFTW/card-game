@@ -16,8 +16,7 @@ namespace Lobby
 
         private List<string> deckIds;
 
-        // Start is called before the first frame update
-        async void Start()
+        void Start()
         {
             var mainMenuButton = this.transform.Find("MainMenuButton").GetComponent<Button>();
             mainMenuButton.onClick.AddListener(this.OnMainMenuButtonClick);
@@ -30,7 +29,6 @@ namespace Lobby
             Unibus.Subscribe<LobbyGame>(LobbyGame.DETELE_GAME, OnDeleteGameHandler);
         }
 
-        // Update is called once per frame
         void Update()
         {
 

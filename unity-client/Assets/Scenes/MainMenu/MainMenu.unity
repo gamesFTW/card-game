@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 413883061}
   - component: {fileID: 413883060}
   m_Layer: 5
-  m_Name: PlayWithAIButton
+  m_Name: SinglePlayerButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -366,7 +366,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play with human
+  m_Text: Multi player
 --- !u!222 &444897651
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -445,7 +445,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play with AI
+  m_Text: Single player
 --- !u!222 &508729866
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -618,7 +618,7 @@ GameObject:
   - component: {fileID: 1504512943}
   - component: {fileID: 1504512942}
   m_Layer: 5
-  m_Name: PlayWithHumanButton
+  m_Name: MultiPlayerButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
