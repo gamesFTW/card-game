@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 6499365859096229647}
   - component: {fileID: 7842956170397486725}
   m_Layer: 5
-  m_Name: DeckNames1
+  m_Name: DecksNames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -254,8 +254,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 122.60004, y: 0}
-  m_SizeDelta: {x: 120, y: 30}
+  m_AnchoredPosition: {x: 227.4, y: 0}
+  m_SizeDelta: {x: 220, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6499365859096229647
 CanvasRenderer:
@@ -292,7 +292,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -615,7 +615,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3628887312771496137
 RectTransform:
   m_ObjectHideFlags: 0
@@ -891,7 +891,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3008665177146195772
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1171,8 +1171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 040ab439e893b584bb2619bd7757c0bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckNamesText1: {fileID: 7842956170397486725}
-  deckNamesText2: {fileID: 7731687870740756599}
+  decksNames: {fileID: 7842956170397486725}
   lobbyGameIdText: {fileID: 4593241110541623690}
   gameServerIdText: {fileID: 834545727431289839}
   playAs1PlayerButton: {fileID: 8895970714407232686}

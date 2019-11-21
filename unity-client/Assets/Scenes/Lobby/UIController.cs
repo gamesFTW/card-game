@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnibusEvent;
+using UnityEngine.SceneManagement;
 
 namespace Lobby
 {
@@ -18,6 +19,9 @@ namespace Lobby
         // Start is called before the first frame update
         async void Start()
         {
+            var mainMenuButton = this.transform.Find("MainMenuButton").GetComponent<Button>();
+            mainMenuButton.onClick.AddListener(this.OnMainMenuButtonClick);
+
             createGameButton.onClick.AddListener(OnCreateGameButtonClick);
 
             UpdateGames();
@@ -95,6 +99,11 @@ namespace Lobby
             await LobbyServerApi.DeleteGame(lobbyGame.lobbyGameId);
 
             UpdateGames();
+        }
+
+        private void OnMainMenuButtonClick()
+        {
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
