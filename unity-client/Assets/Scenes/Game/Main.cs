@@ -38,15 +38,21 @@ public class Main : MonoBehaviour
 
             GameState.gameId = gameData.game.id;
 
-            if (GameState.isMainPlayerFirstPlayer)
+            if (GameState.mainPlayerId == null && GameState.enemyOfMainPlayerId == null)
             {
-                GameState.mainPlayerId = gameData.game.player1Id;
-                GameState.enemyOfMainPlayerId = gameData.game.player2Id;
-            }
-            else
+                if (GameState.isMainPlayerFirstPlayer)
+                {
+                    GameState.mainPlayerId = gameData.game.player1Id;
+                    GameState.enemyOfMainPlayerId = gameData.game.player2Id;
+                }
+                else
+                {
+                    GameState.mainPlayerId = gameData.game.player2Id;
+                    GameState.enemyOfMainPlayerId = gameData.game.player1Id;
+                }
+            } else
             {
-                GameState.mainPlayerId = gameData.game.player2Id;
-                GameState.enemyOfMainPlayerId = gameData.game.player1Id;
+                GameState.isMainPlayerFirstPlayer = gameData.player1.id == GameState.mainPlayerId;
             }
 
             GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;

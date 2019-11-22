@@ -34,10 +34,18 @@ namespace Lobby
             return deckButton;
         }
 
-        private void OnButtonClick(GameObject deckButton)
+        private async void OnButtonClick(GameObject deckButton)
         {
             var value = deckButton.GetComponent<ButtonValue>().value;
-            Debug.Log(value);
+
+            SinglePlayerGameData data = await LobbyServerApi.CreateSinglePlayerGame(value);
+
+            GameState.gameId = data.gameServerId;
+
+            GameState.mainPlayerId = data.playerId;
+            GameState.enemyOfMainPlayerId = data.aiId;
+
+            SceneManager.LoadScene("Game");
         }
 
         private void OnBackButtonClick()

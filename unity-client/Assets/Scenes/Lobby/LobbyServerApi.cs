@@ -32,6 +32,15 @@ namespace Lobby
         public string name;
     }
 
+    [Serializable]
+    public class SinglePlayerGameData
+    {
+        public string lobbyGameId;
+        public string gameServerId;
+        public string playerId;
+        public string aiId;
+    }
+
     public class LobbyServerApi
     {
         public async static Task<GamesData> GetGames<GamesData>()
@@ -46,7 +55,6 @@ namespace Lobby
 
         public async static Task CreateGame(string player1DeckId, string player2DeckId)
         {
-
             var values = new
             {
                 deckId1 = player1DeckId,
@@ -54,6 +62,16 @@ namespace Lobby
             };
 
             await HttpRequest.Post(Config.LOBBY_SERVER_URL + "methods/createGame", values);
+        }
+
+        public async static Task<SinglePlayerGameData> CreateSinglePlayerGame(string player1DeckId)
+        {
+            var values = new
+            {
+                deckId1 = player1DeckId
+            };
+
+            return await HttpRequest.Post<SinglePlayerGameData>(Config.LOBBY_SERVER_URL + "methods/createSinglePlayerGame", values);
         }
 
         public async static Task DeleteGame(string gameId)
