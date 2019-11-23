@@ -18,6 +18,9 @@ namespace Lobby
 
         void Start()
         {
+            GameState.mainPlayerId = "";
+            GameState.enemyOfMainPlayerId = "";
+
             var mainMenuButton = this.transform.Find("MainMenuButton").GetComponent<Button>();
             mainMenuButton.onClick.AddListener(this.OnMainMenuButtonClick);
 
@@ -27,11 +30,6 @@ namespace Lobby
             UpdateDropdowns();
 
             Unibus.Subscribe<LobbyGame>(LobbyGame.DETELE_GAME, OnDeleteGameHandler);
-        }
-
-        void Update()
-        {
-
         }
 
         private async void UpdateDropdowns()
