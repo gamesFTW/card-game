@@ -36,10 +36,15 @@ class GodOfSockets {
       ctx.socket.on('register', (data) => {
         let playerId = data.playerId as EntityId;
         let gameId = data.gameId as EntityId;
-        if (!playerId || !gameId) {
-          console.error(chalk.red('playerId & gameId must be set'));
+
+        if (!playerId) {
+          console.error(chalk.red('Error on socker register: playerId must be set'));
           return;
-          // throw new Error('PlayerId must be set');
+        }
+
+        if (!gameId) {
+          console.error(chalk.red('Error on socker register: gameId must be set'));
+          return;
         }
 
         this.socketToUser.set(ctx.socket, playerId);
