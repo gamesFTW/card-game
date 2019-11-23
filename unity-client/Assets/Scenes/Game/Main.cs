@@ -38,7 +38,7 @@ public class Main : MonoBehaviour
 
             GameState.gameId = gameData.game.id;
 
-            if (GameState.mainPlayerId == null && GameState.enemyOfMainPlayerId == null)
+            if (GameState.mainPlayerId == "" && GameState.enemyOfMainPlayerId == "")
             {
                 if (GameState.isMainPlayerFirstPlayer)
                 {
