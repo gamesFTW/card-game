@@ -349,7 +349,7 @@ class Player extends Entity {
       throw new DomainError('We need more mana!');
     }
 
-    let manaPoolCardsToTap = untappedManaPoolCards.slice(0, manaNumber);
+    let manaPoolCardsToTap = untappedManaPoolCards.slice(untappedManaPoolCards.length - manaNumber, untappedManaPoolCards.length + 1);
 
     manaPoolCardsToTap.forEach((card) => card.tap());
   }
