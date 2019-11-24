@@ -17,8 +17,8 @@ public class Main : MonoBehaviour
         var gameData = await LoadGame();
 
         CardCreator cardCreator = this.GetComponent<CardCreator>();
-        List<CardDisplay> cardDisplays = cardCreator.CreateCards(gameData);
 
+        List<CardDisplay> cardDisplays = cardCreator.CreateCards(gameData);
         this.LoadSounds(cardDisplays);
 
         CardManager cardManager = this.GetComponent<CardManager>();

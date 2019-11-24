@@ -32,6 +32,8 @@ public class CardDisplay : MonoBehaviour
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
     public static readonly string CARD_DIED = "CARD_DIED";
+    public static readonly string CARD_TAPPED = "CARD_TAPPED";
+    public static readonly string CARD_UNTAPPED = "CARD_UNTAPPED";
 
     private CardAbilitiesDescription cardAbilitiesDescription;
     private CardCollider cardCollider;
@@ -304,6 +306,7 @@ public class CardDisplay : MonoBehaviour
         this.cardBaseBlack.SetActive(true);
 
         this.Shake();
+        Unibus.Dispatch(CARD_TAPPED, this);
     }
 
     public void Untap()
@@ -313,6 +316,7 @@ public class CardDisplay : MonoBehaviour
         //this.transform.DORotate(new Vector3(0, 0, 0), 1);
 
         this.cardBaseBlack.SetActive(false);
+        Unibus.Dispatch(CARD_UNTAPPED, this);
     }
 
     public void ZoomIn(float zoom)

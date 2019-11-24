@@ -13,7 +13,6 @@ public class PlayerTransformsStacks
 public class CardCreator : MonoBehaviour
 {
     public Transform CardPrefab;
-    public Transform CardPlaceholderPrefab;
 
     public Transform PlayerDeck;
     public Transform PlayerHand;
@@ -119,18 +118,16 @@ public class CardCreator : MonoBehaviour
     private CardDisplay CreateCardIn(CardData cardData, string playerId, Transform stack)
     {
         Transform newCard = (Transform)Instantiate(CardPrefab, new Vector2(0, 0), new Quaternion());
-        Transform newCardPlaceholder = (Transform)Instantiate(CardPlaceholderPrefab, new Vector2(0, 0), new Quaternion());
         cardIdToCards.Add(cardData.id, newCard);
 
-        newCardPlaceholder.SetParent(stack, false);
-
         CardDisplay cardDisplay = newCard.GetComponent<CardDisplay>();
-        cardDisplay.Placeholder = newCardPlaceholder;
 
         cardsContainer.AddCard(cardDisplay);
 
         cardData.ownerId = playerId;
         cardDisplay.cardData = cardData;
+
+        stack.GetComponent<StackDisplay>().AddCard(cardDisplay);
 
         if (stack.GetComponent<StackDisplay>().IsFaceUp)
         {

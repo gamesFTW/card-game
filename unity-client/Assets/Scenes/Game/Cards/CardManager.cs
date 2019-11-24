@@ -31,7 +31,7 @@ public class CardManager : MonoBehaviour
             var cardTransform = cardIdToCards[cardId];
             CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
-            cardDisplay.Placeholder.SetParent(this.playerStacks[playerId].hand, false);
+            this.playerStacks[playerId].hand.GetComponent<StackDisplay>().AddCard(cardDisplay);
 
             if (playerId == GameState.mainPlayerId)
             {
@@ -63,7 +63,7 @@ public class CardManager : MonoBehaviour
         var cardTransform = cardIdToCards[cardId];
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
-        cardDisplay.Placeholder.SetParent(this.playerStacks[playerId].table, false);
+        this.playerStacks[playerId].table.GetComponent<StackDisplay>().AddCard(cardDisplay);
 
         if (taped)
         {
@@ -84,7 +84,7 @@ public class CardManager : MonoBehaviour
         var cardTransform = cardIdToCards[cardId];
         CardDisplay cardDisplay = cardTransform.GetComponent<CardDisplay>();
 
-        cardDisplay.Placeholder.SetParent(this.playerStacks[playerId].manaPool, false);
+        this.playerStacks[playerId].manaPool.GetComponent<StackDisplay>().AddCard(cardDisplay);
 
         if (taped)
         {
@@ -234,7 +234,7 @@ public class CardManager : MonoBehaviour
     private void KillUnit(CardDisplay cardDisplay)
     {
         cardDisplay.Kill();
-        cardDisplay.Placeholder.SetParent(this.playerStacks[cardDisplay.cardData.ownerId].graveyard, false);
+        this.playerStacks[cardDisplay.cardData.ownerId].graveyard.GetComponent<StackDisplay>().AddCard(cardDisplay);
         boardCreator.KillUnit(cardDisplay);
 
         Unibus.Dispatch(AudioController.CARD_DIED, cardDisplay);
