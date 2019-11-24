@@ -42,6 +42,7 @@ public class CardDisplay : MonoBehaviour
 
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
+    private GameObject cardBaseBlack;
 
     public int CurrentHp
     {
@@ -237,6 +238,10 @@ public class CardDisplay : MonoBehaviour
     {
         this.cardAbilitiesDescription = this.GetComponent<CardAbilitiesDescription>();
         this.cardCollider = this.transform.Find("Collider").GetComponent<CardCollider>();
+
+        this.cardBaseBlack = this.transform.Find("CardBaseBlack").gameObject;
+        this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
+        this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
     }
 
     private void Start () 
@@ -259,9 +264,6 @@ public class CardDisplay : MonoBehaviour
                 this.sounds.Add(soundData.soundName, soundData);
             }
         }
-
-        this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
-        this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
     }
 
     private void Update()
@@ -297,7 +299,9 @@ public class CardDisplay : MonoBehaviour
     public void Tap()
     {
         cardData.tapped = true;
-        this.transform.DORotate(new Vector3(0, 0, -10), 1);
+
+        //this.transform.DORotate(new Vector3(0, 0, -10), 1);
+        this.cardBaseBlack.SetActive(true);
 
         this.Shake();
     }
@@ -305,18 +309,30 @@ public class CardDisplay : MonoBehaviour
     public void Untap()
     {
         cardData.tapped = false;
-        this.transform.DORotate(new Vector3(0, 0, 0), 1);
+
+        //this.transform.DORotate(new Vector3(0, 0, 0), 1);
+
+        this.cardBaseBlack.SetActive(false);
     }
 
     public void ZoomIn(float zoom)
     {
         this.transform.DOScale(new Vector3(this.scale.x * zoom, this.scale.y * zoom, this.scale.z * zoom), 0.2f);
+
+        this.cardBaseBlack.SetActive(false);
+
         this.IsZoomed = true;
     }
 
     public void ZoomOut()
     {
         this.transform.DOScale(this.scale, 0.2f);
+
+        if (cardData.tapped)
+        {
+            this.cardBaseBlack.SetActive(true);
+        }
+
         this.IsZoomed = false;
     }
 
