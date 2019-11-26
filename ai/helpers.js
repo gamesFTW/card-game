@@ -19,12 +19,12 @@ export const isAIName = (deckName) => {
     return deckName.startsWith("AI");
 }
 
-export const subToTurnOnEndOfTurn = async (socket, gameId, gameLobbyData) => {
+export const subToTurnOnEndOfTurn = async (socket, gameId, gameLobbyData, CURRENT_GAMES) => {
     socket.on("event", async ({actions}) => {
         const isEndOfTurn = actions.some(({type}) => type === "EndTurnAction");
         if (isEndOfTurn) {
           try {
-            await turn(gameId, gameLobbyData);
+            await turn(gameId, gameLobbyData, CURRENT_GAMES, socket);
           } catch (e) {
             console.error(e);
           }

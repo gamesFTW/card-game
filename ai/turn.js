@@ -7,8 +7,14 @@ import {serverAddress} from "./config.js";
 import { isAIName } from "./helpers.js";
 
 
-export const turn = async (gameId, gameLobbyData) => {
+export const turn = async (gameId, gameLobbyData, CURRENT_GAMES, socket) => {
   let {gameData, currentPlayer, enemyPlayer, isAITurn} = await getGame(gameId, gameLobbyData);
+
+  if (gameData.game.gameEnded && CURRENT_GAMES && socket) {
+    delete CURRENT_GAMES[gameId];
+    socket.close();
+    console.log('>> game ended', gameId);
+  }
 
   if (isAITurn) {
     try {
