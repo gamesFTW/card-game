@@ -9,7 +9,8 @@ enum PlayerEventType {
   TURN_STARTED = 'Player:TurnStarted',
   CARD_PLAYED_AS_MANA = 'Player:CardPlayedAsMana',
   CARD_DIED = 'Player:CardDied',
-  CARD_PLAYED = 'Player:CardPlayed'
+  CARD_PLAYED = 'Player:CardPlayed',
+  PLAYER_LOST = 'Player:PlayerLost'
 }
 
 interface CardDiedExtra {
@@ -35,7 +36,8 @@ interface PlayerPlayCardAsManaData {
 
 enum GameEventType {
   GAME_CREATED = 'Game:GameCreated',
-  TURN_ENDED = 'Game:TurnEnded'
+  TURN_ENDED = 'Game:TurnEnded',
+  GAME_ENDED = 'Game:GameEnded'
 }
 
 enum CardEventType {

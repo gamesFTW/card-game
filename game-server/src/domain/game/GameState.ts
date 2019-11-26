@@ -1,6 +1,5 @@
 import { Event } from '../../infr/Event';
 import { EntityId, EntityState } from '../../infr/Entity';
-import { GameEventType, PlayerEventType } from '../events';
 
 interface GameData {
   id?: EntityId;
@@ -9,6 +8,9 @@ interface GameData {
   currentPlayersTurn?: EntityId;
   boardId?: EntityId;
   currentTurn?: number;
+  gameEnded?: boolean;
+  wonPlayerId?: EntityId;
+  lostPlayerId?: EntityId;
 }
 
 class GameState extends EntityState implements GameData {
@@ -17,6 +19,9 @@ class GameState extends EntityState implements GameData {
   public currentPlayersTurn: EntityId;
   public boardId: EntityId;
   public currentTurn: number = 1;
+  public gameEnded: boolean = false;
+  public wonPlayerId: string;
+  public lostPlayerId: string;
 
   public constructor (events: Array<Event<GameData>>) {
     super();

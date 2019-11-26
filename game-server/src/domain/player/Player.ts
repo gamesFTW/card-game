@@ -67,7 +67,11 @@ class Player extends Entity {
     return allCards;
   }
 
-  public startTurn (): void {
+  public startTurn (table: Array<Card> = null): void {
+    if (table) {
+      this.checkForEndOfGame(table);
+    }
+
     this.applyEvent(new Event<PlayerData>(
       PlayerEventType.TURN_STARTED,
       { status: PlayerStatus.MAKES_MOVE }
@@ -76,6 +80,8 @@ class Player extends Entity {
 
   public endTurn (manaPool: Array<Card>, table: Array<Card>): void {
     this.checkIfItHisTurn();
+
+    this.checkForEndOfGame(table);
 
     this.untapCardsAtEndOfTurn(manaPool, table);
     this.drawCard();
@@ -352,6 +358,18 @@ class Player extends Entity {
     let manaPoolCardsToTap = untappedManaPoolCards.slice(untappedManaPoolCards.length - manaNumber, untappedManaPoolCards.length + 1);
 
     manaPoolCardsToTap.forEach((card) => card.tap());
+  }
+
+  private checkForEndOfGame (tableCards: Array<Card>): void {
+    const heroes = tableCards.filter((card: Card) => card.hero);
+
+    if (heroes.length === 0) {
+      this.applyEvent(new Event<PlayerData>(
+        PlayerEventType.PLAYER_LOST, {
+          id: this.state.id
+        }
+      ));
+    }
   }
 
   // Мелкие методы, части публичных и важных приватных.

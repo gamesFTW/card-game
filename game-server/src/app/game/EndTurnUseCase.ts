@@ -5,11 +5,12 @@ import { CardData } from '../../domain/card/CardState';
 import { Event } from '../../infr/Event';
 import { boundMethod } from 'autobind-decorator';
 import { EntityId } from '../../infr/Entity';
-import { CardEventType, PlayerDrawnCardData, PlayerEventType } from '../../domain/events';
+import { CardEventType, GameEventType, PlayerDrawnCardData, PlayerEventType } from '../../domain/events';
 import { GameData } from '../../domain/game/GameState';
 import { UseCase } from '../../infr/UseCase';
 import { Board } from '../../domain/board/Board';
 import { CardChanges } from '../player/AttackCardUseCase';
+import { PlayerData } from '../../domain/player/PlayerState';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 interface EndTurnParams {
@@ -24,6 +25,7 @@ interface EndTurnAction {
   startedPlayerId?: string;
   cardChanges: CardChanges[];
   cardsDrawn?: Array<EntityId>;
+  gameEnded?: boolean;
 }
 
 class EndTurnUseCase extends UseCase {
@@ -62,6 +64,11 @@ class EndTurnUseCase extends UseCase {
   }
 
   protected addEventListeners (): void {
+    this.entities.endingTurnPlayer.addEventListener(PlayerEventType.PLAYER_LOST, this.onPlayerLost);
+    this.entities.endingTurnPlayerOpponent.addEventListener(PlayerEventType.PLAYER_LOST, this.onPlayerLost);
+
+    this.entities.game.addEventListener(GameEventType.GAME_ENDED, this.onGameEnded);
+
     this.entities.endingTurnPlayerManaPoolCards.forEach((card: Card) => {
       card.addEventListener(CardEventType.CARD_UNTAPPED, this.onCardUntapped);
     });
@@ -106,8 +113,13 @@ class EndTurnUseCase extends UseCase {
   }
 
   @boundMethod
+  private onPlayerLost (event: Event<PlayerData>): void {
+    this.entities.game.endGame(event.data.id);
+  }
+
+  @boundMethod
   private onGameEnded (event: Event<GameData>): void {
-    this.action.currentTurn = event.data.currentTurn;
+    this.action.gameEnded = true;
   }
 
   @boundMethod

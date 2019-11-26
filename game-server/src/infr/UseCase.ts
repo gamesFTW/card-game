@@ -23,10 +23,7 @@ abstract class UseCase {
 
     this.unsubscribeAllEventListeners();
 
-    // console.log(this.action);
-
     godOfSockets.sendActions(this.entities.game.id, [this.action]);
-
   }
 
   protected abstract async readEntities (): Promise<void>;

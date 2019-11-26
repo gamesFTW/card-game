@@ -79,7 +79,7 @@ class Game extends Entity {
       {currentPlayersTurn: endingTurnPlayerOpponent.id, currentTurn: this.state.currentTurn + 1}
     ));
 
-    endingTurnPlayerOpponent.startTurn();
+    endingTurnPlayerOpponent.startTurn(endingTurnPlayerOpponentTableCards);
 
     RangeService.applyBlockForRangeUnits(endingTurnPlayerOpponentTableCards, endingTurnPlayerTableCards, board);
 
@@ -91,6 +91,17 @@ class Game extends Entity {
 
   public getPlayerIdWhichIsOpponentFor (playerId: EntityId): EntityId {
     return playerId === this.state.player1Id ? this.state.player2Id : this.state.player1Id;
+  }
+
+  public endGame (lostPlayerId: EntityId): void {
+    if (!this.state.gameEnded) {
+      const wonPlayerId = this.getPlayerIdWhichIsOpponentFor(lostPlayerId);
+
+      this.applyEvent(new Event<GameData>(
+        GameEventType.GAME_ENDED,
+        {gameEnded: true, lostPlayerId, wonPlayerId}
+      ));
+    }
   }
 
   private createPlayer (playerCreationData: PlayerCreationData, board: Board, isFirstPlayer: boolean, areas: Area[]):
