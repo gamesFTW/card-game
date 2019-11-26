@@ -33,6 +33,8 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.boardCreator.ShowPlacesToCastCreatures();
         this.overHighlightActivity.Enable();
 
+        Dialog.instance.ShowDialog("Choose square to summon unit to it", "Cancel", this.SkipSelection);
+
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_EXIT, OnCardExit);
@@ -78,6 +80,8 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.SelectedCard = null;
         this.boardCreator.RemoveAllBlinks();
         this.overHighlightActivity.Disable();
+
+        Dialog.instance.HideDialog();
 
         Unibus.Unsubscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);

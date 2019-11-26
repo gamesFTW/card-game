@@ -60,6 +60,9 @@ public class Dialog : MonoBehaviour
     public void HideDialog()
     {
         this.gameObject.SetActive(false);
+
+        this.button1.GetComponent<Button>().onClick.RemoveListener(OnButton1ClickHandler);
+        this.button2.GetComponent<Button>().onClick.RemoveListener(OnButton2ClickHandler);
     }
 
     private void OnMouseEnter()

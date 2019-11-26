@@ -13,12 +13,15 @@ public class SelectingHealingTargetState : SelectingState
 
         this.boardCreator.BlinkHealTargets(selectedUnit, healingAbility.range);
 
+        Dialog.instance.ShowDialog("Choose ally unit to heal (Heal ability)", "Cancel", this.EnableNoSelectionsState);
+
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
     }
 
     protected override void Disable()
     {
         base.Disable();
+        Dialog.instance.HideDialog();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
     }

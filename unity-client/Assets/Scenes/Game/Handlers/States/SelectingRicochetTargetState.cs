@@ -18,6 +18,8 @@ public class SelectingRicochetTargetState : SelectingState
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
 
+        Dialog.instance.ShowDialog("Choose enemy unit for ricochet target (ricochet ability)", "Cancel", this.EnableNoSelectionsState);
+
         attackedSelectedUnit.CardDisplay.Select();
     }
 
@@ -25,6 +27,7 @@ public class SelectingRicochetTargetState : SelectingState
     {
         base.Disable();
         this.boardCreator.RemoveAllBlinks();
+        Dialog.instance.HideDialog();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
     }

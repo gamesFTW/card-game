@@ -18,7 +18,7 @@ public class SelectingPushTargetState : SelectingState
 
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
 
-        Dialog.instance.ShowDialog("Choose square to move attacking unit (push ability)", "Don't push", this.OnDontPushButtonClick, "Cancel", this.EnableNoSelectionsState);
+        Dialog.instance.ShowDialog("Choose square to move attacking unit to it (push ability)", "Don't push", this.OnDontPushButtonClick, "Cancel", this.EnableNoSelectionsState);
 
         this.attackerSelectedUnit.CardDisplay.Select();
     }
