@@ -7,6 +7,7 @@ public class ClickOutOfBoardEmmiter
     public static string RIGHT_CLICK = "ClickOutOfBoardEmmiter:RIGHT_CLICK";
 
     private bool MouseOnTile = false;
+    private bool MouseOnDialog = false;
     private bool skipedFirstCheckClickOutOfAnyCard = false;
 
     public ClickOutOfBoardEmmiter()
@@ -15,6 +16,8 @@ public class ClickOutOfBoardEmmiter
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_EXIT, OnTileMouseExit);
         Unibus.Subscribe<AbilityDisplay>(AbilityDisplay.ABILITY_MOUSE_ENTER, OnTileMouseEnter);
         Unibus.Subscribe<AbilityDisplay>(AbilityDisplay.ABILITY_MOUSE_EXIT, OnTileMouseExit);
+        Unibus.Subscribe<string>(Dialog.DIALOG_MOUSE_ENTER, OnDialogMouseEnter);
+        Unibus.Subscribe<string>(Dialog.DIALOG_MOUSE_EXIT, OnDialogMouseExit);
     }
 
     private void OnTileMouseEnter(Point point)
@@ -37,25 +40,38 @@ public class ClickOutOfBoardEmmiter
         this.MouseOnTile = false;
     }
 
+    private void OnDialogMouseEnter(string _)
+    {
+        this.MouseOnDialog = true;
+    }
+
+    private void OnDialogMouseExit(string _)
+    {
+        this.MouseOnDialog = false;
+    }
+
     public void CheckClickOutOfAnyCard()
     {
-        // Хоть убей я не придумал как сделать по другому.
-        if (!this.skipedFirstCheckClickOutOfAnyCard)
+        if (!this.MouseOnDialog)
         {
-            this.skipedFirstCheckClickOutOfAnyCard = true;
-        }
-        else
-        {
-            var leftMouseClicked = Input.GetButtonDown("Fire1");
-            if (leftMouseClicked && MouseOnTile == false)
+            // Хоть убей я не придумал как сделать по другому.
+            if (!this.skipedFirstCheckClickOutOfAnyCard)
             {
-                Unibus.Dispatch<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, "");
+                this.skipedFirstCheckClickOutOfAnyCard = true;
             }
-
-            var rightMouseClicked = Input.GetButtonDown("Fire2");
-            if (rightMouseClicked)
+            else
             {
-                Unibus.Dispatch<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, "");
+                var leftMouseClicked = Input.GetButtonDown("Fire1");
+                if (leftMouseClicked && MouseOnTile == false)
+                {
+                    Unibus.Dispatch<string>(ClickOutOfBoardEmmiter.CLICK_OUT_OF_BOARD, "");
+                }
+
+                var rightMouseClicked = Input.GetButtonDown("Fire2");
+                if (rightMouseClicked)
+                {
+                    Unibus.Dispatch<string>(ClickOutOfBoardEmmiter.RIGHT_CLICK, "");
+                }
             }
         }
     }

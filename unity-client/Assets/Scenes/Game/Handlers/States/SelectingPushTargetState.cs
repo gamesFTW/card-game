@@ -1,4 +1,4 @@
-﻿
+﻿using UnityEngine;
 using UnibusEvent;
 
 public class SelectingPushTargetState : SelectingState
@@ -18,6 +18,8 @@ public class SelectingPushTargetState : SelectingState
 
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
 
+        Dialog.instance.ShowDialog("Choose square to move attacking unit (push ability)", "Don't push", this.OnDontPushButtonClick, "Cancel", this.EnableNoSelectionsState);
+
         this.attackerSelectedUnit.CardDisplay.Select();
     }
 
@@ -25,6 +27,7 @@ public class SelectingPushTargetState : SelectingState
     {
         base.Disable();
         this.boardCreator.RemoveAllBlinks();
+        Dialog.instance.HideDialog();
 
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
     }
@@ -42,6 +45,12 @@ public class SelectingPushTargetState : SelectingState
     {
         this.actionEmmiter.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, point);
 
+        this.EnableNoSelectionsState();
+    }
+
+    private void OnDontPushButtonClick()
+    {
+        this.actionEmmiter.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit);
         this.EnableNoSelectionsState();
     }
 }
