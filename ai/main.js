@@ -16,7 +16,6 @@ let CURRENT_GAMES = {};
 // WebSockets registr 
 // научится слушать end of turn всех игр
 const start = async () => {
-  const socket = io(serverAddress);
   const {data: {Games}} = await axios.get(`${lobbyAddress}/methods/getGames`);
   let games = Games;
 
@@ -29,6 +28,7 @@ const start = async () => {
   }
 
   for (let gameId in CURRENT_GAMES) {
+    const socket = io(serverAddress);
     let gameLobbyData = CURRENT_GAMES[gameId];
     socket.emit("register", {
       gameId: gameId,
@@ -40,7 +40,7 @@ const start = async () => {
     turn(gameId, gameLobbyData);
   }
 
-  runCheckInterval(socket);
+  runCheckInterval();
 }
 
 const refeshGamesList = async (socket) => {
@@ -55,6 +55,7 @@ const refeshGamesList = async (socket) => {
   });
 
   for (let gameLobbyData of games) {
+    const socket = io(serverAddress);
     CURRENT_GAMES[gameLobbyData.gameServerId] = gameLobbyData;
     const gameId = gameLobbyData.gameServerId;
     socket.emit("register", {
@@ -67,10 +68,10 @@ const refeshGamesList = async (socket) => {
   }
 };
 
-async function runCheckInterval(socket) {
+async function runCheckInterval() {
   while (true) {
     try {
-      refeshGamesList(socket);
+      refeshGamesList();
       await wait(10 * 1000);
     } catch (e) {
       console.log("Error on refresh", e);
