@@ -1,11 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnibusEvent;
+using TMPro;
 
 public class ManaPool : StackDisplay
 {
+    private Transform manaContainer;
+
     private Dictionary<CardDisplay, GameObject> cardDisplayToMana = new Dictionary<CardDisplay, GameObject>();
+    private List<CardDisplay> cardDisplays = new List<CardDisplay>();
+
+    private void Awake()
+    {
+        this.manaContainer = this.transform.Find("ManaContainer");
+    }
 
     private void Start()
     {
@@ -17,20 +25,35 @@ public class ManaPool : StackDisplay
     {
         base.AddCard(cardDisplay);
 
-        cardDisplay.gameObject.SetActive(false);
-
         GameObject manaPrefab = Resources.Load<GameObject>("Mana");
-        GameObject mana = (GameObject)Instantiate(manaPrefab, this.transform);
-        mana.transform.SetParent(this.transform);
+        GameObject mana = (GameObject)Instantiate(manaPrefab, this.manaContainer);
+        mana.transform.SetParent(this.manaContainer);
+
+        this.cardDisplayToMana.Add(cardDisplay, mana);
+        this.cardDisplays.Add(cardDisplay);
 
         this.CalcMana(cardDisplay, mana);
-        this.cardDisplayToMana.Add(cardDisplay, mana);
+        this.CalcManaValue();
     }
 
     private void CalcMana(CardDisplay cardDisplay, GameObject mana)
     {
-        Debug.Log(cardDisplay.cardData.tapped);
         mana.transform.Find("Mana").gameObject.SetActive(!cardDisplay.cardData.tapped);
+    }
+
+    private void CalcManaValue()
+    {
+        int mana = 0;
+        foreach (var cardDisplay in cardDisplays)
+        {
+            if (!cardDisplay.cardData.tapped)
+            {
+                mana++;
+            }
+        }
+
+        this.transform.Find("ManaValue").GetComponent<TextMeshProUGUI>().text = mana + " / " + cardDisplays.Count;
+
     }
 
     private void OnCardChanged(CardDisplay cardDisplay)
@@ -42,5 +65,7 @@ public class ManaPool : StackDisplay
         {
             this.CalcMana(cardDisplay, mana);
         }
+
+        this.CalcManaValue();
     }
 }

@@ -3,6 +3,7 @@
 public class StackDisplay : MonoBehaviour
 {
     public bool IsFaceUp;
+    public bool IsHideCards;
 
     virtual public void AddCard(CardDisplay cardDisplay)
     {
@@ -14,5 +15,10 @@ public class StackDisplay : MonoBehaviour
         }
 
         cardDisplay.Placeholder.SetParent(this.transform, false);
+
+        if (this.IsHideCards)
+        {
+            cardDisplay.gameObject.SetActive(false);
+        }
     }
 }
