@@ -6,6 +6,8 @@ namespace Lobby
 {
     public class ChooseDeck : MonoBehaviour
     {
+        public static bool isSinglePlayer = false;
+
         async void Start()
         {
             DecksData decksData = await LobbyServerApi.GetDecks<DecksData>();
@@ -38,14 +40,21 @@ namespace Lobby
         {
             var value = deckButton.GetComponent<ButtonValue>().value;
 
-            SinglePlayerGameData data = await LobbyServerApi.CreateSinglePlayerGame(value);
+            if (ChooseDeck.isSinglePlayer)
+            {
+                SinglePlayerGameData data = await LobbyServerApi.CreateSinglePlayerGame(value);
 
-            GameState.gameId = data.gameServerId;
+                GameState.gameId = data.gameServerId;
 
-            GameState.mainPlayerId = data.playerId;
-            GameState.enemyOfMainPlayerId = data.aiId;
+                GameState.mainPlayerId = data.playerId;
+                GameState.enemyOfMainPlayerId = data.aiId;
 
-            SceneManager.LoadScene("Game");
+                SceneManager.LoadScene("Game");
+            } else
+            {
+                FindingOpponent.deckId = value;
+                SceneManager.LoadScene("FindingOpponent");
+            }
         }
 
         private void OnBackButtonClick()
