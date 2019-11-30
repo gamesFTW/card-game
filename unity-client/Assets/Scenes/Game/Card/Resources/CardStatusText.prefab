@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8273799167525849454}
   - component: {fileID: 5496195936392454503}
   - component: {fileID: 4874931344090623544}
+  - component: {fileID: 61880497534959472}
   m_Layer: 5
   m_Name: CardStatusText
   m_TagString: Untagged
@@ -249,3 +250,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityDescription: 
+--- !u!114 &61880497534959472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906356188455595846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d30ab72c717f142ab3abfb8fd8a908, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

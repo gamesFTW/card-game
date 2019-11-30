@@ -5,6 +5,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class CardDisplay : MonoBehaviour
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
     private GameObject cardBaseBlack;
+    private GameObject convertToManaButton;
 
     public int CurrentHp
     {
@@ -244,6 +246,7 @@ public class CardDisplay : MonoBehaviour
         this.cardBaseBlack = this.transform.Find("CardBaseBlack").gameObject;
         this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
         this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
+        this.convertToManaButton = this.transform.Find("Front").Find("ConvertToManaButton").gameObject;
     }
 
     private void Start () 
@@ -266,12 +269,12 @@ public class CardDisplay : MonoBehaviour
                 this.sounds.Add(soundData.soundName, soundData);
             }
         }
+
+        this.convertToManaButton.GetComponent<MouseHandlers>().MouseClickHandler = this.OnConvertToManaButtonClick;
     }
 
     private void Update()
     {
-        CheckRightMouseDown();
-
         UpdateZIndex();
     }
 
@@ -319,11 +322,16 @@ public class CardDisplay : MonoBehaviour
         Unibus.Dispatch(CARD_UNTAPPED, this);
     }
 
-    public void ZoomIn(float zoom)
+    public void ZoomIn(float zoom, bool showConvertToManaButton = false)
     {
         this.transform.DOScale(new Vector3(this.scale.x * zoom, this.scale.y * zoom, this.scale.z * zoom), 0.2f);
 
         this.cardBaseBlack.SetActive(false);
+
+        if (showConvertToManaButton)
+        {
+            this.convertToManaButton.SetActive(true);
+        }
 
         this.IsZoomed = true;
     }
@@ -331,6 +339,7 @@ public class CardDisplay : MonoBehaviour
     public void ZoomOut()
     {
         this.transform.DOScale(this.scale, 0.2f);
+        this.convertToManaButton.SetActive(false);
 
         if (cardData.tapped)
         {
@@ -449,7 +458,12 @@ public class CardDisplay : MonoBehaviour
     // Public only for CardCollider class
     public void CardMouseDown()
     {
-        OnLeftMouseClicked();
+        var convertToManaButtonMouseHandlers = this.convertToManaButton.GetComponent<MouseHandlers>();
+
+        if (!convertToManaButtonMouseHandlers.mouseEnter)
+        {
+            OnLeftMouseClicked();
+        }
     }
 
     // Public only for CardCollider class
@@ -471,11 +485,6 @@ public class CardDisplay : MonoBehaviour
         Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
     }
 
-    private void OnRightMouseClicked()
-    {
-        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
-    }
-
     private IEnumerator LoadSprite()
     {
         WWW www = new WWW(Config.LOBBY_SERVER_URL + cardData.image);
@@ -486,18 +495,8 @@ public class CardDisplay : MonoBehaviour
         artwork.GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
-    private void CheckRightMouseDown()
+    private void OnConvertToManaButtonClick()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
-
-            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
-            if (hit && hit.collider.gameObject == this.gameObject.transform.Find("Collider").gameObject)
-            {
-                OnRightMouseClicked();
-            }
-        }
+        Unibus.Dispatch(CARD_PLAY_AS_MANA, this);
     }
 }
