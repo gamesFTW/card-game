@@ -6,6 +6,7 @@ using TMPro;
 public class ManaPool : StackDisplay
 {
     private Transform manaContainer;
+    private GameObject hint;
 
     private Dictionary<CardDisplay, GameObject> cardDisplayToMana = new Dictionary<CardDisplay, GameObject>();
     private List<CardDisplay> cardDisplays = new List<CardDisplay>();
@@ -13,6 +14,7 @@ public class ManaPool : StackDisplay
     private void Awake()
     {
         this.manaContainer = this.transform.Find("ManaContainer");
+        this.hint = this.transform.Find("Hint").gameObject;
     }
 
     private void Start()
@@ -67,5 +69,15 @@ public class ManaPool : StackDisplay
         }
 
         this.CalcManaValue();
+    }
+
+    private void OnMouseEnter()
+    {
+        this.hint.SetActive(true);
+    }
+
+    private void OnMouseExit()
+    {
+        this.hint.SetActive(false);
     }
 }
