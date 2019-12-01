@@ -46,8 +46,33 @@ public class UIManager : MonoBehaviour
     {
         if (GameState.isMainPlayerTurn)
         {
-            ServerApi.EndOfTurn();
+            var voidManaSlots = ManaPool.playerInstance.GetVoidManaSlots();
+            if (voidManaSlots < 3)
+            {
+                Dialog.instance.ShowDialog(
+                    $"You need convert {3 - voidManaSlots} card to mana slots, or you lose {3 - voidManaSlots} mana",
+                    "End turn anyway",
+                    this.OnEndTurnAnywayButtonClick,
+                    "Cancel",
+                    this.OnContinueTurnButtonClick
+                );
+            } else
+            {
+                ServerApi.EndOfTurn();
+            }
+            
         }
+    }
+
+    void OnEndTurnAnywayButtonClick()
+    {
+        ServerApi.EndOfTurn();
+        Dialog.instance.HideDialog();
+    }
+
+    void OnContinueTurnButtonClick()
+    {
+        Dialog.instance.HideDialog();
     }
 
     void OnEndOfTurnPointerEnter()
