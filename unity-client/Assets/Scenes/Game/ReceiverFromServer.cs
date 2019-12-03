@@ -26,6 +26,9 @@ namespace ServerActions
         public string startedPlayerId;
         public string[] cardsDrawn;
         public CardChanges[] cardChanges;
+        public bool gameEnded;
+        public string lostPlayerId;
+        public string wonPlayerId;
     }
 
     [Serializable]
@@ -121,13 +124,13 @@ namespace ServerActions
 
 public class ReceiverFromServer : MonoBehaviour
 {
-    public static readonly string TURN_ENDED = "TURN_ENDED";
-
     private CardManager cardManger;
+    private UIManager uiManager;
 
     void Awake()
     {
-        cardManger = this.GetComponent<CardManager>();
+        this.cardManger = this.GetComponent<CardManager>();
+        this.uiManager = this.GetComponent<UIManager>();
     }
 
     public void ProcessAction(string type, int index, string message)
@@ -192,7 +195,15 @@ public class ReceiverFromServer : MonoBehaviour
 
         GameState.playerIdWhoMakesMove = action.startedPlayerId;
 
-        Unibus.Dispatch(TURN_ENDED, action.startedPlayerId);
+        if (action.gameEnded)
+        {
+            GameState.gameData.game.lostPlayerId = action.lostPlayerId;
+            GameState.gameData.game.wonPlayerId = action.wonPlayerId;
+            this.uiManager.ShowWinStatus();
+        } else
+        {
+            this.uiManager.ShowTurn();
+        }
     }
 
     public void OnPlayCardAction(ServerActions.PlayCardAction action)

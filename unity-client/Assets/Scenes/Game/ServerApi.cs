@@ -220,6 +220,9 @@ public class GameInfoData
     public string currentPlayersTurn;
     public string boardId;
     public int currentTurn;
+    public bool gameEnded;
+    public string lostPlayerId;
+    public string wonPlayerId;
 }
 
 [Serializable]

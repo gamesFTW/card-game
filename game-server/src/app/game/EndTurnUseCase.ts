@@ -26,6 +26,8 @@ interface EndTurnAction {
   cardChanges: CardChanges[];
   cardsDrawn?: Array<EntityId>;
   gameEnded?: boolean;
+  lostPlayerId?: string;
+  wonPlayerId?: string;
 }
 
 class EndTurnUseCase extends UseCase {
@@ -120,6 +122,9 @@ class EndTurnUseCase extends UseCase {
   @boundMethod
   private onGameEnded (event: Event<GameData>): void {
     this.action.gameEnded = true;
+
+    this.action.lostPlayerId = event.data.lostPlayerId;
+    this.action.wonPlayerId = event.data.wonPlayerId;
   }
 
   @boundMethod

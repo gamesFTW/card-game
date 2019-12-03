@@ -6,14 +6,17 @@ using UnibusEvent;
 
 public class Main : MonoBehaviour
 {
-    public static readonly string GAME_BUILDED = "GAME_BUILDED";
-
     private AudioController audioController;
+    private UIManager uiManager;
+
+    async void Awake()
+    {
+        this.audioController = this.GetComponent<AudioController>();
+        this.uiManager = this.GetComponent<UIManager>();
+    }
 
     async Task Start()
     {
-        audioController = this.GetComponent<AudioController>();
-
         var gameData = await LoadGame();
 
         CardCreator cardCreator = this.GetComponent<CardCreator>();
@@ -26,7 +29,14 @@ public class Main : MonoBehaviour
 
         this.OnGameDataFirstTimeRecived();
 
-        Unibus.Dispatch<string>(Main.GAME_BUILDED, "");
+        if (GameState.gameData.game.gameEnded)
+        {
+            this.uiManager.ShowWinStatus();
+        }
+        else
+        {
+            this.uiManager.ShowTurn();
+        }
     }
 
     private async Task<GameData> LoadGame()
@@ -67,6 +77,8 @@ public class Main : MonoBehaviour
 
             GameState.playerIdWhoMakesMove = gameData.game.currentPlayersTurn;
         }
+
+        GameState.gameData = gameData;
 
         return gameData;
     }

@@ -24,9 +24,6 @@ public class UIManager : MonoBehaviour
         this.executer = new Executer(this);
 
         this.changeTurn.GetComponent<CanvasGroup>().DOFade(0, 0);
-
-        Unibus.Subscribe<string>(ReceiverFromServer.TURN_ENDED, OnTurnEnded);
-        Unibus.Subscribe<string>(Main.GAME_BUILDED, OnGameBuilded);
     }
 
     void Update()
@@ -101,28 +98,45 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    private void OnGameBuilded(string _)
+    public void ShowTurn()
     {
-        ShowTurn();
+        if (GameState.isMainPlayerTurn)
+        {
+            this.ShowText("Your turn");
+        }
+        else
+        {
+            this.ShowText("Opponent turn");
+        }
     }
 
-    private void OnTurnEnded (string _)
+    public void ShowWinStatus()
     {
-        ShowTurn();
+        GameObject button = this.transform.Find("UI/WinStatus").gameObject;
+        Text buttonText = this.transform.Find("UI/WinStatus/WinStatusText").GetComponent<Text>();
+        button.SetActive(true);
+
+        if (GameState.mainPlayerId == GameState.gameData.game.wonPlayerId)
+        {
+            buttonText.text = "You win!";
+        } else
+        {
+            buttonText.text = "You lose!";
+        }
     }
 
-    private void ShowTurn()
+    private void ShowText(string text)
     {
         GameObject endOfTurnButtonSelectedGlow = this.transform.Find("UI/EndOfTurn/Selected").gameObject;
 
         if (GameState.isMainPlayerTurn)
         {
-            changeTurnText.text = "Your turn";
+            changeTurnText.text = text;
             endOfTurnButtonSelectedGlow.SetActive(true);
         }
         else
         {
-            changeTurnText.text = "Opponent turn";
+            changeTurnText.text = text;
             endOfTurnButtonSelectedGlow.SetActive(false);
         }
 

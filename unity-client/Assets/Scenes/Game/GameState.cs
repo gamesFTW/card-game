@@ -13,4 +13,6 @@
     {
         get { return GameState.playerIdWhoMakesMove == GameState.mainPlayerId; }
     }
+
+    public static GameData gameData;
 }
