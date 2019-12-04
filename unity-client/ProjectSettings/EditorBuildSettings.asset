@@ -6,14 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu/MainMenu.unity
+    guid: 6aff6973b2487814f97947f2b9f11fa9
+  - enabled: 1
     path: Assets/Scenes/Lobby/Lobby.unity
     guid: 20af5e5b3c87a864c9341df0a56402cf
   - enabled: 1
     path: Assets/Scenes/Game/Game.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
-    path: Assets/Scenes/MainMenu/MainMenu.unity
-    guid: 6aff6973b2487814f97947f2b9f11fa9
   - enabled: 1
     path: Assets/Scenes/MainMenu/ChooseDeck.unity
     guid: 80a43b3b2f623ec42a00ca7b845dd0ae
