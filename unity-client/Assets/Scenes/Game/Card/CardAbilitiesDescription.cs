@@ -5,6 +5,7 @@ using System.Reflection;
 public class CardAbilitiesDescription : MonoBehaviour
 {
     private CardDisplay cardDisplay;
+    private CardCollider cardCollider;
 
     private GameObject abilitiesDescription;
     private GameObject abilitiesDescriptionList;
@@ -15,6 +16,7 @@ public class CardAbilitiesDescription : MonoBehaviour
     void Awake()
     {
         this.cardDisplay = this.GetComponent<CardDisplay>();
+        this.cardCollider = this.transform.Find("Collider").GetComponent<CardCollider>();
     }
 
     void Start()
@@ -53,6 +55,7 @@ public class CardAbilitiesDescription : MonoBehaviour
     {
         this.abilityDescription.SetActive(true);
         this.abilityDescription.transform.Find("Text").GetComponent<TextMeshPro>().text = text;
+        this.cardCollider.EnableHandColliderExtended();
     }
 
     public void HideAbilityDescription()
@@ -67,7 +70,7 @@ public class CardAbilitiesDescription : MonoBehaviour
         var cardStatusText = cardStatusTextInstance.GetComponent<CardStatusText>();
         cardStatusText.abilityDescription = abilityDescription;
         cardStatusText.OnCustomMouseEnter = this.ShowAbilityDescription;
-        cardStatusText.OnCustomMouseExit = this.HideAbilityDescription;
+        //cardStatusText.OnCustomMouseExit = this.HideAbilityDescription;
 
         cardStatusTextInstance.transform.SetParent(this.abilitiesDescriptionList.transform);
         var textMeshPro = cardStatusTextInstance.GetComponent<TextMeshPro>();

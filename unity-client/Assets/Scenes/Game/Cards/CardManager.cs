@@ -92,7 +92,7 @@ public class CardManager : MonoBehaviour
         }
 
         cardDisplay.FaceDown();
-        cardDisplay.ZoomOut();
+        cardDisplay.SwitchToDefaultView();
     }
 
     public void MoveCard(string playerId, string cardId, Point position, int currentMovingPoints, Point[] path)

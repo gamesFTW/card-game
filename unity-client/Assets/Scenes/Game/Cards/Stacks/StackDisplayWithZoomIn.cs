@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class StackDisplayWithZoomIn : MonoBehaviour
 {
-    public static float CARD_ZOOM = 3f;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +16,7 @@ public class StackDisplayWithZoomIn : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.ZoomIn(StackDisplayWithZoomIn.CARD_ZOOM);
+            card.SwitchToTableView();
         }
     }
 
@@ -26,7 +24,7 @@ public class StackDisplayWithZoomIn : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.ZoomOut();
+            card.SwitchToDefaultView();
         }
     }
 }

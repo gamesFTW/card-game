@@ -6,13 +6,6 @@ public class CardsContainer : MonoBehaviour
 {
     private List<CardDisplay> cards = new List<CardDisplay>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
         foreach (CardDisplay cardDisplay in this.cards)

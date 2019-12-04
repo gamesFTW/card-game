@@ -4,8 +4,6 @@ using UnibusEvent;
 using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -52,7 +50,8 @@ public class CardDisplay : MonoBehaviour
     private enum ViewMode
     {
         defaultView,
-        playerHandView
+        playerHandView,
+        tableView
     }
 
     private Vector3 defaultViewPosition;
@@ -284,6 +283,19 @@ public class CardDisplay : MonoBehaviour
 
     private void Update()
     {
+        if (this.cardCollider.CurrentCollider)
+        {
+            var screenBounds = Camera.main.ScreenToWorldPoint(
+                new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z)
+            );
+
+            if (this.cardCollider.CurrentCollider.bounds.max.x > screenBounds.x)
+            {
+                var difference = this.cardCollider.CurrentCollider.bounds.max.x - screenBounds.x;
+                this.transform.position -= new Vector3(difference, 0, 0);
+            }
+        }
+
         UpdateZIndex();
     }
 
@@ -292,9 +304,17 @@ public class CardDisplay : MonoBehaviour
         if (viewMode != ViewMode.defaultView)
         {
             this.ZoomOut();
+
             this.transform.position = this.defaultViewPosition;
-            this.EnableDefaultCollider();
             //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
+
+            this.cardCollider.EnableDefaultCollider();
+
+            this.convertToManaButton.SetActive(false);
+
+            this.cardAbilitiesDescription.HideDescription();
+            this.cardAbilitiesDescription.HideAbilityDescription();
+
             this.viewMode = ViewMode.defaultView;
         }
     }
@@ -303,13 +323,31 @@ public class CardDisplay : MonoBehaviour
     {
         if (viewMode != ViewMode.playerHandView)
         {
-            this.defaultViewPosition = this.transform.position;
+            this.ZoomIn(2f);
 
-            this.ZoomIn(2f, true);
+            this.defaultViewPosition = this.transform.position;
             this.transform.position += new Vector3(0, 3.4F, 0);
-            this.EnableHandCollider();
             //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
+
+            this.cardCollider.EnableHandCollider();
+
+            this.convertToManaButton.SetActive(true);
+
+            this.cardAbilitiesDescription.ShowDescription();
+
             this.viewMode = ViewMode.playerHandView;
+        }
+    }
+
+    public void SwitchToTableView()
+    {
+        if (viewMode != ViewMode.tableView)
+        {
+            this.defaultViewPosition = this.transform.position;
+            this.ZoomIn(3f);
+            this.cardCollider.EnableTableCollider();
+            this.cardAbilitiesDescription.ShowDescription();
+            this.viewMode = ViewMode.tableView;
         }
     }
 
@@ -357,33 +395,6 @@ public class CardDisplay : MonoBehaviour
         Unibus.Dispatch(CARD_UNTAPPED, this);
     }
 
-    public void ZoomIn(float zoom, bool showConvertToManaButton = false)
-    {
-        this.transform.DOScale(new Vector3(this.scale.x * zoom, this.scale.y * zoom, this.scale.z * zoom), 0.2f);
-
-        this.cardBaseBlack.SetActive(false);
-
-        if (showConvertToManaButton)
-        {
-            this.convertToManaButton.SetActive(true);
-        }
-
-        this.IsZoomed = true;
-    }
-
-    public void ZoomOut()
-    {
-        this.transform.DOScale(this.scale, 0.2f);
-        this.convertToManaButton.SetActive(false);
-
-        if (cardData.tapped)
-        {
-            this.cardBaseBlack.SetActive(true);
-        }
-
-        this.IsZoomed = false;
-    }
-
     public void Kill()
     {
         this.cardData.alive = false;
@@ -391,21 +402,6 @@ public class CardDisplay : MonoBehaviour
         this.ZoomOut();
         this.Unselect();
         this.OverHighlightOff();
-    }
-
-    public void EnableDefaultCollider()
-    {
-        this.cardCollider.EnableDefaultCollider();
-    }
-
-    public void EnableHandCollider()
-    {
-        this.cardCollider.EnableHandCollider();
-    }
-
-    public void EnableTableCollider()
-    {
-        this.cardCollider.EnableTableCollider();
     }
     
     public void Select()
@@ -453,40 +449,11 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    public void UpdateZIndex()
-    {
-        Vector3 position = transform.localPosition;
-        float z = (float)(position.x * 0.01) - 10;
-
-        if (IsZoomed)
-        {
-            z = -50;
-        }
-
-        this.transform.localPosition = new Vector3(position.x, position.y, z);
-    }
-
     public void Shake()
     {
         if (this.UnitDisplay)
         {
             this.UnitDisplay.Shake();
-        }
-    }
-
-    public void ShowAbilities()
-    {
-        if (this.UnitDisplay)
-        {
-            this.UnitDisplay.ShowAbilities();
-        }
-    }
-
-    public void HideAbilities()
-    {
-        if (this.UnitDisplay)
-        {
-            this.UnitDisplay.HideAbilities();
         }
     }
 
@@ -504,15 +471,47 @@ public class CardDisplay : MonoBehaviour
     // Public only for CardCollider class
     public void CardMouseEnter()
     {
-        this.cardAbilitiesDescription.ShowDescription();
         Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     // Public only for CardCollider class
     public void CardMouseExit()
     {
-        this.cardAbilitiesDescription.HideDescription();
         Unibus.Dispatch(CARD_MOUSE_EXIT, this);
+    }
+
+    private void UpdateZIndex()
+    {
+        Vector3 position = transform.localPosition;
+        float z = (float)(position.x * 0.01) - 10;
+
+        if (IsZoomed)
+        {
+            z = -50;
+        }
+
+        this.transform.localPosition = new Vector3(position.x, position.y, z);
+    }
+
+    private void ZoomIn(float zoom)
+    {
+        this.transform.DOScale(new Vector3(this.scale.x * zoom, this.scale.y * zoom, this.scale.z * zoom), 0.2f);
+
+        this.cardBaseBlack.SetActive(false);
+
+        this.IsZoomed = true;
+    }
+
+    private void ZoomOut()
+    {
+        this.transform.DOScale(this.scale, 0.2f);
+
+        if (cardData.tapped)
+        {
+            this.cardBaseBlack.SetActive(true);
+        }
+
+        this.IsZoomed = false;
     }
 
     private void OnLeftMouseClicked()
