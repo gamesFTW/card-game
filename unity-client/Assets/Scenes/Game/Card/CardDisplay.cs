@@ -48,6 +48,15 @@ public class CardDisplay : MonoBehaviour
     private GameObject cardBaseBlack;
     private GameObject convertToManaButton;
 
+    private ViewMode viewMode = ViewMode.defaultView;
+    private enum ViewMode
+    {
+        defaultView,
+        playerHandView
+    }
+
+    private Vector3 defaultViewPosition;
+
     public int CurrentHp
     {
         get { return cardData.currentHp; }
@@ -276,6 +285,32 @@ public class CardDisplay : MonoBehaviour
     private void Update()
     {
         UpdateZIndex();
+    }
+
+    public void SwitchToDefaultView()
+    {
+        if (viewMode != ViewMode.defaultView)
+        {
+            this.ZoomOut();
+            this.transform.position = this.defaultViewPosition;
+            this.EnableDefaultCollider();
+            //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
+            this.viewMode = ViewMode.defaultView;
+        }
+    }
+
+    public void SwitchToPlayerHandView()
+    {
+        if (viewMode != ViewMode.playerHandView)
+        {
+            this.defaultViewPosition = this.transform.position;
+
+            this.ZoomIn(2f, true);
+            this.transform.position += new Vector3(0, 3.4F, 0);
+            this.EnableHandCollider();
+            //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
+            this.viewMode = ViewMode.playerHandView;
+        }
     }
 
     public void MoveAtInitialPosition(Vector3 position, Vector3 scale) {

@@ -17,10 +17,7 @@ public class PlayerHandDisplay : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.ZoomIn(2f, true);
-            card.transform.position += new Vector3(0, 3.4F, 0);
-            card.EnableHandCollider();
-            //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
+            card.SwitchToPlayerHandView();
         }
     }
 
@@ -28,10 +25,7 @@ public class PlayerHandDisplay : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.ZoomOut();
-            card.transform.position -= new Vector3(0, 3.4F, 0);
-            card.EnableDefaultCollider();
-            //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
+            card.SwitchToDefaultView();
         }
     }
 
