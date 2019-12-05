@@ -934,6 +934,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ability1
       objectReference: {fileID: 0}
+    - target: {fileID: 343527347543839646, guid: 08505e170f14d27478d73d5dfc5128fc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 911859441132205919, guid: 08505e170f14d27478d73d5dfc5128fc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1083,6 +1088,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Ability1
+      objectReference: {fileID: 0}
+    - target: {fileID: 343527347543839646, guid: 08505e170f14d27478d73d5dfc5128fc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 911859441132205919, guid: 08505e170f14d27478d73d5dfc5128fc,
         type: 3}
