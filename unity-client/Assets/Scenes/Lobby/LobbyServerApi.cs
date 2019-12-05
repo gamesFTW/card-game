@@ -53,6 +53,11 @@ namespace Lobby
             return await HttpRequest.Get<DecksData>(Config.LOBBY_SERVER_URL + "publications/Decks");
         }
 
+        public async static Task<DecksData> GetPlayerDecks<DecksData>()
+        {
+            return await HttpRequest.Get<DecksData>(Config.LOBBY_SERVER_URL + "methods/getPlayerDecks");
+        }
+
         public async static Task CreateGame(string player1DeckId, string player2DeckId)
         {
             var values = new

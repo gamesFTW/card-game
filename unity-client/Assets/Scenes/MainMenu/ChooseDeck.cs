@@ -10,7 +10,7 @@ namespace Lobby
 
         async void Start()
         {
-            DecksData decksData = await LobbyServerApi.GetDecks<DecksData>();
+            DecksData decksData = await LobbyServerApi.GetPlayerDecks<DecksData>();
 
             foreach (DeckData deck in decksData.Decks)
             {
