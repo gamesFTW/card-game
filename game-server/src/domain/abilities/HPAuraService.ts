@@ -17,7 +17,7 @@ class HPAuraService {
         let hpAuraNewHp = 0;
 
         for (let cardWithHPAura of cardsWithHPAura) {
-          if (cardWithHPAura !== card) {
+          if (cardWithHPAura !== card && cardWithHPAura.alive) {
             let distance = board.calcDistanceBetweenUnits(card, cardWithHPAura);
 
             if (distance <= cardWithHPAura.abilities.hpAura.range) {
