@@ -29,7 +29,7 @@ namespace Lobby
         private GameObject CreateButton()
         {
             var decks = this.transform.Find("Decs");
-            GameObject deckButtonPrefab = Resources.Load<GameObject>("DeckButton");
+            GameObject deckButtonPrefab = Resources.Load<GameObject>("MenuButton");
             GameObject deckButton = Instantiate<GameObject>(deckButtonPrefab, decks.transform);
 
             deckButton.transform.SetParent(decks, false);
