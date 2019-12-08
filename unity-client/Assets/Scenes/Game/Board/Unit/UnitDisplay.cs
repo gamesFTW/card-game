@@ -38,7 +38,8 @@ public class UnitDisplay : MonoBehaviour
 
     private bool IsSelected = false;
 
-    // Start is called before the first frame update
+    private List<GameObject> toolTips = new List<GameObject>();
+
     private void Start()
     {
         this.target = this.transform.Find("Target").gameObject;
@@ -58,10 +59,27 @@ public class UnitDisplay : MonoBehaviour
         this.RedrawAbilisiesStatus();
     }
 
-    // Update is called once per frame
     private void Update()
     {
+        if (this.toolTips.Count > 0)
+        {
+            int i = 0;
+            foreach (var toolTip in toolTips)
+            {
+                var spaceBetweenTooltips = 0.2f;
+                var tweenDistance = 0.2f;
 
+                var position = toolTip.transform.localPosition;
+                toolTip.transform.localPosition = new Vector3(position.x, position.y + (spaceBetweenTooltips * i), position.z);
+                toolTip.transform.DOLocalMoveY(toolTip.transform.localPosition.y + tweenDistance, 1.5f).OnComplete(() =>
+                {
+                    GameObject.Destroy(toolTip);
+                });
+                i++;
+            }
+
+            this.toolTips = new List<GameObject>();
+        }
     }
 
     public void SelectedHighlightOn()
@@ -214,9 +232,8 @@ public class UnitDisplay : MonoBehaviour
         toolTip.transform.SetParent(this.transform);
         toolTip.GetComponent<TextMeshPro>().SetText(text);
         toolTip.GetComponent<TextMeshPro>().color = color;
-        toolTip.transform.DOLocalMoveY(toolTip.transform.localPosition.y + 0.2f, 1.5f).OnComplete(() => {
-            GameObject.Destroy(toolTip);
-        });
+
+        this.toolTips.Add(toolTip);
     }
 
     public void ShowTarget()
