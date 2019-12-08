@@ -44,12 +44,7 @@ namespace Lobby
             {
                 SinglePlayerGameData data = await LobbyServerApi.CreateSinglePlayerGame(value);
 
-                GameState.gameId = data.gameServerId;
-
-                GameState.mainPlayerId = data.playerId;
-                GameState.enemyOfMainPlayerId = data.aiId;
-
-                SceneManager.LoadScene("Game");
+                Main.StartGame(data.gameServerId, data.playerId, data.aiId);
             } else
             {
                 FindingOpponent.deckId = value;

@@ -41,6 +41,15 @@ namespace Lobby
         public string aiId;
     }
 
+    [Serializable]
+    public class FoundGame
+    {
+        public bool gameFound;
+        public string gameId;
+        public string playerId;
+        public string opponentId;
+    }
+
     public class LobbyServerApi
     {
         public async static Task<GamesData> GetGames<GamesData>()
@@ -88,6 +97,16 @@ namespace Lobby
             };
 
             await HttpRequest.Post(Config.LOBBY_SERVER_URL + "methods/removeGameById", values);
+        }
+
+        public async static Task<FoundGame> FindOpponent(string deckId)
+        {
+            var values = new
+            {
+                deckId = deckId
+            };
+
+            return await HttpRequest.Post<FoundGame>(Config.LOBBY_SERVER_URL + "methods/findMultyplayerGame", values);
         }
     }
 }

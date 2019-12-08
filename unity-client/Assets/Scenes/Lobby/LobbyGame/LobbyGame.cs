@@ -41,16 +41,12 @@ public class LobbyGame : MonoBehaviour
 
     private void OnPlayAs1PlayerButtonClick()
     {
-        GameState.gameId = gameServerId;
-        GameState.isMainPlayerFirstPlayer = true;
-        SceneManager.LoadScene("Game");
+        Main.StartGameAsFirstPlayer(this.gameServerId);
     }
 
     private void OnPlayAs2PlayerButtonClick()
     {
-        GameState.gameId = gameServerId;
-        GameState.isMainPlayerFirstPlayer = false;
-        SceneManager.LoadScene("Game");
+        Main.StartGameAsSecondPlayer(this.gameServerId);
     }
 
     private void OnDeleteGameButtonClick()

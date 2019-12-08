@@ -1,13 +1,38 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
-using UnibusEvent;
+using UnityEngine.SceneManagement;
 
 
 public class Main : MonoBehaviour
 {
     private AudioController audioController;
     private UIManager uiManager;
+
+    public static void StartGame(string gameId, string playerId, string opponentId)
+    {
+        GameState.gameId = gameId;
+        GameState.mainPlayerId = playerId;
+        GameState.enemyOfMainPlayerId = opponentId;
+
+        SceneManager.LoadScene("Game");
+    }
+
+    public static void StartGameAsFirstPlayer(string gameId)
+    {
+        GameState.gameId = gameId;
+        GameState.isMainPlayerFirstPlayer = true;
+
+        SceneManager.LoadScene("Game");
+    }
+
+    public static void StartGameAsSecondPlayer(string gameId)
+    {
+        GameState.gameId = gameId;
+        GameState.isMainPlayerFirstPlayer = false;
+
+        SceneManager.LoadScene("Game");
+    }
 
     async void Awake()
     {
