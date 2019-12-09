@@ -12,6 +12,8 @@ namespace Lobby
             var singlePlayerButton = this.transform.Find("SinglePlayerButton").GetComponent<Button>();
             var multiPlayerButton = this.transform.Find("MultiPlayerButton").GetComponent<Button>();
 
+            CursorController.SetDefault();
+
             lobbyButton.onClick.AddListener(this.OnLobbyButtonClick);
             singlePlayerButton.onClick.AddListener(this.OnSinglePlayerButtonClick);
             multiPlayerButton.onClick.AddListener(this.OnMultiPlayerButtonClick);

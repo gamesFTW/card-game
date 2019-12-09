@@ -54,6 +54,8 @@ public class Main : MonoBehaviour
 
         this.OnGameDataFirstTimeRecived();
 
+        CursorController.SetDefault();
+
         if (GameState.gameData.game.gameEnded)
         {
             this.uiManager.ShowWinStatus();
