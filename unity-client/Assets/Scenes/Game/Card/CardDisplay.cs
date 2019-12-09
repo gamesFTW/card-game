@@ -471,13 +471,19 @@ public class CardDisplay : MonoBehaviour
     // Public only for CardCollider class
     public void CardMouseEnter()
     {
-        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
+        if (this.isMovedAtInitialPosition)
+        {
+            Unibus.Dispatch(CARD_MOUSE_ENTER, this);
+        }
     }
 
     // Public only for CardCollider class
     public void CardMouseExit()
     {
-        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
+        if (this.isMovedAtInitialPosition)
+        {
+            Unibus.Dispatch(CARD_MOUSE_EXIT, this);
+        }
     }
 
     private void UpdateZIndex()
