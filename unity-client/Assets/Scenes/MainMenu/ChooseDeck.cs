@@ -42,6 +42,7 @@ namespace Lobby
 
             if (ChooseDeck.isSinglePlayer)
             {
+                this.transform.Find("Decs").gameObject.SetActive(false);
                 SinglePlayerGameData data = await LobbyServerApi.CreateSinglePlayerGame(value);
 
                 Main.StartGame(data.gameServerId, data.playerId, data.aiId);
