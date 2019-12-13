@@ -45,6 +45,7 @@ public class CardDisplay : MonoBehaviour
     private GameObject selectedGlowObject;
     private GameObject cardBaseBlack;
     private GameObject convertToManaButton;
+    private Transform container;
 
     private ViewMode viewMode = ViewMode.defaultView;
     private enum ViewMode
@@ -249,12 +250,13 @@ public class CardDisplay : MonoBehaviour
     private void Awake()
     {
         this.cardAbilitiesDescription = this.GetComponent<CardAbilitiesDescription>();
-        this.cardCollider = this.transform.Find("Collider").GetComponent<CardCollider>();
+        this.container = this.transform.Find("Container");
+        this.cardCollider = this.transform.Find("Container/Collider").GetComponent<CardCollider>();
 
-        this.cardBaseBlack = this.transform.Find("CardBaseBlack").gameObject;
-        this.overGlowObject = this.transform.Find("Front").Find("OverGlow").gameObject;
-        this.selectedGlowObject = this.transform.Find("Front").Find("SelectedGlow").gameObject;
-        this.convertToManaButton = this.transform.Find("Front").Find("ConvertToManaButton").gameObject;
+        this.cardBaseBlack = this.transform.Find("Container/CardBaseBlack").gameObject;
+        this.overGlowObject = this.transform.Find("Container/Front/OverGlow").gameObject;
+        this.selectedGlowObject = this.transform.Find("Container/Front/SelectedGlow").gameObject;
+        this.convertToManaButton = this.transform.Find("Container/Front/ConvertToManaButton").gameObject;
     }
 
     private void Start () 
@@ -305,7 +307,7 @@ public class CardDisplay : MonoBehaviour
         {
             this.ZoomOut();
 
-            this.transform.position = this.defaultViewPosition;
+            this.container.localPosition = this.defaultViewPosition;
             //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
 
             this.cardCollider.EnableDefaultCollider();
@@ -325,8 +327,8 @@ public class CardDisplay : MonoBehaviour
         {
             this.ZoomIn(2f);
 
-            this.defaultViewPosition = this.transform.position;
-            this.transform.position += new Vector3(0, 3.4F, 0);
+            this.defaultViewPosition = this.container.localPosition;
+            this.container.localPosition += new Vector3(0, 110F, 0);
             //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
 
             this.cardCollider.EnableHandCollider();
@@ -343,7 +345,7 @@ public class CardDisplay : MonoBehaviour
     {
         if (viewMode != ViewMode.tableView)
         {
-            this.defaultViewPosition = this.transform.position;
+            this.defaultViewPosition = this.container.localPosition;
             this.ZoomIn(3f);
             this.cardCollider.EnableTableCollider();
             this.cardAbilitiesDescription.ShowDescription();
@@ -365,21 +367,18 @@ public class CardDisplay : MonoBehaviour
     }
 
     public void FaceUp() {
-        this.transform.Find("Back").gameObject.SetActive(false);
-        this.transform.Find("Front").gameObject.SetActive(true);
+        this.transform.Find("Container/Back").gameObject.SetActive(false);
+        this.transform.Find("Container/Front").gameObject.SetActive(true);
     }
 
     public void FaceDown() {
-        this.transform.Find("Back").gameObject.SetActive(true);
-        this.transform.Find("Front").gameObject.SetActive(false);
+        this.transform.Find("Container/Back").gameObject.SetActive(true);
+        this.transform.Find("Container/Front").gameObject.SetActive(false);
     }
 
     public void Tap()
     {
-        Debug.Log("Tap");
         cardData.tapped = true;
-
-        Debug.Log(this.UnitDisplay);
 
         if (this.UnitDisplay)
         {
@@ -481,19 +480,13 @@ public class CardDisplay : MonoBehaviour
     // Public only for CardCollider class
     public void CardMouseEnter()
     {
-        if (this.isMovedAtInitialPosition)
-        {
-            Unibus.Dispatch(CARD_MOUSE_ENTER, this);
-        }
+        Unibus.Dispatch(CARD_MOUSE_ENTER, this);
     }
 
     // Public only for CardCollider class
     public void CardMouseExit()
     {
-        if (this.isMovedAtInitialPosition)
-        {
-            Unibus.Dispatch(CARD_MOUSE_EXIT, this);
-        }
+        Unibus.Dispatch(CARD_MOUSE_EXIT, this);
     }
 
     private void UpdateZIndex()

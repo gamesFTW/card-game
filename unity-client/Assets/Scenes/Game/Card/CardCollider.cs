@@ -56,7 +56,7 @@ public class CardCollider : MonoBehaviour
 
     void Start()
     {
-        this.cardDisplay = this.transform.parent.GetComponent<CardDisplay>();
+        this.cardDisplay = this.transform.parent.parent.GetComponent<CardDisplay>();
 
         var colliders = this.GetComponents<BoxCollider2D>();
         this.defaultCollider = colliders[0];

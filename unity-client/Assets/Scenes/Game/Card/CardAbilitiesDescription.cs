@@ -16,12 +16,12 @@ public class CardAbilitiesDescription : MonoBehaviour
     void Awake()
     {
         this.cardDisplay = this.GetComponent<CardDisplay>();
-        this.cardCollider = this.transform.Find("Collider").GetComponent<CardCollider>();
+        this.cardCollider = this.transform.Find("Container/Collider").GetComponent<CardCollider>();
     }
 
     void Start()
     {
-        this.abilitiesDescription = this.transform.Find("Front").Find("AbilitiesDescription").gameObject;
+        this.abilitiesDescription = this.transform.Find("Container/Front/AbilitiesDescription").gameObject;
         this.abilitiesDescriptionList = this.abilitiesDescription.transform.Find("AbilitiesDescriptionList").gameObject;
         this.abilityDescription = this.abilitiesDescription.transform.Find("AbililtyDescription").gameObject;
 
@@ -181,7 +181,7 @@ public class CardAbilitiesDescription : MonoBehaviour
         {
             var mana = this.cardDisplay.cardData.abilities.mana.mana;
             name = $"Mana {mana}";
-            description = "Once per turn add {mana} mana.";
+            description = $"Once per turn add {mana} mana.";
             this.CreateText(name, description, UnityEngine.Color.white);
         }
         if (this.cardDisplay.cardData.abilities.regeneration != null)
