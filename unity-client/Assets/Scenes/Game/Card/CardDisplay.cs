@@ -14,8 +14,8 @@ public class CardDisplay : MonoBehaviour
 
     public GameObject artwork;
 
+	public TextMeshPro handHpText;
 	public TextMeshPro nameText;
-
 	public TextMeshPro manaText;
 	public TextMeshPro damageText;
     public TextMeshPro currentHpText;
@@ -41,6 +41,8 @@ public class CardDisplay : MonoBehaviour
     private bool IsZoomed = false;
     private Vector3 scale;
 
+    private float xOffset = 0;
+
     private GameObject overGlowObject;
     private GameObject selectedGlowObject;
     private GameObject cardBaseBlack;
@@ -54,8 +56,6 @@ public class CardDisplay : MonoBehaviour
         playerHandView,
         tableView
     }
-
-    private Vector3 defaultViewPosition;
 
     public int CurrentHp
     {
@@ -268,6 +268,7 @@ public class CardDisplay : MonoBehaviour
         maxHpText.text = cardData.maxHp.ToString();
         currentHpText.text = cardData.currentHp.ToString();
         currentMovingPoints.text = cardData.currentMovingPoints.ToString();
+        handHpText.text = cardData.maxHp.ToString();
 
         StartCoroutine(LoadSprite());
 
@@ -294,6 +295,7 @@ public class CardDisplay : MonoBehaviour
             if (this.cardCollider.CurrentCollider.bounds.max.x > screenBounds.x)
             {
                 var difference = this.cardCollider.CurrentCollider.bounds.max.x - screenBounds.x;
+                this.xOffset += difference;
                 this.transform.position -= new Vector3(difference, 0, 0);
             }
         }
@@ -301,13 +303,16 @@ public class CardDisplay : MonoBehaviour
         UpdateZIndex();
     }
 
-    public void SwitchToDefaultView()
+    public void SwitchToDefaultZoomView()
     {
         if (viewMode != ViewMode.defaultView)
         {
             this.ZoomOut();
 
-            this.container.localPosition = this.defaultViewPosition;
+            this.transform.position += new Vector3(xOffset, 0, 0);
+            this.xOffset = 0;
+
+            this.container.localPosition = new Vector3(0, 0, 0);
             //card.transform.DOMove(card.transform.position - new Vector3(0, 3.4F, 0), 3);
 
             this.cardCollider.EnableDefaultCollider();
@@ -321,13 +326,12 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    public void SwitchToPlayerHandView()
+    public void SwitchToPlayerHandZoomedView()
     {
         if (viewMode != ViewMode.playerHandView)
         {
             this.ZoomIn(2f);
 
-            this.defaultViewPosition = this.container.localPosition;
             this.container.localPosition += new Vector3(0, 110F, 0);
             //card.transform.DOMove(card.transform.position + new Vector3(0, 3.4F, 0), 3);
 
@@ -341,16 +345,27 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    public void SwitchToTableView()
+    public void SwitchToTableZoomedView()
     {
         if (viewMode != ViewMode.tableView)
         {
-            this.defaultViewPosition = this.container.localPosition;
             this.ZoomIn(3f);
             this.cardCollider.EnableTableCollider();
             this.cardAbilitiesDescription.ShowDescription();
             this.viewMode = ViewMode.tableView;
         }
+    }
+
+    public void HideCurrentHp()
+    {
+        this.container.Find("Front/HandHp").gameObject.SetActive(false);
+        this.container.Find("Front/TableHp").gameObject.SetActive(true);
+    }
+
+    public void ShowCurrentHp()
+    {
+        this.container.Find("Front/HandHp").gameObject.SetActive(true);
+        this.container.Find("Front/TableHp").gameObject.SetActive(false);
     }
 
     public void MoveAtInitialPosition(Vector3 position, Vector3 scale) {

@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnibusEvent;
+﻿using UnibusEvent;
 
-public class PlayerHandDisplay : MonoBehaviour
-{
+public class PlayerHandDisplay : StackDisplay
+{ 
     public static readonly string CARD_SELECTED_TO_PLAY = "PlayerHandDisplay:CARD_SELECTED_TO_PLAY";
 
     // Start is called before the first frame update
@@ -17,7 +16,7 @@ public class PlayerHandDisplay : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.SwitchToPlayerHandView();
+            card.SwitchToPlayerHandZoomedView();
         }
     }
 
@@ -25,7 +24,7 @@ public class PlayerHandDisplay : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.SwitchToDefaultView();
+            card.SwitchToDefaultZoomView();
         }
     }
 

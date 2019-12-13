@@ -16,7 +16,7 @@ public class StackDisplayWithZoomIn : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.SwitchToTableView();
+            card.SwitchToTableZoomedView();
         }
     }
 
@@ -24,7 +24,7 @@ public class StackDisplayWithZoomIn : MonoBehaviour
     {
         if (card.Placeholder.IsChildOf(this.transform))
         {
-            card.SwitchToDefaultView();
+            card.SwitchToDefaultZoomView();
         }
     }
 }

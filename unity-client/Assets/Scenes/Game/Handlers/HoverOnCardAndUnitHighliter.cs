@@ -24,12 +24,12 @@ public class HoverOnCardAndUnitHighliter : MonoBehaviour
 
     private void OnUnitBoardMouseEnter(UnitDisplay unit)
     {
-        unit.CardDisplay.SwitchToTableView();
+        unit.CardDisplay.SwitchToTableZoomedView();
     }
 
     private void OnUnitBoardMouseExit(UnitDisplay unit)
     {
-        unit.CardDisplay.SwitchToDefaultView();
+        unit.CardDisplay.SwitchToDefaultZoomView();
     }
 
     private void OnCardMouseEnter(CardDisplay card)

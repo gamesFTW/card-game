@@ -4,6 +4,7 @@ public class StackDisplay : MonoBehaviour
 {
     public bool IsFaceUp;
     public bool IsHideCards;
+    public bool isShowCurrentHp = false;
 
     virtual public void AddCard(CardDisplay cardDisplay)
     {
@@ -19,6 +20,14 @@ public class StackDisplay : MonoBehaviour
         if (this.IsHideCards)
         {
             cardDisplay.gameObject.SetActive(false);
+        }
+
+        if (this.isShowCurrentHp)
+        {
+            cardDisplay.ShowCurrentHp();
+        } else
+        {
+            cardDisplay.HideCurrentHp();
         }
     }
 }
