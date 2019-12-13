@@ -133,7 +133,7 @@ public class BoardCreator : MonoBehaviour
         return PositionAdjacentToEnemy(p);
     }
 
-    public void ShowPathReach(UnitDisplay unitDisplay)
+    public List<Point> ShowPathReach(UnitDisplay unitDisplay)
     {
         var reachChecker = this.CreateReachChecker();
 
@@ -141,6 +141,8 @@ public class BoardCreator : MonoBehaviour
         var points = reachChecker.CheckReach(unitPosition, unitDisplay.CardData.currentMovingPoints);
 
         this.HighlightPathInTilesByPoints(points);
+
+        return points;
     }
 
     public void ShowPushReach(UnitDisplay attacker, UnitDisplay attacked)

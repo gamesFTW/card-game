@@ -28,6 +28,8 @@ public class BoardActivities
     {
         overHighlightActivity.Disable();
 
+        CursorController.SetDefault();
+
         this.boardCreator.RemoveAllBlinks();
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
@@ -64,11 +66,15 @@ public class BoardActivities
                 Point attackerPosition = this.boardCreator.GetUnitPosition(unit);
                 this.boardCreator.ShowRangeAttackReach(unit, attackerPosition);
             }
+
+            CursorController.SetPointer();
         }
     }
     
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
         this.boardCreator.RemoveAllBlinks();
+
+        CursorController.SetDefault();
     }
 }

@@ -157,21 +157,28 @@ public class OwnUnitSelectedState : SelectingState
             Point attackerPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
             this.ShowRangeAttackReach(this.selectedUnit, attackerPosition);
             this.boardCreator.ShowPathReach(this.selectedUnit);
-        } else if (unit.CardDisplay == this.selectedUnit)
+        }
+        else
         {
-            this.boardCreator.RemoveAllBlinks();
-            this.boardCreator.ShowPathReach(this.selectedUnit);
-            this.ShowRangeAttackReach(this.selectedUnit);
-        } else
-        {
-            this.boardCreator.RemoveAllBlinks();
-            this.boardCreator.ShowPathReach(unit);
-            this.ShowRangeAttackReach(unit);
+            if (unit == this.selectedUnit)
+            {
+                this.boardCreator.RemoveAllBlinks();
+                this.boardCreator.ShowPathReach(this.selectedUnit);
+                this.ShowRangeAttackReach(this.selectedUnit);
+            }
+            else
+            {
+                CursorController.SetPointer();
+                this.boardCreator.RemoveAllBlinks();
+                this.boardCreator.ShowPathReach(unit);
+                this.ShowRangeAttackReach(unit);
+            }
         }
     }
 
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
+        CursorController.SetDefault();
         this.boardCreator.RemoveAllBlinks();
         this.boardCreator.ShowPathReach(this.selectedUnit);
     }
@@ -183,11 +190,21 @@ public class OwnUnitSelectedState : SelectingState
         Point fromPosition = this.boardCreator.GetTilePosition(tile);
         this.ShowRangeAttackReach(this.selectedUnit, fromPosition);
 
-        this.boardCreator.ShowPathReach(this.selectedUnit);
+        var points = this.boardCreator.ShowPathReach(this.selectedUnit);
+        var tilePosition = this.boardCreator.GetTilePosition(tile);
+
+        foreach (var point in points)
+        {
+            if (tilePosition.x == point.x && tilePosition.y == point.y)
+            {
+                CursorController.SetPointer();
+            }
+        }
     }
 
     private void OnTileMouseExitOnBoard(TileDisplay tile)
     {
+        CursorController.SetDefault();
         this.boardCreator.RemoveAllBlinks();
         this.boardCreator.ShowPathReach(this.selectedUnit);
     }

@@ -7,4 +7,10 @@ public class CursorController : MonoBehaviour
         Texture2D cursorTexture = (Texture2D)Resources.Load("Cursor_Basic2");
         Cursor.SetCursor(cursorTexture, new Vector2(19, 4), CursorMode.Auto);
     }
+
+    public static void SetPointer()
+    {
+        Texture2D cursorTexture = (Texture2D)Resources.Load("Cursor_Hand");
+        Cursor.SetCursor(cursorTexture, new Vector2(19, 6), CursorMode.Auto);
+    }
 }
