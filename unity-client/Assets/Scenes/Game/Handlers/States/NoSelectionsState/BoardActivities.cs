@@ -35,7 +35,7 @@ public class BoardActivities
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        if (clickedUnitDisplay.CardDisplay.IsAlly)
+        if (clickedUnitDisplay.CardDisplay.IsAlly && !clickedUnitDisplay.CardData.tapped)
         {
             this.OnAllySelected(clickedUnitDisplay);
         }

@@ -110,7 +110,10 @@ public class OwnUnitSelectedState : SelectingState
     {
         if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
-            this.ChangeSelectedToAnotherAlly(clickedUnitDisplay);
+            if (!clickedUnitDisplay.CardData.tapped)
+            {
+                this.ChangeSelectedToAnotherAlly(clickedUnitDisplay);
+            }
         }
         else
         {

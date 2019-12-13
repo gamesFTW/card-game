@@ -1,6 +1,4 @@
-﻿using UnibusEvent;
-
-public class NoSelectionsState
+﻿public class NoSelectionsState
 {
     private PlayerActionsOnBoardStates states;
     private BoardCreator boardCreator;
