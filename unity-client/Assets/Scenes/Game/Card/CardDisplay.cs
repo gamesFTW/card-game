@@ -376,9 +376,16 @@ public class CardDisplay : MonoBehaviour
 
     public void Tap()
     {
+        Debug.Log("Tap");
         cardData.tapped = true;
 
-        //this.transform.DORotate(new Vector3(0, 0, -10), 1);
+        Debug.Log(this.UnitDisplay);
+
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.Tap();
+        }
+
         this.cardBaseBlack.SetActive(true);
 
         this.Shake();
@@ -389,7 +396,10 @@ public class CardDisplay : MonoBehaviour
     {
         cardData.tapped = false;
 
-        //this.transform.DORotate(new Vector3(0, 0, 0), 1);
+        if (this.UnitDisplay)
+        {
+            this.UnitDisplay.Untap();
+        }
 
         this.cardBaseBlack.SetActive(false);
         Unibus.Dispatch(CARD_UNTAPPED, this);

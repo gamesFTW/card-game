@@ -33,12 +33,18 @@ public class UnitDisplay : MonoBehaviour
     private GameObject overGlowObject;
     private GameObject abilitiesStatus;
     private GameObject target;
+    private SpriteRenderer spriteRenderer;
 
     private GameObject abilities;
 
     private bool IsSelected = false;
 
     private List<GameObject> toolTips = new List<GameObject>();
+
+    private void Awake()
+    {
+        this.spriteRenderer = this.GetComponent<SpriteRenderer>();
+    }
 
     private void Start()
     {
@@ -80,6 +86,16 @@ public class UnitDisplay : MonoBehaviour
 
             this.toolTips = new List<GameObject>();
         }
+    }
+
+    public void Tap()
+    {
+        this.spriteRenderer.material.color = new Color(0.65f, 0.65f, 0.65f);
+    }
+
+    public void Untap()
+    {
+        this.spriteRenderer.material.color = Color.white;
     }
 
     public void SelectedHighlightOn()
@@ -335,7 +351,6 @@ public class UnitDisplay : MonoBehaviour
 
         Sprite sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0.5F, 0.5F));
 
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = sprite;
+        this.spriteRenderer.sprite = sprite;
     }
 }

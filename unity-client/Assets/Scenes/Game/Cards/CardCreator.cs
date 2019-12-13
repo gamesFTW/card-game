@@ -129,6 +129,11 @@ public class CardCreator : MonoBehaviour
 
         stack.GetComponent<StackDisplay>().AddCard(cardDisplay);
 
+        if (cardData.alive)
+        {
+            boardCreator.CreateUnit(cardDisplay, new Point(cardData.x, cardData.y));
+        }
+
         if (stack.GetComponent<StackDisplay>().IsFaceUp)
         {
             cardDisplay.FaceUp();
@@ -140,11 +145,6 @@ public class CardCreator : MonoBehaviour
         if (cardData.tapped)
         {
             cardDisplay.Tap();
-        }
-
-        if (cardData.alive)
-        {
-            boardCreator.CreateUnit(cardDisplay, new Point(cardData.x, cardData.y));
         }
 
         if (cardData.hero)

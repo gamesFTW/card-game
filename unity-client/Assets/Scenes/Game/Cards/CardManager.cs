@@ -65,6 +65,8 @@ public class CardManager : MonoBehaviour
 
         this.playerStacks[playerId].table.GetComponent<StackDisplay>().AddCard(cardDisplay);
 
+        boardCreator.CreateUnit(cardDisplay, position);
+
         if (taped)
         {
             cardDisplay.Tap();
@@ -73,8 +75,6 @@ public class CardManager : MonoBehaviour
         cardDisplay.FaceUp();
 
         cardDisplay.CurrentHp = newHp;
-
-        boardCreator.CreateUnit(cardDisplay, position);
 
         Unibus.Dispatch(AudioController.CARD_PLAYED, cardDisplay);
     }
