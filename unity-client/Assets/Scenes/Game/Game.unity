@@ -2233,6 +2233,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 644981181362470658, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 644981181362470658, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 644981181362470686, guid: 420522f71bda66140851e5184e1766c6,
         type: 3}
       propertyPath: IsHideCards
@@ -2276,7 +2286,37 @@ PrefabInstance:
     - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
         type: 3}
       propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_text
+      value: 'Opponent mana:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649554154795737725, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_margin.z
+      value: -519.5599
       objectReference: {fileID: 0}
     - target: {fileID: 3685103075430817127, guid: 420522f71bda66140851e5184e1766c6,
         type: 3}
@@ -2332,6 +2372,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4273588871255192257, guid: 420522f71bda66140851e5184e1766c6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1610
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 420522f71bda66140851e5184e1766c6, type: 3}
