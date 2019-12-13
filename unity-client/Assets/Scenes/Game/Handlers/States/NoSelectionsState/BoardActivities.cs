@@ -19,6 +19,7 @@ public class BoardActivities
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
 
         overHighlightActivity.Enable();
     }
@@ -31,13 +32,24 @@ public class BoardActivities
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+        Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
     }
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
     {
-        if (clickedUnitDisplay.CardDisplay.IsAlly && !clickedUnitDisplay.CardData.tapped)
+        this.TryToSelectUnit(clickedUnitDisplay.CardDisplay);
+    }
+
+    private void OnCardClicked(CardDisplay cardDisplay)
+    {
+        this.TryToSelectUnit(cardDisplay);
+    }
+
+    private void TryToSelectUnit(CardDisplay cardDisplay)
+    {
+        if (cardDisplay.IsAlly && !cardDisplay.cardData.tapped)
         {
-            this.OnAllySelected(clickedUnitDisplay);
+            this.OnAllySelected(cardDisplay.UnitDisplay);
         }
     }
 

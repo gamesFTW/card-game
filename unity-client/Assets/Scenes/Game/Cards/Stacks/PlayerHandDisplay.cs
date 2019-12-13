@@ -9,7 +9,7 @@ public class PlayerHandDisplay : StackDisplay
     {
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardMouseEnter);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_EXIT, OnCardMouseExit);
-        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_SELECTED_TO_PLAY, OnCardSelectedToPlayHandler);
+        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardSelectedToPlayHandler);
     }
 
     private void OnCardMouseEnter(CardDisplay card)

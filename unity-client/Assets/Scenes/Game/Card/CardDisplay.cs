@@ -27,7 +27,7 @@ public class CardDisplay : MonoBehaviour
     public Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
 
     public static readonly string CARD_PLAY_AS_MANA = "CARD_PLAY_AS_MANA";
-    public static readonly string CARD_SELECTED_TO_PLAY = "CARD_SELECTED_TO_PLAY";
+    public static readonly string CARD_CLICKED = "CARD_CLICKED";
     public static readonly string CARD_MOUSE_ENTER = "CARD_MOUSE_ENTER";
     public static readonly string CARD_MOUSE_EXIT = "CARD_MOUSE_EXIT";
     public static readonly string CARD_DIED = "CARD_DIED";
@@ -540,7 +540,7 @@ public class CardDisplay : MonoBehaviour
 
     private void OnLeftMouseClicked()
     {
-        Unibus.Dispatch(CARD_SELECTED_TO_PLAY, this);
+        Unibus.Dispatch(CARD_CLICKED, this);
     }
 
     private IEnumerator LoadSprite()

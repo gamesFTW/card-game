@@ -29,6 +29,7 @@ public class OwnUnitSelectedState : SelectingState
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
         Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
         Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
+        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
     }
 
     protected override void Disable()
@@ -44,6 +45,7 @@ public class OwnUnitSelectedState : SelectingState
         Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
         Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
         Unibus.Unsubscribe<AbilityActivated>(UnitDisplay.ABILITY_ACTIVATED, OnAbilityActivated);
+        Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
     }
 
     protected override void EnableNoSelectionsState()
@@ -106,7 +108,7 @@ public class OwnUnitSelectedState : SelectingState
         this.states.selectingHealingTargetState.Enable(this.selectedUnit, ability);
     }
 
-    private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
+    private void InteractWithUnit(UnitDisplay clickedUnitDisplay)
     {
         if (clickedUnitDisplay.CardDisplay.IsAlly)
         {
@@ -130,6 +132,16 @@ public class OwnUnitSelectedState : SelectingState
                 this.AttackEnemy(clickedUnitDisplay);
             }
         }
+    }
+
+    private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
+    {
+        this.InteractWithUnit(clickedUnitDisplay);
+    }
+
+    private void OnCardClicked(CardDisplay cardDisplay)
+    {
+        this.InteractWithUnit(cardDisplay.UnitDisplay);
     }
 
     private void OnClickedOnVoidTile(Point point)
