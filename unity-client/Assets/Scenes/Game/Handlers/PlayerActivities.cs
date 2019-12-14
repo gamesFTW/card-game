@@ -94,7 +94,7 @@ public class ActionEmmiter
 
     public void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit, Point pushPoint = null, UnitDisplay ricochetTarget = null)
     {
-        bool isCardsAdjacent = this.boardCreator.CheckCardsAdjacency(attackerUnit.gameObject, attackedUnit.gameObject);
+        bool isCardsAdjacent = this.boardCreator.CheckCardsAdjacency(attackerUnit, attackedUnit);
         bool isRangeAttack = !isCardsAdjacent;
 
         AttackCardAction attackCardAction = new AttackCardAction

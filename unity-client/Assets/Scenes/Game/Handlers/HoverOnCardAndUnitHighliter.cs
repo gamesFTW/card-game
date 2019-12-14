@@ -36,7 +36,7 @@ public class HoverOnCardAndUnitHighliter : MonoBehaviour
     {
         if (card.UnitDisplay)
         {
-            GameObject tile = boardCreator.GetTileByUnit(card.UnitDisplay.gameObject);
+            GameObject tile = boardCreator.GetTileByUnit(card.UnitDisplay);
             tile.GetComponent<TileDisplay>().HighlightOn();
 
             card.UnitDisplay.DisableTeamColor();
@@ -47,7 +47,7 @@ public class HoverOnCardAndUnitHighliter : MonoBehaviour
     {
         if (card.UnitDisplay)
         {
-            GameObject tile = boardCreator.GetTileByUnit(card.UnitDisplay.gameObject);
+            GameObject tile = boardCreator.GetTileByUnit(card.UnitDisplay);
             tile.GetComponent<TileDisplay>().HighlightOff();
 
             card.UnitDisplay.EnableTeamColor();

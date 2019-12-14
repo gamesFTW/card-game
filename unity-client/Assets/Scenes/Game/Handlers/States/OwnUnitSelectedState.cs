@@ -6,6 +6,8 @@ public class OwnUnitSelectedState : SelectingState
     private bool MouseOnTile = false;
     private UnitDisplay selectedUnit;
 
+    private TileDisplay hoveredTile;
+
     public OwnUnitSelectedState(PlayerActionsOnBoardStates states, BoardCreator boardCreator) : base(states, boardCreator) { }
 
     public void Enable(UnitDisplay selectedUnit)
@@ -37,6 +39,13 @@ public class OwnUnitSelectedState : SelectingState
         base.Disable();
         this.boardCreator.RemoveAllBlinks();
         selectedUnit.HideAbilities();
+
+        if (this.hoveredTile)
+        {
+            this.hoveredTile.HighlightOff();
+        }
+
+        CursorController.SetDefault();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
@@ -78,6 +87,9 @@ public class OwnUnitSelectedState : SelectingState
 
     private void MoveUnit(Point point)
     {
+        var tile = this.boardCreator.GetTileByPoint(point);
+        tile.HighlightOff();
+
         this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
 
         this.EnableNoSelectionsState();
@@ -157,6 +169,32 @@ public class OwnUnitSelectedState : SelectingState
             Point attackerPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
             this.ShowRangeAttackReach(this.selectedUnit, attackerPosition);
             this.boardCreator.ShowPathReach(this.selectedUnit);
+
+            var unitsAdjacent = this.boardCreator.CheckCardsAdjacency(unit, this.selectedUnit);
+
+            if (unitsAdjacent)
+            {
+                unit.CardDisplay.OverHighlightOn();
+                CursorController.SetAttack();
+            } else
+            {
+                var selectedUnitRange = this.selectedUnit.CardData.abilities.range != null;
+                if (selectedUnitRange && !this.selectedUnit.CardData.abilities.range.blockedInBeginningOfTurn)
+                {
+                    var fromPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
+                    var positions = this.boardCreator.GetPositionsForRangeAttack(this.selectedUnit, fromPosition);
+
+                    var unitPosition = this.boardCreator.GetUnitPosition(unit);
+
+                    foreach (var position in positions)
+                    {
+                        if (position.x == unitPosition.x && position.y == unitPosition.y)
+                        {
+                            CursorController.SetRangeAttack();
+                        }
+                    }
+                }
+            }
         }
         else
         {
@@ -168,6 +206,7 @@ public class OwnUnitSelectedState : SelectingState
             }
             else
             {
+                unit.CardDisplay.OverHighlightOn();
                 CursorController.SetPointer();
                 this.boardCreator.RemoveAllBlinks();
                 this.boardCreator.ShowPathReach(unit);
@@ -178,6 +217,7 @@ public class OwnUnitSelectedState : SelectingState
 
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
+        unit.CardDisplay.OverHighlightOff();
         CursorController.SetDefault();
         this.boardCreator.RemoveAllBlinks();
         this.boardCreator.ShowPathReach(this.selectedUnit);
@@ -185,6 +225,7 @@ public class OwnUnitSelectedState : SelectingState
 
     private void OnTileMouseEnterOnBoard(TileDisplay tile)
     {
+        this.hoveredTile = tile;
         this.boardCreator.RemoveAllBlinks();
 
         Point fromPosition = this.boardCreator.GetTilePosition(tile);
@@ -197,6 +238,7 @@ public class OwnUnitSelectedState : SelectingState
         {
             if (tilePosition.x == point.x && tilePosition.y == point.y)
             {
+                tile.HighlightOn();
                 CursorController.SetPointer();
             }
         }
@@ -204,6 +246,8 @@ public class OwnUnitSelectedState : SelectingState
 
     private void OnTileMouseExitOnBoard(TileDisplay tile)
     {
+        this.hoveredTile = null;
+        tile.HighlightOff();
         CursorController.SetDefault();
         this.boardCreator.RemoveAllBlinks();
         this.boardCreator.ShowPathReach(this.selectedUnit);

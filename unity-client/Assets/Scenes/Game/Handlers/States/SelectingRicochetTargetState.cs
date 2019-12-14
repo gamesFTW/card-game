@@ -1,10 +1,12 @@
-﻿
+﻿using System.Collections.Generic;
 using UnibusEvent;
 
 public class SelectingRicochetTargetState : SelectingState
 {
     private UnitDisplay attackerSelectedUnit;
     private UnitDisplay attackedSelectedUnit;
+
+    private List<Point> points;
 
     public SelectingRicochetTargetState(PlayerActionsOnBoardStates states, BoardCreator boardCreator) : base(states, boardCreator) { }
 
@@ -14,9 +16,13 @@ public class SelectingRicochetTargetState : SelectingState
         this.attackerSelectedUnit = attackerSelectedUnit;
         this.attackedSelectedUnit = attackedSelectedUnit;
 
-        this.boardCreator.BlinkRicochetTargets(attackedSelectedUnit);
+        this.points = this.boardCreator.BlinkRicochetTargets(attackedSelectedUnit);
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
+
+        CursorController.SetPointer();
 
         Dialog.instance.ShowDialog("Choose enemy unit for ricochet target (ricochet ability)", "Cancel", this.EnableNoSelectionsState);
 
@@ -30,6 +36,8 @@ public class SelectingRicochetTargetState : SelectingState
         Dialog.instance.HideDialog();
 
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
     }
 
     protected override void EnableNoSelectionsState()
@@ -48,5 +56,18 @@ public class SelectingRicochetTargetState : SelectingState
             this.actionEmmiter.EmmitCardAttackAction(this.attackerSelectedUnit, this.attackedSelectedUnit, null, clickedUnitDisplay);
             this.EnableNoSelectionsState();
         }
+    }
+
+    private void OnUnitMouseEnterOnBoard(UnitDisplay unit)
+    {
+        if (!unit.CardDisplay.IsAlly && this.boardCreator.CheckUnitInPoints(unit, this.points))
+        {
+            unit.OverHighlightOn();
+        }
+    }
+
+    private void OnUnitMouseExitOnBoard(UnitDisplay unit)
+    {
+        unit.OverHighlightOff();
     }
 }

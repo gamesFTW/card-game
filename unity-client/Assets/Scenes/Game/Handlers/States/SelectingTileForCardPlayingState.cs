@@ -1,5 +1,6 @@
 ﻿using UnibusEvent;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SelectingTileForCardPlayingState : MonoBehaviour
 {
@@ -15,13 +16,14 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
     private bool enabled = false;
     private bool skipedFirstCheckClickOutOfAnyCard = false;
 
-    private OverHighlightActivity overHighlightActivity;
+    private List<Point> points;
+
+    private TileDisplay hoveredTile;
 
     public SelectingTileForCardPlayingState(PlayerActionsOnBoardStates states, BoardCreator boardCreator)
     {
         this.states = states;
         this.boardCreator = boardCreator;
-        this.overHighlightActivity = new OverHighlightActivity(boardCreator);
     }
 
     public void Enable(CardDisplay card)
@@ -30,14 +32,17 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.enabled = true;
         this.SelectedCard = card;
         card.Select();
-        this.boardCreator.ShowPlacesToCastCreatures();
-        this.overHighlightActivity.Enable();
+        this.points = this.boardCreator.ShowPlacesToCastCreatures();
 
         Dialog.instance.ShowDialog("Choose square to summon unit to it", "Cancel", this.SkipSelection);
+
+        CursorController.SetPointer();
 
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_MOUSE_EXIT, OnCardExit);
+        Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
+        Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
     }
 
     public void CheckClickOutOfAnyCard()
@@ -79,13 +84,19 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.SelectedCard.Unselect();
         this.SelectedCard = null;
         this.boardCreator.RemoveAllBlinks();
-        this.overHighlightActivity.Disable();
+
+        if (this.hoveredTile)
+        {
+            this.hoveredTile.HighlightOff();
+        }
 
         Dialog.instance.HideDialog();
 
         Unibus.Unsubscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_MOUSE_ENTER, OnCardEnter);
         Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_MOUSE_EXIT, OnCardExit);
+        Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
+        Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
     }
 
     private void OnTileMouseLeftClick(Point point)
@@ -104,5 +115,20 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
     private void OnCardExit(CardDisplay card)
     {
         this.MouseOnCard = false;
+    }
+
+    private void OnTileMouseEnterOnBoard(TileDisplay tile)
+    {
+        this.hoveredTile = tile;
+        if (this.boardCreator.CheckTileInPoints(tile, points))
+        {
+            tile.HighlightOn();
+        }
+    }
+
+    private void OnTileMouseExitOnBoard(TileDisplay tile)
+    {
+        this.hoveredTile = null;
+        tile.HighlightOff();
     }
 }

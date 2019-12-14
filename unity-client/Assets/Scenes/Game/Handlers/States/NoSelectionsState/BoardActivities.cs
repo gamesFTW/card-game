@@ -4,14 +4,12 @@ using UnibusEvent;
 public class BoardActivities
 {
     private BoardCreator boardCreator;
-    private OverHighlightActivity overHighlightActivity;
 
     public Action<UnitDisplay> OnAllySelected;
 
     public BoardActivities(BoardCreator boardCreator)
     {
         this.boardCreator = boardCreator;
-        this.overHighlightActivity = new OverHighlightActivity(boardCreator);
     }
 
     public void Enable()
@@ -19,22 +17,18 @@ public class BoardActivities
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
-        Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
-
-        overHighlightActivity.Enable();
+        Unibus.Subscribe<CardDisplay>(PlayerTableDisplay.CARD_SELECTED_ON_TABLE, OnCardClicked);
     }
 
     public void Disable()
     {
-        overHighlightActivity.Disable();
-
         CursorController.SetDefault();
 
         this.boardCreator.RemoveAllBlinks();
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
-        Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
+        Unibus.Unsubscribe<CardDisplay>(PlayerTableDisplay.CARD_SELECTED_ON_TABLE, OnCardClicked);
     }
 
     private void OnUnitSelectedOnBoard(UnitDisplay clickedUnitDisplay)
@@ -59,6 +53,8 @@ public class BoardActivities
     {
         if (unit.CardDisplay.IsAlly)
         {
+            unit.CardDisplay.OverHighlightOn();
+
             this.boardCreator.ShowPathReach(unit);
 
             if (unit.CardData.abilities.range != null)
@@ -74,6 +70,7 @@ public class BoardActivities
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
         this.boardCreator.RemoveAllBlinks();
+        unit.CardDisplay.OverHighlightOff();
 
         CursorController.SetDefault();
     }

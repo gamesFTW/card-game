@@ -23,6 +23,7 @@
 
     public void Enable()
     {
+        CursorController.SetDefault();
         this.boardActivities.Enable();
         this.handActivities.Enable();
     }

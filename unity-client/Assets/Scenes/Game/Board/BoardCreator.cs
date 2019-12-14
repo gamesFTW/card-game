@@ -102,19 +102,17 @@ public class BoardCreator : MonoBehaviour
         Destroy(unitDisplay.gameObject);
     }
 
-    public GameObject GetTileByUnit(GameObject card)
+    public GameObject GetTileByUnit(UnitDisplay unitDisplay)
     {
-        UnitDisplay unitDisplay = card.GetComponent<UnitDisplay>();
-
         Point unitPosition = GetUnitPosition(unitDisplay);
 
         return Tiles[unitPosition.x, unitPosition.y];
     }
 
-    public bool CheckCardsAdjacency(GameObject firstCard, GameObject secondCard)
+    public bool CheckCardsAdjacency(UnitDisplay firstCard, UnitDisplay secondCard)
     {
-        Point firstCardPoint = GetUnitPosition(firstCard.GetComponent<UnitDisplay>());
-        Point secondCardPoint = GetUnitPosition(secondCard.GetComponent<UnitDisplay>());
+        Point firstCardPoint = GetUnitPosition(firstCard);
+        Point secondCardPoint = GetUnitPosition(secondCard);
 
         int xDistance = Math.Abs(firstCardPoint.x - secondCardPoint.x);
         int yDistance = Math.Abs(firstCardPoint.y - secondCardPoint.y);
@@ -145,7 +143,7 @@ public class BoardCreator : MonoBehaviour
         return points;
     }
 
-    public void ShowPushReach(UnitDisplay attacker, UnitDisplay attacked)
+    public List<Point> ShowPushReach(UnitDisplay attacker, UnitDisplay attacked)
     {
         var reachChecker = this.CreateReachChecker(true, true, true);
 
@@ -153,9 +151,11 @@ public class BoardCreator : MonoBehaviour
         var points = reachChecker.CheckReach(unitPosition, attacker.CardData.abilities.push.range);
 
         this.HighlightPathInTilesByPoints(points);
+
+        return points;
     }
 
-    public void ShowPlacesToCastCreatures()
+    public List<Point> ShowPlacesToCastCreatures()
     {
         List<Point> positionsInRadius = new List<Point>();
         foreach (var hero in this.allyHeroes)
@@ -192,6 +192,8 @@ public class BoardCreator : MonoBehaviour
         }
 
         this.HighlightPathInTilesByPoints(positions);
+
+        return positions;
     }
 
     public void ShowRangeAttackReach(UnitDisplay attacker, Point fromPosition)
@@ -211,7 +213,7 @@ public class BoardCreator : MonoBehaviour
         }
     }
 
-    private List<Point> GetPositionsForRangeAttack(UnitDisplay attacker, Point fromPosition)
+    public List<Point> GetPositionsForRangeAttack(UnitDisplay attacker, Point fromPosition)
     {
         var radiusPoints = this.FindPointsInRadius(fromPosition, attacker.CardData.abilities.range.range, attacker.CardData.abilities.range.minRange);
 
@@ -263,11 +265,13 @@ public class BoardCreator : MonoBehaviour
         return null;
     }
 
-    public void BlinkRicochetTargets(UnitDisplay unitDisplay)
+    public List<Point> BlinkRicochetTargets(UnitDisplay unitDisplay)
     {
         Point p = GetUnitPosition(unitDisplay);
 
         Point[] points = new Point[] { new Point(p.x + 1, p.y), new Point(p.x - 1, p.y), new Point(p.x, p.y + 1), new Point(p.x, p.y - 1) };
+
+        List<Point> enemyPoints = new List<Point>();
 
         foreach (Point point in points)
         {
@@ -275,15 +279,19 @@ public class BoardCreator : MonoBehaviour
             if (enemy != null)
             {
                 enemy.BlinkOn();
+                enemyPoints.Add(point);
             }
         }
+
+        return enemyPoints;
     }
 
-    public void BlinkHealTargets(UnitDisplay unitDisplay, int range)
+    public List<Point> BlinkHealTargets(UnitDisplay unitDisplay, int range)
     {
         Point p = GetUnitPosition(unitDisplay);
 
         var radiusPoints = this.FindPointsInRadius(p, range);
+        List<Point> allyPoints = new List<Point>();
 
         foreach (Point point in radiusPoints)
         {
@@ -291,10 +299,13 @@ public class BoardCreator : MonoBehaviour
             if (ally != null)
             {
                 ally.BlinkOn();
+                allyPoints.Add(point);
             }
         }
 
         this.HighlightPathInTilesByPoints(radiusPoints);
+
+        return allyPoints;
     }
 
     public void RemoveAllBlinks()
@@ -333,6 +344,44 @@ public class BoardCreator : MonoBehaviour
         }
 
         return null;
+    }
+
+    public TileDisplay GetTileByPoint(Point point)
+    {
+        var tile = Tiles[point.x, point.y];
+        if (tile)
+        {
+            return tile.GetComponent<TileDisplay>();
+        }
+
+        return null;
+    }
+
+    public bool CheckTileInPoints(TileDisplay tile, List<Point> points)
+    {
+        var tilePosition = this.GetTilePosition(tile);
+
+        return this.CheckPointInPoints(tilePosition, points);
+    }
+
+    public bool CheckUnitInPoints(UnitDisplay unit, List<Point> points)
+    {
+        var position = this.GetUnitPosition(unit);
+
+        return this.CheckPointInPoints(position, points);
+    }
+
+    private bool CheckPointInPoints(Point checkedPoint, List<Point> points)
+    {
+        foreach (var point in points)
+        {
+            if (checkedPoint.x == point.x && checkedPoint.y == point.y)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void RemoveAllUnitBlinks()
