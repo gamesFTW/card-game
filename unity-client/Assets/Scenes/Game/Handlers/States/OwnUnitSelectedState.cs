@@ -179,20 +179,21 @@ public class OwnUnitSelectedState : SelectingState
             } else
             {
                 var selectedUnitRange = this.selectedUnit.CardData.abilities.range != null;
-                if (selectedUnitRange && !this.selectedUnit.CardData.abilities.range.blockedInBeginningOfTurn)
+                if (selectedUnitRange)
                 {
                     var fromPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
                     var positions = this.boardCreator.GetPositionsForRangeAttack(this.selectedUnit, fromPosition);
 
-                    var unitPosition = this.boardCreator.GetUnitPosition(unit);
-
-                    foreach (var position in positions)
+                    if (!this.selectedUnit.CardData.abilities.range.blockedInBeginningOfTurn && this.boardCreator.CheckUnitInPoints(unit, positions))
                     {
-                        if (position.x == unitPosition.x && position.y == unitPosition.y)
-                        {
-                            CursorController.SetRangeAttack();
-                        }
+                        CursorController.SetRangeAttack();
+                    } else
+                    {
+                        CursorController.SetRangeAttackForbidden();
                     }
+                } else
+                {
+                    CursorController.SetAttackForbidden();
                 }
             }
         }
@@ -234,13 +235,13 @@ public class OwnUnitSelectedState : SelectingState
         var points = this.boardCreator.ShowPathReach(this.selectedUnit);
         var tilePosition = this.boardCreator.GetTilePosition(tile);
 
-        foreach (var point in points)
+        if (this.boardCreator.CheckTileInPoints(tile, points))
         {
-            if (tilePosition.x == point.x && tilePosition.y == point.y)
-            {
-                tile.HighlightOn();
-                CursorController.SetPointer();
-            }
+            tile.HighlightOn();
+            CursorController.SetPointer();
+        } else
+        {
+            CursorController.SetPointerForbidden();
         }
     }
 

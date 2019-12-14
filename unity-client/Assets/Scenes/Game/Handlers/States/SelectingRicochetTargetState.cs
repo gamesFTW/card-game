@@ -22,7 +22,7 @@ public class SelectingRicochetTargetState : SelectingState
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
 
-        CursorController.SetPointer();
+        CursorController.SetRangeAttack();
 
         Dialog.instance.ShowDialog("Choose enemy unit for ricochet target (ricochet ability)", "Cancel", this.EnableNoSelectionsState);
 
@@ -62,12 +62,17 @@ public class SelectingRicochetTargetState : SelectingState
     {
         if (!unit.CardDisplay.IsAlly && this.boardCreator.CheckUnitInPoints(unit, this.points))
         {
+            CursorController.SetRangeAttack();
             unit.OverHighlightOn();
+        } else
+        {
+            CursorController.SetRangeAttackForbidden();
         }
     }
 
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
+        CursorController.SetRangeAttack();
         unit.OverHighlightOff();
     }
 }

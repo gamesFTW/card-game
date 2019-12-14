@@ -58,12 +58,17 @@ public class SelectingHealingTargetState : SelectingState
     {
         if (unit.CardDisplay.IsAlly && this.boardCreator.CheckUnitInPoints(unit, this.points))
         {
+            CursorController.SetPointer();
             unit.OverHighlightOn();
+        } else
+        {
+            CursorController.SetPointerForbidden();
         }
     }
 
     private void OnUnitMouseExitOnBoard(UnitDisplay unit)
     {
+        CursorController.SetPointer();
         unit.OverHighlightOff();
     }
 }

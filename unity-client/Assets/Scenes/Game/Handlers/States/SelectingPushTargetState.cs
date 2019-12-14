@@ -77,11 +77,16 @@ public class SelectingPushTargetState : SelectingState
         if (this.boardCreator.CheckTileInPoints(tile, points))
         {
             tile.HighlightOn();
+            CursorController.SetPointer();
+        } else
+        {
+            CursorController.SetPointerForbidden();
         }
     }
 
     private void OnTileMouseExitOnBoard(TileDisplay tile)
     {
+        CursorController.SetPointer();
         this.hoveredTile = null;
         tile.HighlightOff();
     }

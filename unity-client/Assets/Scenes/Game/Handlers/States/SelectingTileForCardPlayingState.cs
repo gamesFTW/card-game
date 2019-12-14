@@ -122,12 +122,17 @@ public class SelectingTileForCardPlayingState : MonoBehaviour
         this.hoveredTile = tile;
         if (this.boardCreator.CheckTileInPoints(tile, points))
         {
+            CursorController.SetPointer();
             tile.HighlightOn();
+        } else
+        {
+            CursorController.SetPointerForbidden();
         }
     }
 
     private void OnTileMouseExitOnBoard(TileDisplay tile)
     {
+        CursorController.SetPointer();
         this.hoveredTile = null;
         tile.HighlightOff();
     }
