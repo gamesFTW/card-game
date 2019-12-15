@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
+    public static readonly string CARD_ATTACKED = "AudioController:CARD_ATTACKED";
+    public static readonly string CARD_PLAYED = "AudioController:CARD_PLAYED";
+    public static readonly string CARD_DIED = "AudioController:CARD_DIED";
+    public static readonly string CARD_MOVED = "AudioController:CARD_MOVED";
+    public static readonly string CARD_SELECTED = "AudioController:CARD_SELECTED";
 
     private Dictionary<string, Transform> cardIdToCards;
     private Dictionary<string, PlayerTransformsStacks> playerStacks;
@@ -76,7 +81,7 @@ public class CardManager : MonoBehaviour
 
         cardDisplay.FaceUp();
 
-        Unibus.Dispatch(AudioController.CARD_PLAYED, cardDisplay);
+        Unibus.Dispatch(CardManager.CARD_PLAYED, cardDisplay);
     }
 
     public void PlayCardAsMana(string playerId, string cardId, bool taped)
@@ -105,7 +110,7 @@ public class CardManager : MonoBehaviour
 
         boardCreator.MoveUnit(cardDisplay, position, path);
 
-        Unibus.Dispatch(AudioController.CARD_MOVED, cardDisplay);
+        Unibus.Dispatch(CardManager.CARD_MOVED, cardDisplay);
     }
 
     public void CardAfterHealing(ServerActions.CardAfterHealing card)
@@ -139,7 +144,7 @@ public class CardManager : MonoBehaviour
 
         if (isAttacker)
         {
-            Unibus.Dispatch(AudioController.CARD_ATTACKED, cardDisplay);
+            Unibus.Dispatch(CardManager.CARD_ATTACKED, cardDisplay);
         }
     }
 
@@ -237,6 +242,6 @@ public class CardManager : MonoBehaviour
         this.playerStacks[cardDisplay.cardData.ownerId].graveyard.GetComponent<StackDisplay>().AddCard(cardDisplay);
         boardCreator.KillUnit(cardDisplay);
 
-        Unibus.Dispatch(AudioController.CARD_DIED, cardDisplay);
+        Unibus.Dispatch(CardManager.CARD_DIED, cardDisplay);
     }
 }

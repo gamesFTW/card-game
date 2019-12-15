@@ -22,7 +22,7 @@ public class OwnUnitSelectedState : SelectingState
         this.boardCreator.ShowPathReach(selectedUnit);
         this.ShowRangeAttackReach(selectedUnit);
 
-        Unibus.Dispatch(AudioController.CARD_SELECTED, selectedUnit.CardDisplay);
+        Unibus.Dispatch(CardManager.CARD_SELECTED, selectedUnit.CardDisplay);
 
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
@@ -32,6 +32,7 @@ public class OwnUnitSelectedState : SelectingState
         Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
         Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
         Unibus.Subscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
+        Unibus.Subscribe<CardDisplay>(CardManager.CARD_MOVED, OnCardMoved);
     }
 
     protected override void Disable()
@@ -55,6 +56,7 @@ public class OwnUnitSelectedState : SelectingState
         Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
         Unibus.Unsubscribe<AbilityActivated>(UnitDisplay.ABILITY_ACTIVATED, OnAbilityActivated);
         Unibus.Unsubscribe<CardDisplay>(CardDisplay.CARD_CLICKED, OnCardClicked);
+        Unibus.Unsubscribe<CardDisplay>(CardManager.CARD_MOVED, OnCardMoved);
     }
 
     protected override void EnableNoSelectionsState()
@@ -91,8 +93,6 @@ public class OwnUnitSelectedState : SelectingState
         tile.HighlightOff();
 
         this.actionEmmiter.EmmitCardMoveAction(this.selectedUnit, point);
-
-        this.EnableNoSelectionsState();
     }
 
     private void ChangeSelectedToAnotherAlly(UnitDisplay unitDisplay)
@@ -281,6 +281,17 @@ public class OwnUnitSelectedState : SelectingState
                 fromPosition = this.boardCreator.GetUnitPosition(unit);
             }
             this.boardCreator.ShowRangeAttackReach(unit, fromPosition);
+        }
+    }
+
+    private void OnCardMoved(CardDisplay cardDisplay)
+    {
+        if (cardDisplay.UnitDisplay == this.selectedUnit)
+        {
+            this.boardCreator.RemoveAllBlinks();
+
+            this.boardCreator.ShowPathReach(this.selectedUnit);
+            this.ShowRangeAttackReach(this.selectedUnit);
         }
     }
 }

@@ -6,23 +6,17 @@ using UnityEngine.Networking;
 
 public class AudioController : MonoBehaviour
 {
-    public static readonly string CARD_ATTACKED = "AudioController:CARD_ATTACKED";
-    public static readonly string CARD_PLAYED = "AudioController:CARD_PLAYED";
-    public static readonly string CARD_DIED = "AudioController:CARD_DIED";
-    public static readonly string CARD_MOVED = "AudioController:CARD_MOVED";
-    public static readonly string CARD_SELECTED = "AudioController:CARD_SELECTED";
-
     private AudioSource AudioSource;
     private Dictionary<string, AudioClip> sounds = new Dictionary<string, AudioClip>();
 
     // Start is called before the first frame update
     void Start()
     {
-        Unibus.Subscribe<CardDisplay>(AudioController.CARD_ATTACKED, OnCardAttacked);
-        Unibus.Subscribe<CardDisplay>(AudioController.CARD_PLAYED, OnCardPlayed);
-        Unibus.Subscribe<CardDisplay>(AudioController.CARD_DIED, OnCardDied);
-        Unibus.Subscribe<CardDisplay>(AudioController.CARD_MOVED, OnCardMoved);
-        Unibus.Subscribe<CardDisplay>(AudioController.CARD_SELECTED, OnCardSelected);
+        Unibus.Subscribe<CardDisplay>(CardManager.CARD_ATTACKED, OnCardAttacked);
+        Unibus.Subscribe<CardDisplay>(CardManager.CARD_PLAYED, OnCardPlayed);
+        Unibus.Subscribe<CardDisplay>(CardManager.CARD_DIED, OnCardDied);
+        Unibus.Subscribe<CardDisplay>(CardManager.CARD_MOVED, OnCardMoved);
+        Unibus.Subscribe<CardDisplay>(CardManager.CARD_SELECTED, OnCardSelected);
 
         this.AudioSource = this.GetComponent<AudioSource>();
     }
