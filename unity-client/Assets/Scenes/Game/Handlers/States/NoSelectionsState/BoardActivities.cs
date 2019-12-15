@@ -51,7 +51,7 @@ public class BoardActivities
 
     private void OnUnitMouseEnterOnBoard(UnitDisplay unit)
     {
-        if (unit.CardDisplay.IsAlly)
+        if (unit.CardDisplay.IsAlly && !unit.CardDisplay.cardData.tapped)
         {
             unit.CardDisplay.OverHighlightOn();
 

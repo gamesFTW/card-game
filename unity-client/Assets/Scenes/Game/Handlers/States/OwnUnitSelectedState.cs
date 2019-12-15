@@ -207,11 +207,14 @@ public class OwnUnitSelectedState : SelectingState
             }
             else
             {
-                unit.CardDisplay.OverHighlightOn();
-                CursorController.SetPointer();
-                this.boardCreator.RemoveAllBlinks();
-                this.boardCreator.ShowPathReach(unit);
-                this.ShowRangeAttackReach(unit);
+                if (!unit.CardData.tapped)
+                {
+                    unit.CardDisplay.OverHighlightOn();
+                    CursorController.SetPointer();
+                    this.boardCreator.RemoveAllBlinks();
+                    this.boardCreator.ShowPathReach(unit);
+                    this.ShowRangeAttackReach(unit);
+                }
             }
         }
     }
