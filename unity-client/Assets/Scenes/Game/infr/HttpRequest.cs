@@ -48,7 +48,7 @@ public class HttpRequest
         return responseContent;
     }
 
-    public async static Task<T> Post<T>(string url, object values)
+    public async static Task<T> Post<T>(string url, object values = null)
     {
         HttpResponseMessage response = await PostInternal(url, values);
         GenerateDebugMessage(url, values);
@@ -71,7 +71,9 @@ public class HttpRequest
 
     public async static Task<HttpResponseMessage> PostInternal(string url, object values)
     {
-        var stringContent = new StringContent(JsonConvert.SerializeObject(values), Encoding.UTF8, "application/json");
+        string content = values == null ? "" : JsonConvert.SerializeObject(values);
+        var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
+
         stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
         var httpClient = new HttpClient();
@@ -81,9 +83,13 @@ public class HttpRequest
     private static void GenerateDebugMessage(string url, object values)
     {
         string valuesText = "";
-        foreach (PropertyInfo propertyInfo in values.GetType().GetProperties())
+
+        if (values != null)
         {
-            valuesText += propertyInfo.Name + " = " + propertyInfo.GetValue(values, null) + "; ";
+            foreach (PropertyInfo propertyInfo in values.GetType().GetProperties())
+            {
+                valuesText += propertyInfo.Name + " = " + propertyInfo.GetValue(values, null) + "; ";
+            }
         }
 
         Debug.Log("Send POST to server. Url: '" + url + "' Body: " + valuesText);

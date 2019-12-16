@@ -88,6 +88,11 @@ namespace Lobby
             return await HttpRequest.Post<SinglePlayerGameData>(Config.LOBBY_SERVER_URL + "methods/createSinglePlayerGame", values);
         }
 
+        public async static Task<SinglePlayerGameData> CreateTutorialGame()
+        {
+            return await HttpRequest.Post<SinglePlayerGameData>(Config.LOBBY_SERVER_URL + "methods/createTutorialGame");
+        }
+
         public async static Task DeleteGame(string gameId)
         {
 
