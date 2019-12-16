@@ -24,6 +24,8 @@ public class SelectingPushTargetState : SelectingState
         Unibus.Subscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
         Unibus.Subscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+        Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
 
         Dialog.instance.ShowDialog("Choose square to move attacking unit to it (push ability)", "Don't push", this.OnDontPushButtonClick, "Cancel", this.EnableNoSelectionsState);
 
@@ -47,6 +49,8 @@ public class SelectingPushTargetState : SelectingState
         Unibus.Unsubscribe<Point>(BoardCreator.CLICKED_ON_VOID_TILE, OnClickedOnVoidTile);
         Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, OnTileMouseEnterOnBoard);
         Unibus.Unsubscribe<TileDisplay>(BoardCreator.TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, OnTileMouseExitOnBoard);
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
+        Unibus.Unsubscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);
     }
 
     protected override void EnableNoSelectionsState()
@@ -78,7 +82,8 @@ public class SelectingPushTargetState : SelectingState
         {
             tile.HighlightOn();
             CursorController.SetPointer();
-        } else
+        }
+        else
         {
             CursorController.SetPointerForbidden();
         }
@@ -89,5 +94,14 @@ public class SelectingPushTargetState : SelectingState
         CursorController.SetPointer();
         this.hoveredTile = null;
         tile.HighlightOff();
+    }
+    private void OnUnitMouseEnterOnBoard(UnitDisplay unit)
+    {
+        CursorController.SetPointerForbidden();
+    }
+
+    private void OnUnitMouseExitOnBoard(UnitDisplay unit)
+    {
+        CursorController.SetPointer();
     }
 }

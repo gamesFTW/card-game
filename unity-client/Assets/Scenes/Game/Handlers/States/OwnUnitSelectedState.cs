@@ -201,6 +201,7 @@ public class OwnUnitSelectedState : SelectingState
         {
             if (unit == this.selectedUnit)
             {
+                CursorController.SetDefault();
                 this.boardCreator.RemoveAllBlinks();
                 this.boardCreator.ShowPathReach(this.selectedUnit);
                 this.ShowRangeAttackReach(this.selectedUnit);
@@ -295,6 +296,25 @@ public class OwnUnitSelectedState : SelectingState
 
             this.boardCreator.ShowPathReach(this.selectedUnit);
             this.ShowRangeAttackReach(this.selectedUnit);
+
+            if (this.boardCreator.hoveredUnit)
+            {
+                this.OnUnitMouseEnterOnBoard(this.boardCreator.hoveredUnit);
+            }
+
+            if (this.boardCreator.hoveredTile)
+            {
+                var unit = this.boardCreator.GetUnitByTile(this.boardCreator.hoveredTile);
+
+                if (unit == this.selectedUnit)
+                {
+                    this.OnUnitMouseEnterOnBoard(this.selectedUnit);
+                }
+                else
+                {
+                    this.OnTileMouseEnterOnBoard(this.boardCreator.hoveredTile);
+                }
+            }
         }
     }
 }

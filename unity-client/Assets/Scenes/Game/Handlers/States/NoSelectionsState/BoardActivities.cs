@@ -14,6 +14,11 @@ public class BoardActivities
 
     public void Enable()
     {
+        if (this.boardCreator.hoveredUnit)
+        {
+            this.OnUnitMouseEnterOnBoard(this.boardCreator.hoveredUnit);
+        }
+
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_CLICKED_ON_BOARD, OnUnitSelectedOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_ENTER_ON_BOARD, OnUnitMouseEnterOnBoard);
         Unibus.Subscribe<UnitDisplay>(BoardCreator.UNIT_MOUSE_EXIT_ON_BOARD, OnUnitMouseExitOnBoard);

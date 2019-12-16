@@ -22,6 +22,9 @@ public class BoardCreator : MonoBehaviour
 
     public List<CardDisplay> allyHeroes = new List<CardDisplay>();
 
+    public TileDisplay hoveredTile = null;
+    public UnitDisplay hoveredUnit = null;
+
     private GameObject[,] Tiles;
     private GameObject[,] Units;
     private GameObject[,] Areas;
@@ -29,12 +32,12 @@ public class BoardCreator : MonoBehaviour
     private float tileWidth;
     private float tileHeight;
 
-    private void Awake()
+    public void Awake()
     {
         CreateTiles();
     }
 
-    private void Start()
+    public void Start()
     {
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_LEFT_CLICK, OnTileMouseLeftClick);
         Unibus.Subscribe<Point>(TileDisplay.TILE_MOUSE_ENTER, OnTileMouseEnter);
@@ -102,11 +105,31 @@ public class BoardCreator : MonoBehaviour
         Destroy(unitDisplay.gameObject);
     }
 
-    public GameObject GetTileByUnit(UnitDisplay unitDisplay)
+    public TileDisplay GetTileByUnit(UnitDisplay unitDisplay)
     {
         Point unitPosition = GetUnitPosition(unitDisplay);
 
-        return Tiles[unitPosition.x, unitPosition.y];
+        var tile = Tiles[unitPosition.x, unitPosition.y];
+
+        if (tile)
+        {
+            return tile.GetComponent<TileDisplay>();
+        }
+
+        return null;
+    }
+
+    public UnitDisplay GetUnitByTile(TileDisplay tileDisplay)
+    {
+        Point tilePosition = GetTilePosition(tileDisplay);
+        var unit = Units[tilePosition.x, tilePosition.y];
+
+        if (unit)
+        {
+            return unit.GetComponent<UnitDisplay>();
+        }
+
+        return null;
     }
 
     public bool CheckCardsAdjacency(UnitDisplay firstCard, UnitDisplay secondCard)
@@ -753,10 +776,15 @@ public class BoardCreator : MonoBehaviour
         {
             UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
 
+            this.hoveredUnit = unitDisplay;
+
             Unibus.Dispatch<UnitDisplay>(UNIT_MOUSE_ENTER_ON_BOARD, unitDisplay);
         } else
         {
             TileDisplay tileDisplay = this.Tiles[position.x, position.y].GetComponent<TileDisplay>();
+
+            this.hoveredTile = tileDisplay;
+
             Unibus.Dispatch<TileDisplay>(TILE_WITHOUT_UNIT_MOUSE_ENTER_ON_BOARD, tileDisplay);
         }
     }
@@ -769,11 +797,16 @@ public class BoardCreator : MonoBehaviour
         {
             UnitDisplay unitDisplay = unit.GetComponent<UnitDisplay>();
 
+            this.hoveredUnit = null;
+
             Unibus.Dispatch<UnitDisplay>(UNIT_MOUSE_EXIT_ON_BOARD, unitDisplay);
         }
         else
         {
             TileDisplay tileDisplay = this.Tiles[position.x, position.y].GetComponent<TileDisplay>();
+
+            this.hoveredTile = null;
+
             Unibus.Dispatch<TileDisplay>(TILE_WITHOUT_UNIT_MOUSE_EXIT_ON_BOARD, tileDisplay);
         }
     }
