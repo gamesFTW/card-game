@@ -167,7 +167,6 @@ public class OwnUnitSelectedState : SelectingState
         {
             this.boardCreator.RemoveAllBlinks();
             Point attackerPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
-            this.ShowRangeAttackReach(this.selectedUnit, attackerPosition);
             this.boardCreator.ShowPathReach(this.selectedUnit);
 
             var unitsAdjacent = this.boardCreator.CheckCardsAdjacency(unit, this.selectedUnit);
