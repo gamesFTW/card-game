@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
-    public static readonly string CARD_ATTACKED = "AudioController:CARD_ATTACKED";
-    public static readonly string CARD_PLAYED = "AudioController:CARD_PLAYED";
-    public static readonly string CARD_DIED = "AudioController:CARD_DIED";
-    public static readonly string CARD_MOVED = "AudioController:CARD_MOVED";
-    public static readonly string CARD_SELECTED = "AudioController:CARD_SELECTED";
+    public static readonly string CARD_ATTACKED = "CardManager:CARD_ATTACKED";
+    public static readonly string CARD_PLAYED = "CardManager:CARD_PLAYED";
+    public static readonly string CARD_DIED = "CardManager:CARD_DIED";
+    public static readonly string CARD_MOVED = "CardManager:CARD_MOVED";
+    public static readonly string CARD_SELECTED = "CardManager:CARD_SELECTED";
+    public static readonly string TURN_ENDED = "CardManager:TURN_ENDED";
 
     private Dictionary<string, Transform> cardIdToCards;
     private Dictionary<string, PlayerTransformsStacks> playerStacks;

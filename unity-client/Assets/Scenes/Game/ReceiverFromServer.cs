@@ -204,6 +204,8 @@ public class ReceiverFromServer : MonoBehaviour
         {
             this.uiManager.ShowTurn();
         }
+
+        Unibus.Dispatch<CardDisplay>(CardManager.TURN_ENDED, null);
     }
 
     public void OnPlayCardAction(ServerActions.PlayCardAction action)
