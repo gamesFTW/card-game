@@ -236,7 +236,9 @@ public class ReceiverFromServer : MonoBehaviour
     public void OnCardHealedAction(ServerActions.CardHealedAction action)
     {
         cardManger.CardAfterHealing(action.healerCard);
-        cardManger.CardAfterHealing(action.healedCard);
+        var card = cardManger.CardAfterHealing(action.healedCard);
+
+        Unibus.Dispatch<CardDisplay>(CardManager.CARD_HEALED, card);
     }
 
     public void OnCardUsedManaAbilityAction(ServerActions.CardUsedManaAbilityAction action)

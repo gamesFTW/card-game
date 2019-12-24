@@ -166,7 +166,7 @@ public class CardAbilitiesDescription : MonoBehaviour
         if (this.cardDisplay.cardData.abilities.healing != null)
         {
             name = "Healing " + this.cardDisplay.cardData.abilities.healing.heal + " (range " + this.cardDisplay.cardData.abilities.healing.range + ")";
-            description = "Healing " + this.cardDisplay.cardData.abilities.healing.heal + " (range " + this.cardDisplay.cardData.abilities.healing.range + ").";
+            description = "Heal ally unit by " + this.cardDisplay.cardData.abilities.healing.heal + ", on range " + this.cardDisplay.cardData.abilities.healing.range + ".";
             this.CreateText(name, description, UnityEngine.Color.white);
         }
         if (this.cardDisplay.cardData.abilities.block != null)

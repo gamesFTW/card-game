@@ -9,6 +9,7 @@ public class CardManager : MonoBehaviour
     public static readonly string CARD_DIED = "CardManager:CARD_DIED";
     public static readonly string CARD_MOVED = "CardManager:CARD_MOVED";
     public static readonly string CARD_SELECTED = "CardManager:CARD_SELECTED";
+    public static readonly string CARD_HEALED = "CardManager:CARD_HEALED";
     public static readonly string TURN_ENDED = "CardManager:TURN_ENDED";
 
     private Dictionary<string, Transform> cardIdToCards;
@@ -114,7 +115,7 @@ public class CardManager : MonoBehaviour
         Unibus.Dispatch(CardManager.CARD_MOVED, cardDisplay);
     }
 
-    public void CardAfterHealing(ServerActions.CardAfterHealing card)
+    public CardDisplay CardAfterHealing(ServerActions.CardAfterHealing card)
     {
         var cardTransform = cardIdToCards[card.id];
 
@@ -134,6 +135,8 @@ public class CardManager : MonoBehaviour
         {
             cardDisplay.CurrentMovingPoints = (int)card.currentMovingPoints;
         }
+
+        return cardDisplay;
     }
 
     public void CardWasInBattle(ServerActions.CardChanges cardChanges, bool isAttacker)
