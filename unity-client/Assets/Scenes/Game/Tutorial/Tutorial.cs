@@ -23,6 +23,7 @@ public class Step
     public int[] dialogPosition;
     public Arrow? arrow;
     public int? waitBeforeFinish;
+    public string image;
 }
 
 public class Tutorial : MonoBehaviour
@@ -33,8 +34,6 @@ public class Tutorial : MonoBehaviour
     private GameObject arrowRight;
     private GameObject arrowBottom;
     private GameObject arrowBottomLeft;
-
-    // TODO: wait, image
 
     private Step[] tutorialSteps = new Step[] {
         new Step() {
@@ -61,10 +60,16 @@ public class Tutorial : MonoBehaviour
             waitBeforeFinish = 2
         },
         new Step() {
-            text = "This is your hand cards.\nYou can play cards from hand to summon creatures on the battle field.\n\nEvery card have mana cost value, that located at the top left of the card.",
+            text = "This is your cretures, that you can summon on the battle field.",
             autoNext = true,
             dialogPosition = new [] { 0, 130 },
             arrow = Step.Arrow.bottom
+        },
+        new Step() {
+            text = "Every card have mana cost value, damage, and hit points.",
+            autoNext = true,
+            arrow = Step.Arrow.bottom,
+            image = "card"
         },
         new Step() {
             text = "This is your mana.\nAt the end of every turn you get 3 mana if you have empty mana slots.",
@@ -73,7 +78,7 @@ public class Tutorial : MonoBehaviour
             arrow = Step.Arrow.bottomLeft
         },
         new Step() {
-            text = "Lets summon a creature with 3 mana cost.\nTo do this click on card at hand, and then click on empty tile at battle field.\nYou can summon creatures only with nearby of the your heroes.",
+            text = "Lets summon a creature with 3 mana cost.\nTo do this click on card at hand, and then click on empty tile at battle field.",
             stepEvent = CardManager.CARD_PLAYED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
@@ -96,21 +101,25 @@ public class Tutorial : MonoBehaviour
         },
         new Step() {
             text = "If any unit is attacked, it immediately strikes back every time.",
-            autoNext = true
+            autoNext = true,
+            image = "attack"
         },
         new Step() {
             text = "All units have one or more abilities. To read ability description move mouse on ability name.",
-            autoNext = true
+            autoNext = true,
+            image = "ability"
         },
         new Step() {
             text = "Lets use heal ability of your hero.\n\nBy clicking on it, you will see the healing button under the hero.\nClick on heal and click on any wounded unit nearby of the hero.",
             stepEvent = CardManager.CARD_HEALED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
-            waitBeforeFinish = 2
+            waitBeforeFinish = 2,
+            image = "heal"
         },
         new Step() {
-            text = "To have more then 3 mana you need to obtain more mana slots.\nTo get mana slot, move mouse on any card in hand and click on 'Convert to mana slot' button.\nConverted cards will be destroyed.",
-            autoNext = true
+            text = "To have more then 3 mana you need to obtain more mana slots.\nTo get mana slot, move mouse on any card in hand and click on 'Convert to mana slot' button.",
+            autoNext = true,
+            image = "convert"
         },
         new Step() {
             text = "Collect 6 mana and play card with 6 mana cost.",
@@ -120,12 +129,13 @@ public class Tutorial : MonoBehaviour
         },
         new Step() {
             text = "Orc ranger have range ability.\nAfter clicking on ranger you will see yellow tiles. It showes tiles you can shoot.",
-            autoNext = true
+            autoNext = true,
+            image = "range"
         },
         new Step() {
             text = "End turn, and then try to shoot any enemy by Orc ranger.",
             stepEvent = CardManager.CARD_ATTACKED,
-            eventCondition = (CardDisplay c) => { return c.IsAlly; },
+            eventCondition = (CardDisplay c) => { return c.IsAlly && c.cardData.name == "Orc ranger"; },
             waitBeforeFinish = 2
         },
         new Step() {
@@ -135,16 +145,16 @@ public class Tutorial : MonoBehaviour
 
     public void Awake()
     {
-        this.dialog = this.transform.Find("Dialog").gameObject;
-        this.arrowLeft = this.dialog.transform.Find("ArrowLeft").gameObject;
-        this.arrowRight = this.dialog.transform.Find("ArrowRight").gameObject;
-        this.arrowBottom = this.dialog.transform.Find("ArrowBottom").gameObject;
-        this.arrowBottomLeft = this.dialog.transform.Find("ArrowBottomLeft").gameObject;
+        this.arrowLeft = this.transform.Find("Dialog/ArrowLeft").gameObject;
+        this.arrowRight = this.transform.Find("Dialog/ArrowRight").gameObject;
+        this.arrowBottom = this.transform.Find("Dialog/ArrowBottom").gameObject;
+        this.arrowBottomLeft = this.transform.Find("Dialog/ArrowBottomLeft").gameObject;
     }
 
     public void Start()
     {
-        this.dialog.transform.Find("OKButton").GetComponent<Button>().onClick.AddListener(this.DialogClickHandler);
+        this.transform.Find("Dialog/OKButton").GetComponent<Button>().onClick.AddListener(this.DialogClickHandler);
+        this.transform.Find("DialogBig/OKButton").GetComponent<Button>().onClick.AddListener(this.DialogClickHandler);
 
         if (GameState.tutorial)
         {
@@ -181,6 +191,15 @@ public class Tutorial : MonoBehaviour
 
     private void ShowDialog(Step step)
     {
+        if (step.image == null)
+        {
+            this.dialog = this.transform.Find("Dialog").gameObject;
+        } else
+        {
+            this.dialog = this.transform.Find("DialogBig").gameObject;
+            var spriteRenderer = this.transform.Find("DialogBig/Image").GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = Resources.Load<Sprite>($"{step.image}");
+        }
         this.dialog.SetActive(true);
         this.dialog.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = step.text;
         this.dialog.transform.Find("StepCounter").GetComponent<TextMeshProUGUI>().text
