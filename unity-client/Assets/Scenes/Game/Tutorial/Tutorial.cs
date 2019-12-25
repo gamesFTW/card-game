@@ -86,10 +86,10 @@ public class Tutorial : MonoBehaviour
             text = "Move all your heroes, and click 'End of turn' button.",
             stepEvent = CardManager.TURN_ENDED,
             eventCondition = (CardDisplay c) => { return !GameState.isMainPlayerTurn; },
-            waitBeforeFinish = 4
+            waitBeforeFinish = 6
         },
         new Step() {
-            text = "To attack enemy your unit should stand nearby of it. You can't attack diagonally.\nTry to attack any enemy unit.",
+            text = "Try to attack any enemy unit.\n\nTo attack enemy your unit should stand nearby of it. You can't attack diagonally.",
             stepEvent = CardManager.CARD_ATTACKED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
@@ -103,7 +103,7 @@ public class Tutorial : MonoBehaviour
             autoNext = true
         },
         new Step() {
-            text = "Lets use heal ability of your hero. By clicking on it, you will see the healing button under the hero.\nClick on heal and click on any wounded unit nearby of the hero.",
+            text = "Lets use heal ability of your hero.\n\nBy clicking on it, you will see the healing button under the hero.\nClick on heal and click on any wounded unit nearby of the hero.",
             stepEvent = CardManager.CARD_HEALED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
@@ -123,7 +123,7 @@ public class Tutorial : MonoBehaviour
             autoNext = true
         },
         new Step() {
-            text = "Try to shoot any enemy by Orc ranger.",
+            text = "End turn, and then try to shoot any enemy by Orc ranger.",
             stepEvent = CardManager.CARD_ATTACKED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
