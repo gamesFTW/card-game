@@ -73,7 +73,7 @@ public class Tutorial : MonoBehaviour
             arrow = Step.Arrow.bottomLeft
         },
         new Step() {
-            text = "Lets summon a creature with 3 mana cost.\nTo to this click on card at hand, and then click on empty tile at battle field.\nYou can summon creatures only with nearby of the your heroes.",
+            text = "Lets summon a creature with 3 mana cost.\nTo do this click on card at hand, and then click on empty tile at battle field.\nYou can summon creatures only with nearby of the your heroes.",
             stepEvent = CardManager.CARD_PLAYED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
@@ -103,7 +103,7 @@ public class Tutorial : MonoBehaviour
             autoNext = true
         },
         new Step() {
-            text = "Lets use heal ability of hero priest. By clicking on it, you will see the healing button under the hero.\nClick on heal and click on any wounded unit nearby of the priest.",
+            text = "Lets use heal ability of your hero. By clicking on it, you will see the healing button under the hero.\nClick on heal and click on any wounded unit nearby of the hero.",
             stepEvent = CardManager.CARD_HEALED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
@@ -119,11 +119,11 @@ public class Tutorial : MonoBehaviour
             waitBeforeFinish = 2
         },
         new Step() {
-            text = "Ranger have range ability.\nAfter clicking on ranger you will see yellow tiles. It showes tiles you can shoot.",
+            text = "Orc ranger have range ability.\nAfter clicking on ranger you will see yellow tiles. It showes tiles you can shoot.",
             autoNext = true
         },
         new Step() {
-            text = "Try to shoot any enemy by Ranger.",
+            text = "Try to shoot any enemy by Orc ranger.",
             stepEvent = CardManager.CARD_ATTACKED,
             eventCondition = (CardDisplay c) => { return c.IsAlly; },
             waitBeforeFinish = 2
@@ -146,7 +146,10 @@ public class Tutorial : MonoBehaviour
     {
         this.dialog.transform.Find("OKButton").GetComponent<Button>().onClick.AddListener(this.DialogClickHandler);
 
-        this.Init();
+        if (GameState.tutorial)
+        {
+            this.Init();
+        }
     }
 
     public void Init()

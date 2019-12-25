@@ -14,6 +14,17 @@ public class Main : MonoBehaviour
         GameState.gameId = gameId;
         GameState.mainPlayerId = playerId;
         GameState.enemyOfMainPlayerId = opponentId;
+        GameState.tutorial = false;
+
+        SceneManager.LoadScene("Game");
+    }
+
+    public static void StartTutorialGame(string gameId, string playerId, string opponentId)
+    {
+        GameState.gameId = gameId;
+        GameState.mainPlayerId = playerId;
+        GameState.enemyOfMainPlayerId = opponentId;
+        GameState.tutorial = true;
 
         SceneManager.LoadScene("Game");
     }
@@ -22,6 +33,7 @@ public class Main : MonoBehaviour
     {
         GameState.gameId = gameId;
         GameState.isMainPlayerFirstPlayer = true;
+        GameState.tutorial = false;
 
         SceneManager.LoadScene("Game");
     }
@@ -30,6 +42,7 @@ public class Main : MonoBehaviour
     {
         GameState.gameId = gameId;
         GameState.isMainPlayerFirstPlayer = false;
+        GameState.tutorial = false;
 
         SceneManager.LoadScene("Game");
     }

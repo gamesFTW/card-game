@@ -3,6 +3,7 @@
     static public string gameId;
 
     static public bool isMainPlayerFirstPlayer;
+    static public bool tutorial = false;
 
     public static string mainPlayerId = "";
     public static string enemyOfMainPlayerId = "";

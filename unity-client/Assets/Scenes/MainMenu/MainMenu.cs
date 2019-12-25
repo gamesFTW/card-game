@@ -25,8 +25,7 @@ namespace Lobby
         {
             this.transform.Find("Container").gameObject.SetActive(false);
             SinglePlayerGameData data = await LobbyServerApi.CreateTutorialGame();
-
-            Main.StartGame(data.gameServerId, data.playerId, data.aiId);
+            Main.StartTutorialGame(data.gameServerId, data.playerId, data.aiId);
         }
 
         private void OnLobbyButtonClick()
