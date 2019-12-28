@@ -43,7 +43,7 @@ public class UnitDisplay : MonoBehaviour
 
     private void Awake()
     {
-        this.spriteRenderer = this.GetComponent<SpriteRenderer>();
+        this.spriteRenderer = this.transform.Find("Unit").GetComponent<SpriteRenderer>();
     }
 
     private void Start()
