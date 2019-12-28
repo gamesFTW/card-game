@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -63,6 +63,7 @@ public class Dialog : MonoBehaviour
 
         this.button1.GetComponent<Button>().onClick.RemoveListener(OnButton1ClickHandler);
         this.button2.GetComponent<Button>().onClick.RemoveListener(OnButton2ClickHandler);
+        Unibus.Dispatch(DIALOG_MOUSE_EXIT, "");
     }
 
     private void OnMouseEnter()
