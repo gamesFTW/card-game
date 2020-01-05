@@ -324,6 +324,21 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "attackCard", values);
     }
 
+    public async static Task MoveAndAttackCard(AttackCardAction action)
+    {
+        var values = new
+        {
+            GameState.gameId,
+            playerId = GameState.mainPlayerId,
+            action.attackerCardId,
+            action.attackedCardId,
+            action.isRangeAttack,
+            action.abilitiesParams
+        };
+
+        await HttpRequest.Post(Config.GAME_SERVER_URL + "moveAndAttackCard", values);
+    }
+
     public async static Task HealCard(HealCardAction action)
     {
         var values = new

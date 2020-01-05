@@ -86,6 +86,7 @@ public class ActionEmmiter
     public static readonly string CARD_PLAY = "ActionEmmiter:CARD_PLAY";
     public static readonly string CARD_MOVE = "ActionEmmiter:CARD_MOVE";
     public static readonly string CARD_ATTACK = "ActionEmmiter:CARD_ATTACK";
+    public static readonly string CARD_MOVE_AND_ATTACK = "ActionEmmiter:CARD_MOVE_AND_ATTACK";
     public static readonly string CARD_HEAL = "ActionEmmiter:CARD_HEAL";
     public static readonly string CARD_USE_MANA_ABILITY = "ActionEmmiter:CARD_USE_MANA_ABILITY";
     public static readonly string CARD_TO_AIM = "ActionEmmiter:CARD_TO_AIM";
@@ -95,7 +96,9 @@ public class ActionEmmiter
     public void EmmitCardAttackAction(UnitDisplay attackerUnit, UnitDisplay attackedUnit, Point pushPoint = null, UnitDisplay ricochetTarget = null)
     {
         bool isCardsAdjacent = this.boardCreator.CheckCardsAdjacency(attackerUnit, attackedUnit);
-        bool isRangeAttack = !isCardsAdjacent;
+        bool isAttackerHaveRange = attackerUnit.CardData.abilities.range != null;
+        bool isRangeAttack = isAttackerHaveRange && !isCardsAdjacent;
+        bool isMoveAndAttack = !isAttackerHaveRange && !isCardsAdjacent;
 
         AttackCardAction attackCardAction = new AttackCardAction
         {
@@ -109,8 +112,6 @@ public class ActionEmmiter
         if (pushPoint != null)
         {
             abilitiesParams.pushAt = pushPoint;
-
-            attackCardAction.abilitiesParams = abilitiesParams;
         }
 
         if (ricochetTarget != null)
@@ -120,7 +121,13 @@ public class ActionEmmiter
 
         attackCardAction.abilitiesParams = abilitiesParams;
 
-        Unibus.Dispatch<AttackCardAction>(ActionEmmiter.CARD_ATTACK, attackCardAction);
+        if (isMoveAndAttack)
+        {
+            Unibus.Dispatch<AttackCardAction>(ActionEmmiter.CARD_MOVE_AND_ATTACK, attackCardAction);
+        } else
+        {
+            Unibus.Dispatch<AttackCardAction>(ActionEmmiter.CARD_ATTACK, attackCardAction);
+        }
     }
 
     public void EmmitCardMoveAction(UnitDisplay movingUnit, Point point)

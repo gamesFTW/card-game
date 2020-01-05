@@ -12,6 +12,7 @@ import { calcDistance } from './Path/Path.helpers';
 import { findPath } from './Path/Path';
 import { Area } from '../area/Area';
 import { DomainError } from '../../infr/DomainError';
+import { ReachChecker } from './Path/ReachChecker';
 
 type BoardObject = Card|Area;
 
@@ -260,6 +261,61 @@ class Board extends Entity {
     return pointsInRadius;
   }
 
+  public findPointToMove (
+    movedCard: Card, targetCard: Card, areas: Area[], movedCardPlayerTableCards: Card[], targetCardPlayerTableCards: Card[]
+  ): Point {
+    const movedCardPosition = this.getPositionOfUnit(movedCard);
+    const targetCardPosition = this.getPositionOfUnit(targetCard);
+
+    const reachChecker = this.CreateReachChecker(areas, movedCardPlayerTableCards, targetCardPlayerTableCards);
+    const points = reachChecker.checkReach(movedCardPosition, movedCard.currentMovingPoints);
+
+    for (let point of points) {
+      if (this.checkPositionsAdjacency(point, targetCardPosition)) {
+        return point;
+      }
+    }
+
+    return null;
+  }
+
+  private CreateReachChecker (
+    areas: Area[],
+    playerCards: Card[],
+    opponentCards: Card[],
+    isCanWalkThroughArea: boolean = false,
+    isCanWalkThroughEnemy: boolean = false,
+    isCanWalkThroughAlly: boolean = true
+  ): ReachChecker {
+    const reachChecker = new ReachChecker(this.state.width, this.state.height);
+
+    for (let x in this.state.units) {
+      for (let y in this.state.units[x]) {
+        let areaId = this.state.areas[x][y];
+
+        let area = this.getEntityFromArray<Area>(areaId, areas);
+        if (area && !area.canUnitsWalkThoughtIt) {
+          reachChecker.addBlocker(new Point(Number(x), Number(y)), isCanWalkThroughArea);
+        } else {
+          let cardId = this.state.units[x][y];
+
+          let playerCard = this.getEntityFromArray<Card>(cardId, playerCards);
+          let opponentCard = this.getEntityFromArray<Card>(cardId, opponentCards);
+
+          if (playerCard) {
+            reachChecker.addBlocker(new Point(Number(x), Number(y)), isCanWalkThroughAlly);
+          }
+
+          if (opponentCard) {
+            reachChecker.addBlocker(new Point(Number(x), Number(y)), isCanWalkThroughEnemy);
+          }
+        }
+      }
+    }
+
+    return reachChecker;
+  }
+
   private getPositionOfBoardObject (boardObject: BoardObject, boardObjects: BoardObjects): Point|null {
     for (let x in boardObjects) {
       for (let y in boardObjects[x]) {
@@ -297,7 +353,7 @@ class Board extends Entity {
       for (let y in this.state.units[x]) {
         let areaId = this.state.areas[x][y];
 
-        let area = this.getAreaFromAreas(areaId, areas);
+        let area = this.getEntityFromArray<Area>(areaId, areas);
         if (area) {
           grid.setWalkableAt(Number(x), Number(y), area.canUnitsWalkThoughtIt);
         } else {
@@ -330,17 +386,17 @@ class Board extends Entity {
 
     const areaId = this.state.areas[x][y];
     if (areaId) {
-      const area = this.getAreaFromAreas(areaId, areas);
+      const area = this.getEntityFromArray<Area>(areaId, areas);
       if (!area.canUnitsWalkThoughtIt) {
         throw new DomainError(`Tile x: ${x}, y: ${y} is occupied`);
       }
     }
   }
 
-  private getAreaFromAreas (areaId: EntityId, areas: Area[]): Area {
-    for (let a of areas) {
-      if (a.id === areaId) {
-        return a;
+  private getEntityFromArray<T extends Entity> (id: EntityId, entities: T[]): T {
+    for (let e of entities) {
+      if (e.id === id) {
+        return e;
       }
     }
 

@@ -5,15 +5,32 @@ import { Entity, EntityId } from './Entity';
 import { CardChanges } from '../app/player/AttackCardUseCase';
 
 abstract class UseCase {
-  protected params: any;
   protected action: any;
+  protected params: any;
   protected entities: any;
   protected repository: Repository;
 
-  public async execute (params: any): Promise<void> {
+  constructor (params: any) {
     this.params = params;
+  }
 
-    this.repository = new Repository();
+  public static async executeSequentially (gameId: EntityId, useCases: UseCase[]): Promise<void> {
+    const repository = new Repository();
+    const actions = [];
+
+    for (let useCase of useCases) {
+      useCase.setRepository(repository);
+      await useCase.execute(false);
+      actions.push(useCase.getAction());
+    }
+
+    godOfSockets.sendActions(gameId, actions);
+  }
+
+  public async execute (sendActions: boolean = true): Promise<void> {
+    if (!this.repository) {
+      this.repository = new Repository();
+    }
 
     await this.readEntities();
     this.addEventListeners();
@@ -23,7 +40,17 @@ abstract class UseCase {
 
     this.unsubscribeAllEventListeners();
 
-    godOfSockets.sendActions(this.entities.game.id, [this.action]);
+    if (sendActions) {
+      godOfSockets.sendActions(this.entities.game.id, [this.action]);
+    }
+  }
+
+  public getAction (): any {
+    return this.action;
+  }
+
+  public setRepository (repository: Repository): void {
+    this.repository = repository;
   }
 
   protected abstract async readEntities (): Promise<void>;

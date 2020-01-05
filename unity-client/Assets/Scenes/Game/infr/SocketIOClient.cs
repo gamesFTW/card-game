@@ -90,21 +90,25 @@ public class SocketIOClient : MonoBehaviour
 
     protected void OnEvent(SocketIO.SocketIOEvent e)
     {
-        //Debug.Log("Event");
         Debug.Log(e);
-        //Debug.Log(e.data["clientEvents"].ToString());
         var serverMessage = e.data.ToString();
 
         SocketData<SocketAction> socketData = JsonConvert.DeserializeObject<SocketData<SocketAction>>(serverMessage);
 
-        for (int i = 0; i < socketData.actions.Length; i++)
+        if (socketData.actions.Length == 1)
         {
             Debug.Log(socketData.actions);
-            var action = socketData.actions[i];
-            receiverFromServer.ProcessAction(action.type, i, serverMessage);
-        }
+            var action = socketData.actions[0];
+            receiverFromServer.ProcessAction(action.type, serverMessage);
+        } else
+        {
+            var actions = new List<string>();
+            for (int i = 0; i < socketData.actions.Length; i++)
+            {
+                actions.Add(socketData.actions[i].type);
+            }
 
-        //(e.data as JObject).ToObject<StatusPong>();
-        //receiverFromServer.ProcessAction(e.data["clientEvents"].ToString());
+            receiverFromServer.ProcessActions(actions, serverMessage);
+        }
     }
 }

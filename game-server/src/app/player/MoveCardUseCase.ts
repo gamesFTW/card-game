@@ -15,7 +15,8 @@ interface MoveCardParams {
   gameId: EntityId;
   playerId: EntityId;
   cardId: EntityId;
-  position: Point;
+  position?: Point;
+  targetCardId?: EntityId;
 }
 
 interface MoveCardAction {
@@ -36,9 +37,12 @@ class MoveCardUseCase extends UseCase {
     game?: Game;
     player?: Player,
     opponent?: Player,
-    card?: Card
-    board?: Board
-    areas?: Area[]
+    movedCard?: Card,
+    targetCard?: Card,
+    board?: Board,
+    areas?: Area[],
+    movedCardPlayerTableCards?: Card[],
+    targetCardPlayerTableCards?: Card[]
   } = {};
 
   protected params: MoveCardParams;
@@ -48,31 +52,44 @@ class MoveCardUseCase extends UseCase {
     this.entities.player = await this.repository.get<Player>(this.params.playerId, Player);
     let opponentId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.playerId);
     this.entities.opponent = await this.repository.get<Player>(opponentId, Player);
-    this.entities.card = await this.repository.get<Card>(this.params.cardId, Card);
+    this.entities.movedCard = await this.repository.get<Card>(this.params.cardId, Card);
     this.entities.board = await this.repository.get<Board>(this.entities.game.boardId, Board);
     this.entities.areas = await this.repository.getMany<Area>(this.entities.board.areas, Area);
+
+    if (this.params.targetCardId) {
+      this.entities.targetCard = await this.repository.get<Card>(this.params.targetCardId, Card);
+      this.entities.movedCardPlayerTableCards = await this.repository.getMany<Card>(this.entities.player.table, Card);
+      this.entities.targetCardPlayerTableCards = await this.repository.getMany<Card>(this.entities.opponent.table, Card);
+    }
   }
 
   protected addEventListeners (): void {
-    this.entities.card.addEventListener(CardEventType.CARD_MOVED, this.onCardMoved);
+    this.entities.movedCard.addEventListener(CardEventType.CARD_MOVED, this.onCardMoved);
   }
 
   protected runBusinessLogic (): void {
-    this.entities.player.moveCard(
-      this.entities.card, this.params.position, this.entities.board, this.entities.opponent, this.entities.areas
-    );
+    if (this.params.position) {
+      this.entities.player.moveCard(
+        this.entities.movedCard, this.params.position, this.entities.board, this.entities.opponent, this.entities.areas
+      );
+    } else {
+      this.entities.player.moveCardToCard(
+        this.entities.movedCard, this.entities.targetCard, this.entities.board, this.entities.opponent,
+        this.entities.areas, this.entities.movedCardPlayerTableCards, this.entities.targetCardPlayerTableCards
+      );
+    }
   }
 
   protected addClientActions (): void {
-    this.action.cardId = this.entities.card.id;
+    this.action.cardId = this.entities.movedCard.id;
     this.action.playerId = this.entities.player.id;
-    this.action.position = this.params.position;
   }
 
   @boundMethod
   private onCardMoved (event: Event<CardData, CardMovedExtra>): void {
     this.action.currentMovingPoints = event.data.currentMovingPoints;
     this.action.path = event.extra.path;
+    this.action.position = event.extra.path[event.extra.path.length - 1];
   }
 }
 

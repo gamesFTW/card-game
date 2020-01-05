@@ -40,8 +40,8 @@ gameController.post('/endTurn', async (ctx) => {
   // TODO: playerId нужно доставать из сессии
   let endingTurnPlayerId = ctx.request.body.playerId as EntityId;
 
-  let endTurnUseCase = new EndTurnUseCase();
-  await endTurnUseCase.execute({gameId, endingTurnPlayerId});
+  let endTurnUseCase = new EndTurnUseCase({gameId, endingTurnPlayerId});
+  await endTurnUseCase.execute();
 
   ctx.body = `Ok`;
 });

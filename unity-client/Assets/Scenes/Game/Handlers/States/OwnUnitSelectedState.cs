@@ -170,8 +170,9 @@ public class OwnUnitSelectedState : SelectingState
             this.boardCreator.ShowPathReach(this.selectedUnit);
 
             var unitsAdjacent = this.boardCreator.CheckCardsAdjacency(unit, this.selectedUnit);
+            var selectedUnitCanGoAndAttack = this.boardCreator.CanUnitGoToUnit(this.selectedUnit, unit);
 
-            if (unitsAdjacent)
+            if (unitsAdjacent || selectedUnitCanGoAndAttack)
             {
                 unit.CardDisplay.OverHighlightOn();
                 CursorController.SetAttack();

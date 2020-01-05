@@ -153,6 +153,19 @@ class Player extends Entity {
     card.move(movePoints, path);
   }
 
+  public moveCardToCard (
+    movedCard: Card, targetCard: Card, board: Board, opponent: Player, areas: Area[],
+    movedCardPlayerTableCards: Card[], targetCardPlayerTableCards: Card[]
+  ): void {
+    const point = board.findPointToMove(movedCard, targetCard, areas, movedCardPlayerTableCards, targetCardPlayerTableCards);
+
+    if (point === null) {
+      throw new DomainError(`Card ${movedCard.id} cant reach card ${targetCard.id}`);
+    }
+
+    this.moveCard(movedCard, point, board, opponent, areas);
+  }
+
   public healCard (healerCard: Card, healedCard: Card, board: Board, opponent: Player): void {
     this.checkIfItHisTurn();
 

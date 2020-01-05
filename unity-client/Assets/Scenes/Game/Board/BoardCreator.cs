@@ -80,7 +80,7 @@ public class BoardCreator : MonoBehaviour
         {
             waypoints.Add(PointerToIcometric(point, tileWidth, tileHeight));
         }
-      
+
         unitDisplay.transform.DOLocalPath(waypoints.ToArray(), 0.3f * waypoints.Count);
 
         this.UpdatePositions(unitDisplay, position);
@@ -176,6 +176,25 @@ public class BoardCreator : MonoBehaviour
         this.HighlightPathInTilesByPoints(points);
 
         return points;
+    }
+
+    public bool CanUnitGoToUnit(UnitDisplay firstUnit, UnitDisplay secondUnit)
+    {
+        Point firstUnitPosition = this.GetUnitPosition(firstUnit);
+        Point secondUnitPosition = this.GetUnitPosition(secondUnit);
+
+        var reachChecker = this.CreateReachChecker();
+        var points = reachChecker.CheckReach(firstUnitPosition, firstUnit.CardData.currentMovingPoints);
+
+        foreach (var point in points)
+        {
+            if (this.CheckPositionsAdjacency(point, secondUnitPosition))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public List<Point> ShowPlacesToCastCreatures()
@@ -701,7 +720,7 @@ public class BoardCreator : MonoBehaviour
         return unit.GetComponent<UnitDisplay>();
     }
 
-    private bool checkPositionsAdjacency(Point firstPosition, Point secondPosition) {
+    private bool CheckPositionsAdjacency(Point firstPosition, Point secondPosition) {
         var xDistance = Math.Abs(firstPosition.x - secondPosition.x);
         var yDistance = Math.Abs(firstPosition.y - secondPosition.y);
 
@@ -715,7 +734,6 @@ public class BoardCreator : MonoBehaviour
     private void UpdatePositions(UnitDisplay unitDisplay, Point position)
     {
         Point oldPosition = GetUnitPosition(unitDisplay);
-
         Units[oldPosition.x, oldPosition.y] = null;
         Units[position.x, position.y] = unitDisplay.gameObject as GameObject;
     }

@@ -29,6 +29,7 @@ class Card extends Entity {
   get alive (): boolean { return this.state.alive; }
   get tapped (): boolean { return this.state.tapped; }
   get manaCost (): number { return this.state.manaCost; }
+  get currentMovingPoints (): number { return this.state.currentMovingPoints; }
 
   // Deprecared. Надо выпилить.
   get armor (): number {

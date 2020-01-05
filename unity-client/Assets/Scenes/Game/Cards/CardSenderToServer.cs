@@ -48,6 +48,7 @@ public class CardSenderToServer : MonoBehaviour
         Unibus.Subscribe<PlayCardAction> (ActionEmmiter.CARD_PLAY, OnCardPlay);
         Unibus.Subscribe<MoveCardAction> (ActionEmmiter.CARD_MOVE, OnCardMove);
         Unibus.Subscribe<AttackCardAction> (ActionEmmiter.CARD_ATTACK, OnCardAttack);
+        Unibus.Subscribe<AttackCardAction> (ActionEmmiter.CARD_MOVE_AND_ATTACK, OnCardMoveAndAttack);
         Unibus.Subscribe<HealCardAction> (ActionEmmiter.CARD_HEAL, OnCardHeal);
         Unibus.Subscribe<SimpleAbilityCardAction> (ActionEmmiter.CARD_USE_MANA_ABILITY, OnUseManaAbility);
         Unibus.Subscribe<SimpleAbilityCardAction> (ActionEmmiter.CARD_TO_AIM, OnToAim);
@@ -76,6 +77,11 @@ public class CardSenderToServer : MonoBehaviour
     async void OnCardAttack(AttackCardAction action)
     {
         await ServerApi.AttackCard(action);
+    }
+
+    async void OnCardMoveAndAttack(AttackCardAction action)
+    {
+        await ServerApi.MoveAndAttackCard(action);
     }
 
     async void OnCardHeal(HealCardAction action)

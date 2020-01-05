@@ -2,6 +2,8 @@
 using System;
 using Newtonsoft.Json;
 using UnibusEvent;
+using System.Collections.Generic;
+using System.Reflection;
 
 [Serializable]
 public class Point
@@ -133,125 +135,65 @@ public class ReceiverFromServer : MonoBehaviour
         this.uiManager = this.GetComponent<UIManager>();
     }
 
-    public void ProcessAction(string type, int index, string message)
+    public void ProcessAction(string type, string message)
     {
         if (type == "EndTurnAction")
         {
             SocketData<ServerActions.EndTurnAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.EndTurnAction>>(message);
-            this.OnEndTurnAction(data.actions[index]);
+            this.cardManger.OnEndTurn(data.actions[0]);
         }
 
         if (type == "PlayCardAsManaAction")
         {
             SocketData<ServerActions.PlayCardAsManaAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.PlayCardAsManaAction>>(message);
-            this.OnPlayCardAsManaAction(data.actions[index]);
+            this.cardManger.OnPlayCardAsMana(data.actions[0]);
         }
 
         if (type == "MoveCardAction")
         {
             SocketData<ServerActions.MoveCardAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.MoveCardAction>>(message);
-            this.OnMoveCardAction(data.actions[index]);
+            this.cardManger.OnMoveCard(data.actions[0]);
         }
 
         if (type == "PlayCardAction")
         {
             SocketData<ServerActions.PlayCardAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.PlayCardAction>>(message);
-            this.OnPlayCardAction(data.actions[index]);
+            this.cardManger.OnPlayCard(data.actions[0]);
         }
 
         if (type == "CardAttackedAction")
         {
             SocketData<ServerActions.CardAttackedAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardAttackedAction>>(message);
-            this.OnCardAttackedAction(data.actions[index]);
+            this.cardManger.OnCardAttacked(data.actions[0]);
         }
 
         if (type == "CardHealedAction")
         {
             SocketData<ServerActions.CardHealedAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardHealedAction>>(message);
-            this.OnCardHealedAction(data.actions[index]);
+            this.cardManger.OnCardHealed(data.actions[0]);
         }
 
         if (type == "CardUsedManaAbilityAction")
         {
             SocketData<ServerActions.CardUsedManaAbilityAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.CardUsedManaAbilityAction>>(message);
-            this.OnCardUsedManaAbilityAction(data.actions[index]);
+            this.cardManger.OnCardUsedManaAbility(data.actions[0]);
         }
 
         if (type == "CardAimedAction")
         {
             SocketData<ServerActions.BaseAction> data = JsonConvert.DeserializeObject<SocketData<ServerActions.BaseAction>>(message);
-            this.OnCardAimedAction(data.actions[index]);
+            this.cardManger.OnCardAimed(data.actions[0]);
         }
     }
 
-    public void OnEndTurnAction(ServerActions.EndTurnAction action)
+    public void ProcessActions(List<string> actionsTypes, string message)
     {
-        foreach (ServerActions.CardChanges card in action.cardChanges)
+        if (actionsTypes[0] == "MoveCardAction" && actionsTypes[1] == "CardAttackedAction")
         {
-            cardManger.ApplyChangesToCard(card);
-        }
+            ServerActions.MoveCardAction moveCardAction = JsonConvert.DeserializeObject<SocketData<ServerActions.MoveCardAction>>(message).actions[0];
+            ServerActions.CardAttackedAction cardAttackedAction = JsonConvert.DeserializeObject<SocketData<ServerActions.CardAttackedAction>>(message).actions[1];
 
-        cardManger.DrawCards(action.endedPlayerId, action.cardsDrawn);
-
-        GameState.playerIdWhoMakesMove = action.startedPlayerId;
-
-        if (action.gameEnded)
-        {
-            GameState.gameData.game.lostPlayerId = action.lostPlayerId;
-            GameState.gameData.game.wonPlayerId = action.wonPlayerId;
-            this.uiManager.ShowWinStatus();
-        } else
-        {
-            this.uiManager.ShowTurn();
-        }
-
-        Unibus.Dispatch<CardDisplay>(CardManager.TURN_ENDED, null);
-    }
-
-    public void OnPlayCardAction(ServerActions.PlayCardAction action)
-    {
-        cardManger.PlayCard(action.playerId, action.cardId, action.position, action.tapped, action.newHp);
-        cardManger.TapCards(action.playerId, action.manaCardsTapped);
-    }
-
-    public void OnPlayCardAsManaAction(ServerActions.PlayCardAsManaAction action)
-    {
-        cardManger.PlayCardAsMana(action.playerId, action.cardId, action.tapped);
-    }
-
-    public void OnMoveCardAction(ServerActions.MoveCardAction action)
-    {
-        cardManger.MoveCard(action.playerId, action.cardId, action.position, action.currentMovingPoints, action.path);
-    }
-
-    public void OnCardAttackedAction(ServerActions.CardAttackedAction action)
-    {
-        foreach (ServerActions.CardChanges card in action.cardChanges)
-        {
-            var isAttacker = card.id == action.attackerCardId;
-            cardManger.CardWasInBattle(card, isAttacker);
-        }
-    }
-
-    public void OnCardHealedAction(ServerActions.CardHealedAction action)
-    {
-        cardManger.CardAfterHealing(action.healerCard);
-        var card = cardManger.CardAfterHealing(action.healedCard);
-
-        Unibus.Dispatch<CardDisplay>(CardManager.CARD_HEALED, card);
-    }
-
-    public void OnCardUsedManaAbilityAction(ServerActions.CardUsedManaAbilityAction action)
-    {
-        cardManger.TapCards(action.playerId, new string[] { action.tappedCardId });
-        cardManger.UntapCards(action.playerId, action.cardsUntapped);
-    }
-
-    public void OnCardAimedAction(ServerActions.BaseAction action)
-    {
-        foreach (ServerActions.CardChanges card in action.cardChanges)
-        {
-            cardManger.ApplyChangesToCard(card);
+            this.cardManger.OnMoveAndAttack(moveCardAction, cardAttackedAction);
         }
     }
 }
