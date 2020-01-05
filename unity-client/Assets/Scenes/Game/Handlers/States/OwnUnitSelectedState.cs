@@ -1,4 +1,4 @@
-using UnibusEvent;
+﻿using UnibusEvent;
 using UnityEngine;
 
 public class OwnUnitSelectedState : SelectingState
@@ -171,30 +171,34 @@ public class OwnUnitSelectedState : SelectingState
 
             var unitsAdjacent = this.boardCreator.CheckCardsAdjacency(unit, this.selectedUnit);
             var selectedUnitCanGoAndAttack = this.boardCreator.CanUnitGoToUnit(this.selectedUnit, unit);
+            var selectedUnitRange = this.selectedUnit.CardData.abilities.range != null;
 
-            if (unitsAdjacent || selectedUnitCanGoAndAttack)
+            if (unitsAdjacent)
             {
                 unit.CardDisplay.OverHighlightOn();
                 CursorController.SetAttack();
-            } else
+            }
+            else if (selectedUnitRange)
             {
-                var selectedUnitRange = this.selectedUnit.CardData.abilities.range != null;
-                if (selectedUnitRange)
-                {
-                    var fromPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
-                    var positions = this.boardCreator.GetPositionsForRangeAttack(this.selectedUnit, fromPosition);
+                var fromPosition = this.boardCreator.GetUnitPosition(this.selectedUnit);
+                var positions = this.boardCreator.GetPositionsForRangeAttack(this.selectedUnit, fromPosition);
 
-                    if (!this.selectedUnit.CardData.abilities.range.blockedInBeginningOfTurn && this.boardCreator.CheckUnitInPoints(unit, positions))
-                    {
-                        CursorController.SetRangeAttack();
-                    } else
-                    {
-                        CursorController.SetRangeAttackForbidden();
-                    }
+                if (!this.selectedUnit.CardData.abilities.range.blockedInBeginningOfTurn && this.boardCreator.CheckUnitInPoints(unit, positions))
+                {
+                    CursorController.SetRangeAttack();
                 } else
                 {
-                    CursorController.SetAttackForbidden();
+                    CursorController.SetRangeAttackForbidden();
                 }
+            }
+            else if (selectedUnitCanGoAndAttack)
+            {
+                unit.CardDisplay.OverHighlightOn();
+                CursorController.SetAttack();
+            }
+            else
+            {
+                CursorController.SetAttackForbidden();
             }
         }
         else
