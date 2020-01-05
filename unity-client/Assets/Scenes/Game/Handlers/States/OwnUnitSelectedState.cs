@@ -1,4 +1,4 @@
-﻿using UnibusEvent;
+using UnibusEvent;
 using UnityEngine;
 
 public class OwnUnitSelectedState : SelectingState
