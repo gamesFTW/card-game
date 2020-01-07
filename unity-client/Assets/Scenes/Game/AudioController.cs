@@ -48,9 +48,9 @@ public class AudioController : MonoBehaviour
     {
         using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(Config.LOBBY_SERVER_URL + url, AudioType.WAV))
         {
-            yield return www.Send();
+            yield return www.SendWebRequest();
 
-            if (www.isError)
+            if (www.isNetworkError)
             {
                 Debug.Log(www.error);
             }
