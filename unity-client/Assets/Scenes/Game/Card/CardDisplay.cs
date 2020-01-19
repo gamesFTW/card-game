@@ -304,6 +304,12 @@ public class CardDisplay : MonoBehaviour
         UpdateZIndex();
     }
 
+    public void Play()
+    {
+        this.FaceUp();
+        this.UnitDisplay.Play();
+    }
+
     public void SwitchToDefaultZoomView()
     {
         if (viewMode != ViewMode.defaultView)

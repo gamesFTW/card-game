@@ -88,6 +88,11 @@ public class UnitDisplay : MonoBehaviour
         }
     }
 
+    public void Play()
+    {
+        Utils.Instance.PlayEffect("FireExplosionEffects/Prefabs/EnergyExplosion", this.transform, 2000);
+    }
+
     public void Tap()
     {
         this.spriteRenderer.material.color = new Color(0.65f, 0.65f, 0.65f);
@@ -264,16 +269,7 @@ public class UnitDisplay : MonoBehaviour
 
     public void ToBleed()
     {
-        GameObject goopSprayEffectPrefab = Resources.Load<GameObject>("Goop Effects/Prefabs/GoopSprayEffect");
-        GameObject goopSprayEffect = Instantiate<GameObject>(goopSprayEffectPrefab, this.transform);
-        goopSprayEffect.transform.localPosition += new Vector3(0, 0.4f, 0);
-        goopSprayEffect.transform.SetParent(this.transform);
-
-        Utils.Instance.SetTimeout(1000, () =>
-            {
-                Destroy(goopSprayEffect);
-            }
-        );
+        Utils.Instance.PlayEffect("GoopEffects/Prefabs/GoopSprayEffect", this.transform, 1000);
     }
 
     public void ToKill()

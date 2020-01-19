@@ -149,7 +149,7 @@ public class CardManager : MonoBehaviour
             cardDisplay.Tap();
         }
 
-        cardDisplay.FaceUp();
+        cardDisplay.Play();
 
         Unibus.Dispatch(CardManager.CARD_PLAYED, cardDisplay);
     }
