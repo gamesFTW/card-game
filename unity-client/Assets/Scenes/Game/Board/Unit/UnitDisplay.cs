@@ -262,6 +262,30 @@ public class UnitDisplay : MonoBehaviour
         target.SetActive(false);
     }
 
+    public void ToBleed()
+    {
+        GameObject goopSprayEffectPrefab = Resources.Load<GameObject>("Goop Effects/Prefabs/GoopSprayEffect");
+        GameObject goopSprayEffect = Instantiate<GameObject>(goopSprayEffectPrefab, this.transform);
+        goopSprayEffect.transform.localPosition += new Vector3(0, 0.4f, 0);
+        goopSprayEffect.transform.SetParent(this.transform);
+
+        Utils.Instance.SetTimeout(1000, () =>
+            {
+                Destroy(goopSprayEffect);
+            }
+        );
+    }
+
+    public void ToKill()
+    {
+        Destroy(this.transform.Find("Unit").gameObject);
+
+        Utils.Instance.SetTimeout(1000, () =>
+        {
+            Destroy(this.gameObject);
+        });
+    }
+
     private void RedrawAbilityStatus(string path)
     {
         GameObject abilityStatusPrefab = Resources.Load<GameObject>("AbilityStatus");

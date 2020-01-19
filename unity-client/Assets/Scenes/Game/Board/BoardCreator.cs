@@ -102,7 +102,7 @@ public class BoardCreator : MonoBehaviour
         Point position = GetUnitPosition(unitDisplay);
         Units[position.x, position.y] = null;
 
-        Destroy(unitDisplay.gameObject);
+        unitDisplay.ToKill();
     }
 
     public TileDisplay GetTileByUnit(UnitDisplay unitDisplay)

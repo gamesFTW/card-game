@@ -83,6 +83,7 @@ public class CardDisplay : MonoBehaviour
                 else
                 {
                     color = UnityEngine.Color.red;
+                    this.UnitDisplay.ToBleed();
                 }
 
                 this.UnitDisplay.ShowToolTip(System.Math.Abs(hpDifference).ToString(), color);
