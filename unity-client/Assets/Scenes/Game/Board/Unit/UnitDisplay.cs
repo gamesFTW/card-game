@@ -272,6 +272,11 @@ public class UnitDisplay : MonoBehaviour
         Utils.Instance.PlayEffect("GoopEffects/Prefabs/GoopSprayEffect", this.transform, 1000);
     }
 
+    public void ToHeal()
+    {
+        Utils.Instance.PlayEffect("HealEffects/Prefabs/HealEffect", this.transform, 1000);
+    }
+
     public void ToKill()
     {
         Destroy(this.transform.Find("Unit").gameObject);

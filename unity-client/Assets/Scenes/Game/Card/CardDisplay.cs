@@ -79,6 +79,7 @@ public class CardDisplay : MonoBehaviour
                 else if (hpDifference > 0)
                 {
                     color = UnityEngine.Color.green;
+                    this.UnitDisplay.ToHeal();
                 }
                 else
                 {
