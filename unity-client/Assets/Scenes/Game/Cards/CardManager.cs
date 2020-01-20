@@ -106,9 +106,15 @@ public class CardManager : MonoBehaviour
     public void OnCardHealed(ServerActions.CardHealedAction action)
     {
         this.CardAfterHealing(action.healerCard);
-        var card = this.CardAfterHealing(action.healedCard);
 
-        Unibus.Dispatch<CardDisplay>(CardManager.CARD_HEALED, card);
+
+        var healerUnit = cardIdToCards[action.healerCard.id].GetComponent<CardDisplay>().UnitDisplay;
+        var healedUnit = cardIdToCards[action.healedCard.id].GetComponent<CardDisplay>().UnitDisplay;
+
+        Utils.Instance.LaunchMissile("HealEffects/Prefabs/HealEffect2", this.boardCreator.transform, healerUnit.transform, healedUnit.transform, 500, () => {
+            var card = this.CardAfterHealing(action.healedCard);
+            Unibus.Dispatch<CardDisplay>(CardManager.CARD_HEALED, card);
+        });
     }
 
     public void OnCardUsedManaAbility(ServerActions.CardUsedManaAbilityAction action)

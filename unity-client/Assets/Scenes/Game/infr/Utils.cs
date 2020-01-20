@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Utils : MonoBehaviour
 {
@@ -17,9 +18,9 @@ public class Utils : MonoBehaviour
         StartCoroutine(this.Wait(duration, action));
     }
 
-    public void PlayEffect(string path, Transform parent, int duration)
+    public void PlayEffect(string prefabPath, Transform parent, int duration)
     {
-        GameObject prefab = Resources.Load<GameObject>(path);
+        GameObject prefab = Resources.Load<GameObject>(prefabPath);
         GameObject effect = Instantiate<GameObject>(prefab, parent);
         effect.transform.localPosition += new Vector3(0, 0.4f, 0);
         effect.transform.SetParent(parent);
@@ -27,6 +28,23 @@ public class Utils : MonoBehaviour
         Utils.Instance.SetTimeout(duration, () =>
             {
                 Destroy(effect);
+            }
+        );
+    }
+
+    public void LaunchMissile(string prefabPath, Transform parent, Transform from, Transform to, int duration, Action callback)
+    {
+        GameObject prefab = Resources.Load<GameObject>(prefabPath);
+        GameObject effect = Instantiate<GameObject>(prefab, parent);
+        var offset = new Vector3(0, 0.4f, 0);
+        effect.transform.position = from.position + offset;
+        effect.transform.SetParent(parent);
+        effect.transform.DOMove(to.position + offset, (float)duration / 1000f);
+
+        Utils.Instance.SetTimeout(duration, () =>
+            {
+                Destroy(effect);
+                callback();
             }
         );
     }
