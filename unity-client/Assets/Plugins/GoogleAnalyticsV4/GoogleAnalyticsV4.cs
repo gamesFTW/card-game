@@ -299,6 +299,14 @@ public void DispatchHits() {
 #endif
   }
 
+  public void LogEvent(string eventCategory, string eventAction) {
+    EventHitBuilder builder = new EventHitBuilder()
+        .SetEventCategory(eventCategory)
+        .SetEventAction(eventAction);
+
+    LogEvent(builder);
+  }
+
   public void LogEvent(string eventCategory, string eventAction,
       string eventLabel, long value) {
     EventHitBuilder builder = new EventHitBuilder()

@@ -59,6 +59,15 @@ public class Main : MonoBehaviour
     {
         googleAnalytics.LogScreen("Game");
 
+        // TODO Добавить GameType и LobbyDeckId
+        googleAnalytics.LogEvent(
+            new EventHitBuilder()
+            .SetEventCategory(AnalyticsEventsCategory.Game)
+            .SetEventAction(AnalyticsEvents.EnteredTheGame)
+            .SetCustomDimension(AnalyticsDemention.GameId, GameState.gameId)
+            .SetCustomDimension(AnalyticsDemention.PlayerId, GameState.mainPlayerId)
+        );
+
         var gameData = await LoadGame();
 
         CardCreator cardCreator = this.GetComponent<CardCreator>();

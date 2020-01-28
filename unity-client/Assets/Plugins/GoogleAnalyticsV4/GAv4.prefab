@@ -51,7 +51,7 @@ MonoBehaviour:
   bundleVersion: 
   dispatchPeriod: 5
   sampleFrequency: 100
-  logLevel: 0
+  logLevel: 3
   anonymizeIP: 0
   UncaughtExceptionReporting: 1
   sendLaunchEvent: 0

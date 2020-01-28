@@ -143,10 +143,13 @@ public class GoogleAnalyticsMPV3 {
       Debug.Log(newUrl);
     }
 
-    var httpClient = new HttpClient();
-    var response = await httpClient.GetAsync(String.Format(newUrl));
-    response.EnsureSuccessStatusCode();
+    if (!Application.isEditor)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.GetAsync(String.Format(newUrl));
+        response.EnsureSuccessStatusCode();
     }
+  }
 
   /*
     Make request using yield and coroutine to prevent lock up waiting on request to return.

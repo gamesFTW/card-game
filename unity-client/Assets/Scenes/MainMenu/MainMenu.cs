@@ -9,10 +9,18 @@ namespace Lobby
     {
         public GoogleAnalyticsV4 googleAnalytics;
 
+        public static bool appRunned = false;
+
         void Start()
         {
             googleAnalytics.StartSession();
             googleAnalytics.LogScreen("Main menu");
+
+            if (!MainMenu.appRunned)
+            {
+                googleAnalytics.LogEvent(AnalyticsEventsCategory.App, AnalyticsEvents.AppRunned);
+                MainMenu.appRunned = true;
+            }
 
             var tutorialButton = this.transform.Find("Container/TutorialButton").GetComponent<Button>();
             var lobbyButton = this.transform.Find("Container/LobbyButton").GetComponent<Button>();
