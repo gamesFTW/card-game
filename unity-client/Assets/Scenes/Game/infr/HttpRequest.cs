@@ -13,6 +13,17 @@ public class HttpRequest
 {
     public static string HTTP_ERROR = "HTTP_ERROR";
 
+    public async static Task Get(string url)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.GetAsync(String.Format(url));
+        response.EnsureSuccessStatusCode();
+
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        Debug.Log(responseContent);
+    }
+
     public async static Task<T> Get<T>(string url)
     {
         var httpClient = new HttpClient();

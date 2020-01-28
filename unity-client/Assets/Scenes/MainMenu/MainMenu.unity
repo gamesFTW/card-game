@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641252, b: 0.574817, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -807,6 +807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa41db0a122fa7b4d86ccb13fc2dedc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  googleAnalytics: {fileID: 1662659178}
 --- !u!1001 &1621956002
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -947,6 +948,100 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1621956002}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1662659177
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 197732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_Name
+      value: GAv4
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: androidTrackingCode
+      value: UA-157014506-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: IOSTrackingCode
+      value: UA-157014506-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: otherTrackingCode
+      value: UA-157014506-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: logLevel
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: UncaughtExceptionReporting
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+--- !u!114 &1662659178 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1662659177}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa336ff3365034234845848b54bfee17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1753854116
 GameObject:
   m_ObjectHideFlags: 0

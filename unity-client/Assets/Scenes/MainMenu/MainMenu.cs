@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace Lobby
 {
     public class MainMenu : MonoBehaviour
     {
+        public GoogleAnalyticsV4 googleAnalytics;
+
         void Start()
         {
             var tutorialButton = this.transform.Find("Container/TutorialButton").GetComponent<Button>();
@@ -19,6 +22,9 @@ namespace Lobby
             lobbyButton.onClick.AddListener(this.OnLobbyButtonClick);
             singlePlayerButton.onClick.AddListener(this.OnSinglePlayerButtonClick);
             multiPlayerButton.onClick.AddListener(this.OnMultiPlayerButtonClick);
+
+            googleAnalytics.StartSession();
+            googleAnalytics.LogScreen("Main menu");
         }
 
         private async void OnTutorialButtonClick()
