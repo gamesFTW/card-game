@@ -11,6 +11,9 @@ namespace Lobby
 
         void Start()
         {
+            googleAnalytics.StartSession();
+            googleAnalytics.LogScreen("Main menu");
+
             var tutorialButton = this.transform.Find("Container/TutorialButton").GetComponent<Button>();
             var lobbyButton = this.transform.Find("Container/LobbyButton").GetComponent<Button>();
             var singlePlayerButton = this.transform.Find("Container/SinglePlayerButton").GetComponent<Button>();
@@ -22,9 +25,6 @@ namespace Lobby
             lobbyButton.onClick.AddListener(this.OnLobbyButtonClick);
             singlePlayerButton.onClick.AddListener(this.OnSinglePlayerButtonClick);
             multiPlayerButton.onClick.AddListener(this.OnMultiPlayerButtonClick);
-
-            googleAnalytics.StartSession();
-            googleAnalytics.LogScreen("Main menu");
         }
 
         private async void OnTutorialButtonClick()

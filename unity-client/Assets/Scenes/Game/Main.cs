@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Main : MonoBehaviour
 {
+    public GoogleAnalyticsV4 googleAnalytics;
+
     private AudioController audioController;
     private UIManager uiManager;
 
@@ -55,6 +57,8 @@ public class Main : MonoBehaviour
 
     async Task Start()
     {
+        googleAnalytics.LogScreen("Game");
+
         var gameData = await LoadGame();
 
         CardCreator cardCreator = this.GetComponent<CardCreator>();

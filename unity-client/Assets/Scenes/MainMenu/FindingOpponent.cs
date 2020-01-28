@@ -7,10 +7,14 @@ namespace Lobby
 {
     public class FindingOpponent : MonoBehaviour
     {
+        public GoogleAnalyticsV4 googleAnalytics;
+
         public static string deckId;
 
         async void Start()
         {
+            googleAnalytics.LogScreen("Finding opponent");
+
             var backButton = this.transform.Find("BackButton").GetComponent<Button>();
 
             backButton.onClick.AddListener(this.OnBackButtonClick);

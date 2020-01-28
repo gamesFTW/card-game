@@ -6,10 +6,14 @@ namespace Lobby
 {
     public class ChooseDeck : MonoBehaviour
     {
+        public GoogleAnalyticsV4 googleAnalytics;
+
         public static bool isSinglePlayer = false;
 
         async void Start()
         {
+            googleAnalytics.LogScreen("Choose deck");
+
             DecksData decksData = await LobbyServerApi.GetPlayerDecks<DecksData>();
 
             foreach (DeckData deck in decksData.Decks)

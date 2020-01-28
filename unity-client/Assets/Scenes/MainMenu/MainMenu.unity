@@ -1003,31 +1003,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
-        type: 3}
-      propertyPath: androidTrackingCode
-      value: UA-157014506-1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
-        type: 3}
-      propertyPath: IOSTrackingCode
-      value: UA-157014506-1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
-        type: 3}
-      propertyPath: otherTrackingCode
-      value: UA-157014506-1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
-        type: 3}
-      propertyPath: logLevel
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
-        type: 3}
-      propertyPath: UncaughtExceptionReporting
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
 --- !u!114 &1662659178 stripped

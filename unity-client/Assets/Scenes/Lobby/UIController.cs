@@ -8,6 +8,8 @@ namespace Lobby
 {
     public class UIController : MonoBehaviour
     {
+        public GoogleAnalyticsV4 googleAnalytics;
+
         public Button createGameButton;
         public Dropdown player1DeckDropdown;
         public Dropdown player2DeckDropdown;
@@ -18,6 +20,8 @@ namespace Lobby
 
         void Start()
         {
+            googleAnalytics.LogScreen("Lobby");
+
             GameState.mainPlayerId = "";
             GameState.enemyOfMainPlayerId = "";
 
