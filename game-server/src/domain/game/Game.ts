@@ -25,6 +25,14 @@ class Game extends Entity {
   get player2Id (): EntityId { return this.state.player2Id; }
   get boardId (): EntityId { return this.state.boardId; }
   get currentTurn (): number { return this.state.currentTurn; }
+  get currentPlayersTurn (): EntityId { return this.state.currentPlayersTurn; }
+  get currentPlayersOpponentTurn (): EntityId {
+    if (this.state.player1Id === this.state.currentPlayersTurn) {
+      return this.state.player2Id;
+    } else if (this.state.player2Id === this.state.currentPlayersTurn) {
+      return this.state.player1Id;
+    }
+  }
 
   constructor (events: Array<Event<GameData>> = []) {
     super();

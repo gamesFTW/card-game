@@ -11,6 +11,10 @@ import { DomainError } from '../../infr/DomainError';
 import { BaseAttackService } from './BaseAttackService';
 import { AOEService } from '../abilities/AOEService';
 
+class UnitCantReachUnitInRangeAttack extends DomainError {}
+class UnitToCloseToUnitInRangeAttack extends DomainError {}
+class UnitCantShootToUnitBecauseOfCardOnPath extends DomainError {}
+
 class RangeAttackService {
   public static rangeAttackUnit (
     attackerCard: Card, attackedCard: Card,
@@ -39,7 +43,7 @@ class RangeAttackService {
       throw new DomainError(`Card ${attackedCard.id} can't range attack because blocked by enemy unit`);
     }
 
-    this.checkCanRangeAttackTo(attackerCard, attackedCard, attackedPlayer, board, attackedPlayerTableCards, areas);
+    this.checkCanRangeAttackTo(attackerCard, attackedCard, board, attackedPlayerTableCards, areas);
 
     if (attackerCard.abilities.aiming) {
       if (attackerCard.abilities.aiming.numberOfAiming >= attackerCard.abilities.aiming.numberOfAimingForAttack) {
@@ -87,22 +91,22 @@ class RangeAttackService {
     }
   }
 
-  private static checkCanRangeAttackTo (
-    attackerCard: Card, attackedCard: Card, attackedPlayer: Player, board: Board, attackedPlayerTableCards: Card[], areas: Area[]): boolean {
+  public static checkCanRangeAttackTo (
+    attackerCard: Card, attackedCard: Card, board: Board, attackedPlayerTableCards: Card[], areas: Area[]): boolean {
     const attackerCardPosition = board.getPositionOfUnit(attackerCard);
     const attackedCardPosition = board.getPositionOfUnit(attackedCard);
 
     let path: Point[] = Bresenham.plot(attackerCardPosition, attackedCardPosition);
-    const distanceToAttacked = Math.abs(attackerCardPosition.x - attackedCardPosition.x) + Math.abs(attackerCardPosition.y - attackedCardPosition.y);
+    const distanceToAttacked = Math.abs(attackerCardPosition.x - attackedCardPosition.x)+ Math.abs(attackerCardPosition.y - attackedCardPosition.y);
     const attackerMaxRange = attackerCard.abilities.range.range;
     const attackerMinRangeRange = attackerCard.abilities.range.minRange | 0;
 
     if (distanceToAttacked > attackerMaxRange) {
-      throw new DomainError(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
+      throw new UnitCantReachUnitInRangeAttack(`Unit ${attackerCard.id} can't reach unit ${attackedCard.id} in range attack.`);
     }
 
     if (distanceToAttacked < attackerMinRangeRange) {
-      throw new DomainError(`Unit ${attackerCard.id} to close to unit ${attackedCard.id} in range attack.`);
+      throw new UnitToCloseToUnitInRangeAttack(`Unit ${attackerCard.id} to close to unit ${attackedCard.id} in range attack.`);
     }
 
     let attackedPlayerTableCardsIds = attackedPlayerTableCards.map((card) => card.id);
@@ -138,7 +142,9 @@ class RangeAttackService {
     }
 
     if (blockersOfRangeAttack.length > 0) {
-      throw new DomainError(`Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack}`);
+      throw new UnitCantShootToUnitBecauseOfCardOnPath(
+        `Unit ${attackerCard.id} can\'t attack unit ${attackedCard.id}. There is cards on path: ${blockersOfRangeAttack}`
+      );
     } else {
       return true;
     }
@@ -173,4 +179,7 @@ class RangeAttackService {
   }
 }
 
-export {RangeAttackService};
+export {
+  RangeAttackService, UnitCantReachUnitInRangeAttack, UnitToCloseToUnitInRangeAttack,
+  UnitCantShootToUnitBecauseOfCardOnPath
+};

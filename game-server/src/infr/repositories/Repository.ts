@@ -7,7 +7,13 @@ import { DevRepository } from './DevRepository';
 import config from '../../config';
 import { mq } from '../mq/mq';
 
-class Repository {
+interface IRepository {
+  save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>>;
+  get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass>;
+  getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any): Promise<Array<EntityClass>>;
+}
+
+class Repository implements IRepository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
@@ -19,7 +25,7 @@ class Repository {
     Repository.inMemoryCache = {};
   }
 
-  async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
+  public async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
     let entities = this.prepareEntities(param);
     let events: Array<Event>;
 
@@ -38,7 +44,7 @@ class Repository {
     return events;
   }
 
-  async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
+  public async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
     if (this.cache[id]) {
       return this.cache[id] as EntityClass;
     }
@@ -66,7 +72,7 @@ class Repository {
     return entity;
   }
 
-  async getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any):
+  public async getMany <EntityClass> (entityIds: Array<EntityId>, ClassConstructor: any):
     Promise<Array<EntityClass>> {
     return await Promise.all(entityIds.map(entityId => {
       return this.get(entityId, ClassConstructor);
@@ -143,5 +149,5 @@ class Repository {
   // }
 }
 
-export {Repository};
+export {Repository, IRepository};
 

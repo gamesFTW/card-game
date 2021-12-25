@@ -1,17 +1,47 @@
 import { map } from 'lodash';
-import { Repository } from './repositories/Repository';
+import { IRepository, Repository } from './repositories/Repository';
 import { godOfSockets } from './GodOfSockets';
 import { Entity, EntityId } from './Entity';
 import { CardChanges } from '../app/player/AttackCardUseCase';
+
+type LifecycleMethods = {
+  isReadEntities?: boolean,
+  isAddEventListeners?: boolean,
+  isRunBusinessLogic?: boolean,
+  isAddClientActions?: boolean,
+  isSaveEntities?: boolean,
+  isUnsubscribeAllEventListeners?: boolean,
+  isSendActions?: boolean
+}
 
 abstract class UseCase {
   protected action: any;
   protected params: any;
   protected entities: any;
-  protected repository: Repository;
+  protected repository: IRepository;
 
-  constructor (params: any) {
+  private readonly lifecycleMethods: LifecycleMethods = {
+    isReadEntities: true,
+    isAddEventListeners: true,
+    isRunBusinessLogic: true,
+    isAddClientActions: true,
+    isSaveEntities: true,
+    isUnsubscribeAllEventListeners: true,
+    isSendActions: true
+  };
+
+  constructor (params: any, repository: IRepository = null, lifecycleMethods: LifecycleMethods = null) {
     this.params = params;
+    
+    if (lifecycleMethods) {
+      this.lifecycleMethods = { ...this.lifecycleMethods, ...lifecycleMethods};
+    }
+
+    if (repository) {
+      this.repository = repository;
+    } else {
+      this.repository = new Repository();
+    }
   }
 
   public static async executeSequentially (gameId: EntityId, useCases: UseCase[]): Promise<void> {
@@ -20,27 +50,39 @@ abstract class UseCase {
 
     for (let useCase of useCases) {
       useCase.setRepository(repository);
-      await useCase.execute(false);
+      await useCase.execute();
       actions.push(useCase.getAction());
     }
 
     godOfSockets.sendActions(gameId, actions);
   }
 
-  public async execute (sendActions: boolean = true): Promise<void> {
-    if (!this.repository) {
-      this.repository = new Repository();
+  public async execute (): Promise<void> {
+    if (this.lifecycleMethods.isReadEntities) {
+      await this.readEntities();
     }
 
-    await this.readEntities();
-    this.addEventListeners();
-    this.runBusinessLogic();
-    this.addClientActions();
-    await this.saveEntities();
+    if (this.lifecycleMethods.isAddEventListeners) {
+      this.addEventListeners();
+    }
 
-    this.unsubscribeAllEventListeners();
+    if (this.lifecycleMethods.isRunBusinessLogic) {
+      this.runBusinessLogic();
+    }
 
-    if (sendActions) {
+    if (this.lifecycleMethods.isAddClientActions) {
+      this.addClientActions();
+    }
+
+    if (this.lifecycleMethods.isSaveEntities) {
+      await this.saveEntities();
+    }
+
+    if (this.lifecycleMethods.isUnsubscribeAllEventListeners) {
+      this.unsubscribeAllEventListeners();
+    }
+
+    if (this.lifecycleMethods.isSendActions) {
       godOfSockets.sendActions(this.entities.game.id, [this.action]);
     }
   }
@@ -49,7 +91,7 @@ abstract class UseCase {
     return this.action;
   }
 
-  public setRepository (repository: Repository): void {
+  public setRepository (repository: IRepository): void {
     this.repository = repository;
   }
 

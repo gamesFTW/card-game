@@ -80,8 +80,16 @@ playerController.post('/moveAndAttackCard', async (ctx) => {
   let isRangeAttack = ctx.request.body.isRangeAttack as boolean;
   let abilitiesParams = ctx.request.body.abilitiesParams as AbilitiesParams;
 
-  let attackCard = new MoveCardUseCase({gameId, playerId: attackerPlayerId, cardId: attackerCardId, targetCardId: attackedCardId});
-  let moveCard = new AttackCardUseCase({gameId, attackerPlayerId, attackerCardId, attackedCardId, isRangeAttack, abilitiesParams});
+  let attackCard = new MoveCardUseCase(
+    {gameId, playerId: attackerPlayerId, cardId: attackerCardId, targetCardId: attackedCardId},
+    null,
+    {isSendActions: false}
+    );
+  let moveCard = new AttackCardUseCase(
+    {gameId, attackerPlayerId, attackerCardId, attackedCardId, isRangeAttack, abilitiesParams},
+    null,
+    {isSendActions: false}
+    );
 
   await UseCase.executeSequentially(gameId, [attackCard, moveCard]);
 

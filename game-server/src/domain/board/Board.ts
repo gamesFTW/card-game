@@ -13,6 +13,11 @@ import { findPath } from './Path/Path';
 import { Area } from '../area/Area';
 import { DomainError } from '../../infr/DomainError';
 import { ReachChecker } from './Path/ReachChecker';
+import {
+  RangeAttackService,
+  UnitCantReachUnitInRangeAttack, UnitCantShootToUnitBecauseOfCardOnPath,
+  UnitToCloseToUnitInRangeAttack
+} from '../attackService/RangeAttackService';
 
 type BoardObject = Card|Area;
 
@@ -200,7 +205,7 @@ class Board extends Entity {
     return calcDistance(position1, position2);
   }
 
-  public getCardIdBehindSecondCard (firstCard: Card, secondCard: Card): string {
+  public getCardIdBehindSecondCard (firstCard: Card, secondCard: Card): EntityId {
     let firstCardPosition: Point = this.getPositionOfUnit(firstCard);
     let secondCardPosition: Point = this.getPositionOfUnit(secondCard);
 
@@ -209,6 +214,70 @@ class Board extends Entity {
 
     let candidatePosition: Point = new Point(candidateX, candidateY);
     return this.getUnitIdByPosition(candidatePosition);
+  }
+
+  public getEnemiesForRangeAttackOfCard(card: Card, enemyUnits: Card[], areas: Area[]): Card[] {
+    const cardPosition = this.getPositionOfUnit(card);
+    const pointsInRadius = this.findPointsInRadius(
+      cardPosition, card.abilities.range.range, card.abilities.range.minRange
+    );
+
+    const enemiesInRadius = [];
+    for (let point of pointsInRadius) {
+      let cardId = this.getUnitIdByPosition(point);
+
+      if (cardId) {
+        for (let enemyCard of enemyUnits) {
+          if (cardId === enemyCard.id) {
+            enemiesInRadius.push(enemyCard);
+          }
+        }
+      }
+    }
+
+    const enemiesForRangeAttack = [];
+    for (let enemyCard of enemiesInRadius) {
+      let canAttack = false;
+
+      try {
+        canAttack = RangeAttackService.checkCanRangeAttackTo(card, enemyCard, this, enemyUnits, areas);
+      }
+      catch(error) {
+        if (
+          error instanceof UnitCantReachUnitInRangeAttack ||
+          error instanceof UnitToCloseToUnitInRangeAttack ||
+          error instanceof UnitCantShootToUnitBecauseOfCardOnPath
+        ) {
+          canAttack = false;
+        } else {
+          throw error;
+        }
+      }
+
+      if (canAttack) {
+        enemiesForRangeAttack.push(enemyCard);
+      }
+    }
+
+    return enemiesForRangeAttack;
+  }
+
+  public getEnemiesAroundOfUnit(card: Card, enemyUnits: Card[]) {
+    const position = this.getPositionOfUnit(card);
+    const nearbyPositions = this.findPointsInRadius(position, 1, 0);
+    const targets = [];
+
+    for (let position of nearbyPositions) {
+      let nearbyUnitId = this.getUnitIdByPosition(position);
+      if (nearbyUnitId) {
+        let nearbyUnit = enemyUnits.find((unit: Card) => unit.id === nearbyUnitId);
+        if (nearbyUnit) {
+          targets.push(nearbyUnit);
+        }
+      }
+    }
+
+    return targets;
   }
 
   public findPointsInRadius (center: Point, radius: number, minRadius: number = 1): Point[] {
@@ -264,11 +333,9 @@ class Board extends Entity {
   public findPointToMove (
     movedCard: Card, targetCard: Card, areas: Area[], movedCardPlayerTableCards: Card[], targetCardPlayerTableCards: Card[]
   ): Point {
-    const movedCardPosition = this.getPositionOfUnit(movedCard);
     const targetCardPosition = this.getPositionOfUnit(targetCard);
 
-    const reachChecker = this.CreateReachChecker(areas, movedCardPlayerTableCards, targetCardPlayerTableCards);
-    const points = reachChecker.checkReach(movedCardPosition, movedCard.currentMovingPoints);
+    const points = this.findUnitReach(movedCard, areas, movedCardPlayerTableCards, targetCardPlayerTableCards);
 
     for (let point of points) {
       if (this.checkPositionsAdjacency(point, targetCardPosition)) {
@@ -279,7 +346,14 @@ class Board extends Entity {
     return null;
   }
 
-  private CreateReachChecker (
+  public findUnitReach (card: Card, areas: Area[], unitAllays: Card[], unitOpponents: Card[]): Point[] {
+    const cardPosition = this.getPositionOfUnit(card);
+
+    const reachChecker = this.createReachChecker(areas, unitAllays, unitOpponents);
+    return reachChecker.checkReach(cardPosition, card.currentMovingPoints);
+  }
+
+  private createReachChecker (
     areas: Area[],
     playerCards: Card[],
     opponentCards: Card[],

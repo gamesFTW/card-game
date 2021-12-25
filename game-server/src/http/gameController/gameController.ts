@@ -11,6 +11,7 @@ import config from '../../config';
 import { Repository } from '../../infr/repositories/Repository';
 import { getGameAction } from './getGameAction/getGameAction';
 import { lobbyService } from '../../app/lobbyService';
+import { MakeAITurnUseCase } from '../../ai/MakeAITurnUseCase';
 
 const gameController = new Router();
 
@@ -53,6 +54,15 @@ gameController.get('/getLastGame', async (ctx) => {
   const response = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
 
   ctx.body = response.data;
+});
+
+gameController.post('/runAI', async (ctx) => {
+  let gameId = ctx.request.body.gameId as EntityId;
+
+  let endTurnUseCase = new MakeAITurnUseCase(gameId);
+  await endTurnUseCase.execute();
+
+  ctx.body = `Ok`;
 });
 
 export {gameController};
