@@ -21,7 +21,7 @@ interface PlayCardAsManaAction {
   playerId?: EntityId;
 }
 
-class PlayCardAsManaUseCase extends UseCase {
+class PlayCardAsManaUseCase extends UseCase<PlayCardAsManaParams> {
   protected action: PlayCardAsManaAction = {
     type: 'PlayCardAsManaAction'
   };

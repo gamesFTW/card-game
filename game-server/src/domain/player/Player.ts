@@ -139,7 +139,9 @@ class Player extends Entity {
     card.tap();
   }
 
-  public moveCard (card: Card, position: Point, board: Board, opponent: Player, areas: Area[]): void {
+  public moveCard (
+    card: Card, position: Point, board: Board, opponent: Player, areas: Area[], isSpendAllMovingPoints: boolean = false
+  ): void {
     this.checkIfItHisTurn();
 
     const isCardInTable = this.checkCardIn(card, CardStack.TABLE);
@@ -150,7 +152,7 @@ class Player extends Entity {
     const movePoints = path.length - 1;
     board.moveUnit(card, position, areas);
 
-    card.move(movePoints, path);
+    card.move(movePoints, path, isSpendAllMovingPoints);
   }
 
   public moveCardToCard (

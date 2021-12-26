@@ -111,12 +111,16 @@ class Card extends Entity {
     this.addDefaultMovingPoints();
   }
 
-  public move (movingPoints: number, path: Point[]): void {
+  public move (movingPoints: number, path: Point[], spendAllMovingPoints: boolean = false): void {
     if (movingPoints > this.state.currentMovingPoints) {
       throw new DomainError(`Card ${this.state.id} doesn't have moving points`);
     }
 
     let currentMovingPoints = this.state.currentMovingPoints - movingPoints;
+
+    if (spendAllMovingPoints) {
+      currentMovingPoints = 0;
+    }
 
     this.applyEvent(new Event<CardData, CardMovedExtra>(
       CardEventType.CARD_MOVED,

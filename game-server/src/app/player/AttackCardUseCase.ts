@@ -21,7 +21,7 @@ interface AttackCardParams {
   attackerCardId: EntityId;
   attackedCardId: EntityId;
   isRangeAttack: boolean;
-  abilitiesParams: AbilitiesParams;
+  abilitiesParams?: AbilitiesParams;
 }
 
 interface AbilitiesParams {
@@ -56,7 +56,7 @@ interface CardAttackedAction {
   cardChanges: CardChanges[];
 }
 
-class AttackCardUseCase extends UseCase {
+class AttackCardUseCase extends UseCase<AttackCardParams> {
   protected action: CardAttackedAction = {
     type: 'CardAttackedAction',
     attackerCardId: '',

@@ -30,7 +30,7 @@ interface EndTurnAction {
   wonPlayerId?: string;
 }
 
-class EndTurnUseCase extends UseCase {
+class EndTurnUseCase extends UseCase<EndTurnParams> {
   protected action: EndTurnAction = {
     type: 'EndTurnAction',
     cardChanges: [],

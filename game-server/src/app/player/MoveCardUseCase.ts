@@ -17,6 +17,7 @@ interface MoveCardParams {
   cardId: EntityId;
   position?: Point;
   targetCardId?: EntityId;
+  isSpendAllMovingPoints?: boolean;
 }
 
 interface MoveCardAction {
@@ -28,7 +29,7 @@ interface MoveCardAction {
   currentMovingPoints?: number;
 }
 
-class MoveCardUseCase extends UseCase {
+class MoveCardUseCase extends UseCase<MoveCardParams> {
   protected action: MoveCardAction = {
     type: 'MoveCardAction'
   };
@@ -70,7 +71,8 @@ class MoveCardUseCase extends UseCase {
   protected runBusinessLogic (): void {
     if (this.params.position) {
       this.entities.player.moveCard(
-        this.entities.movedCard, this.params.position, this.entities.board, this.entities.opponent, this.entities.areas
+        this.entities.movedCard, this.params.position, this.entities.board, this.entities.opponent,
+        this.entities.areas, this.params.isSpendAllMovingPoints
       );
     } else {
       this.entities.player.moveCardToCard(

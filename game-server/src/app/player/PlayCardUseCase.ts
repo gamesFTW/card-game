@@ -28,7 +28,7 @@ interface PlayCardAction {
   manaCardsTapped?: EntityId[]
 }
 
-class PlayCardUseCase extends UseCase {
+class PlayCardUseCase extends UseCase<PlayCardParams> {
   protected action: PlayCardAction = {
     type: 'PlayCardAction',
     manaCardsTapped: []

@@ -14,9 +14,9 @@ type LifecycleMethods = {
   isSendActions?: boolean
 }
 
-abstract class UseCase {
+abstract class UseCase<Params> {
   protected action: any;
-  protected params: any;
+  protected params: Params;
   protected entities: any;
   protected repository: IRepository;
 
@@ -30,7 +30,7 @@ abstract class UseCase {
     isSendActions: true
   };
 
-  constructor (params: any, repository: IRepository = null, lifecycleMethods: LifecycleMethods = null) {
+  constructor (params: Params, repository: IRepository = null, lifecycleMethods: LifecycleMethods = null) {
     this.params = params;
     
     if (lifecycleMethods) {
@@ -44,7 +44,7 @@ abstract class UseCase {
     }
   }
 
-  public static async executeSequentially (gameId: EntityId, useCases: UseCase[]): Promise<void> {
+  public static async executeSequentially (gameId: EntityId, useCases: UseCase<any>[]): Promise<void> {
     const repository = new Repository();
     const actions = [];
 
@@ -95,7 +95,7 @@ abstract class UseCase {
     this.repository = repository;
   }
 
-  protected abstract async readEntities (): Promise<void>;
+  protected abstract readEntities (): void;
 
   protected abstract addEventListeners (): void;
 

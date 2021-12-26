@@ -23,7 +23,7 @@ interface CardAimedAction {
   cardChanges: CardChanges[];
 }
 
-class ToAimUseCase extends UseCase {
+class ToAimUseCase extends UseCase<CardToAimParams> {
   protected action: CardAimedAction = {
     type: 'CardAimedAction',
     cardChanges: []

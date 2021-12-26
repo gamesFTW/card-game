@@ -24,7 +24,7 @@
     "@types/nanoid": "^1.0.0",
     "@types/opn": "^5.1.0",
     "@types/socket.io": "^1.4.33",
-    "ts-node-dev": "1.0.0-pre.30",
+    "ts-node-dev": "1.1.8",
     "tslint": "^5.8.0",
     "tslint-config-semistandard": "^6.0.4"
   },
@@ -48,7 +48,7 @@
     "nanoid": "^1.0.1",
     "opn": "^5.3.0",
     "pathfinding": "^0.4.18",
-    "typescript": "^2.6.2"
+    "typescript": "4.5.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

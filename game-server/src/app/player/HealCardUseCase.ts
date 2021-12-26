@@ -29,7 +29,7 @@ interface CardHealedAction {
   healedCard: CardChanges;
 }
 
-class HealCardUseCase extends UseCase {
+class HealCardUseCase extends UseCase<HealCardParams> {
   protected action: CardHealedAction = {
     type: 'CardHealedAction',
     healerCard: {},

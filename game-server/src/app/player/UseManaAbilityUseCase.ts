@@ -22,7 +22,7 @@ interface CardUsedManaAbilityAction {
   cardsUntapped?: EntityId[];
 }
 
-class UseManaAbilityUseCase extends UseCase {
+class UseManaAbilityUseCase extends UseCase<CardUsedManaAbilityParams> {
   protected action: CardUsedManaAbilityAction = {
     type: 'CardUsedManaAbilityAction',
     cardsUntapped: []

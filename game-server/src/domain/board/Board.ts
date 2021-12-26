@@ -353,6 +353,29 @@ class Board extends Entity {
     return reachChecker.checkReach(cardPosition, card.currentMovingPoints);
   }
 
+  public drawBoard(): void {
+    let canvas = "";
+
+    for (let x = 1; x <= this.state.width; x++) {
+      for (let y = 1; y <= this.state.height; y++) {
+        let areaId = this.state.areas[x][y];
+        let unitId = this.state.units[x][y];
+
+        if (unitId) {
+          canvas = canvas + "U";
+        } else if (areaId) {
+          canvas = canvas + "A";
+        } else {
+          canvas = canvas + " ";
+        }
+      }
+
+      canvas = canvas + "\n";
+    }
+
+    console.log(canvas);
+  }
+
   private createReachChecker (
     areas: Area[],
     playerCards: Card[],
