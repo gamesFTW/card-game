@@ -5,13 +5,14 @@ import { AreaData, AreaState, AreaType } from './AreaState';
 import { AreaEventType } from '../events';
 import { CardData } from '../card/CardState';
 import * as lodash from 'lodash';
+import { BoardObject } from '../board/Board';
 
 interface AreaCreationData {
   type: AreaType;
   subtype?: string;
 }
 
-class Area extends Entity {
+class Area extends BoardObject {
   get canUnitsWalkThoughtIt (): boolean { return this.state.canUnitsWalkThoughtIt; }
   get canUnitsShootThoughtIt (): boolean { return this.state.canUnitsShootThoughtIt; }
 

@@ -6,6 +6,7 @@ import { CardEventType, CardMovedExtra } from '../events';
 import * as lodash from 'lodash';
 import { Point } from '../../infr/Point';
 import { DomainError } from '../../infr/DomainError';
+import { BoardObject } from '../board/Board';
 
 interface CardCreationData {
   hero: boolean;
@@ -16,8 +17,8 @@ interface CardCreationData {
   abilities?: Abilities;
 }
 
-class Card extends Entity {
-  private static DEFAULT_MOVING_POINTS: number = 3;
+class Card extends BoardObject {
+  public static DEFAULT_MOVING_POINTS: number = 3;
 
   protected state: CardState;
 
@@ -30,6 +31,14 @@ class Card extends Entity {
   get tapped (): boolean { return this.state.tapped; }
   get manaCost (): number { return this.state.manaCost; }
   get currentMovingPoints (): number { return this.state.currentMovingPoints; }
+
+  public get speed(): number {
+    if (this.abilities.speed) {
+      return this.abilities.speed.speed;
+    } else {
+      return Card.DEFAULT_MOVING_POINTS;
+    }
+  }
 
   // Deprecared. Надо выпилить.
   get armor (): number {
@@ -272,6 +281,7 @@ class Card extends Entity {
 
     damage = damage < 0 ? 0 : damage;
 
+    // Зачем вообще мутировать damage? Кажется лучше сделать геттер на damage и расчитывать его считая все негативные эффекты
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_DAMAGE_CURSED,
       {id: this.id, damage, negativeEffects}
@@ -357,6 +367,10 @@ class Card extends Entity {
     ));
   }
 
+  public toString(): string {
+    return `${this.name}, ${this.damage}/${this.currentHp}`;
+  }
+
   private resetAbilities (): void {
     if (this.abilities.block) {
       let abilities = lodash.cloneDeep(this.state.abilities);
@@ -382,17 +396,9 @@ class Card extends Entity {
   }
 
   private addDefaultMovingPoints (): void {
-    let movingPoints;
-
-    if (this.abilities.speed) {
-      movingPoints = this.abilities.speed.speed;
-    } else {
-      movingPoints = Card.DEFAULT_MOVING_POINTS;
-    }
-
     this.applyEvent(new Event<CardData>(
       CardEventType.CARD_ADDED_CURRENT_MOVING_POINTS,
-      {currentMovingPoints: movingPoints, id: this.state.id}
+      {currentMovingPoints: this.speed, id: this.state.id}
     ));
   }
 

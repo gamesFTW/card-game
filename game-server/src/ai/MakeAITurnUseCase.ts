@@ -10,11 +10,15 @@ import * as lodash from 'lodash';
 import { MoveCardUseCase } from '../app/player/MoveCardUseCase';
 import { InMemoryRepository } from '../infr/repositories/InMemoryRepository';
 import { AttackCardUseCase } from '../app/player/AttackCardUseCase';
+import { EndTurnUseCase } from '../app/game/EndTurnUseCase';
+import { calcScoreForGameSituation } from './calcScoreForGameSituation';
+import { getEntitiesFromGameSituation, getEntityFromGameSituation } from './helpers';
 
 class Action {
   card: Card;
   reasonableAction: Action;
   gameSituationAfterAction: GameSituation;
+  scoreAfterEndOfTurn?: number;
 }
 
 class MoveAction extends Action {
@@ -65,8 +69,11 @@ class MakeAITurnUseCase {
 
   async execute() {
     const initialGameSituation = await this.createInitialGameSituation();
+
+    let score = calcScoreForGameSituation(initialGameSituation, this.gameId, this.activePlayerId, this.waitingPlayerId);
+    console.log("score: " + score);
     console.time('AI');
-    await this.calcGameSituation(initialGameSituation);
+    // await this.calcGameSituation(initialGameSituation);
     console.log(this.countVariants);
     console.timeEnd("AI");
   }
@@ -86,7 +93,12 @@ class MakeAITurnUseCase {
     const player2 = await this.repository.get<Player>(game.player2Id, Player);
     const player2Table = await this.repository.getMany<Card>(player2.table, Card);
 
-    const entities: Entity[] = [].concat([game, board, player1, player2], player1Table, player2Table, areas);
+    // Для оптимизации: player1ManaPool нужен только на этапе end of turn, а до этого его нет смысла копировать
+    const player1ManaPool = await this.repository.getMany <Card>(player1.manaPool, Card);
+
+    const entities: Entity[] = [].concat(
+      [game, board, player1, player2], player1Table, player2Table, areas, player1ManaPool
+    );
 
     const gameSituation: GameSituation = {};
     for (let entity of entities) {
@@ -110,21 +122,28 @@ class MakeAITurnUseCase {
       }
     } else {
       this.countVariants ++;
-      // TODO: end of turn of gameSituation
-      // this.calcScoreDifference(gameSituation);
+
+      let gameSituationAfterEndOfTurn = await this.endTurnOfGameSituation(gameSituation);
+
+      let score = calcScoreForGameSituation(
+        gameSituationAfterEndOfTurn, this.gameId, this.activePlayerId, this.waitingPlayerId
+      );
     }
   }
 
   private createPossibleActionsForGameSituation(gameSituation: GameSituation): Action[] {
-    const game = this.getEntityFromGameSituation<Game>(this.gameId, gameSituation);
-    const board = this.getEntityFromGameSituation<Board>(game.boardId, gameSituation);
-    const areas = this.getEntitiesFromGameSituation<Area>(board.areas, gameSituation);
-    const activePlayer = this.getEntityFromGameSituation<Player>(this.activePlayerId, gameSituation);
-    const waitingPlayer = this.getEntityFromGameSituation<Player>(this.waitingPlayerId, gameSituation);
-    const activePlayerTableCards = this.getEntitiesFromGameSituation<Card>(activePlayer.table, gameSituation);
-    const waitingPlayerTableCards = this.getEntitiesFromGameSituation<Card>(waitingPlayer.table, gameSituation);
+    const game = getEntityFromGameSituation<Game>(this.gameId, gameSituation);
+    const board = getEntityFromGameSituation<Board>(game.boardId, gameSituation);
+    const areas = getEntitiesFromGameSituation<Area>(board.areas, gameSituation);
+    const activePlayer = getEntityFromGameSituation<Player>(this.activePlayerId, gameSituation);
+    const waitingPlayer = getEntityFromGameSituation<Player>(this.waitingPlayerId, gameSituation);
+    const activePlayerTableCards = getEntitiesFromGameSituation<Card>(activePlayer.table, gameSituation);
+    const waitingPlayerTableCards = getEntitiesFromGameSituation<Card>(waitingPlayer.table, gameSituation);
 
     const actions = [];
+
+    // TODO: добавить возможность пасануть и ничего не делать
+
     for (let card of activePlayerTableCards) {
       if (!card.tapped) {
         if (card.currentMovingPoints > 0) {
@@ -201,6 +220,29 @@ class MakeAITurnUseCase {
     return repository.getCache();
   }
 
+  private async endTurnOfGameSituation(gameSituation: GameSituation): Promise<GameSituation> {
+    const newGameSituation = this.deepCopyWithMethods(gameSituation);
+
+    const repository = new InMemoryRepository(newGameSituation);
+    const lifecycleMethods = {
+      isAddEventListeners: false,
+      isRunBusinessLogic: true,
+      isSaveEntities: true
+    };
+
+    let useCase = new EndTurnUseCase({
+        gameId: this.gameId,
+        endingTurnPlayerId: this.activePlayerId
+      },
+      repository,
+      lifecycleMethods
+    );
+
+    await useCase.execute();
+
+    return repository.getCache();
+  }
+
   private getCardMoveActions(
     card: Card, board: Board, areas: Area[], activePlayerTableCards: Card[], waitingPlayerTableCards: Card[]
   ): Action[] {
@@ -240,21 +282,14 @@ class MakeAITurnUseCase {
   //
   // }
 
-  private getEntityFromGameSituation<EntityClass extends Entity>(entityId: EntityId, gameSituation: GameSituation): EntityClass {
-    return gameSituation[entityId] as EntityClass;
-  }
-
-  private getEntitiesFromGameSituation<EntityClass extends Entity>(entityIds: EntityId[], gameSituation: GameSituation): EntityClass[] {
-    const entities = [];
-    for (let entityId of entityIds) {
-      entities.push(gameSituation[entityId] as EntityClass);
-    }
-
-    return entities;
-  }
-
+  // Метод нужен, так как cloneDeep не копирует методы
   private deepCopyWithMethods(obj: any) {
-    if(obj == null || typeof obj !== "object") { return obj; }
+    if (obj == null || typeof obj !== "object") {
+      return obj;
+    } else if (obj instanceof Array) {
+      // Но если внутри будут объекты, то опять же методы не будут скопированны
+      return lodash.cloneDeep(obj);
+    }
 
     let result: any = {};
     let keys_ = Object.getOwnPropertyNames(obj);
@@ -277,4 +312,4 @@ class MakeAITurnUseCase {
   }
 }
 
-export { MakeAITurnUseCase };
+export { MakeAITurnUseCase, GameSituation };

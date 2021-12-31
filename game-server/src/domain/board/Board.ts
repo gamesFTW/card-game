@@ -19,7 +19,7 @@ import {
   UnitToCloseToUnitInRangeAttack
 } from '../attackService/RangeAttackService';
 
-type BoardObject = Card|Area;
+class BoardObject extends Entity {}
 
 class Board extends Entity {
   get areas (): Array<EntityId> {
@@ -67,7 +67,7 @@ class Board extends Entity {
     ));
   }
 
-  public getPositionOfUnit (unit: Card): Point|null {
+  public getPositionOfUnit (unit: Card|EntityId): Point|null {
     return this.getPositionOfBoardObject(unit, this.state.units);
   }
 
@@ -176,6 +176,24 @@ class Board extends Entity {
       { units: newUnits },
       { toPosition: toPosition, movedCardId: card.id }
     ));
+  }
+
+  public getNumberOfMovementsToNearestEnemy (card: Card, opponent: Player, areas: Area[]): number {
+    const fromPosition = this.getPositionOfUnit(card);
+    const grid = this.getPFGridWithEnemies(opponent, areas);
+
+    let longestPath = 0;
+
+    for (let opponentCardId of opponent.table) {
+      let toPosition = this.getPositionOfUnit(opponentCardId);
+      let path = findPath(fromPosition, toPosition, grid);
+
+      if (path.length > longestPath) {
+        longestPath = path.length;
+      }
+    }
+
+    return longestPath;
   }
 
   public getPathOfUnitMove (card: Card, toPosition: Point, opponent: Player, areas: Area[]): Point[] {
@@ -413,11 +431,21 @@ class Board extends Entity {
     return reachChecker;
   }
 
-  private getPositionOfBoardObject (boardObject: BoardObject, boardObjects: BoardObjects): Point|null {
+  private getPositionOfBoardObject (boardObject: BoardObject|EntityId, boardObjects: BoardObjects): Point|null {
+    let foundingBoardObjectId;
+
+    if (boardObject instanceof BoardObject) {
+      foundingBoardObjectId = boardObject.id;
+    }
+
+    if (typeof boardObject === 'string') {
+      foundingBoardObjectId = boardObject;
+    }
+
     for (let x in boardObjects) {
       for (let y in boardObjects[x]) {
         let boardObjectId = boardObjects[x][y];
-        if (boardObjectId === boardObject.id) {
+        if (boardObjectId === foundingBoardObjectId) {
           return new Point(Number(x), Number(y));
         }
       }
@@ -501,4 +529,4 @@ class Board extends Entity {
   }
 }
 
-export {Board};
+export {Board, BoardObject};
