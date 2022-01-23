@@ -69,7 +69,7 @@ class RangeAttackService {
       this.ricochet(attackerCard, attackedCard, attackedPlayerTableCards, attackedPlayer, board, abilitiesParams.ricochetTargetCardId);
     }
 
-    if (attackerCard.abilities.push && abilitiesParams.pushAt) {
+    if (attackerCard.abilities.push && abilitiesParams?.pushAt) {
       BaseAttackService.pushAttackedCard(attackerCard, attackedCard, board, abilitiesParams.pushAt, areas);
     }
 

@@ -11,14 +11,40 @@ import { MoveCardUseCase } from '../app/player/MoveCardUseCase';
 import { InMemoryRepository } from '../infr/repositories/InMemoryRepository';
 import { AttackCardUseCase } from '../app/player/AttackCardUseCase';
 import { EndTurnUseCase } from '../app/game/EndTurnUseCase';
-import { calcScoreForGameSituation } from './calcScoreForGameSituation';
 import { getEntitiesFromGameSituation, getEntityFromGameSituation } from './helpers';
+import { ScoreCalculator } from './ScoreCalculator';
 
 class Action {
   card: Card;
   reasonableAction: Action;
   gameSituationAfterAction: GameSituation;
   scoreAfterEndOfTurn?: number;
+  scoreCalculationLog?: string;
+
+  public getChain(): Action[] {
+    const chain = [];
+    let currentAction: Action = this;
+
+    chain.push(currentAction);
+
+    while (currentAction.reasonableAction) {
+      currentAction = currentAction.reasonableAction;
+      chain.push(currentAction);
+    }
+
+    return chain.reverse();
+  }
+
+  public consoleChain(): void {
+    let chain = this.getChain();
+    let text = `Score: ${this.scoreAfterEndOfTurn}\n`;
+
+    for (let action of chain) {
+      text += action.toString() + "\n";
+    }
+    console.info(text);
+    console.log(this.scoreCalculationLog);
+  }
 }
 
 class MoveAction extends Action {
@@ -29,6 +55,10 @@ class MoveAction extends Action {
 
     this.card = card;
     this.toPoint = toPoint;
+  }
+
+  public toString() {
+    return `Move action of ${this.card.name}, to x: ${this.toPoint.x}, y: ${this.toPoint.y}`;
   }
 }
 
@@ -41,6 +71,10 @@ class MeleeAttackAction extends Action {
     this.card = card;
     this.enemyCard = enemyCard;
   }
+
+  public toString() {
+    return `Melee attack action of ${this.card.name}, to ${this.enemyCard.name}`;
+  }
 }
 
 class RangeAttackAction extends Action {
@@ -52,15 +86,20 @@ class RangeAttackAction extends Action {
     this.card = card;
     this.enemyCard = enemyCard;
   }
+
+  public toString() {
+    return `Range attack action of ${this.card.name}, to ${this.enemyCard.name}`;
+  }
 }
 
 type GameSituation = {[key in EntityId]: Entity};
 
 class MakeAITurnUseCase {
-  repository: Repository;
-  gameId: EntityId;
-  activePlayerId: EntityId;
-  waitingPlayerId: EntityId;
+  private repository: Repository;
+  private gameId: EntityId;
+  private activePlayerId: EntityId;
+  private waitingPlayerId: EntityId;
+  private endedActions: Action[] = [];
 
   constructor(gameId: EntityId) {
     this.gameId = gameId;
@@ -70,11 +109,23 @@ class MakeAITurnUseCase {
   async execute() {
     const initialGameSituation = await this.createInitialGameSituation();
 
-    let score = calcScoreForGameSituation(initialGameSituation, this.gameId, this.activePlayerId, this.waitingPlayerId);
-    console.log("score: " + score);
+    await this.drawGameSituation(initialGameSituation);
+
     console.time('AI');
-    // await this.calcGameSituation(initialGameSituation);
-    console.log(this.countVariants);
+    await this.calcGameSituation(initialGameSituation);
+    console.log("Variants: " + this.endedActions.length);
+
+    const sortedEndedAction = this.endedActions.sort(
+      (action1: Action, action2: Action) => action1.scoreAfterEndOfTurn - action2.scoreAfterEndOfTurn
+    );
+
+    sortedEndedAction[sortedEndedAction.length - 6].consoleChain();
+    sortedEndedAction[sortedEndedAction.length - 5].consoleChain();
+    sortedEndedAction[sortedEndedAction.length - 4].consoleChain();
+    sortedEndedAction[sortedEndedAction.length - 3].consoleChain();
+    sortedEndedAction[sortedEndedAction.length - 2].consoleChain();
+    sortedEndedAction[sortedEndedAction.length - 1].consoleChain();
+
     console.timeEnd("AI");
   }
 
@@ -108,8 +159,6 @@ class MakeAITurnUseCase {
     return gameSituation;
   }
 
-  private countVariants = 0;
-
   private async calcGameSituation(gameSituation: GameSituation, reasonableAction: Action = null) {
     const possibleActions = this.createPossibleActionsForGameSituation(gameSituation);
 
@@ -121,13 +170,17 @@ class MakeAITurnUseCase {
         await this.calcGameSituation(action.gameSituationAfterAction, action);
       }
     } else {
-      this.countVariants ++;
-
       let gameSituationAfterEndOfTurn = await this.endTurnOfGameSituation(gameSituation);
 
-      let score = calcScoreForGameSituation(
+      const scoreCalculator = new ScoreCalculator();
+
+      reasonableAction.scoreAfterEndOfTurn = scoreCalculator.execute(
         gameSituationAfterEndOfTurn, this.gameId, this.activePlayerId, this.waitingPlayerId
       );
+
+      reasonableAction.scoreCalculationLog = scoreCalculator.calculationLog;
+
+      this.endedActions.push(reasonableAction);
     }
   }
 
@@ -269,18 +322,6 @@ class MakeAITurnUseCase {
       return new RangeAttackAction(card, enemy);
     });
   }
-
-  // calcScoreDifference(): number {
-  //   // вызываем calcScoreForPlayer для каждого игрока и вычитаем
-  // }
-  //
-  // doAction(action: Action, gameSituation: GameSituation): GameSituation {
-  //
-  // }
-  //
-  // calcScoreForPlayer() {
-  //
-  // }
 
   // Метод нужен, так как cloneDeep не копирует методы
   private deepCopyWithMethods(obj: any) {

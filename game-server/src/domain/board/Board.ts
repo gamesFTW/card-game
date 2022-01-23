@@ -180,20 +180,26 @@ class Board extends Entity {
 
   public getNumberOfMovementsToNearestEnemy (card: Card, opponent: Player, areas: Area[]): number {
     const fromPosition = this.getPositionOfUnit(card);
-    const grid = this.getPFGridWithEnemies(opponent, areas);
 
-    let longestPath = 0;
+    let shortestPath = Infinity;
 
     for (let opponentCardId of opponent.table) {
       let toPosition = this.getPositionOfUnit(opponentCardId);
-      let path = findPath(fromPosition, toPosition, grid);
+      const grid = this.getPFGridWithEnemies(opponent, areas, [opponentCardId]);
+      const path = findPath(fromPosition, toPosition, grid);
+      const pathLengthWithoutInitialAndTargetPoints = path.length - 2;
 
-      if (path.length > longestPath) {
-        longestPath = path.length;
+      if (pathLengthWithoutInitialAndTargetPoints < shortestPath) {
+        shortestPath = pathLengthWithoutInitialAndTargetPoints;
       }
     }
 
-    return longestPath;
+    if (shortestPath === Infinity) {
+      console.warn("getNumberOfMovementsToNearestEnemy have returned infinity");
+      return shortestPath;
+    } else {
+      return shortestPath;
+    }
   }
 
   public getPathOfUnitMove (card: Card, toPosition: Point, opponent: Player, areas: Area[]): Point[] {
@@ -372,26 +378,36 @@ class Board extends Entity {
   }
 
   public drawBoard(): void {
+    // Тут полная путаница с x и y. Но мне дико лень это править. Прости меня
     let canvas = "";
 
-    for (let x = 1; x <= this.state.width; x++) {
+    canvas += "  ";
+    for (let y = 1; y <= this.state.height; y++) {
+      canvas += y + " ";
+    }
+    canvas += "X\n";
+
+    for (let x = this.state.width; x >= 1; x--) {
+      canvas += x + " ";
       for (let y = 1; y <= this.state.height; y++) {
-        let areaId = this.state.areas[x][y];
-        let unitId = this.state.units[x][y];
+        let areaId = this.state.areas[y][x];
+        let unitId = this.state.units[y][x];
 
         if (unitId) {
-          canvas = canvas + "U";
+          canvas = canvas + "U ";
         } else if (areaId) {
-          canvas = canvas + "A";
+          canvas = canvas + "A ";
         } else {
-          canvas = canvas + " ";
+          canvas = canvas + "· ";
         }
       }
 
       canvas = canvas + "\n";
     }
 
-    console.log(canvas);
+    canvas += "Y";
+
+    console.info(canvas);
   }
 
   private createReachChecker (
@@ -434,12 +450,10 @@ class Board extends Entity {
   private getPositionOfBoardObject (boardObject: BoardObject|EntityId, boardObjects: BoardObjects): Point|null {
     let foundingBoardObjectId;
 
-    if (boardObject instanceof BoardObject) {
-      foundingBoardObjectId = boardObject.id;
-    }
-
     if (typeof boardObject === 'string') {
       foundingBoardObjectId = boardObject;
+    } else {
+      foundingBoardObjectId = boardObject.id;
     }
 
     for (let x in boardObjects) {
@@ -471,7 +485,7 @@ class Board extends Entity {
     return new Grid(this.state.width + 1, this.state.height + 1);
   }
 
-  private getPFGridWithEnemies (opponent: Player, areas: Area[]): Grid {
+  private getPFGridWithEnemies (opponent: Player, areas: Area[], excludedOpponentCardIds: EntityId[] = []): Grid {
     const grid = this.getPFGrid();
 
     for (let x in this.state.units) {
@@ -484,7 +498,10 @@ class Board extends Entity {
         } else {
           let cardId = this.state.units[x][y];
 
-          if (opponent.checkCardIdIn(cardId, CardStack.TABLE)) {
+          const isCardInOpponentTable = opponent.checkCardIdIn(cardId, CardStack.TABLE);
+          const isExcludedCard = opponent.table.some(cardId => excludedOpponentCardIds.includes(cardId));
+
+          if (isCardInOpponentTable && !isExcludedCard) {
             grid.setWalkableAt(Number(x), Number(y), false);
           }
         }
