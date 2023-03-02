@@ -1,0 +1,96 @@
+<template name="cardEdit">
+    <form class="cardEdit">
+        <input class="cardEdit__name cardEdit__blurSave" type="text" name="name" value="{{name}}" />
+        <input class="cardEdit__type cardEdit__blurSave" type="text" name="type" value="{{type}}" />
+        <div class="cardEdit__checkboxes">
+            <label title="Является ли героем">H:<input  class="cardEdit__clickSave" name="hero" checked="{{#if hero}}checked{{/if}}" type="checkbox"></label>
+            <label title="Является ли существо большим">Big: <input class="cardEdit__clickSave" name="big" checked="{{#if big}}checked{{/if}}" type="checkbox"></label>
+            <label title="Является ли драфтом">D: <input class="cardEdit__clickSave" name="draft" checked="{{#if draft}}checked{{/if}}" type="checkbox"></label>
+            <label title="Является ли саммонедом">S: <input class="cardEdit__clickSave" name="summoned" checked="{{#if summoned}}checked{{/if}}" type="checkbox"></label>
+        </div>
+
+        <!--image select-->
+        <!-- <div class="{{#if not itMustHaveImage }}hidden{{/if}}">
+            <input class="typeahead cardEdit__imageId" type="text"
+                   placeholder="имя картинки" value="{{imageName}}"
+                   autocomplete="off" spellcheck="off"
+                   data-min-length="0" data-limit="10"
+                   data-source="images" data-select="imageSelected"/>
+            <input type="hidden" name="imageId" value="{{imageId}}">
+        </div> -->
+
+        <!--image2 select-->
+        <div class="{{#if not itMustHaveImage }}hidden{{/if}}">
+            <input class="typeahead cardEdit__image2Id" type="text"
+                   placeholder="имя картинки" value="{{image2Name}}"
+                   autocomplete="off" spellcheck="off"
+                   data-min-length="0" data-limit="10"
+                   data-source="images2" data-select="image2Selected"/>
+            <input type="hidden" name="imageId2" value="{{imageId}}">
+        </div>
+
+        <div class="cardEdit__abilities-list">
+            <ul>
+                {{#each arrayify abilities}}
+                    <li>
+                        {{name}}
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+        <textarea class="cardEdit__text cardEdit__blurSave" name="text" >{{text}}</textarea>
+
+        <div class="cardEdit__tags">
+        {{#each tags}}
+            <span class="cardEdit__tag" >
+                <span class="cardEdit__remove-tag" data-value="{{this}}">Ⓧ</span>{{this}}
+            </span>
+        {{/each}}
+            <input class="cardEdit__tags-storage" name="tags" type="hidden" value="{{tagsToStr}}">
+        </div>
+
+        <input class="typeahead cardEdit__add-tag" name="add-tag" type="text"
+               placeholder="Добавить тег"
+               autocomplete="off" spellcheck="off"
+               data-min-length="0" data-limit="10" data-updated="tagsUpdated"
+               data-source="tagsList" data-select="tagsSelected"/>
+        <button class="card-remove">Del</button>
+        <br>
+
+        <input title="Мана" class="cardEdit__manaCost cardEdit__blurSave" type="text" name="manaCost" value="{{manaCost}}" />
+        <input title="Урон" class="cardEdit__damage cardEdit__blurSave" type="text" name="damage" value="{{damage}}" />
+        <input title="Жизни" class="cardEdit__maxHp cardEdit__blurSave" type="text" name="maxHp" value="{{maxHp}}" />
+        <input title="Стартовые каунтеры" class="cardEdit__couter cardEdit__blurSave" type="text" name="counter" value="{{counter}}" />
+
+        <button class="cardEdit__toogleAbilities">Abil</button>
+
+
+        {{#if isShowAbilities }} 
+            <button class='cardEdit__saveAbilities'>Save abilities</button>
+        {{/if}}
+        <div class='cardEdit__abilities'>
+        </div>
+
+
+        <div class="cardEdit__sounds-pack">
+            <input name="soundPackId" value="{{soundPackId}}" type='hidden'>
+            SoundPack: <input class="typeahead cardEdit__soundPack" type="text"
+                    placeholder="" value="{{getSoundPackNameById soundPackId}}"
+                    autocomplete="off" spellcheck="off"
+                    data-min-length="0" data-limit="10"
+                    data-source="soundPacks" data-select="soundPackSelected"/>
+        </div>
+
+        {{#if itMustHaveImage}}
+            <div class="cardEdit__image-container">
+                {{#if image.link}}
+                    <img class="cardEdit__image" src="{{image.link}}"/>
+                {{/if}}
+
+                {{#if image.url}}
+                    <img class="cardEdit__image" src="{{image.url store='Images'}}"/>
+                {{/if}}
+            </div>
+        {{/if}}
+    </form>
+</template>

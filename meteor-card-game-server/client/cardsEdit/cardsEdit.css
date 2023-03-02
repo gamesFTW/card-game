@@ -1,0 +1,185 @@
+.cards-editor {
+    text-align: center;
+}
+
+.cards-editor__card-search {
+
+}
+
+.cards-editor__search-container {
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.cards-editor__cards-container {
+    text-align: center;
+}
+
+.add-card-btn {
+    height: 40px;
+}
+
+.cardEdit {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    vertical-align: top;
+
+    margin: 0 5px 14px;
+    padding: 10px;
+
+    border-radius: 4px;
+    border: 1px solid white;/* не убирай, оно нужно для красивого сохранения */
+    box-shadow: 0 0 2px 1px rgba(0,0,0,0.6);
+    transition:border-color 1s;
+    background: #F1F1F1;
+}
+
+.cardEdit__name {
+    font-weight: bold;
+    display: inline-block;
+    width: 95%;
+    padding: 1px;
+}
+
+.cardEdit__type {
+    width: 95%;
+    padding: 1px;
+}
+
+.cardEdit__imageId, .cardEdit__soundPack {
+    width: 95%;
+    padding: 1px;
+}
+
+.cardEdit__manaCost {
+    width: 1.5em;
+    color: blue;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cardEdit__damage {
+    color: red;
+    width: 1em;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cardEdit__maxHp {
+    color: green;
+    width: 1em;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cardEdit__couter {
+    color: orange;
+    width: 1em;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cardEdit__abilities-list {
+    height: 5em;
+    text-align: left;
+    overflow: auto;
+}
+
+.cardEdit__abilities-list ul {
+    margin: 0;
+}
+
+.cardEdit__text {
+    height: 5em;
+    width: 95%;
+    resize: none;
+    font-family: Arial;
+}
+
+/* TAGS */
+.cardEdit__tags {
+    height: 24px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 4px;
+}
+
+.cardEdit__tag {
+    font-size: 80%;
+}
+
+.cardEdit__remove-tag {
+    cursor: pointer;
+    color: black;
+    font-size: 90%;
+}
+
+.cardEdit__add-tag {
+    width: 11em;
+}
+
+/* IMAGES */
+.cardEdit__image-container {
+    margin-top: 10px;
+    text-align: center;
+    height: 60px;
+    overflow: auto;
+}
+
+.cardEdit__image {
+    border: 1px solid lightgray;
+    background: white;
+    height: 200%;
+}
+
+.cardEdit__soundName {
+    width: 90px;
+}
+
+.cardEdit__soundPack {
+    width: 60px;
+}
+
+.twitter-typeahead {
+    display: inline !important;
+}
+
+@media only screen and (max-width: 1000px)  {
+    .cardEdit {
+        display: block;
+        width: auto;
+    }
+
+    .cardEdit__imageId, .cardEdit__soundPack, .cardEdit__text {
+        width: 100%;
+    }
+
+    .cardEdit__name, .cardEdit__type {
+        width: 45%;
+    }
+
+    .cardEdit__checkboxes {
+        margin: 8px 0;
+    }
+
+    .cardEdit__checkboxes label {
+        margin: 0 10px;
+    }
+
+    input, textarea {
+        font-size: 16px;
+    }
+
+    .cards-editor__search-container {
+
+    }
+}

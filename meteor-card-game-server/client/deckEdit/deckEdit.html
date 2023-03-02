@@ -1,0 +1,67 @@
+<template name="deckEdit">
+    <div class="deckEdit">
+        <div class="deckEdit__your-deck">
+            <h2>{{name}}'s deck ({{deckLength}})</h2>
+
+            <div class="deckEdit__top-container">
+                <input class="deckEdit__name-area"  type="text" value="{{name}}">
+                <textarea class="deckEdit__desc-area" placeholder="Описание">{{desc}}</textarea>
+                <table class="deckEdit__manaCost-table">
+                    <tr class="deckEdit__manaCost-title">
+                        {{#each manaDistribution.manaTitle}}
+                            <td>{{this}}</td>
+                        {{/each}}
+                    </tr>
+                    <tr>
+                        {{#each manaDistribution.manaCount}}
+                            <td>{{this}}</td>
+                        {{/each}}
+                    </tr>
+                </table>
+            </div>
+
+            <div class="deckEdit__your-deck-list">
+                <div class="deckEdit__cards-in-hand-deck">
+                    {{#each cardsInHandDeck}}
+                        {{>cardView this}}
+                    {{/each}}
+                </div>
+
+                <div class="deckEdit__cards-in-deck">
+                    {{#each cardsInDeck}}
+                        {{>cardView this}}
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+        <div class="deckEdit__all-cards">
+            <div>
+                <input class="card-search" type="text" placeholder="Название карты">
+                <input class="card-text-search" type="text" placeholder="Текст карты">
+                <select class="deckEdit__tag-selector">
+                    <option value="">---</option>
+                    {{#each tagsList}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+                <select class="deckEdit__race-selector">
+                    <option value="">---</option>
+                    {{#each raceList}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+                <span>
+                    <label class="filter-type"><input type="radio" name="gender" value="all" checked> Все</label>
+                    <label class="filter-type"><input type="radio" name="gender" value="heroes"> Герои</label>
+                    <label class="filter-type"><input type="radio" name="gender" value="creatures"> Существа</label>
+                    <label class="filter-type"><input type="radio" name="gender" value="areas"> Арии</label>
+                    <label class="filter-type"><input type="radio" name="gender" value="spells"> Спелы</label>
+                </span>
+            </div>
+            {{#each cards}}
+               {{>cardView this}}
+            {{/each}}
+        </div>
+    </div>
+</template>

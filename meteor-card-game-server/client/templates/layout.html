@@ -1,0 +1,20 @@
+<template name="layout">
+    <div class="header">
+        <a href="/lobby">Lobby</a>
+        <a href="/cards/edit">Cards</a>
+        <a href="/decks">Decks</a>
+        <a href="/images/edit">Images</a>
+        <a href="/sounds/edit">Sounds</a>
+    </div>
+
+    <div id="main" class="row-fluid">
+        {{> yield}}
+    </div>
+</template>
+
+
+<template name="loading">
+    <marquee behavior="alternate" direction="left" bgcolor="#ffcc00">
+        Loading...
+    </marquee>
+</template>

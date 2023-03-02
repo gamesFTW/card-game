@@ -1,0 +1,16 @@
+<template name="decks">
+    <h1>Деки</h1>
+    <form class="deck-name">
+        <input name="deckName" type="text" placeholder="Имя деки">
+        <input class="create-deck" type="submit" value="Создать деку">
+    </form>
+
+    <div>
+        {{#each decks}}
+            <h2>
+                <a href="/cards/deck/{{name}}/edit">[{{cards}}] {{name}}</a>
+                <button class="remove-deck">Удалить</button>
+            </h2>
+        {{/each}}
+    </div>
+</template>

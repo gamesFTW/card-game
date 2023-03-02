@@ -1,0 +1,66 @@
+<template name="lobby">
+    <h1>Lobby</h1>
+
+    <h2>Games</h2>
+    <div>
+        {{#each games}}
+           {{>gameView}}
+        {{/each}}
+    </div>
+</template>
+
+
+<template name="gameView">
+    <div>
+        {{#if started}}
+            <span>{{mapWidth}}</span>
+            <span>x</span>
+            <span>{{mapHeight}}</span>
+            <a href="/game/{{_id}}/{{playerId1}}">{{getPlayerNameById playerId1}}</a>
+            VS
+            <a href="/game/{{_id}}/{{playerId2}}">{{getPlayerNameById playerId2}}</a>
+
+            | <a href="/game/{{_id}}/{{playerId2}}?view_replay=1">view replay</a>
+            {{#if equals type 'ogre'}}
+                <a href="/game/{{_id}}/{{playerId3}}">{{getPlayerNameById playerId3}}</a>
+                <a href="/game/{{_id}}/{{playerId4}}">{{getPlayerNameById playerId4}}</a>
+            {{/if}}
+        {{else}}
+            <input class="lobby__deck-size" type="text" value="{{mapWidth}}" name="mapWidth">
+            <input class="lobby__deck-size" type="text" value="{{mapHeight}}" name="mapHeight">
+            <select class="game-type-selector">
+                <option value="solo" selected="{{#if equals type 'solo'}}selected{{/if}}">Соло</option>
+                <option value="ogre" selected="{{#if equals type 'ogre'}}selected{{/if}}">Огр</option>
+            </select>
+
+            <select class="game-deck-selector" name="playerId1">
+                {{#each decks}}
+                    <option value="{{_id}}" selected="{{#if equals _id ../playerId1}}selected{{/if}}">{{name}}</option>
+                {{/each}}
+            </select>
+
+            <select class="game-deck-selector" name="playerId2">
+                {{#each decks}}
+                    <option value="{{_id}}" selected="{{#if equals _id ../playerId2}}selected{{/if}}">{{name}}</option>
+                {{/each}}
+            </select>
+
+            {{#if equals type 'ogre'}}
+                <select class="game-deck-selector" name="playerId3">
+                    {{#each decks}}
+                        <option value="{{_id}}" selected="{{#if equals _id ../playerId3}}selected{{/if}}">{{name}}</option>
+                    {{/each}}
+                </select>
+
+                <select class="game-deck-selector" name="playerId4">
+                    {{#each decks}}
+                        <option value="{{_id}}" selected="{{#if equals _id ../playerId4}}selected{{/if}}">{{name}}</option>
+                    {{/each}}
+                </select>
+            {{/if}}
+
+            <button class="start-game-button">Start game</button>
+        {{/if}}
+        <button class="delete-game-button">Delete game</button>
+    </div>
+</template>

@@ -1,6 +1,6 @@
 import * as Router from 'koa-router';
 import axios from 'axios';
-import opn = require('opn');
+// import opn = require('opn');
 import config from '../../config';
 import { startingCardsFixture } from './startingCardsFixture';
 import { Repository } from '../../infr/repositories/Repository';

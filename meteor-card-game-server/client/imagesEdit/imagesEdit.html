@@ -1,0 +1,47 @@
+<template name="imagesEdit">
+    <div class="imagesEdit">
+        <h1>Заливка картинок для карт </h1>
+        <h2><a href="https://drive.google.com/open?id=0B6l9D6YtTSPvcWxkV0hxSk9JNzg">Как готовить картинки к заливке</a></h2>
+
+        <div>
+            <input title="Картинка" multiple class="image-upload" id="fileInput" type="file"/>
+        </div>
+
+        <br>
+
+        <div>
+            <hr>
+            <h1>Новые картинки</h1>
+            {{#each file in images2.each}}
+                <div title="{{file.name}}" class="imagesEdit__image-container">
+                    <div class="imagesEdit__name">
+                        {{file.name}}
+                    </div>
+                    <div>
+                        <img class="imagesEdit__image" src="{{file.link}}" alt=""/>
+                    </div>
+                    <div>
+                        <button imageID="{{file._id}}" class="delete-image">Delete</button>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        
+        <hr>
+
+        <h1>Старые картинки</h1>
+        {{#each images}}
+            <div title="{{original.name}}" class="imagesEdit__image-container">
+                <div class="imagesEdit__name">
+                    {{original.name}}
+                </div>
+                <div>
+                    <img class="imagesEdit__image" src="{{url store='Images'}}" alt=""/>
+                </div>
+                <div>
+                    <button class="delete-image">Delete</button>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</template>

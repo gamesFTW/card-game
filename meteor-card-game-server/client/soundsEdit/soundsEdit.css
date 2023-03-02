@@ -1,0 +1,25 @@
+.soundsEdit__sound-container {
+    vertical-align: top;
+    margin: 0 2px 10px 0;
+}
+
+.soundsEdit__sound {
+    border: 1px solid lightgray;
+}
+
+.soundsEdit__name {
+    font-size: 10px;
+}
+
+.soundpack__audio, .sound__audio {
+    height: 10px;
+}
+
+.soundpack__type {
+    display: inline-block;
+    width: 50px;
+}
+
+.soundpack__input_sound {
+    width: 250px
+}

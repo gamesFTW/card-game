@@ -1,0 +1,3 @@
+[submodule "gameField"]
+	path = .phaser-client
+	url = git@github.com:gamesFTW/phaser-card-game-client.git

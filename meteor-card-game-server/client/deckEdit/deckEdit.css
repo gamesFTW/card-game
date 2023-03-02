@@ -1,0 +1,130 @@
+.deckEdit {
+    font-family: Arial;
+}
+
+.deckEdit__manaCost-table {
+    display: inline-block;
+}
+
+.deckEdit__manaCost-table td {
+    padding: 0 5px;
+    text-align: center;
+}
+
+.deckEdit__manaCost-title td {
+    color: blue;
+    font-weight: bold;
+    border-bottom: 1px gray solid;
+}
+
+.deckEdit__desc-area {
+    width: 30%;
+    height: 50px;
+}
+
+.deckEdit__name-area {
+    float: left;
+}
+
+.deckEdit__your-deck {
+    position: fixed;
+    top: 31px;
+    background: #fff;
+    width: 100%;
+    left: 0;
+    border-bottom: 1px solid;
+    box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.35);
+}
+
+.deckEdit__cards-in-hand-deck {
+    border-right: 1px black solid;
+    background-color: snow;
+}
+
+.deckEdit__cards-in-deck,.deckEdit__cards-in-hand-deck {
+    display: inline-block;
+}
+
+.deckEdit__cards-in-deck .cardView__deck-hand-buttons {
+    display: none;
+}
+
+.deckEdit__cards-in-hand-deck .cardView__deck-buttons {
+    display: none;
+}
+
+.cardView__deck-buttons {
+    text-align: center;
+}
+
+.deckEdit__your-deck-list {
+    white-space: nowrap;
+    overflow: auto;
+}
+
+.deckEdit__all-cards {
+    margin-top: 500px;
+}
+
+.cardView {
+    font-size: 13px;
+    display: inline-block;
+    width: 150px;
+    vertical-align: top;
+    margin: 10px 5px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid white;
+    box-shadow: 0 0 2px 1px rgba(0,0,0,0.6);
+    transition: border-color 1s;
+    background: #F1F1F1;
+}
+
+.cardView__name {
+    font-weight: bold;
+}
+
+.cardView__abilities {
+    height: 140px;
+}
+
+.cardView__abilities ul {
+    padding-left: 20px;
+}
+
+.cardView__text {
+    margin: 6px 0;
+    height: 140px;
+    white-space: pre-line;
+    overflow: auto;
+    background: white;
+    border: solid 1px rgb(169, 169, 169);
+    padding: 1px;
+}
+
+.cardView__manaCost {
+    color: blue;
+    font-weight: bold;
+    width: 14px;
+    display: inline-block;
+}
+
+.cardView__damage {
+    color: red;
+    font-weight: bold;
+    width: 14px;
+    display: inline-block;
+}
+
+.cardView__maxHp {
+    color: green;
+    font-weight: bold;
+    width: 14px;
+    display: inline-block;
+}
+
+.card-add-btn, .card-remove-btn {
+    margin: 0 6px;
+    padding: 10px;
+    width: 60px;
+}

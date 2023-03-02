@@ -5,7 +5,7 @@ import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
 import { DevRepository } from './DevRepository';
 import config from '../../config';
-import { mq } from '../mq/mq';
+// import { mq } from '../mq/mq';
 
 class Repository {
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
@@ -85,7 +85,7 @@ class Repository {
   }
 
   private async dispatchEvents (events: Array<Event>): Promise<void> {
-    events.forEach((event: Event) => mq.publish(event));
+    // events.forEach((event: Event) => mq.publish(event));
   }
 
   private async saveOne (entity: Entity): Promise<Array<Event>> {

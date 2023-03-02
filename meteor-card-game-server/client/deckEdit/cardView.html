@@ -1,0 +1,41 @@
+<template name="cardView">
+    <div class="cardView">
+        <div class="cardView__name">{{name}} {{#if quantity}} ({{quantity}}){{/if}}</div>
+        <div>
+            {{type}}
+            {{#if hero}}
+                (Герой)
+            {{/if}}
+            {{#if big}}
+                (Большая)
+            {{/if}}
+        </div>
+        <br>
+        <div class="cardView__abilities">
+            <ul>
+                {{#each arrayify abilities}}
+                    <li>
+                        {{name}}
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+
+        <div>
+            <span class="cardView__manaCost">{{manaCost}}</span>
+            <span class="cardView__damage">{{damage}}</span>
+            <span class="cardView__maxHp">{{maxHp}}</span>
+
+            <div class="cardView__deck-buttons">
+                <button class="card-add-btn">+</button>
+                <button class="card-remove-btn">-</button>
+            </div>
+
+            <div class="cardView__deck-hand-buttons">
+               В руку:
+                <button class="card-add-hand-btn">+</button>
+                <button class="card-remove-hand-btn">-</button>
+            </div>
+        </div>
+    </div>
+</template>

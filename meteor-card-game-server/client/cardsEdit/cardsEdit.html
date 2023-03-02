@@ -1,0 +1,55 @@
+<template name="cardsEdit">
+    <div class="cards-editor">
+
+        <div class="cards-editor__search-container">
+            <input class="cards-editor__card-search" type="text" value="{{getSearchCardName}}" placeholder="Название карты">
+            <input class="cards-editor__card-text-search" type="text" placeholder="Текст карты">
+            <select class="cards-editor__tag-selector">
+                <option value="">---</option>
+                {{#each tagsList}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+            <select class="cards-editor__race-selector">
+                <option value="">---</option>
+                {{#each raceList}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+            <br>
+            <span>
+                Фильтр:
+                <label class="filter-type"><input type="radio" name="gender" value="creatures" checked>Существа</label>
+                <label class="filter-type"><input type="radio" name="gender" value="heroes">Герои</label>
+                <label class="filter-type"><input type="radio" name="gender" value="areas">Арии</label>
+                <label class="filter-type"><input type="radio" name="gender" value="spells">Спелы</label>
+                <label class="filter-type"><input type="radio" name="gender" value="drafts">Драфты</label>
+                <label class="filter-type"><input type="radio" name="gender" value="summoneds">Саммонеды</label>
+                <label class="filter-type"><input type="radio" name="gender" value="all">Все</label>
+            </span>
+            <br>
+            <span>
+                Сортировка:
+                <label class="cardsEdit__order"><input type="radio" name="order" value="date" checked> Дата создания</label>
+                <label class="cardsEdit__order"><input type="radio" name="order" value="manaCost"> Манна</label>
+                <label class="cardsEdit__order"><input type="radio" name="order" value="damage"> Урон</label>
+                <label class="cardsEdit__order"><input type="radio" name="order" value="maxHp"> Жизни</label>
+            </span>
+        </div>
+        <br>
+        <div>
+            <button class="btn add-card-btn">Добавить карту</button>
+        </div>
+
+        <hr/>
+
+        <h3>{{quantity}} cards</h3>
+
+        <div class="cards-editor__cards-container">
+            {{#each cards}}
+                {{> cardEdit}}
+            {{/each}}
+        </div>
+    </div>
+</template>
+
