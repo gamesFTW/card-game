@@ -7,7 +7,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "@types/pathfinding": "0.0.2",
     "@types/axios": "^0.14.0",
     "@types/bull": "^3.3.19",
     "@types/chalk": "^2.2.0",
@@ -22,6 +21,7 @@
     "@types/mongoose": "^5.2.5",
     "@types/nanoid": "^1.0.0",
     "@types/opn": "^5.1.0",
+    "@types/pathfinding": "0.0.2",
     "@types/socket.io": "^1.4.33",
     "ts-node-dev": "1.0.0-pre.30",
     "tslint": "^5.8.0",

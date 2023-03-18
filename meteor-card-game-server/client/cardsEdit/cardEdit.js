@@ -32,14 +32,12 @@ Template.cardEdit.helpers({
     imageSelected: function (e, suggestion) {
         $(e.target).closest('.cardEdit').find('input[name="imageId"]').val(suggestion.id);
         
-        console.log('imageSelected');
         $(e.target).closest('.cardEdit').submit();
     },
     
     image2Selected: function (e, suggestion) {
         $(e.target).closest('.cardEdit').find('input[name="imageId2"]').val(suggestion.id);
         
-        console.log('image2Selected');
         $(e.target).closest('.cardEdit').submit();
     },
 
@@ -171,11 +169,6 @@ Template.cardEdit.events({
     },
 
     "submit .cardEdit": function(event) {
-        console.log('===============');
-        console.log(event.target.imageId.value);
-        console.log(event.target.imageId2.value);
-
-
         event.preventDefault();
 
         let soundPackId = $(event.currentTarget).find('input[name="soundPackId"]').val();

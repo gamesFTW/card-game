@@ -25,6 +25,7 @@ MeteorApp.Sounds = new FS.Collection("Sounds", {
 });
 
 MeteorApp.Images2 = new FilesCollection({
+    storagePath: process.env.METEOR_IMAGES_PATH,
     collectionName: 'Images2',
     allowClientCode: true,
     onBeforeUpload(file) {
@@ -37,6 +38,7 @@ MeteorApp.Images2 = new FilesCollection({
 });
 
 MeteorApp.Sounds2 = new FilesCollection({
+  storagePath: process.env.METEOR_SOUNDS_PATH,
     collectionName: 'Sounds2',
     allowClientCode: true,
     onBeforeUpload(file) {
