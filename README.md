@@ -26,3 +26,12 @@ npm run dev
 ```
 
 ### AI server
+```
+TODO
+```
+
+## How to dump content server meteor mongo
+```
+mongodump --forceTableScan -h 127.0.0.1 --port 4001 -d meteor
+mongorestore -h 127.0.0.1 --port 4001 -d meteor dump/meteor
+```
