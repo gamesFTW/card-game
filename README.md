@@ -12,6 +12,7 @@ Get unity compiled bin file and run it (or build it in unity editor from `unity-
 export METEOR_IMAGES_PATH=""
 export METEOR_SOUNDS_PATH=""
 cd meteor-card-game-server
+meteor npm install
 meteor -p 4000
 ```
 
