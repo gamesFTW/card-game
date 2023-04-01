@@ -26,7 +26,9 @@ MeteorApp.Sounds = new FS.Collection("Sounds", {
 
 MeteorApp.Images2 = new FilesCollection({
     storagePath: process.env.METEOR_IMAGES_PATH,
+    // downloadRoute: '/files/images',
     collectionName: 'Images2',
+    cacheControl: 'no-cache, no-store',
     allowClientCode: true,
     onBeforeUpload(file) {
       // Allow upload files under 10MB, and only in png/jpg/jpeg formats
@@ -38,8 +40,10 @@ MeteorApp.Images2 = new FilesCollection({
 });
 
 MeteorApp.Sounds2 = new FilesCollection({
-  storagePath: process.env.METEOR_SOUNDS_PATH,
+    storagePath: process.env.METEOR_SOUNDS_PATH,
+    // downloadRoute: '/files/images',
     collectionName: 'Sounds2',
+    cacheControl: 'no-cache, no-store',
     allowClientCode: true,
     onBeforeUpload(file) {
       // Allow upload files under 10MB, and only in wav/mp3 formats
