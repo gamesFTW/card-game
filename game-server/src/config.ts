@@ -1,4 +1,4 @@
-const DOCKER_HOST = process.env['DOCKER_HOST_IP'] || '192.168.99.100';
+const DOCKER_HOST = process.env['DOCKER_HOST_IP'] || 'localhost';
 
 export default {
   RABBIT_MQ_URL: `amqp://${DOCKER_HOST}:5672`,

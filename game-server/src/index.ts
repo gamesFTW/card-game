@@ -1,12 +1,9 @@
-import * as path from 'path';
-
 import chalk from 'chalk';
 
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as IO from 'koa-socket-2';
 import * as cors from 'koa2-cors';
-import * as koaStatic from 'koa-static';
 
 import { eventStore } from './infr/eventStore';
 
@@ -16,8 +13,11 @@ import config from './config';
 import { gameController } from './http/gameController/gameController';
 import { playerController } from './http/playerController';
 import { debugController } from './http/_debug/debugController';
-import { staticContorller } from './http/staticController';
+import { StaticContorller } from './http/staticController';
 import { DomainError } from './infr/DomainError';
+import { LobbyUseCasas } from './lobby/LobbyUseCases';
+import { LobbyRepository } from './lobby/LobbyRepository';
+import { LobbyController } from './lobby/LobbyController';
 
 let DEBUG = true;
 
@@ -28,7 +28,7 @@ async function main (): Promise<void> {
 
   app.use(cors());
 
-  app.use(koaStatic(path.join(__dirname, 'static')));
+  // app.use(koaStatic(path.join(__dirname, 'static')));
 
   app.use(bodyParser());
 
@@ -58,6 +58,12 @@ async function main (): Promise<void> {
     }
   });
   
+  const lobbyRepository = new LobbyRepository();
+  await lobbyRepository.init();
+
+  const lobbyUseCasas = new LobbyUseCasas(lobbyRepository);
+  const lobbyController = new LobbyController(lobbyRepository, lobbyUseCasas);
+  const staticContorller = new StaticContorller(lobbyRepository);
 
   godOfSockets.autoRegistrateUsers(wsIO);
   // const gameIds = await lobbyService.getAllGames();
@@ -66,15 +72,17 @@ async function main (): Promise<void> {
   app.use(gameController.routes());
   app.use(playerController.routes());
   app.use(debugController.routes());
-  app.use(staticContorller.routes());
+  app.use(staticContorller.router.routes());
+  app.use(lobbyController.router.routes());
 
   app.use(gameController.allowedMethods());
   app.use(playerController.allowedMethods());
   app.use(debugController.allowedMethods());
-  app.use(staticContorller.allowedMethods());
+  app.use(staticContorller.router.allowedMethods());
+  app.use(lobbyController.router.allowedMethods());
 
-  console.log('Server listen on ' + config.GAME_URL);
   app.listen(3000);
+  console.log('Server listen on ' + config.GAME_URL);
 }
 
 main();
