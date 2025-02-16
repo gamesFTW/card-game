@@ -18,6 +18,7 @@ class LobbyController {
     this.router.get('/methods/getPlayerDecks', this.getPlayerDecks.bind(this));
     this.router.post('/methods/createGame', this.createGame.bind(this));
     this.router.post('/methods/createSinglePlayerGame', this.createSinglePlayerGame.bind(this));
+    this.router.post('/methods/createTutorialGame', this.createTutorialGame.bind(this));
     this.router.post('/methods/removeGameById', this.removeGame.bind(this));
   }
 
@@ -44,7 +45,11 @@ class LobbyController {
   }
 
   public async createSinglePlayerGame(ctx: Router.IRouterContext): Promise<void> {
-    ctx.body = await this.lobbyUseCasas.createSinglePlayerGame(ctx.deckId1);
+    ctx.body = await this.lobbyUseCasas.createSinglePlayerGame(ctx.request.body.deckId1);
+  }
+
+  public async createTutorialGame(ctx: Router.IRouterContext): Promise<void> {
+    ctx.body = await this.lobbyUseCasas.createTutorialGame();
   }
 
   public async removeGame(ctx: Router.IRouterContext): Promise<void> {

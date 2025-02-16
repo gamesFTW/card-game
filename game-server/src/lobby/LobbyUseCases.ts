@@ -5,6 +5,7 @@ import { Deck } from './entities/Deck';
 import axios from 'axios';
 import { Card } from './entities/Card';
 import { LobbyRepository } from './LobbyRepository';
+import { ObjectId } from 'mongodb';
 
 class LobbyUseCasas {
   public router: Router;
@@ -42,6 +43,7 @@ class LobbyUseCasas {
   }
 
   public async createGame(deckId1: string, deckId2: string, random = true) {
+    console.log(deckId1, deckId2);
     let deck1, deck2, isItVicaVersa;
 
     if (random) {
@@ -51,11 +53,11 @@ class LobbyUseCasas {
     }
 
     if (isItVicaVersa) {
-        deck1 = await this.lobbyRepository.decksCollection.findOne( { _id: deckId2 });
-        deck2 = await this.lobbyRepository.decksCollection.findOne( { _id: deckId1 });
+        deck1 = await this.lobbyRepository.decksCollection.findOne({ _id: deckId2 });
+        deck2 = await this.lobbyRepository.decksCollection.findOne({ _id: deckId1 });
     } else {
-        deck1 = await this.lobbyRepository.decksCollection.findOne( { _id: deckId1 });
-        deck2 = await this.lobbyRepository.decksCollection.findOne( { _id: deckId2 });
+        deck1 = await this.lobbyRepository.decksCollection.findOne({ _id: deckId1 });
+        deck2 = await this.lobbyRepository.decksCollection.findOne({ _id: deckId2 });
     }
 
     const data = {
@@ -98,7 +100,7 @@ class LobbyUseCasas {
     var deckId2 = aiDecks[0]._id;
     var game = await this.createGame(deckId1, deckId2);
 
-    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({"_id": game.lobbyGameId});
+    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({"_id": new ObjectId(game.lobbyGameId)});
 
     const getGameResponse = await axios.get(`http://localhost:3000/getGame?gameId=${lobbyGame.gameServerId}`);
     const gameData = getGameResponse.data;
@@ -120,6 +122,26 @@ class LobbyUseCasas {
         gameServerId: gameData.game.id,
         playerId: playerId,
         aiId: aiId
+    }
+  }
+
+  public async createTutorialGame() {
+    var playerDeck = await this.lobbyRepository.decksCollection.findOne({"name": "PlayerTutorial"});
+    var aiDeck = await this.lobbyRepository.decksCollection.findOne({"name": "AITutorial"});
+
+    const game = await this.createGame(playerDeck._id, aiDeck._id, false);
+    var lobbyGameId = game.lobbyGameId;
+
+    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({"_id": new ObjectId(lobbyGameId)});
+
+    const getGameResponse = await axios.get(`http://localhost:3000/getGame?gameId=${lobbyGame.gameServerId}`);
+    const gameData = getGameResponse.data;
+
+    return {
+        lobbyGameId: lobbyGameId,
+        gameServerId: gameData.game.id,
+        playerId: gameData.player1.id,
+        aiId: gameData.player2.id
     }
   }
 
