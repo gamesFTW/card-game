@@ -3,15 +3,18 @@ import { LobbyRepository } from './LobbyRepository';
 import { DecksResponse, GetGamesResponse } from './dtos';
 import { ObjectId } from 'mongodb';
 import { LobbyUseCasas } from './LobbyUseCases';
+import { MatchMaker } from './MatchMaker';
 
 class LobbyController {
   public router: Router;
   private lobbyRepository: LobbyRepository;
   private lobbyUseCasas: LobbyUseCasas;
+  private matchMaker: MatchMaker;
 
-  constructor(lobbyRepository: LobbyRepository, lobbyUseCasas: LobbyUseCasas) {
+  constructor(lobbyRepository: LobbyRepository, lobbyUseCasas: LobbyUseCasas, matchMaker: MatchMaker) {
     this.lobbyRepository = lobbyRepository;
     this.lobbyUseCasas = lobbyUseCasas;
+    this.matchMaker = matchMaker;
     this.router = new Router();
     this.router.get('/methods/getGames', this.getGames.bind(this));
     this.router.get('/publications/Decks', this.getDecks.bind(this));
@@ -19,6 +22,7 @@ class LobbyController {
     this.router.post('/methods/createGame', this.createGame.bind(this));
     this.router.post('/methods/createSinglePlayerGame', this.createSinglePlayerGame.bind(this));
     this.router.post('/methods/createTutorialGame', this.createTutorialGame.bind(this));
+    this.router.post('/methods/findMultyplayerGame', this.findMultyplayerGame.bind(this));
     this.router.post('/methods/removeGameById', this.removeGame.bind(this));
   }
 
@@ -50,6 +54,10 @@ class LobbyController {
 
   public async createTutorialGame(ctx: Router.IRouterContext): Promise<void> {
     ctx.body = await this.lobbyUseCasas.createTutorialGame();
+  }
+
+  public async findMultyplayerGame(ctx: Router.IRouterContext): Promise<void> {
+    ctx.body = await this.matchMaker.findMultyplayerGame(ctx.request.body.deckId);
   }
 
   public async removeGame(ctx: Router.IRouterContext): Promise<void> {

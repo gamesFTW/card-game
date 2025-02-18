@@ -3,12 +3,14 @@ import { Game } from './entities/Game';
 import { Deck } from './entities/Deck';
 import { Card } from './entities/Card';
 import { SoundPack } from './entities/SoundPack';
+import { QueueOfPlayer } from './entities/QueueOfPlayer';
 
 class LobbyRepository {
     public gamesCollection: Collection<Game>;
     public decksCollection: Collection<Deck>;
     public cardsCollection: Collection<Card>;
     public soundPacksCollection: Collection<SoundPack>;
+    public queueOfPlayersCollection: Collection<QueueOfPlayer>;
 
     public imagesFilerecordCollection: Collection<any>;
     public imagesChunksCollection: Collection<any>;
@@ -27,6 +29,7 @@ class LobbyRepository {
         this.decksCollection = this.database.collection('Decks');
         this.cardsCollection = this.database.collection('Cards');
         this.soundPacksCollection = this.database.collection('SoundPacks');
+        this.queueOfPlayersCollection = this.database.collection('QueueOfPlayers');
 
         this.imagesFilerecordCollection = this.database.collection('cfs.Images.filerecord');
         this.imagesChunksCollection = this.database.collection('cfs_gridfs.Images.chunks');

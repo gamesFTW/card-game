@@ -18,6 +18,7 @@ import { DomainError } from './infr/DomainError';
 import { LobbyUseCasas } from './lobby/LobbyUseCases';
 import { LobbyRepository } from './lobby/LobbyRepository';
 import { LobbyController } from './lobby/LobbyController';
+import { MatchMaker } from './lobby/MatchMaker';
 
 let DEBUG = true;
 
@@ -62,8 +63,9 @@ async function main (): Promise<void> {
   await lobbyRepository.init();
 
   const lobbyUseCasas = new LobbyUseCasas(lobbyRepository);
-  const lobbyController = new LobbyController(lobbyRepository, lobbyUseCasas);
   const staticContorller = new StaticContorller(lobbyRepository);
+  const matchMaker = new MatchMaker(lobbyUseCasas);
+  const lobbyController = new LobbyController(lobbyRepository, lobbyUseCasas, matchMaker);
 
   godOfSockets.autoRegistrateUsers(wsIO);
   // const gameIds = await lobbyService.getAllGames();
