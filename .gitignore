@@ -5,3 +5,5 @@ unity-client/build
 __pycache__
 
 *.h5f
+_dumps
+_builds
