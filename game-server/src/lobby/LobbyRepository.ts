@@ -4,6 +4,7 @@ import { Deck } from './entities/Deck';
 import { Card } from './entities/Card';
 import { SoundPack } from './entities/SoundPack';
 import { QueueOfPlayer } from './entities/QueueOfPlayer';
+import config from '../config';
 
 class LobbyRepository {
     public gamesCollection: Collection<Game>;
@@ -21,10 +22,10 @@ class LobbyRepository {
     private client: MongoClient;
 
     async init() {
-        this.client = new MongoClient('mongodb://localhost:27017/');
+        this.client = new MongoClient(`mongodb://${config.MONGO_URL}:${config.MONGO_URL}/`);
         await this.client.connect();
       
-        this.database = this.client.db('lobby_old');
+        this.database = this.client.db('lobby');
         this.gamesCollection = this.database.collection('Games');
         this.decksCollection = this.database.collection('Decks');
         this.cardsCollection = this.database.collection('Cards');

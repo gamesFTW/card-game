@@ -51,10 +51,9 @@
     "typescript": "^2.6.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "dev": "ts-node-dev src/index.ts",
-    "build": "rm -rf dist && tsc src/index.ts"
+    "build": "rm -rf dist && tsc src/index.ts",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",

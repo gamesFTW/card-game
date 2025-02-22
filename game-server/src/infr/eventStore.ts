@@ -5,7 +5,7 @@ import config from '../config';
 
 let eventstore = eventstoreConstructor({
   type: 'mongodb',
-  host: process.env['MONGO_IP'] || config.MONGO_URL,
+  host: config.MONGO_URL,
   port: config.MONGO_PORT,
   timeout: 1000
 });
@@ -33,7 +33,7 @@ promisedEventstore.init((err: Error) => {
   if (err !== null) {
     console.log(err);
   } else {
-    console.log('Connected to database');
+    console.log('Event store was connected to database');
   }
 });
 
