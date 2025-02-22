@@ -182,7 +182,7 @@ class LobbyUseCasas {
     }
 
     const allCards: CardDto[] = [];
-    for (let i = 0; i <= cardNumber; i++) {
+    for (let i = 0; i < cardNumber; i++) {
       allCards.push(cardDto as CardDto);
     }
 
