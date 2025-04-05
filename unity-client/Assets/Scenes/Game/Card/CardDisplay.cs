@@ -515,7 +515,7 @@ public class CardDisplay : MonoBehaviour
     private void UpdateZIndex()
     {
         Vector3 position = transform.localPosition;
-        float z = (float)(position.x * 0.01) - 10;
+        float z = (float)(position.x * 0.01) + 10;
 
         if (IsZoomed)
         {
