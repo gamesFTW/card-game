@@ -19,13 +19,14 @@ class LobbyRepository {
     public soundsChunksCollection: Collection<any>;
     // public imagesBucket: GridFSBucket;
     private database: Db;
-    private client: MongoClient;
+    private mongoClient: MongoClient;
+
+    constructor(client: MongoClient) {
+        this.mongoClient = client;
+    }
 
     async init() {
-        this.client = new MongoClient(`mongodb://${config.MONGO_URL}:${config.MONGO_URL}/`);
-        await this.client.connect();
-      
-        this.database = this.client.db('lobby');
+        this.database = this.mongoClient.db('lobby');
         this.gamesCollection = this.database.collection('Games');
         this.decksCollection = this.database.collection('Decks');
         this.cardsCollection = this.database.collection('Cards');

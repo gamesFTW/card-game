@@ -20,7 +20,7 @@ namespace Lobby
 
         void Start()
         {
-            googleAnalytics.LogScreen("Lobby");
+            // googleAnalytics.LogScreen("Lobby");
 
             GameState.mainPlayerId = "";
             GameState.enemyOfMainPlayerId = "";

@@ -28,7 +28,7 @@ interface MoveCardAction {
   currentMovingPoints?: number;
 }
 
-class MoveCardUseCase extends UseCase {
+class MoveCardUseCase extends UseCase<MoveCardParams> {
   protected action: MoveCardAction = {
     type: 'MoveCardAction'
   };

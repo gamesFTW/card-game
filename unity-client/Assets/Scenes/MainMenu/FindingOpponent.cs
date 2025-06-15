@@ -13,7 +13,7 @@ namespace Lobby
 
         async void Start()
         {
-            googleAnalytics.LogScreen("Finding opponent");
+            // googleAnalytics.LogScreen("Finding opponent");
 
             var backButton = this.transform.Find("BackButton").GetComponent<Button>();
 

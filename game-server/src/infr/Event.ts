@@ -1,7 +1,6 @@
 import * as lodash from 'lodash';
 
 import { Entity } from './Entity';
-import config from '../config';
 
 class Event<DataType = any, ExtraType = any> {
   public static currentOrderIndex = 0;

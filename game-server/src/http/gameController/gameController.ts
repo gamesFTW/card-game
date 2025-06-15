@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import { Router } from 'express';
 
 import { Game } from '../../domain/game/Game';
 import { EntityId } from '../../infr/Entity';
@@ -11,48 +11,65 @@ import config from '../../config';
 import { Repository } from '../../infr/repositories/Repository';
 import { getGameAction } from './getGameAction/getGameAction';
 import { lobbyService } from '../../app/lobbyService';
+import { ObjectId } from 'mongodb';
 
-const gameController = new Router();
+const gameController = Router();
 
-gameController.post('/createGame', async (ctx) => {
+gameController.post('/createGame', async (request, response) => {
   // Temporary data test data
   // ctx.request.body.playerA = startingCardsFixture.playerA;
   // ctx.request.body.playerB = startingCardsFixture.playerB;
 
-  let playerAData = ctx.request.body.playerA as PlayerCreationData;
-  let playerBData = ctx.request.body.playerB as PlayerCreationData;
+  let playerAData = request.body.playerA as PlayerCreationData;
+  let playerBData = request.body.playerB as PlayerCreationData;
 
   let game = new Game();
-  let {player1, player2, player1Cards, player2Cards, board, areas} = game.create(playerAData, playerBData);
+  const gameId = new ObjectId();
 
-  let repository = new Repository();
+  await Repository.gamesCollection.insertOne({
+    _id: gameId,
+    type: 'solo',
+    date: (new Date()).toString(),
+    gameServerId: gameId.toString(),
+    started: false,
+    deckId1: playerAData.deckId,
+    deckId2: playerBData.deckId,
+    deckId3: null,
+    deckId4: null,
+    entities: {},
+  });
+
+  let {player1, player2, player1Cards, player2Cards, board, areas} = game.create(gameId.toString(), playerAData, playerBData);
+
+  let repository = new Repository(game.id);
+  
   await repository.save([player1Cards, player1, player2Cards, player2, board, game, areas]);
 
-  godOfSockets.registerNamespace(game.id);
+  //godOfSockets.registerNamespace(game.id);
 
-  ctx.body = {gameId: game.id};
+  response.send({gameId: game.id});
 });
 
 gameController.get('/getGame', getGameAction);
 
-gameController.post('/endTurn', async (ctx) => {
-  let gameId = ctx.request.body.gameId as EntityId;
+gameController.post('/endTurn', async (request, response) => {
+  let gameId = request.body.gameId as EntityId;
   // TODO: playerId нужно доставать из сессии
-  let endingTurnPlayerId = ctx.request.body.playerId as EntityId;
+  let endingTurnPlayerId = request.body.playerId as EntityId;
 
   let endTurnUseCase = new EndTurnUseCase({gameId, endingTurnPlayerId});
   await endTurnUseCase.execute();
 
-  ctx.body = `Ok`;
+  response.send(`Ok`);
 });
 
-gameController.get('/getLastGame', async (ctx) => {
+gameController.get('/getLastGame', async (request, response) => {
   const games = await lobbyService.getAllGames();
   let lastGameId = games[games.length - 1].gameServerId;
 
-  const response = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
+  const lastGame = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
 
-  ctx.body = response.data;
+  response.send(lastGame);
 });
 
 export {gameController};

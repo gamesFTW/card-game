@@ -36,7 +36,7 @@ class MatchMaker {
       };
     }
 
-    let timeoutId: NodeJS.Timer;
+    let timeoutId: NodeJS.Timeout;
 
     const creatingGame: CreatingGame = {
       gameId: null, deckId: myDeckId, gameFound: false

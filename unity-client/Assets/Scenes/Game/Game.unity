@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 23745923}
   - component: {fileID: 23745918}
   - component: {fileID: 23745924}
+  - component: {fileID: 23745925}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -374,16 +375,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23745907}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4727342bf2fe4cd496f28cdbb5411ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  url: ws://localhost:3000/socket.io/?EIO=4&transport=websocket
   autoConnect: 1
   reconnectDelay: 5
   ackExpirationTime: 1800
   pingInterval: 25
   pingTimeout: 60
+  <sid>k__BackingField: 
+  connected: 0
+  thPinging: 0
+  thPong: 0
+  wsConnected: 0
+  packetId: 0
 --- !u!114 &23745922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,7 +399,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 23745907}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0747c4605dff4e95914ca40b726c29f, type: 3}
   m_Name: 
@@ -418,6 +426,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b39f17cc73c78d4295f4bc51009ec2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &23745925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23745907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8acc1134cde4bee4f8252669ca0b4ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &93866544
@@ -3694,6 +3714,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GAv4
       objectReference: {fileID: 0}
+    - target: {fileID: 197732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -3738,6 +3762,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3750,7 +3779,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1149878549}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa336ff3365034234845848b54bfee17, type: 3}
   m_Name: 

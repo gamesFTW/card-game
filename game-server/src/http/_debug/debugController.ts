@@ -1,11 +1,11 @@
-import * as Router from 'koa-router';
+import { Router } from 'express';
 import axios from 'axios';
 import opn = require('opn');
 import config from '../../config';
 import { startingCardsFixture } from './startingCardsFixture';
 import { Repository } from '../../infr/repositories/Repository';
 
-const debugController = new Router();
+const debugController = Router();
 
 debugController.post('/clearInMemoryCache', async (ctx) => {
   Repository.clearInMemoryCache();
@@ -32,12 +32,12 @@ debugController.post('/createGameForML', async (ctx) => {
   // opn(ctx.body);
 });
 
-debugController.post('/playDebugGameWithDelay', async (ctx) => {
-  let gameId = ctx.request.body.gameId as string;
+debugController.post('/playDebugGameWithDelay', async (request, response) => {
+  let gameId = request.body.gameId as string;
 
-  let response = await axios.get(config.GAME_URL + `getGame?gameId=${gameId}`);
-  let player1 = response.data.player1;
-  let player2 = response.data.player2;
+  let gameResponse = await axios.get(config.GAME_URL + `getGame?gameId=${gameId}`);
+  let player1 = gameResponse.data.player1;
+  let player2 = gameResponse.data.player2;
 
   await playCard(gameId, player1.id, player1.hand[0].id, 6, 1);
   await playCard(gameId, player1.id, player1.hand[1].id, 4, 1);
@@ -47,7 +47,7 @@ debugController.post('/playDebugGameWithDelay', async (ctx) => {
   await playCard(gameId, player2.id, player2.hand[1].id, 4, 9);
   await endTurn(gameId, player2.id);
 
-  ctx.body = {gameId};
+  response.send({gameId});
 });
 
 function delay (duration: number): Promise<void> {

@@ -1,9 +1,9 @@
-import * as Router from 'koa-router';
+import { Router } from 'express';
 import { LobbyRepository } from './LobbyRepository';
 import { DecksResponse, GetGamesResponse } from './dtos';
-import { ObjectId } from 'mongodb';
 import { LobbyUseCasas } from './LobbyUseCases';
 import { MatchMaker } from './MatchMaker';
+import { ObjectId } from 'mongodb';
 
 class LobbyController {
   public router: Router;
@@ -15,7 +15,7 @@ class LobbyController {
     this.lobbyRepository = lobbyRepository;
     this.lobbyUseCasas = lobbyUseCasas;
     this.matchMaker = matchMaker;
-    this.router = new Router();
+    this.router = Router();
     this.router.get('/methods/getGames', this.getGames.bind(this));
     this.router.get('/publications/Decks', this.getDecks.bind(this));
     this.router.get('/methods/getPlayerDecks', this.getPlayerDecks.bind(this));
@@ -26,43 +26,43 @@ class LobbyController {
     this.router.post('/methods/removeGameById', this.removeGame.bind(this));
   }
 
-  private async getGames(ctx: Router.IRouterContext): Promise<void> {
+  private async getGames(_request, response): Promise<void> {
     const games = await this.lobbyUseCasas.getGames();
 
-    ctx.body = { Games: games } as GetGamesResponse;
+    response.send({ Games: games } as GetGamesResponse);
   }
 
-  private async getDecks(ctx: Router.IRouterContext): Promise<void> {
+  private async getDecks(_request, response): Promise<void> {
     const decksEntities = await this.lobbyUseCasas.getDecks();
 
-    ctx.body = { Decks: decksEntities } as DecksResponse;
+    response.send({ Decks: decksEntities } as DecksResponse);
   }
 
-  private async getPlayerDecks(ctx: Router.IRouterContext): Promise<void> {
+  private async getPlayerDecks(request, response): Promise<void> {
     const playerDecks = await this.lobbyUseCasas.getPlayerDecks();
 
-    ctx.body = { Decks: playerDecks } as DecksResponse;
+    response.send({ Decks: playerDecks } as DecksResponse);
   }
 
-  private async createGame(ctx: Router.IRouterContext) {
-    ctx.body = await this.lobbyUseCasas.createGame(ctx.request.body.deckId1, ctx.request.body.deckId2, ctx.request.body.random);
+  private async createGame(request, response) {
+    response.send(await this.lobbyUseCasas.createGame(request.body.deckId1, request.body.deckId2, request.body.random));
   }
 
-  public async createSinglePlayerGame(ctx: Router.IRouterContext): Promise<void> {
-    ctx.body = await this.lobbyUseCasas.createSinglePlayerGame(ctx.request.body.deckId1);
+  public async createSinglePlayerGame(request, response): Promise<void> {
+    response.send(await this.lobbyUseCasas.createSinglePlayerGame(request.body.deckId1));
   }
 
-  public async createTutorialGame(ctx: Router.IRouterContext): Promise<void> {
-    ctx.body = await this.lobbyUseCasas.createTutorialGame();
+  public async createTutorialGame(request, response): Promise<void> {
+    response.send(await this.lobbyUseCasas.createTutorialGame());
   }
 
-  public async findMultyplayerGame(ctx: Router.IRouterContext): Promise<void> {
-    ctx.body = await this.matchMaker.findMultyplayerGame(ctx.request.body.deckId);
+  public async findMultyplayerGame(request, response): Promise<void> {
+    response.send(await this.matchMaker.findMultyplayerGame(request.body.deckId));
   }
 
-  public async removeGame(ctx: Router.IRouterContext): Promise<void> {
-    await this.lobbyRepository.gamesCollection.deleteOne( { _id: new ObjectId(ctx.request.body.gameLobbyId) });
-    ctx.body = 'Ok';
+  public async removeGame(request, response): Promise<void> {
+    await this.lobbyRepository.gamesCollection.deleteOne( { _id: new ObjectId(request.body.gameLobbyId as string) });
+    response.send(`Ok`);
   }
 }
 

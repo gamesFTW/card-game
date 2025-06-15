@@ -24,6 +24,7 @@ enum PlayerStatus {
 }
 
 interface PlayerCreationData {
+  deckId: string;
   deck: Array<CardCreationData>;
   heroes: Array<CardCreationData>;
 }

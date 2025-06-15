@@ -5,11 +5,12 @@ import { Board } from '../../../domain/board/Board';
 import { Player } from '../../../domain/player/Player';
 import { Area } from '../../../domain/area/Area';
 import { fillPlayer } from './fillPlayer';
+import express, { Request, Response } from 'express';
 
-const getGameAction = async (ctx: any) => {
-  let gameId = ctx.query.gameId as EntityId;
+const getGameAction = async (request: Request, response: Response) => {
+  let gameId = request.query.gameId as EntityId;
 
-  let repository = new Repository();
+  let repository = new Repository(gameId);
 
   let game = await repository.get<Game>(gameId, Game);
 
@@ -23,14 +24,12 @@ const getGameAction = async (ctx: any) => {
   let player1Response = await fillPlayer(player1, board, repository);
   let player2Response = await fillPlayer(player2, board, repository);
 
-  let response = {
+  response.send({
     game: Object(game).state,
     player1: player1Response,
     player2: player2Response,
     areas: areas
-  };
-
-  ctx.body = response;
+  });
 };
 
 const fillAreas = async (board: Board, repository: Repository): Promise<any> => {

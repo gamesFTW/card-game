@@ -1,12 +1,16 @@
 import { Event } from '../Event';
-import { Entity } from '../Entity';
+import { Entity, EntityId } from '../Entity';
 import { eventStore } from '../eventStore';
 import * as lodash from 'lodash';
 import config from '../../config';
 import { Repository } from './Repository';
+import { Collection, ObjectId } from 'mongodb';
+import { Game } from '../../lobby/entities/Game';
 
 class DevRepository {
-  static async save (entities: Array<Entity>): Promise<Array<Event>> {
+  static gamesCollection: Collection<Game>;
+
+  static async save (entities: Array<Entity>, gameId: EntityId): Promise<Array<Event>> {
     let eventsWithEntity: Array<{event: Event, entity: Entity}> = [];
     let events: Array<Event> = [];
 
@@ -22,9 +26,9 @@ class DevRepository {
     });
 
     // Нужно для визуального разделения событий.
-    await DevRepository.saveDebugEntry();
+    // await DevRepository.saveDebugEntry();
     for (let orderedEventWithEntity of orderedEventsWithEntity) {
-      await DevRepository.saveOne(orderedEventWithEntity);
+      await DevRepository.saveOne(orderedEventWithEntity, gameId);
     }
 
     let orderedEvents = lodash.sortBy(events, 'orderIndex');
@@ -32,7 +36,7 @@ class DevRepository {
     return orderedEvents;
   }
 
-  private static async saveOne (orderedEventWithEntity: {event: Event, entity: Entity}): Promise<void> {
+  private static async saveOne (orderedEventWithEntity: {event: Event, entity: Entity}, gameId: EntityId): Promise<void> {
     let {event, entity} = orderedEventWithEntity;
 
     if (config.IN_MEMORY_STORAGE) {
@@ -41,31 +45,39 @@ class DevRepository {
       }
       Repository.inMemoryCache[entity.id].push(event);
     } else {
-      let stream = await eventStore.getEventStream({
-        aggregateId: entity.id,
-        aggregate: entity.constructor.name
-      });
+      const eventId = new ObjectId();
+      const updatePath = `entities.${entity.constructor.name}.${entity.id}.${eventId}`;
 
-      stream.addEvent(event);
-
-      await stream.commit();
+      await Repository.gamesCollection.updateOne(
+          { _id: new ObjectId(gameId) },
+          { 
+              $set: { 
+                  [updatePath]: {
+                    type: event.type,
+                    data: event.data,
+                    extra: event.extra,
+                    id: eventId
+                  } 
+              } 
+          }
+      );
     }
   }
 
-  private static async saveDebugEntry (): Promise<void> {
-    if (config.IN_MEMORY_STORAGE) {
-      return;
-    }
+  // private static async saveDebugEntry (): Promise<void> {
+  //   if (config.IN_MEMORY_STORAGE) {
+  //     return;
+  //   }
 
-    let stream = await eventStore.getEventStream({
-      aggregateId: 'DEBUG',
-      aggregate: 'DEBUG'
-    });
+  //   let stream = await eventStore.getEventStream({
+  //     aggregateId: 'DEBUG',
+  //     aggregate: 'DEBUG'
+  //   });
 
-    stream.addEvent({});
+  //   stream.addEvent({});
 
-    await stream.commit();
-  }
+  //   await stream.commit();
+  // }
 }
 
 export {DevRepository};

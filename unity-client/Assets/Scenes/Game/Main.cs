@@ -57,16 +57,16 @@ public class Main : MonoBehaviour
 
     async Task Start()
     {
-        googleAnalytics.LogScreen("Game");
+        // googleAnalytics.LogScreen("Game");
 
         // TODO Добавить GameType и LobbyDeckId
-        googleAnalytics.LogEvent(
-            new EventHitBuilder()
-            .SetEventCategory(AnalyticsEventsCategory.Game)
-            .SetEventAction(AnalyticsEvents.EnteredTheGame)
-            .SetCustomDimension(AnalyticsDemention.GameId, GameState.gameId)
-            .SetCustomDimension(AnalyticsDemention.PlayerId, GameState.mainPlayerId)
-        );
+        // googleAnalytics.LogEvent(
+        //     new EventHitBuilder()
+        //     .SetEventCategory(AnalyticsEventsCategory.Game)
+        //     .SetEventAction(AnalyticsEvents.EnteredTheGame)
+        //     .SetCustomDimension(AnalyticsDemention.GameId, GameState.gameId)
+        //     .SetCustomDimension(AnalyticsDemention.PlayerId, GameState.mainPlayerId)
+        // );
 
         var gameData = await LoadGame();
 
@@ -157,8 +157,12 @@ public class Main : MonoBehaviour
 
     private void OnGameDataFirstTimeRecived()
     {
+        // GameObject go = GameObject.Find("Canvas");
+        // SocketIOClient socketClient = go.GetComponent<SocketIOClient>();
+        // socketClient.StartExchange();
+
         GameObject go = GameObject.Find("Canvas");
-        SocketIOClient socketClient = go.GetComponent<SocketIOClient>();
-        socketClient.StartExchange();
+        WebSocketClient webSocketClient = go.GetComponent<WebSocketClient>();
+        webSocketClient.RegisterClient();
     }
 }

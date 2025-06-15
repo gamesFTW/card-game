@@ -4,18 +4,22 @@ import { godOfSockets } from './GodOfSockets';
 import { Entity, EntityId } from './Entity';
 import { CardChanges } from '../app/player/AttackCardUseCase';
 
-abstract class UseCase {
+type Params = {
+  gameId: EntityId;
+}
+
+abstract class UseCase<TParams extends Params = Params> {
   protected action: any;
-  protected params: any;
+  protected params: TParams;
   protected entities: any;
   protected repository: Repository;
 
-  constructor (params: any) {
+  constructor (params: TParams) {
     this.params = params;
   }
 
   public static async executeSequentially (gameId: EntityId, useCases: UseCase[]): Promise<void> {
-    const repository = new Repository();
+    const repository = new Repository(gameId);
     const actions = [];
 
     for (let useCase of useCases) {
@@ -29,7 +33,7 @@ abstract class UseCase {
 
   public async execute (sendActions: boolean = true): Promise<void> {
     if (!this.repository) {
-      this.repository = new Repository();
+      this.repository = new Repository(this.params.gameId);
     }
 
     await this.readEntities();
@@ -53,7 +57,7 @@ abstract class UseCase {
     this.repository = repository;
   }
 
-  protected abstract async readEntities (): Promise<void>;
+  protected abstract readEntities (): Promise<void>;
 
   protected abstract addEventListeners (): void;
 

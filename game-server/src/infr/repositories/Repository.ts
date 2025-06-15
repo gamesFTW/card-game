@@ -1,22 +1,29 @@
 import { Event } from '../Event';
 import { Entity, EntityId } from '../Entity';
-import { eventStore } from '../eventStore';
-import * as eventstore from 'eventstore';
 import * as lodash from 'lodash';
 import { DevRepository } from './DevRepository';
 import config from '../../config';
-import { mq } from '../mq/mq';
+import { Collection } from 'mongodb';
+import { EventData, Game } from '../../lobby/entities/Game';
+import { ObjectId } from 'mongodb';
 
 class Repository {
+  static gamesCollection: Collection<Game>;
   // Да save умеет работать с массивом, а get не умеет. Я не поборол тайпскрипт.
   // Поэтому есть метод getMany.
 
   public static inMemoryCache: {[key: string]: Event[]} = {} as {[key: string]: any};
 
+  public gameId: EntityId;
+
   private cache: {[key: string]: any} = {} as {[key: string]: any};
 
   public static clearInMemoryCache (): void {
     Repository.inMemoryCache = {};
+  }
+
+  constructor(gameId: EntityId) {
+    this.gameId = gameId;
   }
 
   async save (param: Entity | Array<Entity | Array<Entity>>): Promise<Array<Event>> {
@@ -26,7 +33,7 @@ class Repository {
     // TODO нужно помечать события как сохраненные и как запаблишиные.
 
     if (config.DEV) {
-      events = await DevRepository.save(entities);
+      events = await DevRepository.save(entities, this.gameId);
     } else {
       throw new Error('config.DEV == false is Not implemented now.');
       // events = await this.saveInternal(entities);
@@ -38,31 +45,40 @@ class Repository {
     return events;
   }
 
-  async get <EntityClass> (id: EntityId, ClassConstructor: any): Promise<EntityClass> {
-    if (this.cache[id]) {
-      return this.cache[id] as EntityClass;
+  async get <EntityClass> (entityId: EntityId, ClassConstructor: any): Promise<EntityClass> {
+    if (this.cache[entityId]) {
+      return this.cache[entityId] as EntityClass;
     }
 
     let entity;
 
     if (config.IN_MEMORY_STORAGE) {
-      let events = Repository.inMemoryCache[id];
+      let events = Repository.inMemoryCache[entityId];
 
       entity = new ClassConstructor(events);
     } else {
-      let stream = null;
-      try {
-        stream = await eventStore.getEventStream({
-          aggregateId: id,
-          aggregate: ClassConstructor.name
-        });
-      } catch (error) {
-        throw new Error(`Cant find id: ${id} while creating ${ClassConstructor.name}`);
-      }
-      entity = this.createEntityByEvents<EntityClass>(stream.events, ClassConstructor);
+      // let stream = null;
+      // try {
+      //   stream = await eventStore.getEventStream({
+      //     aggregateId: id,
+      //     aggregate: ClassConstructor.name
+      //   });
+      // } catch (error) {
+      //   throw new Error(`Cant find id: ${id} while creating ${ClassConstructor.name}`);
+      // }
+
+      const result = await Repository.gamesCollection.findOne(
+          { _id: new ObjectId(this.gameId) },
+          { projection: { [`entities.${ClassConstructor.name}.${entityId}`]: 1 } }
+      );
+
+      const eventDataRecords = result?.entities?.[ClassConstructor.name]?.[entityId];
+      const eventDatas = Object.values(eventDataRecords);
+
+      entity = this.createEntityByEvents<EntityClass>(eventDatas, ClassConstructor);
     }
 
-    this.cache[id] = entity;
+    this.cache[entityId] = entity;
     return entity;
   }
 
@@ -79,46 +95,46 @@ class Repository {
     return lodash.flatten(params);
   }
 
-  private async saveInternal (entities: Array<Entity>): Promise<Array<Event>> {
-    let eventsArray = await Promise.all(entities.map(this.saveOne));
-    return lodash.flatten(eventsArray);
-  }
+  // private async saveInternal (entities: Array<Entity>, gameId: EntityId): Promise<Array<Event>> {
+  //   let eventsArray = await Promise.all(entities.map((entity) => this.saveOne(entity, gameId)));
+  //   return lodash.flatten(eventsArray);
+  // }
 
-  private async dispatchEvents (events: Array<Event>): Promise<void> {
-    events.forEach((event: Event) => mq.publish(event));
-  }
+  // private async saveOne (entity: Entity, gameId: EntityId): Promise<Array<Event>> {
+  //   const events = entity.changes;
 
-  private async saveOne (entity: Entity): Promise<Array<Event>> {
-    let stream = await eventStore.getEventStream({
-      aggregateId: entity.id,
-      aggregate: entity.constructor.name
-    });
+  //   for await (const event of events) {
+  //     const eventId = new ObjectId();
+  //     const updatePath = `entities.${entity.constructor.name}.${entity.id}.${eventId}`;
+        
+  //     const result = await Repository.gamesCollection.updateOne(
+  //         { _id: gameId },
+  //         { 
+  //             $set: { 
+  //                 [updatePath]: {
+  //                   type: event.type,
+  //                   data: event.data,
+  //                   extra: event.extra,
+  //                   id: eventId
+  //                 } 
+  //             } 
+  //         }
+  //     );
+  //   }
 
-    let events = entity.changes;
+  //   events.forEach(event => event.saved = true);
 
-    events.forEach((event: Event) => {
-      stream.addEvent(event);
-    });
+  //   return events;
+  // }
 
-    await stream.commit();
-
-    events.forEach(event => event.saved = true);
-
-    return events;
-  }
-
-  private createEntityByEvents<EntityClass> (
-      streamEvents: Array <eventstore.Event>, ClassConstructor: any
-  ): EntityClass {
-    let events = streamEvents.map((eventstoreEvent: eventstore.Event) => {
-      let payload = eventstoreEvent.payload;
-
-      if (payload.data === undefined) {
-        return new Event<any>(payload.type);
-      } else if (payload.extra === undefined) {
-        return new Event<any>(payload.type, payload.data);
+  private createEntityByEvents<EntityClass> (eventDatas: Array <EventData>, ClassConstructor: any): EntityClass {
+    let events = eventDatas.map((eventData) => {
+      if (eventData.data === undefined) {
+        return new Event<any>(eventData.type);
+      } else if (eventData.extra === undefined) {
+        return new Event<any>(eventData.type, eventData.data);
       } else {
-        return new Event<any>(payload.type, payload.data, payload.extra);
+        return new Event<any>(eventData.type, eventData.data, eventData.extra);
       }
     });
 

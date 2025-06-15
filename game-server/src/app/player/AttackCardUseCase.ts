@@ -56,7 +56,7 @@ interface CardAttackedAction {
   cardChanges: CardChanges[];
 }
 
-class AttackCardUseCase extends UseCase {
+class AttackCardUseCase extends UseCase<AttackCardParams> {
   protected action: CardAttackedAction = {
     type: 'CardAttackedAction',
     attackerCardId: '',

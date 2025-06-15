@@ -1,6 +1,5 @@
-const generate = require('nanoid/generate');
-
 import { Event } from './Event';
+import { ObjectId } from 'mongodb';
 
 type EntityId = string;
 
@@ -33,7 +32,7 @@ class Entity {
   }
 
   protected generateId (): EntityId {
-    return generate('1234567890qwertyuiopasdfghjklzxcvbnm', 30);
+    return new ObjectId().toString();
   }
 
   private callListeners (event: Event): void {

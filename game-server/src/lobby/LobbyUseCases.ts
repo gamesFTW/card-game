@@ -5,6 +5,7 @@ import { Deck } from './entities/Deck';
 import axios from 'axios';
 import { Card } from './entities/Card';
 import { LobbyRepository } from './LobbyRepository';
+import { v4 as uuidv4 } from 'uuid';
 import { ObjectId } from 'mongodb';
 
 class LobbyUseCasas {
@@ -25,6 +26,7 @@ class LobbyUseCasas {
 
       games.push({
         ...gameEntity,
+        _id: gameEntity._id.toString(),
         deckName1: deck1 ? deck1.name : 'undef',
         deckName2: deck1 ? deck2.name : 'undef',
       });
@@ -62,11 +64,13 @@ class LobbyUseCasas {
 
     const data = {
         playerA: {
+            deckId: deck1._id,
             deck: await this.getCardsByIds(deck1.cards),
             heroes: await this.getCardsByIds(deck1.handCards),
             ai: this.isAIDeck(deck1)
         },
         playerB: {
+            deckId: deck2._id,
             deck: await this.getCardsByIds(deck2.cards),
             heroes: await this.getCardsByIds(deck2.handCards),
             ai: this.isAIDeck(deck2)
@@ -76,15 +80,15 @@ class LobbyUseCasas {
     const createGameResponse = await axios.post('http://localhost:3000/createGame', data);
     let gameServerGameId = createGameResponse.data.gameId;
 
-    const gameLobbyId = await this.createLobbyGame(deck1._id, deck2._id, gameServerGameId);
-    console.log('gameLobbyId', gameLobbyId);
+    // const gameLobbyId = await this.createLobbyGame(deck1._id, deck2._id, gameServerGameId);
+    // console.log('gameLobbyId', gameLobbyId);
 
     const getGameResponse = await axios.get(`http://localhost:3000/getGame?gameId=${gameServerGameId}`);
     const gameData = getGameResponse.data;
 
     return {
         gameId: gameServerGameId,
-        lobbyGameId: gameLobbyId,
+        lobbyGameId: gameServerGameId,
         playerOfDeckId1: isItVicaVersa ? gameData.game.player2Id : gameData.game.player1Id,
         playerOfDeckId2: isItVicaVersa ? gameData.game.player1Id : gameData.game.player2Id
     };
@@ -100,7 +104,7 @@ class LobbyUseCasas {
     var deckId2 = aiDecks[0]._id;
     var game = await this.createGame(deckId1, deckId2);
 
-    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({"_id": new ObjectId(game.lobbyGameId)});
+    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({ _id: new ObjectId(game.lobbyGameId) });
 
     const getGameResponse = await axios.get(`http://localhost:3000/getGame?gameId=${lobbyGame.gameServerId}`);
     const gameData = getGameResponse.data;
@@ -132,7 +136,7 @@ class LobbyUseCasas {
     const game = await this.createGame(playerDeck._id, aiDeck._id, false);
     var lobbyGameId = game.lobbyGameId;
 
-    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({"_id": new ObjectId(lobbyGameId)});
+    var lobbyGame = await this.lobbyRepository.gamesCollection.findOne({_id: new ObjectId(lobbyGameId) });
 
     const getGameResponse = await axios.get(`http://localhost:3000/getGame?gameId=${lobbyGame.gameServerId}`);
     const gameData = getGameResponse.data;
@@ -189,20 +193,23 @@ class LobbyUseCasas {
     return allCards;
   }
 
-  private async createLobbyGame(deckId1: string, deckId2: string, gameServerId: string): Promise<string> {
-    const result = await this.lobbyRepository.gamesCollection.insertOne({
-        type: 'solo',
-        date: new Date(),
-        gameServerId,
-        started: false,
-        deckId1,
-        deckId2,
-        deckId3: null,
-        deckId4: null,
-    });
+  // private async createLobbyGame(deckId1: string, deckId2: string, gameServerId: string): Promise<string> {
+  //   const id = new ObjectId();
+  //   await this.lobbyRepository.gamesCollection.insertOne({
+  //       _id: id,
+  //       type: 'solo',
+  //       date: (new Date()).toString(),
+  //       gameServerId,
+  //       started: false,
+  //       deckId1,
+  //       deckId2,
+  //       deckId3: null,
+  //       deckId4: null,
+  //       entities: {},
+  //   });
 
-    return result.insertedId.toHexString();
-  };
+  //   return id.toString();
+  // };
   
   private isAIDeck(deck: Deck) {
       return deck.name.startsWith("AI");

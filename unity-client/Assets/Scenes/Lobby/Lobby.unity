@@ -4575,6 +4575,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GAv4
       objectReference: {fileID: 0}
+    - target: {fileID: 197732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 497732, guid: eedce375080544b7fb3f03b742e2c9e9, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -4619,6 +4623,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114448813081680560, guid: eedce375080544b7fb3f03b742e2c9e9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4631,7 +4640,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1879965441}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa336ff3365034234845848b54bfee17, type: 3}
   m_Name: 

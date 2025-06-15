@@ -1,30 +1,23 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"],
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": true,
+    "noEmitOnError": true,
+    "typeRoots": ["node_modules/@types", "src/@types"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
-    "lib": [
-      "es7"
-    ],
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "src/@types/*"
-      ]
-    }
+    "useDefineForClassFields": false
   },
-  "include": [
-    "src/**/*"
-  ],
-  "allowJs": false,
-  "exclude": [
-    "dist/*"
-  ]
+  "include": ["src/**/*", "src/@types/**/*"],
+  "exclude": ["node_modules"]
 }

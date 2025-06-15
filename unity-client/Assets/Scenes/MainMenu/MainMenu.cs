@@ -13,12 +13,12 @@ namespace Lobby
 
         void Start()
         {
-            googleAnalytics.StartSession();
-            googleAnalytics.LogScreen("Main menu");
+            // googleAnalytics.StartSession();
+            // googleAnalytics.LogScreen("Main menu");
 
             if (!MainMenu.appRunned)
             {
-                googleAnalytics.LogEvent(AnalyticsEventsCategory.App, AnalyticsEvents.AppRunned);
+                // googleAnalytics.LogEvent(AnalyticsEventsCategory.App, AnalyticsEvents.AppRunned);
                 MainMenu.appRunned = true;
             }
 

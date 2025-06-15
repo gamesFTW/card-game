@@ -1,11 +1,5 @@
 import chalk from 'chalk';
-
-import * as Koa from 'koa';
-import * as bodyParser from 'koa-bodyparser';
-import * as IO from 'koa-socket-2';
-import * as cors from 'koa2-cors';
-
-import { eventStore } from './infr/eventStore';
+import cors from 'cors';
 
 import { godOfSockets } from './infr/GodOfSockets';
 import { lobbyService } from './app/lobbyService';
@@ -19,47 +13,48 @@ import { LobbyUseCasas } from './lobby/LobbyUseCases';
 import { LobbyRepository } from './lobby/LobbyRepository';
 import { LobbyController } from './lobby/LobbyController';
 import { MatchMaker } from './lobby/MatchMaker';
+import { Collection, MongoClient } from 'mongodb';
+
+import express, { Request, Response, NextFunction } from 'express';
+import path from 'node:path';
+import { Repository } from './infr/repositories/Repository';
+import { DevRepository } from './infr/repositories/DevRepository';
+import { Game } from './lobby/entities/Game';
+import { WebSocketServer } from 'ws';
 
 let DEBUG = true;
 
-async function main (): Promise<void> {
-  await eventStore.on('connect');
+async function main(): Promise<void> {
+  const app = express();
 
-  const app = new Koa();
+  const corsOptions = {
+    // origin: process.env.NODE_ENV === 'production' 
+    //   ? 'https://your-production-domain.com' 
+    //   : 'http://localhost:3000',
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  };
+  
+  app.use(cors(corsOptions));
+  app.use(express.static(path.join(process.cwd(), 'static')));
+  app.use(express.json());
 
-  app.use(cors());
-
-  // app.use(koaStatic(path.join(__dirname, 'static')));
-
-  app.use(bodyParser());
-
-  const wsIO = new IO();
-  wsIO.attach(app, false);
-
-
-  app.use(async (ctx: any, next: any) => {
-    const start = Date.now();
-    await next();
-    const ms = Date.now() - start;
-    DEBUG && console.log(chalk.green(`[${ctx.method}] ${ctx.url} - ${ms}ms`));
-  });
-
-  app.use(async (ctx, next) => {
-    try {
-      await next();
-    } catch (error) {
-      DEBUG && console.error(chalk.red(error.stack));
-
-      if (error instanceof DomainError) {
-        ctx.status = 500;
-      } else {
-        ctx.status = 520;
-      }
-      ctx.body = `${error.message}`;
-    }
+  app.use(async (req: Request, _res: Response, next: NextFunction) => {
+    const start = performance.now();
+    next();
+    const ms = performance.now() - start;
+    DEBUG && console.log(chalk.green(`[${req.method}] ${req.url} - ${ms}ms`));
   });
   
-  const lobbyRepository = new LobbyRepository();
+  const mongoClient = new MongoClient(`mongodb://${config.MONGO_URL}:${config.MONGO_PORT}/`);
+  mongoClient.connect();
+  const database = mongoClient.db('lobby');
+  const gamesCollection: Collection<Game> = database.collection('Games');
+  Repository.gamesCollection = gamesCollection;
+  DevRepository.gamesCollection = gamesCollection;
+  const lobbyRepository = new LobbyRepository(mongoClient);
   await lobbyRepository.init();
 
   const lobbyUseCasas = new LobbyUseCasas(lobbyRepository);
@@ -67,24 +62,29 @@ async function main (): Promise<void> {
   const matchMaker = new MatchMaker(lobbyUseCasas);
   const lobbyController = new LobbyController(lobbyRepository, lobbyUseCasas, matchMaker);
 
-  godOfSockets.autoRegistrateUsers(wsIO);
-  // const gameIds = await lobbyService.getAllGames();
-  // gameIds.forEach(id => godOfSockets.registerNamespace(id));
+  app.use(gameController);
+  app.use(playerController);
+  app.use(debugController);
+  app.use(staticContorller.router);
+  app.use(lobbyController.router);
 
-  app.use(gameController.routes());
-  app.use(playerController.routes());
-  app.use(debugController.routes());
-  app.use(staticContorller.router.routes());
-  app.use(lobbyController.router.routes());
+  app.use((error: Error, _req: Request, res: Response, next: NextFunction) => {
+    DEBUG && console.error(chalk.red(error.stack));
 
-  app.use(gameController.allowedMethods());
-  app.use(playerController.allowedMethods());
-  app.use(debugController.allowedMethods());
-  app.use(staticContorller.router.allowedMethods());
-  app.use(lobbyController.router.allowedMethods());
+    if (error instanceof DomainError) {
+      res.status(500);
+    } else {
+      res.status(520);
+    }
+    res.json(`${error.message}`);
+  });
+  
+  const server = app.listen(3000, () => {
+      console.log(`Server running at http://localhost:3000`);
+  });
 
-  app.listen(3000);
-  console.log('Server listen on ' + config.GAME_URL);
+  const webSocketServer = new WebSocketServer({ server });
+  godOfSockets.autoRegistrateUsers(webSocketServer);
 }
 
 main();

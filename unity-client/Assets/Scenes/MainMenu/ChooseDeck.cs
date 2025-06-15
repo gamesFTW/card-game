@@ -12,7 +12,7 @@ namespace Lobby
 
         async void Start()
         {
-            googleAnalytics.LogScreen("Choose deck");
+            // googleAnalytics.LogScreen("Choose deck");
 
             DecksData decksData = await LobbyServerApi.GetPlayerDecks<DecksData>();
 

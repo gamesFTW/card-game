@@ -18,6 +18,7 @@ import { PoisonService } from '../abilities/PoisonService';
 import { DamageCurseService } from '../abilities/DamageCurseService';
 import { HPAuraService } from '../abilities/HPAuraService';
 
+// TODO: Rename to Battle or World?
 class Game extends Entity {
   protected state: GameState;
 
@@ -31,11 +32,9 @@ class Game extends Entity {
     this.state = new GameState(events);
   }
 
-  public create (playerACreationData: PlayerCreationData, playerBCreationData: PlayerCreationData): {
+  public create (id: EntityId, playerACreationData: PlayerCreationData, playerBCreationData: PlayerCreationData): {
     player1: Player, player2: Player, player1Cards: Array<Card>, player2Cards: Array<Card>, board: Board, areas: Area[]
   } {
-    let id = this.generateId();
-
     let board = new Board();
     board.create(GameConstants.BOARD_WIDTH, GameConstants.BOARD_HEIGHT);
 
@@ -120,7 +119,7 @@ class Game extends Entity {
       }
     }
 
-    points = lodash.sample(points, 12);
+    points = lodash.sampleSize(points, 12);
 
     let areas = [];
     for (let point of points) {

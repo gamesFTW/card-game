@@ -1,20 +1,22 @@
-import * as eventstoreConstructor from 'eventstore';
+// import * as eventstoreConstructor from 'eventstore';
+
+const eventstore = require('eventstore');
 
 import { promisify } from 'util';
 import config from '../config';
 
-let eventstore = eventstoreConstructor({
+let es = eventstore({
   type: 'mongodb',
   host: config.MONGO_URL,
   port: config.MONGO_PORT,
   timeout: 1000
 });
 
-let promisedGetEvents = promisify(eventstore.getEvents.bind(eventstore));
+let promisedGetEvents = promisify(es.getEvents.bind(es));
 
-let promisedOn = promisify(eventstore.on.bind(eventstore));
+let promisedOn = promisify(es.on.bind(es));
 
-let promisedGetEventStream = promisify(eventstore.getEventStream.bind(eventstore));
+let promisedGetEventStream = promisify(es.getEventStream.bind(es));
 let finallyPromisedGetEventStream = async (id: {aggregateId: string, aggregate: string}): Promise<any> => {
   let stream = await promisedGetEventStream(id);
   stream.commit = promisify(stream.commit.bind(stream));
@@ -23,7 +25,7 @@ let finallyPromisedGetEventStream = async (id: {aggregateId: string, aggregate: 
 };
 
 let promisedEventstore = {
-  init: eventstore.init.bind(eventstore),
+  init: es.init.bind(es),
   on: promisedOn,
   getEventStream: finallyPromisedGetEventStream,
   getEvents: promisedGetEvents
