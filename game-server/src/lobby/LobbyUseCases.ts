@@ -1,15 +1,12 @@
-import * as Router from 'koa-router';
 import { GameDto, CardDto, CardSoundDto } from './dtos';
 import * as lodash from 'lodash';
 import { Deck } from './entities/Deck';
 import axios from 'axios';
 import { Card } from './entities/Card';
 import { LobbyRepository } from './LobbyRepository';
-import { v4 as uuidv4 } from 'uuid';
 import { ObjectId } from 'mongodb';
 
 class LobbyUseCasas {
-  public router: Router;
   private lobbyRepository: LobbyRepository;
 
   constructor(lobbyRepository: LobbyRepository) {

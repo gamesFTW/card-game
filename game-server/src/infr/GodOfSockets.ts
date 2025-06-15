@@ -1,10 +1,5 @@
 import chalk from 'chalk';
-// import * as koaSocketIO from 'socket.io';
-// import * as Koa from 'koa';
-
-import { Server, Socket } from 'socket.io';
 import WebSocket, { WebSocketServer } from 'ws';
-
 import { EntityId } from './Entity';
 
 class GodOfSockets {
