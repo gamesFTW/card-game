@@ -49,3 +49,7 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json

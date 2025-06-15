@@ -7,11 +7,5 @@ export default {
   MONGO_PORT: 27017,
   DEV: true,
   IN_MEMORY_STORAGE: false,
-  // Remove it
-  RABBIT_MQ_URL: `amqp://${DOCKER_HOST}:5672`,
-  REDIS_URL: `redis://${DOCKER_HOST}:6379`,
-  MAIN_EXCHANGE: 'main',
   GAME_URL: 'http://localhost:3000/',
-  LOBBY_URL: 'http://localhost:3001/',
-  METEOR_URL: 'http://localhost:4000/',
 };
