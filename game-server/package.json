@@ -32,7 +32,7 @@
     "@types/ws": "8.18.1",
     "autobind-decorator": "2.4.0",
     "axios": "1.8.4",
-    "chalk": "2.4.1",
+    "chalk": "5.4.1",
     "cors": "2.8.5",
     "express": "5.1.0",
     "lodash": "4.17.21",
