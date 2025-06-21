@@ -5,10 +5,6 @@ interface Games {
   games: Array<String>;
 }
 
-let lobbyMethods = {
-  GET_ALL_GAMES: config.METEOR_URL + 'methods/getGames'
-};
-
 interface GamesData {
   Games: GameData[];
 }
@@ -24,7 +20,7 @@ let lobbyService = {
   getAllGames: async (): Promise<GameData[]> => {
     let response: AxiosResponse<GamesData>;
     try {
-      response = await axios.get(lobbyMethods.GET_ALL_GAMES);
+      // response = await axios.get(lobbyMethods.GET_ALL_GAMES);
     } catch (error) {
       throw new Error('GAME: не могу достучатся до lobby. Скорее всего его забыли запустить.');
     }

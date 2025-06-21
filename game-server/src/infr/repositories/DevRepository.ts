@@ -1,6 +1,5 @@
 import { Event } from '../Event';
 import { Entity, EntityId } from '../Entity';
-import { eventStore } from '../eventStore';
 import * as lodash from 'lodash';
 import config from '../../config';
 import { Repository } from './Repository';
