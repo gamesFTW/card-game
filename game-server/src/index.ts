@@ -3,7 +3,7 @@ import cors from 'cors';
 
 import { godOfSockets } from './battle/infr/GodOfSockets';
 import config from './config';
-import { gameController } from './battle/http/gameController/gameController';
+import { gameController } from './battle/http/gameController';
 import { playerController } from './battle/http/playerController';
 import { debugController } from './battle/http/_debug/debugController';
 import { StaticContorller } from './battle/http/staticController';
@@ -20,7 +20,7 @@ import { Repository } from './battle/infr/repositories/Repository';
 import { DevRepository } from './battle/infr/repositories/DevRepository';
 import { Game } from './lobby/entities/Game';
 import { WebSocketServer } from 'ws';
-import { AiService } from './ai/AiService';
+import { AiService } from './ai/AIService';
 
 let DEBUG = true;
 

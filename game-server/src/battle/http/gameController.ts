@@ -1,18 +1,17 @@
 import { Router } from 'express';
 
-import { Game } from '../../domain/game/Game';
-import { EntityId } from '../../infr/Entity';
-import { PlayerCreationData } from '../../domain/player/Player';
+import { Game } from '../domain/game/Game';
+import { EntityId } from '../infr/Entity';
+import { PlayerCreationData } from '../domain/player/Player';
 
-import { godOfSockets } from '../../infr/GodOfSockets';
-import { EndTurnUseCase } from '../../app/game/EndTurnUseCase';
+import { godOfSockets } from '../infr/GodOfSockets';
+import { EndTurnUseCase } from '../app/game/EndTurnUseCase';
 import axios from 'axios';
-import config from '../../../config';
-import { Repository } from '../../infr/repositories/Repository';
-// import { getGameAction } from './getGameAction/getGameAction';
+import config from '../../config';
+import { Repository } from '../infr/repositories/Repository';
 import { ObjectId } from 'mongodb';
-import { GetGameUseCase } from '../../app/game/GetGameUseCase';
-import { EventBus } from '../../infr/EventBus';
+import { GetGameUseCase } from '../app/game/GetGameUseCase';
+import { EventBus } from '../infr/EventBus';
 
 const gameController = Router();
 
