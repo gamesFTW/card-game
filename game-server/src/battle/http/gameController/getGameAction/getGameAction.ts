@@ -1,56 +1,56 @@
-import { EntityId } from '../../../infr/Entity';
-import { Repository } from '../../../infr/repositories/Repository';
-import { Game } from '../../../domain/game/Game';
-import { Board } from '../../../domain/board/Board';
-import { Player } from '../../../domain/player/Player';
-import { Area } from '../../../domain/area/Area';
-import { fillPlayer } from './fillPlayer';
-import express, { Request, Response } from 'express';
+// import { EntityId } from '../../../infr/Entity';
+// import { Repository } from '../../../infr/repositories/Repository';
+// import { Game } from '../../../domain/game/Game';
+// import { Board } from '../../../domain/board/Board';
+// import { Player } from '../../../domain/player/Player';
+// import { Area } from '../../../domain/area/Area';
+// import { fillPlayer } from './fillPlayer';
+// import express, { Request, Response } from 'express';
 
-const getGameAction = async (request: Request, response: Response) => {
-  let gameId = request.query.gameId as EntityId;
+// const getGameAction = async (request: Request, response: Response) => {
+//   let gameId = request.query.gameId as EntityId;
 
-  let repository = new Repository(gameId);
+//   let repository = new Repository(gameId);
 
-  let game = await repository.get<Game>(gameId, Game);
+//   let game = await repository.get<Game>(gameId, Game);
 
-  let board = await repository.get<Board>(game.boardId, Board);
+//   let board = await repository.get<Board>(game.boardId, Board);
 
-  let player1 = await repository.get<Player>(game.player1Id, Player);
-  let player2 = await repository.get<Player>(game.player2Id, Player);
+//   let player1 = await repository.get<Player>(game.player1Id, Player);
+//   let player2 = await repository.get<Player>(game.player2Id, Player);
 
-  let areas = await fillAreas(board, repository);
+//   let areas = await fillAreas(board, repository);
 
-  let player1Response = await fillPlayer(player1, board, repository);
-  let player2Response = await fillPlayer(player2, board, repository);
+//   let player1Response = await fillPlayer(player1, board, repository);
+//   let player2Response = await fillPlayer(player2, board, repository);
 
-  response.send({
-    game: Object(game).state,
-    player1: player1Response,
-    player2: player2Response,
-    areas: areas
-  });
-};
+//   response.send({
+//     game: Object(game).state,
+//     player1: player1Response,
+//     player2: player2Response,
+//     areas: areas
+//   });
+// };
 
-const fillAreas = async (board: Board, repository: Repository): Promise<any> => {
-  let areas = await repository.getMany<Area>(board.areas, Area);
+// const fillAreas = async (board: Board, repository: Repository): Promise<any> => {
+//   let areas = await repository.getMany<Area>(board.areas, Area);
 
-  let areaResponses = [];
+//   let areaResponses = [];
 
-  for (let area of areas) {
-    let areaResponse = Object(area).state;
+//   for (let area of areas) {
+//     let areaResponse = Object(area).state;
 
-    let position = board.getPositionOfArea(area);
+//     let position = board.getPositionOfArea(area);
 
-    if (position) {
-      areaResponse.x = position.x;
-      areaResponse.y = position.y;
-    }
+//     if (position) {
+//       areaResponse.x = position.x;
+//       areaResponse.y = position.y;
+//     }
 
-    areaResponses.push(areaResponse);
-  }
+//     areaResponses.push(areaResponse);
+//   }
 
-  return areaResponses;
-};
+//   return areaResponses;
+// };
 
-export {getGameAction};
+// export {getGameAction};

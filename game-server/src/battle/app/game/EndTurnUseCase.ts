@@ -11,6 +11,7 @@ import { UseCase } from '../../infr/UseCase';
 import { Board } from '../../domain/board/Board';
 import { CardChanges } from '../player/AttackCardUseCase';
 import { PlayerData } from '../../domain/player/PlayerState';
+import { EventBus } from '../../infr/EventBus';
 
 // TODO: Возможно нужный отдельный ивент для перемещения карты в гв.
 interface EndTurnParams {
@@ -112,6 +113,10 @@ class EndTurnUseCase extends UseCase<EndTurnParams> {
     this.action.currentTurn = this.entities.game.currentTurn;
     this.action.endedPlayerId = this.params.endingTurnPlayerId;
     this.action.startedPlayerId = this.entities.game.getPlayerIdWhichIsOpponentFor(this.params.endingTurnPlayerId);
+  }
+
+  protected beforeEnd(): void {
+    EventBus.emit('TurnEnded', this.params.gameId);
   }
 
   @boundMethod

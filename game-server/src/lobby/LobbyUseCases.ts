@@ -13,8 +13,14 @@ class LobbyUseCasas {
     this.lobbyRepository = lobbyRepository;
   }
 
-  public async getGames(): Promise<GameDto[]> {
-    const gamesEntities = await this.lobbyRepository.gamesCollection.find({}).toArray();
+  public async getGames(gameIds: string[] = []): Promise<GameDto[]> {
+    let gamesEntities;
+    if (gameIds.length > 0) {
+      const objectIds = gameIds.map((id) => new ObjectId(id));
+      gamesEntities = await this.lobbyRepository.gamesCollection.find({"_id": {"$in": objectIds}}).toArray();
+    } else {
+      gamesEntities = await this.lobbyRepository.gamesCollection.find({}).toArray();
+    }
     const games: GameDto[] = [];
 
     for (const gameEntity of gamesEntities) {

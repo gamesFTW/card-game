@@ -20,6 +20,7 @@ import { Repository } from './battle/infr/repositories/Repository';
 import { DevRepository } from './battle/infr/repositories/DevRepository';
 import { Game } from './lobby/entities/Game';
 import { WebSocketServer } from 'ws';
+import { AiService } from './ai/AiService';
 
 let DEBUG = true;
 
@@ -60,6 +61,9 @@ async function main(): Promise<void> {
   const staticContorller = new StaticContorller(lobbyRepository);
   const matchMaker = new MatchMaker(lobbyUseCasas);
   const lobbyController = new LobbyController(lobbyRepository, lobbyUseCasas, matchMaker);
+
+  const aiService = new AiService(lobbyUseCasas);
+  aiService.init();
 
   app.use(gameController);
   app.use(playerController);

@@ -9,9 +9,10 @@ import { EndTurnUseCase } from '../../app/game/EndTurnUseCase';
 import axios from 'axios';
 import config from '../../../config';
 import { Repository } from '../../infr/repositories/Repository';
-import { getGameAction } from './getGameAction/getGameAction';
-import { lobbyService } from '../../app/lobbyService';
+// import { getGameAction } from './getGameAction/getGameAction';
 import { ObjectId } from 'mongodb';
+import { GetGameUseCase } from '../../app/game/GetGameUseCase';
+import { EventBus } from '../../infr/EventBus';
 
 const gameController = Router();
 
@@ -45,12 +46,17 @@ gameController.post('/createGame', async (request, response) => {
   
   await repository.save([player1Cards, player1, player2Cards, player2, board, game, areas]);
 
-  //godOfSockets.registerNamespace(game.id);
-
   response.send({gameId: game.id});
+
+  EventBus.emit('GameCreated', gameId.toString());
 });
 
-gameController.get('/getGame', getGameAction);
+gameController.get('/getGame', async(request, response) => {
+  const gateGameUseCase = new GetGameUseCase();
+  const game = await gateGameUseCase.execute(request.query.gameId as EntityId);
+
+  response.send(game);
+});
 
 gameController.post('/endTurn', async (request, response) => {
   let gameId = request.body.gameId as EntityId;
@@ -64,12 +70,14 @@ gameController.post('/endTurn', async (request, response) => {
 });
 
 gameController.get('/getLastGame', async (request, response) => {
-  const games = await lobbyService.getAllGames();
-  let lastGameId = games[games.length - 1].gameServerId;
+  // const games = await lobbyService.getAllGames();
+  // let lastGameId = games[games.length - 1].gameServerId;
 
-  const lastGame = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
+  // const lastGame = await axios.get(config.GAME_URL + `getGame?gameId=${lastGameId}`);
 
-  response.send(lastGame);
+  // response.send(lastGame);
+
+  throw new Error('Not implemented');
 });
 
 export {gameController};

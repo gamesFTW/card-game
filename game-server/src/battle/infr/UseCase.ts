@@ -47,6 +47,8 @@ abstract class UseCase<TParams extends Params = Params> {
     if (sendActions) {
       godOfSockets.sendActions(this.entities.game.id, [this.action]);
     }
+
+    this.beforeEnd();
   }
 
   public getAction (): any {
@@ -80,6 +82,8 @@ abstract class UseCase<TParams extends Params = Params> {
 
     return cardChanges;
   }
+
+  protected beforeEnd(): void {}
 
   private async saveEntities (): Promise<void> {
     let entities = map(this.entities, (e: Entity) => e);
