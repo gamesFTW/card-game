@@ -1,10 +1,10 @@
 import { Event } from '../Event';
 import { Entity, EntityId } from '../Entity';
 import * as lodash from 'lodash';
-import config from '../../config';
+import config from '../../../config';
 import { Repository } from './Repository';
 import { Collection, ObjectId } from 'mongodb';
-import { Game } from '../../lobby/entities/Game';
+import { Game } from '../../../lobby/entities/Game';
 
 class DevRepository {
   static gamesCollection: Collection<Game>;

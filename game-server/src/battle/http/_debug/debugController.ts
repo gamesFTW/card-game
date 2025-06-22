@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import axios from 'axios';
-import config from '../../config';
+import config from '../../../config';
 import { startingCardsFixture } from './startingCardsFixture';
 import { Repository } from '../../infr/repositories/Repository';
 

@@ -4,7 +4,7 @@ import { readFile as _readFile } from 'fs';
 import { ObjectId } from 'mongodb';
 
 import { Router } from 'express';
-import { LobbyRepository } from '../lobby/LobbyRepository';
+import { LobbyRepository } from '../../lobby/LobbyRepository';
 const readFile = promisify(_readFile);
 
 class StaticContorller {

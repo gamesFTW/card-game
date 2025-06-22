@@ -1,14 +1,13 @@
 import chalk from 'chalk';
 import cors from 'cors';
 
-import { godOfSockets } from './infr/GodOfSockets';
-import { lobbyService } from './app/lobbyService';
+import { godOfSockets } from './battle/infr/GodOfSockets';
 import config from './config';
-import { gameController } from './http/gameController/gameController';
-import { playerController } from './http/playerController';
-import { debugController } from './http/_debug/debugController';
-import { StaticContorller } from './http/staticController';
-import { DomainError } from './infr/DomainError';
+import { gameController } from './battle/http/gameController/gameController';
+import { playerController } from './battle/http/playerController';
+import { debugController } from './battle/http/_debug/debugController';
+import { StaticContorller } from './battle/http/staticController';
+import { DomainError } from './battle/infr/DomainError';
 import { LobbyUseCasas } from './lobby/LobbyUseCases';
 import { LobbyRepository } from './lobby/LobbyRepository';
 import { LobbyController } from './lobby/LobbyController';
@@ -17,8 +16,8 @@ import { Collection, MongoClient } from 'mongodb';
 
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'node:path';
-import { Repository } from './infr/repositories/Repository';
-import { DevRepository } from './infr/repositories/DevRepository';
+import { Repository } from './battle/infr/repositories/Repository';
+import { DevRepository } from './battle/infr/repositories/DevRepository';
 import { Game } from './lobby/entities/Game';
 import { WebSocketServer } from 'ws';
 

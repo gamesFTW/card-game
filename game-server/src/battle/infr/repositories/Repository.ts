@@ -2,9 +2,9 @@ import { Event } from '../Event';
 import { Entity, EntityId } from '../Entity';
 import * as lodash from 'lodash';
 import { DevRepository } from './DevRepository';
-import config from '../../config';
+import config from '../../../config';
 import { Collection } from 'mongodb';
-import { EventData, Game } from '../../lobby/entities/Game';
+import { EventData, Game } from '../../../lobby/entities/Game';
 import { ObjectId } from 'mongodb';
 
 class Repository {

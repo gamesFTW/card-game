@@ -7,7 +7,7 @@ import { PlayerCreationData } from '../../domain/player/Player';
 import { godOfSockets } from '../../infr/GodOfSockets';
 import { EndTurnUseCase } from '../../app/game/EndTurnUseCase';
 import axios from 'axios';
-import config from '../../config';
+import config from '../../../config';
 import { Repository } from '../../infr/repositories/Repository';
 import { getGameAction } from './getGameAction/getGameAction';
 import { lobbyService } from '../../app/lobbyService';
