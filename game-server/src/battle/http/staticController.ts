@@ -20,7 +20,7 @@ class StaticContorller {
   }
 
   private async getIndex(_request, response) {
-    const file = await readFile(join(process.cwd(), 'client', 'index.html'), 'utf-8');
+    const file = await readFile(join(process.cwd(), 'src', 'static', 'client', 'index.html'), 'utf-8');
     response.send(file);
   }
 

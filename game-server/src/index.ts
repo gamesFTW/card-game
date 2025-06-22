@@ -21,6 +21,7 @@ import { DevRepository } from './battle/infr/repositories/DevRepository';
 import { Game } from './lobby/entities/Game';
 import { WebSocketServer } from 'ws';
 import { AiService } from './ai/AIService';
+import serveStatic from 'serve-static';
 
 let DEBUG = true;
 
@@ -38,7 +39,18 @@ async function main(): Promise<void> {
   };
   
   app.use(cors(corsOptions));
-  app.use(express.static(path.join(process.cwd(), 'static')));
+  // app.use(express.static(path.join(process.cwd(), 'static')));
+  app.use(serveStatic(path.join(process.cwd(), 'src', 'static', 'client'), {
+    // maxAge: '1d', // Кэширование на 1 день
+    setHeaders: (res, path) => {
+        if (path.endsWith('.wasm')) {
+          res.setHeader('Content-Type', 'application/wasm');
+        }
+        if (path.endsWith('.data')) {
+          res.setHeader('Content-Type', 'application/octet-stream');
+        }
+      }
+  }));
   app.use(express.json());
 
   app.use(async (req: Request, _res: Response, next: NextFunction) => {

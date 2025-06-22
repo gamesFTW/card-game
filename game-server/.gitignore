@@ -3,3 +3,4 @@ node_modules/
 dist
 third-party/arena/index.json
 app.tar.gz
+src/static/client
