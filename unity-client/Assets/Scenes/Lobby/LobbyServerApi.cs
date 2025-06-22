@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
-
+using Cysharp.Threading.Tasks;
 
 namespace Lobby
 {
@@ -52,22 +51,22 @@ namespace Lobby
 
     public class LobbyServerApi
     {
-        public async static Task<GamesData> GetGames<GamesData>()
+        public static UniTask<GamesData> GetGames<GamesData>()
         {
-            return await HttpRequest.Get<GamesData>(Config.LOBBY_SERVER_URL + "methods/getGames");
+            return HttpRequest.Get<GamesData>(Config.LOBBY_SERVER_URL + "methods/getGames");
         }
 
-        public async static Task<DecksData> GetDecks<DecksData>()
+        public async static UniTask<DecksData> GetDecks<DecksData>()
         {
             return await HttpRequest.Get<DecksData>(Config.LOBBY_SERVER_URL + "publications/Decks");
         }
 
-        public async static Task<DecksData> GetPlayerDecks<DecksData>()
+        public async static UniTask<DecksData> GetPlayerDecks<DecksData>()
         {
             return await HttpRequest.Get<DecksData>(Config.LOBBY_SERVER_URL + "methods/getPlayerDecks");
         }
 
-        public async static Task CreateGame(string player1DeckId, string player2DeckId)
+        public async static UniTask CreateGame(string player1DeckId, string player2DeckId)
         {
             var values = new
             {
@@ -78,7 +77,7 @@ namespace Lobby
             await HttpRequest.Post(Config.LOBBY_SERVER_URL + "methods/createGame", values);
         }
 
-        public async static Task<SinglePlayerGameData> CreateSinglePlayerGame(string player1DeckId)
+        public async static UniTask<SinglePlayerGameData> CreateSinglePlayerGame(string player1DeckId)
         {
             var values = new
             {
@@ -88,12 +87,12 @@ namespace Lobby
             return await HttpRequest.Post<SinglePlayerGameData>(Config.LOBBY_SERVER_URL + "methods/createSinglePlayerGame", values);
         }
 
-        public async static Task<SinglePlayerGameData> CreateTutorialGame()
+        public async static UniTask<SinglePlayerGameData> CreateTutorialGame()
         {
             return await HttpRequest.Post<SinglePlayerGameData>(Config.LOBBY_SERVER_URL + "methods/createTutorialGame");
         }
 
-        public async static Task DeleteGame(string gameId)
+        public async static UniTask DeleteGame(string gameId)
         {
 
             var values = new
@@ -104,7 +103,7 @@ namespace Lobby
             await HttpRequest.Post(Config.LOBBY_SERVER_URL + "methods/removeGameById", values);
         }
 
-        public async static Task<FoundGame> FindOpponent(string deckId)
+        public async static UniTask<FoundGame> FindOpponent(string deckId)
         {
             var values = new
             {

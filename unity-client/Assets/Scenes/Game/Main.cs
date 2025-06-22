@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
-
+using Cysharp.Threading.Tasks;
 
 public class Main : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class Main : MonoBehaviour
 
     private AudioController audioController;
     private UIManager uiManager;
+    private WebSocketClient webSocketClient;
 
     public static void StartGame(string gameId, string playerId, string opponentId)
     {
@@ -55,7 +55,7 @@ public class Main : MonoBehaviour
         this.uiManager = this.GetComponent<UIManager>();
     }
 
-    async Task Start()
+    async UniTask Start()
     {
         // googleAnalytics.LogScreen("Game");
 
@@ -73,12 +73,23 @@ public class Main : MonoBehaviour
         CardCreator cardCreator = this.GetComponent<CardCreator>();
 
         List<CardDisplay> cardDisplays = cardCreator.CreateCards(gameData);
-        this.LoadSounds(cardDisplays);
+        LoadSounds(cardDisplays);
 
         CardManager cardManager = this.GetComponent<CardManager>();
         cardManager.Init();
 
-        this.OnGameDataFirstTimeRecived();
+        GameObject webSocketClientGameObject = GameObject.Find("WebSocketClient");
+        webSocketClient = webSocketClientGameObject.GetComponent<WebSocketClient>();
+
+        if (webSocketClient.connected)
+        {
+            ReceiverFromServer receiverFromServer = this.GetComponent<ReceiverFromServer>();
+            webSocketClient.RegisterClient(receiverFromServer);
+        }
+        else
+        {
+            webSocketClient.OnConnected += OnWebSocketClientConnectedHandler;
+        }
 
         CursorController.SetDefault();
 
@@ -92,7 +103,7 @@ public class Main : MonoBehaviour
         }
     }
 
-    private async Task<GameData> LoadGame()
+    private async UniTask<GameData> LoadGame()
     {
         GameData gameData;
         if (GameState.gameId != null)
@@ -155,14 +166,10 @@ public class Main : MonoBehaviour
         this.audioController.AddSounds(urls);
     }
 
-    private void OnGameDataFirstTimeRecived()
+    private void OnWebSocketClientConnectedHandler()
     {
-        // GameObject go = GameObject.Find("Canvas");
-        // SocketIOClient socketClient = go.GetComponent<SocketIOClient>();
-        // socketClient.StartExchange();
-
-        GameObject go = GameObject.Find("Canvas");
-        WebSocketClient webSocketClient = go.GetComponent<WebSocketClient>();
-        webSocketClient.RegisterClient();
+        ReceiverFromServer receiverFromServer = this.GetComponent<ReceiverFromServer>();
+        webSocketClient.RegisterClient(receiverFromServer);
+        webSocketClient.OnConnected -= OnWebSocketClientConnectedHandler;
     }
 }

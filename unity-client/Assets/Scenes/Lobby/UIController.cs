@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnibusEvent;
 using UnityEngine.SceneManagement;
+using Cysharp.Threading.Tasks;
 
 namespace Lobby
 {
@@ -18,7 +19,7 @@ namespace Lobby
 
         private List<string> deckIds;
 
-        void Start()
+        async UniTask Start()
         {
             // googleAnalytics.LogScreen("Lobby");
 
@@ -30,13 +31,13 @@ namespace Lobby
 
             createGameButton.onClick.AddListener(OnCreateGameButtonClick);
 
-            UpdateGames();
-            UpdateDropdowns();
+            await UpdateGames();
+            await UpdateDropdowns();
 
             Unibus.Subscribe<LobbyGame>(LobbyGame.DETELE_GAME, OnDeleteGameHandler);
         }
 
-        private async void UpdateDropdowns()
+        private async UniTask UpdateDropdowns()
         {
             DecksData decksData = await LobbyServerApi.GetDecks<DecksData>();
 
@@ -59,7 +60,7 @@ namespace Lobby
             player2DeckDropdown.AddOptions(options);
         }
 
-        private async void UpdateGames()
+        private async UniTask UpdateGames()
         {
             var lobbyGames = this.transform.Find("LobbyGames");
 
@@ -91,14 +92,14 @@ namespace Lobby
 
             await LobbyServerApi.CreateGame(player1DeckId, player2DeckId);
 
-            UpdateGames();
+            await UpdateGames();
         }
 
         private async void OnDeleteGameHandler(LobbyGame lobbyGame)
         {
             await LobbyServerApi.DeleteGame(lobbyGame.lobbyGameId);
 
-            UpdateGames();
+            await UpdateGames();
         }
 
         private void OnMainMenuButtonClick()

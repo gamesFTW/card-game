@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
+using UnityEngine;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 [Serializable]
 public class CardData
@@ -248,17 +249,17 @@ public class GameData
 
 public class ServerApi
 {
-    public async static Task<GameData> GetGame(string gameId)
+    public async static UniTask<GameData> GetGame(string gameId)
     {
         return await HttpRequest.Get<GameData>(Config.GAME_SERVER_URL + "getGame?gameId=" + gameId);
     }
 
-    public async static Task<GameData> GetLastGame()
+    public async static UniTask<GameData> GetLastGame()
     {
         return await HttpRequest.Get<GameData>(Config.GAME_SERVER_URL + "getLastGame");
     }
 
-    public async static Task EndOfTurn()
+    public async static UniTask EndOfTurn()
     {
         var values = new Dictionary<string, string>
         {
@@ -269,7 +270,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "endTurn", values);
     }
 
-    public async static Task PlayCardAsMana(string cardId)
+    public async static UniTask PlayCardAsMana(string cardId)
     {
         var values = new
         {
@@ -281,7 +282,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "playCardAsMana", values);
     }
 
-    public async static Task PlayCard(PlayCardAction action)
+    public async static UniTask PlayCard(PlayCardAction action)
     {
         var values = new
         {
@@ -295,11 +296,11 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "playCard", values);
     }
 
-    public async static Task MoveCard(MoveCardAction action)
+    public async static UniTask MoveCard(MoveCardAction action)
     {
         var values = new
         {
-            GameState.gameId,
+           GameState.gameId,
            playerId = GameState.mainPlayerId,
            action.cardId,
            action.x,
@@ -309,7 +310,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "moveCard", values);
     }
 
-    public async static Task AttackCard(AttackCardAction action)
+    public async static UniTask AttackCard(AttackCardAction action)
     {
         var values = new
         {
@@ -324,7 +325,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "attackCard", values);
     }
 
-    public async static Task MoveAndAttackCard(AttackCardAction action)
+    public async static UniTask MoveAndAttackCard(AttackCardAction action)
     {
         var values = new
         {
@@ -339,7 +340,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "moveAndAttackCard", values);
     }
 
-    public async static Task HealCard(HealCardAction action)
+    public async static UniTask HealCard(HealCardAction action)
     {
         var values = new
         {
@@ -352,7 +353,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "healCard", values);
     }
 
-    public async static Task UseManaAbility(SimpleAbilityCardAction action)
+    public async static UniTask UseManaAbility(SimpleAbilityCardAction action)
     {
         var values = new
         {
@@ -364,7 +365,7 @@ public class ServerApi
         await HttpRequest.Post(Config.GAME_SERVER_URL + "useManaAbility", values);
     }
 
-    public async static Task ToAim(SimpleAbilityCardAction action)
+    public async static UniTask ToAim(SimpleAbilityCardAction action)
     {
         var values = new
         {

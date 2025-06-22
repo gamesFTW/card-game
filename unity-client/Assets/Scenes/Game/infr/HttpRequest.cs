@@ -1,108 +1,70 @@
 ﻿using UnityEngine;
 using System;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Collections.Generic;
+using UnityEngine.Networking;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Text;
-using System.Net.Http.Headers;
-using System.Reflection;
 using UnibusEvent;
 
 public class HttpRequest
 {
     public static string HTTP_ERROR = "HTTP_ERROR";
 
-    public async static Task Get(string url)
+    public static async UniTask<T> Get<T>(string url)
     {
-        var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync(String.Format(url));
-        response.EnsureSuccessStatusCode();
-
-        string responseContent = await response.Content.ReadAsStringAsync();
-
-        Debug.Log(responseContent);
-    }
-
-    public async static Task<T> Get<T>(string url)
-    {
-        var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync(String.Format(url));
-        response.EnsureSuccessStatusCode();
-
-        string responseContent = await response.Content.ReadAsStringAsync();
-
-        Debug.Log(responseContent);
-
-        T data = JsonConvert.DeserializeObject<T>(responseContent);
-
-        return data;
-    }
-
-    public async static Task<string> Post(string url, object values)
-    {
-        HttpResponseMessage response = await PostInternal(url, values);
-        GenerateDebugMessage(url, values);
-        string responseContent = await response.Content.ReadAsStringAsync();
+        using var request = UnityWebRequest.Get(url);
+        await request.SendWebRequest();
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            throw new Exception($"HTTP Error {request.responseCode}: {request.error}");
+        }
 
         try
         {
-            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<T>(request.downloadHandler.text);
         }
-        catch (HttpRequestException e)
+        catch (Exception ex)
         {
-            Debug.Log("Error: " + responseContent);
-
-            Unibus.Dispatch(HTTP_ERROR, responseContent);
+            throw new Exception($"JSON Parse Error: {ex.Message}");
         }
-
-        return responseContent;
     }
 
-    public async static Task<T> Post<T>(string url, object values = null)
+    public static async UniTask<T> Post<T>(string url, object data = null)
     {
-        HttpResponseMessage response = await PostInternal(url, values);
-        GenerateDebugMessage(url, values);
-        string responseContent = await response.Content.ReadAsStringAsync();
-        T responseObject = JsonConvert.DeserializeObject<T>(responseContent);
-
+        var json = await PostRaw(url, data);
         try
         {
-            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<T>(json);
         }
-        catch (HttpRequestException e)
+        catch (Exception ex)
         {
-            Debug.Log("Error: " + responseContent);
-
-            Unibus.Dispatch(HTTP_ERROR, responseContent);
+            throw new Exception($"JSON Parse Error: {ex.Message}");
         }
-
-        return responseObject;
     }
 
-    public async static Task<HttpResponseMessage> PostInternal(string url, object values)
+    public static async UniTask<string> Post(string url, object data = null)
     {
-        string content = values == null ? "" : JsonConvert.SerializeObject(values);
-        var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-        stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-        var httpClient = new HttpClient();
-        return await httpClient.PostAsync(String.Format(url), stringContent);
+        return await PostRaw(url, data);
     }
 
-    private static void GenerateDebugMessage(string url, object values)
+    private static async UniTask<string> PostRaw(string url, object data = null)
     {
-        string valuesText = "";
+        string json = data != null ? JsonConvert.SerializeObject(data) : "{}";
+        byte[] payload = System.Text.Encoding.UTF8.GetBytes(json);
 
-        if (values != null)
+        using var request = new UnityWebRequest(url, "POST");
+        request.uploadHandler = new UploadHandlerRaw(payload);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        try
         {
-            foreach (PropertyInfo propertyInfo in values.GetType().GetProperties())
-            {
-                valuesText += propertyInfo.Name + " = " + propertyInfo.GetValue(values, null) + "; ";
-            }
+            await request.SendWebRequest();
+        }
+        catch
+        {
+            Unibus.Dispatch(HTTP_ERROR, request.downloadHandler.text);
+            throw new Exception($"HTTP Error {request.responseCode}: {request.error}");
         }
 
-        Debug.Log("Send POST to server. Url: '" + url + "' Body: " + valuesText);
+        return request.downloadHandler.text;
     }
 }
