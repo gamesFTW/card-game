@@ -34,7 +34,6 @@ public class WebSocketClient : MonoBehaviour
     private static extern void WebSocketClose();
 
     private WebSocket ws;
-    private string serverUrl = "ws://localhost:3000";
     private ReceiverFromServer receiverFromServer;
     // Нужно для того чтобы все что внутри юнити работало в меин треде
     private static readonly Queue<Action> _executionQueue = new Queue<Action>();
@@ -57,13 +56,13 @@ public class WebSocketClient : MonoBehaviour
     void ConnectWebGL()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-        WebSocketConnect(serverUrl);
+        WebSocketConnect("ws://" + Config.HOST);
 #endif
     }
 
     void ConnectStandalone()
     {
-        ws = new WebSocket(serverUrl);
+        ws = new WebSocket("ws://" + Config.HOST);
 
         ws.OnOpen += (sender, e) => RunOnMainThread(OnWebSocketOpen);
         ws.OnMessage += (sender, e) => RunOnMainThread(() => OnWebSocketMessage(e.Data));

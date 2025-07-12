@@ -1,8 +1,10 @@
-tar --exclude='./node_modules' -czf app.tar.gz .
-scp app.tar.gz dh@188.64.142.92:/home/dh/
+# tar --exclude='./node_modules' -czf app.tar.gz .
+tar --exclude='./node_modules' --exclude='./src/static/client'  -czf app.tar.gz .
+
+scp app.tar.gz dh@103.110.65.87:/home/dh/
 rm app.tar.gz
 
-ssh dh@188.64.142.92 << EOF
+ssh dh@103.110.65.87 << EOF
   cd /home/dh/
   rm -rf ./app
   mkdir app

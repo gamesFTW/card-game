@@ -2,8 +2,9 @@
 
 public class Config : MonoBehaviour
 {
-    private static string HOST = "localhost:3000/";
-    // private static string HOST = "188.64.142.92/";
+    // private static string HOST = "localhost:3000/";
+    // private static string HOST = "localhost:3000/";
+    public static string HOST = "103.110.65.87/";
 
     public static string GAME_SERVER_URL = "http://" + HOST;
     public static string LOBBY_SERVER_URL = "http://" + HOST;

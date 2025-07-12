@@ -11,6 +11,7 @@ public class HttpRequest
 
     public static async UniTask<T> Get<T>(string url)
     {
+        Debug.Log("Http get. URL:\n" + url);
         using var request = UnityWebRequest.Get(url);
         await request.SendWebRequest();
         if (request.result != UnityWebRequest.Result.Success)
@@ -31,6 +32,7 @@ public class HttpRequest
     public static async UniTask<T> Post<T>(string url, object data = null)
     {
         var json = await PostRaw(url, data);
+
         try
         {
             return JsonConvert.DeserializeObject<T>(json);
@@ -47,7 +49,9 @@ public class HttpRequest
     }
 
     private static async UniTask<string> PostRaw(string url, object data = null)
-    {
+    {        
+        Debug.Log("Http post. URL:\n" + url + "\nBody:\n" + data);
+
         string json = data != null ? JsonConvert.SerializeObject(data) : "{}";
         byte[] payload = System.Text.Encoding.UTF8.GetBytes(json);
 
