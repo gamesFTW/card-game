@@ -1,5 +1,40 @@
 # Architecture Proof of Concept: Multiplayer Card Game
 
+```mermaid
+    sequenceDiagram
+    autonumber
+    participant Client as Unity Client
+    participant API as REST Controller
+    participant App as Application Layer (Template Method)
+    participant Domain as Domain Layer
+    participant Store as (Infrastructure) Event Store 
+    participant WS as WebSocket Gateway (Infrastructure)
+
+    Client->>API: POST (Command)
+    API->>App: execute(CommandDTO)
+    
+    rect rgb(240, 240, 250)
+        Note right of App: Use Case Lifecycle (Automated)
+        App->>Domain: invoke logic
+        
+        Note right of Domain: Isolated execution
+        Domain->>Domain: Validate Business Rules
+        Domain->>Domain: Generate Events
+        Domain-->>App: Return Result + Domain Events
+        
+        App->>Store: appendEvents(Domain Events)
+        Store-->>App: Acknowledge Persistence
+        
+        App->>WS: broadcast(Mapped Events/State)
+    end
+    
+    App-->>API: execution complete
+    API-->>Client: HTTP 202 Accepted (or 200 OK)
+    
+    Note over WS, Client: Asynchronous CQS Reaction
+    WS-->>Client: Push Notification (WebSockets)
+```
+
 ## Overview
 This repository serves as an architectural sandbox (Proof of Concept) for evaluating design patterns and system design approaches. The project implements a multiplayer card game backend, focusing on an event-driven model and state management via Event Sourcing.
 
